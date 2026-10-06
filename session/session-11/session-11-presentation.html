@@ -1,0 +1,2463 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ครั้งที่ 11: ขั้นที่ 5 'ACT' (ส่วนที่ 1) — Data Storytelling การเล่าเรื่องด้วยข้อมูลอย่างทรงพลัง | Fundamentals of Data Science</title>
+    
+    <!-- Reveal.js & Fonts -->
+    <link href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800;900&amp;family=Outfit:wght@400;500;600;700;800&amp;family=Fira+Code:wght@400;500&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
+
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #3730a3;
+            --primary-glow: rgba(79, 70, 229, 0.12);
+            --primary-light: #e0e7ff;
+            --secondary: #0284c7;
+            --secondary-dark: #0369a1;
+            --secondary-light: #e0f2fe;
+            --accent: #e11d48;
+            --accent-warm: #d97706;
+            --accent-light: #fef3c7;
+            --success: #059669;
+            --success-light: #dcfce7;
+            --danger: #ef4444;
+            --danger-light: #fee2e2;
+            --purple: #7c3aed;
+            --purple-light: #f3e8ff;
+            --teal: #0d9488;
+            --dark: #0f172a;
+            --bg-main: #f8fafc;
+            --bg-card: #ffffff;
+            --border-card: #e2e8f0;
+            --card-bg: #ffffff;
+            --bg-alt: #f8fafc;
+            --border: #e2e8f0;
+            --text-main: #0f172a;
+            --text-sub: #334155;
+            --text-muted: #64748b;
+            --gradient-main: linear-gradient(135deg, #4f46e5 0%, #0284c7 100%);
+            --gradient-purple: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
+            --gradient-accent: linear-gradient(135deg, #e11d48 0%, #d97706 100%);
+            --gradient-teal: linear-gradient(135deg, #0d9488 0%, #0284c7 100%);
+            --gradient-warm: linear-gradient(135deg, #d97706 0%, #ea580c 100%);
+            --gradient-green: linear-gradient(135deg, #059669 0%, #0284c7 100%);
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: var(--bg-main);
+            font-size: 24px;
+        }
+
+        .reveal {
+            font-family: 'Noto Sans Thai', 'Outfit', sans-serif;
+            color: var(--text-main);
+            background: var(--bg-main);
+            background-image:
+                radial-gradient(circle at 12% 15%, rgba(79, 70, 229, 0.05) 0%, transparent 45%),
+                radial-gradient(circle at 88% 85%, rgba(2, 132, 199, 0.05) 0%, transparent 45%);
+            font-size: 26px;
+        }
+
+        .reveal .slides {
+            text-align: left;
+        }
+
+        .reveal .slides section {
+            height: 100% !important;
+            box-sizing: border-box !important;
+            padding: 22px 38px 24px 38px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: flex-start !important;
+            overflow: hidden !important;
+            background: transparent;
+        }
+
+        @media print {
+            #aspect-ratio-toast,
+            #test-report-overlay {
+                display: none !important;
+            }
+        }
+
+        .slide-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+
+        .reveal h1,
+        .reveal h2,
+        .reveal h3,
+        .reveal h4 {
+            font-family: 'Noto Sans Thai', 'Outfit', sans-serif;
+            font-weight: 800;
+            text-transform: none;
+            letter-spacing: -0.02em;
+            margin: 0;
+            line-height: 1.25;
+            color: var(--text-main);
+        }
+
+        .reveal h1 {
+            font-size: 2.35rem;
+        }
+
+        .reveal h2 {
+            font-size: 1.48rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            line-height: 1.25;
+            letter-spacing: -0.015em;
+        }
+
+        .reveal h3 {
+            font-size: 1.25rem;
+            color: var(--primary);
+        }
+
+        .reveal p {
+            margin: 0;
+            line-height: 1.5;
+            color: var(--text-sub);
+            font-size: 1.02rem;
+        }
+
+        .slide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 2px solid rgba(79, 70, 229, 0.12);
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+            gap: 16px;
+        }
+
+        .slide-header .title-group,
+        .slide-header .slide-title-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .slide-header .subtitle,
+        .slide-header .slide-subtitle {
+            font-size: 1.02rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            margin: 0;
+        }
+
+        .badge-step,
+        .slide-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #eef2ff;
+            color: var(--primary);
+            padding: 6px 14px;
+            border-radius: 9999px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+            border: 1px solid rgba(79, 70, 229, 0.2);
+            box-shadow: var(--shadow-sm);
+            text-transform: none;
+        }
+
+        .badge-step.purple {
+            background: #f5f3ff;
+            color: var(--purple);
+            border-color: rgba(124, 58, 237, 0.2);
+        }
+
+        .badge-step.warm {
+            background: #fffbeb;
+            color: var(--accent-warm);
+            border-color: rgba(217, 119, 6, 0.2);
+        }
+
+        .badge-step.teal {
+            background: #f0fdfa;
+            color: var(--teal);
+            border-color: rgba(13, 148, 136, 0.2);
+        }
+
+        .badge-step.primary {
+            background: #eef2ff;
+            color: var(--primary);
+            border-color: rgba(79, 70, 229, 0.2);
+        }
+
+        .badge-step.accent {
+            background: #fff1f2;
+            color: var(--accent);
+            border-color: rgba(225, 29, 72, 0.2);
+        }
+
+        .badge-step.success {
+            background: #f0fdf4;
+            color: var(--success);
+            border-color: rgba(5, 150, 105, 0.2);
+        }
+
+        .badge-step.danger {
+            background: #fff1f2;
+            color: var(--accent);
+            border-color: rgba(225, 29, 72, 0.2);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .badge-primary {
+            background: #e0e7ff;
+            color: var(--primary-dark);
+        }
+
+        .badge-accent {
+            background: #ffe4e6;
+            color: var(--accent);
+        }
+
+        .badge-warm {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-success {
+            background: #dcfce7;
+            color: var(--success);
+        }
+
+        .badge-purple {
+            background: #f3e8ff;
+            color: var(--purple);
+        }
+
+        .badge-gray {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: var(--shadow-sm);
+            position: relative;
+        }
+
+        .card-header-sm {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .card-header-sm h4 {
+            font-size: 1.08rem;
+            margin: 0;
+            color: var(--text-main);
+        }
+
+        .card-header-sm i {
+            font-size: 1.15rem;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .callout-box {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 0.92rem;
+            line-height: 1.45;
+        }
+
+        .callout-box.info {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            color: #0369a1;
+        }
+
+        .callout-box.warning {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            color: #92400e;
+        }
+
+        .callout-box.danger {
+            background: #fff1f2;
+            border: 1px solid #fecdd3;
+            color: #9f1239;
+        }
+
+        .callout-box.success {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+        }
+
+        .highlight-box {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 0.92rem;
+            line-height: 1.45;
+            background: #f8fafc;
+            border: 1px solid var(--border-card);
+            border-left: 4px solid var(--primary);
+        }
+
+        .highlight-box.accent {
+            background: #fffbeb;
+            border-color: #fde68a;
+            border-left-color: var(--accent-warm);
+            color: #92400e;
+        }
+
+        .highlight-box.success {
+            background: #f0fdf4;
+            border-color: #bbf7d0;
+            border-left-color: var(--success);
+            color: #166534;
+        }
+
+        .highlight-box.danger {
+            background: #fff1f2;
+            border-color: #fecdd3;
+            border-left-color: var(--accent);
+            color: #9f1239;
+        }
+
+        .highlight-box.primary {
+            background: #f0f9ff;
+            border-color: #bae6fd;
+            border-left-color: var(--primary);
+            color: #0369a1;
+        }
+
+        .code-box,
+        .prompt-box {
+            background: #0f172a;
+            color: #f8fafc;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.82rem;
+            line-height: 1.45;
+            overflow-x: auto;
+            border: 1px solid #334155;
+        }
+
+        .code-box .code-keyword {
+            color: #38bdf8;
+            font-weight: 600;
+        }
+
+        .code-box .code-func {
+            color: #4ade80;
+            font-weight: 600;
+        }
+
+        .code-box .code-str {
+            color: #fcd34d;
+        }
+
+        .code-box .code-comment {
+            color: #94a3b8;
+            font-style: italic;
+        }
+
+        .prompt-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 6px;
+            margin-bottom: 8px;
+            font-size: 0.75rem;
+            color: #94a3b8;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .data-table,
+        .table-custom {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.84rem;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-card);
+        }
+
+        .data-table th,
+        .table-custom th {
+            padding: 7px 12px;
+            text-align: left;
+            background: #f1f5f9;
+            color: var(--text-main);
+            font-weight: 700;
+            border-bottom: 1px solid var(--border-card);
+        }
+
+        .data-table td,
+        .table-custom td {
+            padding: 7px 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-card);
+            color: var(--text-sub);
+        }
+
+        .data-table tr:last-child td,
+        .table-custom tr:last-child td {
+            border-bottom: none;
+        }
+
+        .data-table tr:hover td,
+        .table-custom tr:hover td {
+            background: #f8fafc;
+        }
+
+        .step-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: white;
+            padding: 10px 14px;
+            border-radius: 12px;
+            border: 1px solid var(--border-card);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .step-card {
+            flex: 1;
+            text-align: center;
+            padding: 8px 6px;
+            border-radius: 8px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s ease;
+        }
+
+        .step-card.active {
+            border: 2px solid var(--primary);
+            transform: scale(1.03);
+            background: #eef2ff;
+            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.15);
+        }
+
+        .step-card.completed,
+        .step-card.integrated {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            opacity: 0.9;
+        }
+
+        .step-card .step-num {
+            font-size: 0.72rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .step-card.active .step-num {
+            color: var(--primary);
+        }
+
+        .step-card .step-title {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .step-card.active .step-title {
+            color: var(--primary);
+        }
+
+        .step-card .step-desc {
+            font-size: 0.72rem;
+            color: var(--text-sub);
+            margin-top: 2px;
+        }
+
+        .compare-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .tag {
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+
+        .tag.blue { background: #e0f2fe; color: #0284c7; }
+        .tag.purple { background: #f3e8ff; color: #7e22ce; }
+        .tag.orange { background: #ffedd5; color: #c2410c; }
+
+        .stat-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #eef2ff;
+            color: var(--primary);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.82rem;
+        }
+
+        .stat-badge.green { background: #ecfdf5; color: #047857; }
+        .stat-badge.amber { background: #fffbeb; color: #b45309; }
+        .stat-badge.rose { background: #fff1f2; color: #be123c; }
+
+        .instructor-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: white;
+            padding: 8px 20px;
+            border-radius: 9999px;
+            border: 1px solid var(--border-card);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .text-lead {
+            font-size: 1.08rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        /* Test overlay */
+        #test-report-overlay {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            color: #f8fafc;
+            padding: 16px;
+            border-radius: 12px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.8rem;
+            z-index: 100000;
+            width: 320px;
+            max-height: 85vh;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+            display: none;
+        }
+
+        .test-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 3px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .test-pass { color: #34d399; }
+        .test-fail { color: #f87171; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div id="test-report-overlay">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; padding-bottom: 8px; margin-bottom: 8px;">
+            <strong style="color: #38bdf8;">SLIDE AUDIT REPORT</strong>
+            <span id="test-report-summary" style="font-size: 0.75rem;">Running...</span>
+        </div>
+        <div id="test-report-content"></div>
+    </div>
+
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- SLIDE 1: Title Slide -->
+            <section data-background-gradient="radial-gradient(circle at 50% 50%, #e0e7ff 0%, #f8fafc 100%)">
+                <div style="text-align: center; margin: auto 0; padding: 20px 10px;">
+                    <div style="margin-bottom: 14px;">
+                        <span class="badge badge-primary"><i class="fas fa-graduation-cap"></i> ภาคเรียนที่ 1/2569</span>
+                        <span class="badge badge-accent" style="margin-left: 6px;"><i class="fas fa-bullhorn"></i> ครั้งที่ 11 / 14</span>
+                    </div>
+                    <h1 style="font-size: 2.2em; margin-bottom: 12px; font-weight: 900; line-height: 1.2;">
+                        ขั้นที่ 5 'ACT' (สื่อสาร)<br />Data Storytelling การเล่าเรื่องด้วยข้อมูลอย่างทรงพลัง
+                    </h1>
+                    <p style="font-size: 1.05em; color: var(--secondary); font-weight: 600; margin-bottom: 20px;">
+                        Fundamentals of Data Science (พื้นฐานวิทยาการข้อมูล)
+                    </p>
+                    <div style="display: inline-block; padding: 8px 24px; background: #ffffff; border-radius: 9999px; border: 1px solid var(--border-card); box-shadow: var(--shadow-sm);">
+                        <p style="font-size: 0.85em; margin: 0; color: var(--text-sub);">
+                            <i class="fas fa-user-tie" style="color: var(--secondary); margin-right: 6px;"></i>
+                            <strong>ผู้สอน:</strong> อาจารย์สุรชัย โกยสันติสุข | คณะการสร้างเจ้าของธุรกิจ มหาวิทยาลัยศรีปทุม
+                        </p>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Script เปิดคาบ]:
+                    - ยินดีต้อนรับนักศึกษาเข้าสู่ Session 11 ก้าวเข้าสู่ Module สุดท้าย: ขั้นที่ 5 'ACT'
+                    - คาบนี้เป็นหัวใจสำคัญของการแปลง "ผลวิเคราะห์" ให้กลายเป็น "การลงมือทำจริงและเงินในกระเป๋า"
+                </aside>
+            </section>
+
+            <!-- SLIDE 2: Session Recap - Bridge from ANALYZE to ACT -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-route" style="color: var(--primary);"></i> วงจร Data Science: เข้าสู่ขั้นสุดท้าย 'ACT' สื่อสารสู่การปฏิบัติ</h2>
+                        <span class="subtitle">จากการวิเคราะห์เจาะลึก 5 สัปดาห์ สู่การเล่าเรื่องเพื่อโน้มน้าวผู้บริหารและทีมงานให้ลงมือทำจริง</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-flag-checkered"></i> Step 5 of 5</span>
+                </div>
+                <div class="slide-body">
+                    <div class="step-container">
+                        <div class="step-card">
+                            <div class="step-num">Step 1</div>
+                            <div class="step-title">ASK</div>
+                            <div class="step-desc">ตั้งคำถามธุรกิจ (Session 1-2)</div>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-num">Step 2</div>
+                            <div class="step-title">COLLECT</div>
+                            <div class="step-desc">Tidy Data &amp; Forms (Session 3-4)</div>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-num">Step 3</div>
+                            <div class="step-title">PREPARE</div>
+                            <div class="step-desc">ล้างตารางสะอาด (Session 5)</div>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-num">Step 4</div>
+                            <div class="step-title">ANALYZE</div>
+                            <div class="step-desc">AI &amp; Forecasting (Session 6-10)</div>
+                        </div>
+                        <div class="step-card active">
+                            <div class="step-num">Step 5 (วันนี้)</div>
+                            <div class="step-title">ACT</div>
+                            <div class="step-desc">Data Storytelling (Session 11-14)</div>
+                        </div>
+                    </div>
+
+                    <div class="compare-container" style="margin-top: 4px;">
+                        <div class="card" style="border-left: 4px solid var(--secondary); padding: 14px 18px;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-users-cog" style="color: var(--secondary);"></i>
+                                <h4 style="color: var(--secondary); font-size: 1.02rem;">สัปดาห์ที่แล้ว (Session 10: Segmentation &amp; What-If)</h4>
+                            </div>
+                            <p style="font-size: 0.88rem; color: var(--text-sub); line-height: 1.45;">
+                                • แบ่งลูกค้า 500 คนของ Pulse Studio ด้วย RFM Framework เป็น 4 Personas<br />
+                                • จำลอง What-If 3 กรณี (ขึ้นราคา VIP, เปิด Off-peak, ดึงสมาชิกหลับใหล)<br />
+                                • ได้ตัวเลข Insight และกลยุทธ์ที่คมชัดใน Spreadsheet แต่ยังไม่ได้นำเสนอต่อหน้าทีม
+                            </p>
+                        </div>
+                        <div class="card" style="border-left: 4px solid var(--primary); padding: 14px 18px; background: #faf5ff;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-microphone-alt" style="color: var(--primary);"></i>
+                                <h4 style="color: var(--primary); font-size: 1.02rem;">สัปดาห์นี้ (Session 11: Data Storytelling &amp; Pitch)</h4>
+                            </div>
+                            <p style="font-size: 0.88rem; color: var(--text-sub); line-height: 1.45;">
+                                • ก้าวข้ามกับดัก <strong>"The Last Mile Problem"</strong> (วิเคราะห์เก่งแต่โน้มน้าวคนไม่ได้)<br />
+                                • ร้อยเรียง <strong>Context → Insight → Action</strong> สู่สไลด์ที่ทรงพลัง<br />
+                                • ออกแบบสไลด์ 1 Message ต่อ 1 หน้า และฝึกนำเสนอ 3 นาทีระดับผู้บริหาร
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="callout-box warning" style="margin-top: 6px; padding: 10px 16px;">
+                        <i class="fas fa-lightbulb" style="color: var(--accent-warm); font-size: 1.3rem;"></i>
+                        <span style="font-size: 0.90rem; color: var(--text-main);">
+                            <strong>กฎเหล็กของเจ้าของธุรกิจ (Golden Rule):</strong> ข้อมูลที่วิเคราะห์มาอย่างดีเยี่ยม แต่สื่อสารไม่เข้าใจ = <strong>"ศูนย์บาท"</strong> เพราะไม่มีใครกล้าอนุมัติงบหรือลงมือทำตาม!
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 2 Notes]:
+                    - ทบทวน Pipeline 5 ขั้นตอน ชี้ให้เห็นว่าเรามาถึงขั้นสุดท้าย 'ACT'
+                    - คาบที่ 10 ได้ Insight เต็มไปหมด แต่คำถามคือ: จะไปพรีเซนต์ของบ 5 แสนจากผู้ถือหุ้นอย่างไรให้เขาอนุมัติใน 3 นาที?
+                </aside>
+            </section>
+
+            <!-- SLIDE 3: SESSION ROADMAP -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-map-signs" style="color: var(--primary);"></i> แผนที่การเรียนรู้ประจำคาบ (Session Roadmap)</h2>
+                        <span class="subtitle">4 เสาหลักสู่การเป็นนักเล่าเรื่องด้วยข้อมูลระดับมืออาชีพสำหรับเจ้าของธุรกิจ</span>
+                    </div>
+                    <span class="badge-step primary"><i class="fas fa-compass"></i> Overview</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-4" style="margin-top: 8px;">
+                        <div class="card" style="border-top: 4px solid var(--primary); height: 100%;">
+                            <div style="font-size: 1.5rem; color: var(--primary); margin-bottom: 8px;"><i class="fas fa-brain"></i></div>
+                            <h4 style="font-size: 1.05rem; margin-bottom: 6px;">1. The Narrative Core</h4>
+                            <p style="font-size: 0.84rem; line-height: 1.4; color: var(--text-sub);">
+                                • The Last Mile Problem<br />
+                                • โครงสร้าง 3 ส่วน: <strong>Context → Insight → Action</strong><br />
+                                • ถอดรหัส "So What?"
+                            </p>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid var(--secondary); height: 100%;">
+                            <div style="font-size: 1.5rem; color: var(--secondary); margin-bottom: 8px;"><i class="fas fa-desktop"></i></div>
+                            <h4 style="font-size: 1.05rem; margin-bottom: 6px;">2. Visual Design Rules</h4>
+                            <p style="font-size: 0.84rem; line-height: 1.4; color: var(--text-sub);">
+                                • 1 Slide = 1 Key Message<br />
+                                • Signal-to-Noise Ratio<br />
+                                • 4 กับดักทำสไลด์ข้อมูลพัง (Data Dump, Spaghetti Chart)
+                            </p>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid var(--purple); height: 100%;">
+                            <div style="font-size: 1.5rem; color: var(--purple); margin-bottom: 8px;"><i class="fas fa-user-tie"></i></div>
+                            <h4 style="font-size: 1.05rem; margin-bottom: 6px;">3. Executive Pitching</h4>
+                            <p style="font-size: 0.84rem; line-height: 1.4; color: var(--text-sub);">
+                                • หลักการ BLUF (Bottom-Line Up Front)<br />
+                                • 3-Minute Elevator Pitch<br />
+                                • Master Pitch Deck 7 สไลด์
+                            </p>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid var(--success); height: 100%;">
+                            <div style="font-size: 1.5rem; color: var(--success); margin-bottom: 8px;"><i class="fas fa-robot"></i></div>
+                            <h4 style="font-size: 1.05rem; margin-bottom: 6px;">4. AI Co-Pilot &amp; Action</h4>
+                            <p style="font-size: 0.84rem; line-height: 1.4; color: var(--text-sub);">
+                                • สั่ง Gemini ร่าง Story Arc<br />
+                                • ซ้อม Tough Q&amp;A กับ AI<br />
+                                • Workshop: ทำ Pitch Deck จริง
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="card" style="background: #f1f5f9; border: 1px dashed #cbd5e1; padding: 12px 16px; margin-top: 6px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span class="tag purple"><i class="fas fa-award"></i> Workshop Goal</span>
+                                <span style="font-size: 0.92rem; font-weight: 600; color: var(--dark);">กรณีศึกษา: แบรนด์สกินแคร์ D2C "AuraSkin Lab" เปลี่ยนงบการตลาดสูญเปล่าเป็นยอดขาย +2.4 ล้านบาท</span>
+                            </div>
+                            <span style="font-size: 0.82rem; color: var(--text-muted);">เวลาปฏิบัติการ: 60 นาที</span>
+                        </div>
+                    </div>
+                </div>
+                <aside class="notes">
+                    - ชี้แจง 4 เสาหลักของวันนี้: Story Framework, Slide Design, Executive Pitching, และ AI Co-Pilot
+                </aside>
+            </section>
+
+            <!-- SLIDE 4: THE LAST MILE PROBLEM IN DATA SCIENCE -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-exclamation-triangle" style="color: var(--danger);"></i> The Last Mile Problem: ทำไมวิเคราะห์เก่ง แต่ตกม้าตายตอนจบ?</h2>
+                        <span class="subtitle">ปัญหาคลาสสิกที่ทำให้โปรเจกต์ข้อมูลกว่า 80% ไม่สามารถสร้างผลลัพธ์จริงในองค์กร</span>
+                    </div>
+                    <span class="badge-step danger"><i class="fas fa-heart-broken"></i> Failure Point</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div class="card" style="border-left: 4px solid var(--danger);">
+                            <h4 style="color: var(--danger); margin-bottom: 8px;"><i class="fas fa-times-circle"></i> สิ่งที่เกิดขึ้นจริงในห้องประชุมส่วนใหญ่</h4>
+                            <ul style="font-size: 0.88rem; color: var(--text-sub); line-height: 1.6; padding-left: 20px;">
+                                <li><strong>เปิดด้วยตาราง Excel:</strong> สาดตัวเลข 20 คอลัมน์ 50 แถวให้ผู้ฟังดู</li>
+                                <li><strong>เล่าลำดับการทำงาน:</strong> "เราโหลดข้อมูลมา ล้างค่าว่าง รันสูตร..." (ผู้บริหารไม่ได้อยากฟังวิธีทำ)</li>
+                                <li><strong>กราฟเต็มสไลด์:</strong> แปะกราฟ 6 อันในหน้าเดียว ตัวหนังสือเล็กจิ๋ว</li>
+                                <li><strong>จบดื้อๆ โดยไม่มีข้อสรุป:</strong> "ทั้งหมดนี้คือยอดขายครับ มีคำถามไหมครับ?"</li>
+                            </ul>
+                            <div class="highlight-box danger" style="margin-top: 10px; font-size: 0.84rem;">
+                                <strong>ผลลัพธ์:</strong> ผู้ฟังเบื่อ สับสน และถามว่า <em>"แล้วจะให้พี่ทำอะไรต่อ?"</em> (No Action Taken)
+                            </div>
+                        </div>
+
+                        <div class="card" style="border-left: 4px solid var(--success); background: #f0fdf4;">
+                            <h4 style="color: var(--success); margin-bottom: 8px;"><i class="fas fa-check-circle"></i> สิ่งที่ Data Storytelling เข้ามาแก้ไข</h4>
+                            <ul style="font-size: 0.88rem; color: var(--text-sub); line-height: 1.6; padding-left: 20px;">
+                                <li><strong>เปิดด้วยปัญหาและเดิมพัน:</strong> เงินจะหายไปเท่าไรถ้าไม่แก้ปัญหานี้?</li>
+                                <li><strong>กรองเฉพาะจุดที่เปลี่ยนเกม:</strong> เลือกเฉพาะ 1-2 Insight ที่สำคัญจริง</li>
+                                <li><strong>ภาพกราฟชี้นำสายตา:</strong> ชี้ให้เห็นทันทีว่าจุดวิกฤตอยู่ตรงไหน</li>
+                                <li><strong>ปิดด้วยข้อเสนอแนะที่ชัดเจน:</strong> "ขออนุมัติงบ 4 แสน ย้ายไปทำ TikTok เพื่อดันกำไร +35%"</li>
+                            </ul>
+                            <div class="highlight-box success" style="margin-top: 10px; font-size: 0.84rem;">
+                                <strong>ผลลัพธ์:</strong> ผู้บริหารเห็นภาพ อนุมัติงบทันที ทีมงานมีทิศทางทำงานชัดเจน (Decision Driven)
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="highlight-box" style="margin-top: 4px; border-left-color: var(--primary);">
+                        <i class="fas fa-quote-left" style="color: var(--primary); margin-right: 6px;"></i>
+                        <em>"Numbers have an important story to tell. They rely on you to give them a voice."</em> — Stephen Few (ผู้เชี่ยวชาญด้าน Data Visualization)
+                    </div>
+                </div>
+                <aside class="notes">
+                    - เน้นย้ำคำว่า "The Last Mile Problem" ข้อมูลคือท่อส่งน้ำ แต่หัวก๊อกคือน้ำที่ไหลออกมา
+                    - ผู้บริหารไม่มีเวลามานั่งแกะสูตร Excel สิ่งที่เขาต้องการคือ: ปัญหาคืออะไร และต้องทำอะไรต่อ
+                </aside>
+            </section>
+
+            <!-- SLIDE 5: DATA VS STORY: ความแตกต่างระหว่างรายงานตัวเลขกับเรื่องเล่า -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-balance-scale" style="color: var(--primary);"></i> Data vs. Story: รายงานตัวเลข กับ เรื่องเล่าที่เปลี่ยนใจคน</h2>
+                        <span class="subtitle">สมองมนุษย์ไม่ได้ถูกสร้างมาให้จำตัวเลขในตาราง แต่ถูกออกแบบมาให้จดจำ "เรื่องเล่าและอารมณ์"</span>
+                    </div>
+                    <span class="badge-step primary"><i class="fas fa-brain"></i> Psychology</span>
+                </div>
+                <div class="slide-body">
+                    <table class="table-custom">
+                        <thead>
+                            <tr>
+                                <th style="width: 20%;">มิติเปรียบเทียบ</th>
+                                <th style="width: 40%; color: var(--danger);"><i class="fas fa-file-alt"></i> Data Reporting (รายงานข้อมูลทั่วไป)</th>
+                                <th style="width: 40%; color: var(--success);"><i class="fas fa-comment-dots"></i> Data Storytelling (การเล่าเรื่องด้วยข้อมูล)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>คำถามหลัก</strong></td>
+                                <td>"เกิดอะไรขึ้นในอดีต?" (What happened?)</td>
+                                <td>"ทำไมจึงเกิดขึ้น และเราควรทำอะไรต่อ?" (Why &amp; So What?)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>จุดโฟกัส</strong></td>
+                                <td>รวบรวมตัวเลขและสถิติให้ครบถ้วนทุกจุด</td>
+                                <td>คัดเลือกเฉพาะ Insight ที่ขับเคลื่อนการตัดสินใจ</td>
+                            </tr>
+                            <tr>
+                                <td><strong>การตอบสนองของสมอง</strong></td>
+                                <td>กระตุ้นสมองส่วนตรรกะ (Wernicke &amp; Broca) แต่ง่วงนอนง่าย</td>
+                                <td>กระตุ้นประสาทสัมผัสและอารมณ์ (Limbic System) เกิดการจดจำและลงมือทำ</td>
+                            </tr>
+                            <tr>
+                                <td><strong>รูปแบบการนำเสนอ</strong></td>
+                                <td>ตารางหนาแน่น กราฟสแตนดาร์ด ขาดคำอธิบายบริบท</td>
+                                <td>มีเส้นเรื่อง (Story Arc): บริบท → ความท้าทาย → ทางออก</td>
+                            </tr>
+                            <tr>
+                                <td><strong>ผลลัพธ์ต่อธุรกิจ</strong></td>
+                                <td>ผู้ฟังพยักหน้ารับรู้แล้วเดินออกจากห้อง (Passive)</td>
+                                <td>ผู้ฟังอนุมัติทรัพยากร เปลี่ยนแปลงพฤติกรรม (Actionable)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="grid-2" style="margin-top: 4px;">
+                        <div class="card" style="padding: 10px 14px; background: #fff1f2; border: 1px solid #fecdd3;">
+                            <span style="font-size: 0.8rem; font-weight: 700; color: #be123c;">ตัวอย่างรายงานแบบเดิม:</span>
+                            <p style="font-size: 0.86rem; color: #881337; margin-top: 4px;">
+                                "ในไตรมาสที่ 2 แบรนด์มียอดขายรวม 4.8 ล้านบาท เพิ่มขึ้น 5% ขณะที่งบโฆษณาอยู่ที่ 1.2 ล้านบาท โดยมีสินค้า 15 รายการขายได้..."
+                            </p>
+                        </div>
+                        <div class="card" style="padding: 10px 14px; background: #ecfdf5; border: 1px solid #a7f3d0;">
+                            <span style="font-size: 0.8rem; font-weight: 700; color: #047857;">ตัวอย่าง Data Storytelling:</span>
+                            <p style="font-size: 0.86rem; color: #064e3b; margin-top: 4px;">
+                                "แม้ภาพรวมยอดขายจะโต 5% แต่เรากำลังเผาเงินแอดทิ้งเดือนละ 3 แสนไปกับสินค้าที่ไม่ทำกำไร หากเราย้ายงบนั้นมาดัน 'เซรั่มลดสิว' ผ่าน TikTok Shop เราจะทำกำไรเพิ่มได้ 1.2 ล้านทันที"
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <aside class="notes">
+                    - เปรียบเทียบสองประโยคข้างล่างอย่างชัดเจน
+                    - ถามนักศึกษาว่าถ้าเขาเป็นเจ้าของแบรนด์ เขาอยากได้ยินประโยคไหนในห้องประชุม?
+                </aside>
+            </section>
+
+            <!-- SLIDE 6: CASE STUDY: AURASKIN LAB -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-store" style="color: var(--primary);"></i> กรณีศึกษา: แบรนด์สกินแคร์ "AuraSkin Lab"</h2>
+                        <span class="subtitle">เดิมพันงบการตลาด 1,000,000 บาท กับคำถามชี้ชะตากำไรของธุรกิจ</span>
+                    </div>
+                    <span class="badge-step accent"><i class="fas fa-flask"></i> Business Case</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-3">
+                        <div class="card">
+                            <div class="card-header-sm">
+                                <i class="fas fa-info-circle" style="color: var(--primary);"></i>
+                                <h4>บริบทธุรกิจ (Profile)</h4>
+                            </div>
+                            <p style="font-size: 0.85rem; line-height: 1.5; color: var(--text-sub);">
+                                • แบรนด์เวชสำอาง D2C สัญชาติไทย เน้นกลุ่มคนเป็นสิวผิวแพ้ง่าย (อายุ 18-30 ปี)<br />
+                                • ยอดขายเฉลี่ยเดือนละ 1.5 ล้านบาท ผ่าน 3 ช่องทาง: Shopee, TikTok Shop, และ Line Official<br />
+                                • มีสินค้า 4 รายการ (เซรั่มสิว, มอยส์เจอไรเซอร์, คลีนเซอร์, ครีมกันแดด)
+                            </p>
+                        </div>
+
+                        <div class="card" style="border-left: 4px solid var(--danger);">
+                            <div class="card-header-sm">
+                                <i class="fas fa-skull-crossbones" style="color: var(--danger);"></i>
+                                <h4 style="color: var(--danger);">ปัญหา &amp; ความเชื่อเดิม (The Conflict)</h4>
+                            </div>
+                            <p style="font-size: 0.85rem; line-height: 1.5; color: var(--text-sub);">
+                                • ยอดขายเริ่มทรงตัว ผู้บริหารคิดว่า <em>"ต้องเทงบโฆษณา Facebook &amp; IG เพิ่มอีก 1 ล้านบาท เพื่อหาลูกค้าใหม่ทั่วประเทศ"</em><br />
+                                • ยิงแอดหว่านครบทุกสินค้าโดยไม่มีการแยกแยะ<br />
+                                • ค่าแอด (CAC) แพงขึ้น 3 เท่า ขณะที่ผลตอบแทน (ROAS) ดิ่งลงต่ำกว่า 1.4
+                            </p>
+                        </div>
+
+                        <div class="card" style="border-left: 4px solid var(--success); background: #f0fdf4;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-search-dollar" style="color: var(--success);"></i>
+                                <h4 style="color: var(--success);">โจทย์ของทีม Data (The Mission)</h4>
+                            </div>
+                            <p style="font-size: 0.85rem; line-height: 1.5; color: var(--text-sub);">
+                                • นำข้อมูลคำสั่งซื้อ 4,200 ออเดอร์ย้อนหลัง 6 เดือนมาเจาะลึก<br />
+                                • ตอบคำถามให้ได้ว่า: งบ 1 ล้านควรใช้จริงหรือไม่? ใช้กับช่องทางไหน? สินค้าใด?<br />
+                                • สร้าง Data Story ไปนำเสนอเพื่อ "ยับยั้งการผลาญงบ" และเสนอแผนกลยุทธ์ใหม่
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="card" style="background: #f8fafc; border: 1px solid var(--border); padding: 10px 14px; margin-top: 2px;">
+                        <div style="display: flex; justify-content: space-around; text-align: center;">
+                            <div>
+                                <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">ยอดขาย 6 เดือน</div>
+                                <div style="font-size: 1.25rem; font-weight: 800; color: var(--dark);">9,240,000 ฿</div>
+                            </div>
+                            <div style="border-left: 1px solid var(--border); padding-left: 20px;">
+                                <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">งบโฆษณาที่ใช้ไป</div>
+                                <div style="font-size: 1.25rem; font-weight: 800; color: var(--danger);">2,650,000 ฿</div>
+                            </div>
+                            <div style="border-left: 1px solid var(--border); padding-left: 20px;">
+                                <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">งบก้อนใหม่ที่ขออนุมัติ</div>
+                                <div style="font-size: 1.25rem; font-weight: 800; color: var(--accent);">1,000,000 ฿</div>
+                            </div>
+                            <div style="border-left: 1px solid var(--border); padding-left: 20px;">
+                                <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">อัตราซื้อซ้ำ (Repeat Rate)</div>
+                                <div style="font-size: 1.25rem; font-weight: 800; color: var(--primary);">28.4%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <aside class="notes">
+                    - แนะนำเคส AuraSkin Lab เคสนี้เป็นตัวแทนของธุรกิจ SME / Startup ไทยที่ชอบคิดว่า "ขายไม่ดี = ยิงแอดเพิ่ม"
+                    - ชี้ให้เห็นว่า Data จะช่วยปกป้องเงิน 1 ล้านของเจ้าของธุรกิจได้อย่างไร
+                </aside>
+            </section>
+
+            <!-- SLIDE 7: THE 3-PART DATA STORY FRAMEWORK -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-cubes" style="color: var(--primary);"></i> โครงสร้าง Data Story 3 ขั้น: Context → Insight → Action</h2>
+                        <span class="subtitle">เฟรมเวิร์กมาตรฐานสากลสำหรับการเปลี่ยนข้อมูลเป็นกลยุทธ์ทางธุรกิจ (The Narrative Trinity)</span>
+                    </div>
+                    <span class="badge-step primary"><i class="fas fa-sitemap"></i> Core Framework</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-3" style="margin-top: 6px;">
+                        <div class="card" style="border-top: 5px solid #0284c7; height: 100%;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                <span class="badge-step" style="background: #e0f2fe; color: #0284c7;">ส่วนที่ 1</span>
+                                <i class="fas fa-compass" style="font-size: 1.4rem; color: #0284c7;"></i>
+                            </div>
+                            <h3 style="color: #0284c7; font-size: 1.2rem; margin-bottom: 6px;">1. Context (บริบท)</h3>
+                            <div style="font-weight: 700; font-size: 0.9rem; color: var(--dark); margin-bottom: 4px;">"ปัญหาคืออะไร และเดิมพันคืออะไร?"</div>
+                            <p style="font-size: 0.85rem; color: var(--text-sub); line-height: 1.45;">
+                                • กำหนดฉากหลังและเป้าหมายธุรกิจ<br />
+                                • ชี้ให้เห็น Pain Point หรือโอกาสที่กำลังจะเสียไป<br />
+                                • สร้างความรู้สึกเร่งด่วน (Urgency &amp; Stakes)
+                            </p>
+                            <div class="highlight-box" style="margin-top: 10px; font-size: 0.78rem; background: #f0f9ff; border-left-color: #0284c7;">
+                                <strong>AuraSkin:</strong> ค่าแอดแพงขึ้น 3 เท่า แต่ยอดขายนิ่ง หากยิงเพิ่ม 1 ล้านจะขาดทุนหนัก
+                            </div>
+                        </div>
+
+                        <div class="card" style="border-top: 5px solid var(--purple); height: 100%;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                <span class="badge-step" style="background: var(--purple-light); color: var(--purple);">ส่วนที่ 2</span>
+                                <i class="fas fa-lightbulb" style="font-size: 1.4rem; color: var(--purple);"></i>
+                            </div>
+                            <h3 style="color: var(--purple); font-size: 1.2rem; margin-bottom: 6px;">2. Insight (การค้นพบ)</h3>
+                            <div style="font-weight: 700; font-size: 0.9rem; color: var(--dark); margin-bottom: 4px;">"อะไรซ่อนอยู่ในข้อมูล และทำไมจึงสำคัญ?"</div>
+                            <p style="font-size: 0.85rem; color: var(--text-sub); line-height: 1.45;">
+                                • กรองเฉพาะ Fact สำคัญที่ขัดแย้งกับความเชื่อเดิม<br />
+                                • อธิบายสาเหตุเบื้องหลังตัวเลข (Root Cause)<br />
+                                • ตอบคำถาม <strong>"So What?"</strong> (แล้วมันกระทบธุรกิจยังไง)
+                            </p>
+                            <div class="highlight-box" style="margin-top: 10px; font-size: 0.78rem; background: #faf5ff; border-left-color: var(--purple);">
+                                <strong>AuraSkin:</strong> 72% กำไรมาจาก "เซรั่มสิว" บน TikTok Shop ซึ่งลูกค้าดูรีวิวจาก Micro-KOL
+                            </div>
+                        </div>
+
+                        <div class="card" style="border-top: 5px solid var(--success); height: 100%;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                <span class="badge-step" style="background: var(--success-light); color: var(--success);">ส่วนที่ 3</span>
+                                <i class="fas fa-rocket" style="font-size: 1.4rem; color: var(--success);"></i>
+                            </div>
+                            <h3 style="color: var(--success); font-size: 1.2rem; margin-bottom: 6px;">3. Action (การลงมือทำ)</h3>
+                            <div style="font-weight: 700; font-size: 0.9rem; color: var(--dark); margin-bottom: 4px;">"ต้องทำอะไรต่อ ใครทำ และได้ผลอะไร?"</div>
+                            <p style="font-size: 0.85rem; color: var(--text-sub); line-height: 1.45;">
+                                • เสนอแผนปฏิบัติการที่เป็นรูปธรรม (Actionable Steps)<br />
+                                • กำหนดงบประมาณ ระยะเวลา และผู้รับผิดชอบ<br />
+                                • คาดการณ์ผลตอบแทน (Expected ROI &amp; Impact)
+                            </p>
+                            <div class="highlight-box" style="margin-top: 10px; font-size: 0.78rem; background: #f0fdf4; border-left-color: var(--success);">
+                                <strong>AuraSkin:</strong> ย้ายงบ 4 แสนไปจ้าง Micro-KOL 50 คน ทำแคมเปญสิว ดันยอดขาย +2.4 ล้าน
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="highlight-box" style="margin-top: 8px; border-left-color: var(--primary);">
+                        <i class="fas fa-arrow-right" style="color: var(--primary); margin-right: 6px;"></i>
+                        <strong>ทวนสอบความสมบูรณ์ (Completeness Check):</strong> ถ้าขาด <em>Context</em> คนฟังจะถามว่า "พูดทำไม?", ถ้าขาด <em>Insight</em> คนฟังจะบอกว่า "รู้แล้วไงต่อ?", ถ้าขาด <em>Action</em> คนฟังจะถามว่า "แล้วจะให้ทำอะไร?"
+                    </div>
+                </div>
+                <aside class="notes">
+                    - เน้นว่าทั้ง 3 ส่วนต้องเชื่อมกันเป็นลูกโซ่
+                    - จำง่ายๆ: ที่มา (Context) -> ค้นพบ (Insight) -> ลงมือ (Action)
+                </aside>
+            </section>
+
+            <!-- SLIDE 8: PILLAR 1: CONTEXT -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-crosshairs" style="color: #0284c7;"></i> เสาหลักที่ 1: Context — การตั้งฉากและเดิมพัน (Setting the Stakes)</h2>
+                        <span class="subtitle">วิธีเปิดเรื่องที่ตรึงความสนใจผู้บริหารตั้งแต่ 30 วินาทีแรกของการนำเสนอ</span>
+                    </div>
+                    <span class="badge-step" style="background: #e0f2fe; color: #0284c7;"><i class="fas fa-bullseye"></i> Pillar 1</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div class="card">
+                            <h4 style="color: var(--dark); margin-bottom: 8px;"><i class="fas fa-key" style="color: #0284c7;"></i> 3 องค์ประกอบของ Context ที่ทรงพลัง</h4>
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <div class="highlight-box" style="border-left-color: #0284c7; background: #f0f9ff; padding: 8px 12px;">
+                                    <strong style="color: #0284c7;">1. Baseline (สถานะปัจจุบัน):</strong><br />
+                                    <span style="font-size: 0.85rem; color: var(--text-sub);">เราอยู่ที่ไหน ยอดขายเท่าไร สภาพตลาดเป็นอย่างไร</span>
+                                </div>
+                                <div class="highlight-box" style="border-left-color: var(--accent); background: #fffbeb; padding: 8px 12px;">
+                                    <strong style="color: #b45309;">2. Disruption / Conflict (ความท้าทาย):</strong><br />
+                                    <span style="font-size: 0.85rem; color: var(--text-sub);">อะไรกำลังเปลี่ยนแปลง หรือมีปัญหาอะไรที่กำลังคุกคามเป้าหมาย</span>
+                                </div>
+                                <div class="highlight-box" style="border-left-color: var(--danger); background: #fef2f2; padding: 8px 12px;">
+                                    <strong style="color: #b91c1c;">3. The Stakes (เดิมพันทางธุรกิจ):</strong><br />
+                                    <span style="font-size: 0.85rem; color: var(--text-sub);">ถ้าเราไม่ทำอะไรเลย หรือตัดสินใจผิดพลาด จะเกิดความเสียหายเท่าไร?</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card" style="border-left: 4px solid var(--secondary);">
+                            <h4 style="color: var(--secondary-dark); margin-bottom: 8px;"><i class="fas fa-magic"></i> Context Hook Formula (สูตรเปิดประโยคทอง)</h4>
+                            <div class="prompt-box" style="margin-bottom: 8px; font-size: 0.8rem;">
+                                <div class="prompt-header">Hook Template</div>
+                                "เป้าหมายของเราคือ [เป้าหมาย], แต่ขณะนี้เรากำลังเผชิญกับ [ปัญหา/การเปลี่ยนแปลง] ซึ่งหากเรายังคง [ทำแบบเดิม], เราจะสูญเสีย [เดิมพัน/เงิน/โอกาส] ภายใน [ระยะเวลา]..."
+                            </div>
+                            <div style="background: white; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px; font-size: 0.82rem; color: var(--text-sub);">
+                                <strong style="color: var(--primary);">ตัวอย่าง AuraSkin Lab:</strong><br />
+                                "เป้าหมายเราคือกำไร 3 ล้านใน Q3 แต่ค่าแอดโตเร็วกว่ายอดขาย 3 เท่า หากเราตัดสินใจทุ่มงบ 1 ล้านไปกับ Facebook แอดแบบเดิม เราจะขาดทุนทันที 450,000 บาท ข้อมูลต่อไปนี้จะชี้ให้เห็นว่าทางรอดที่แท้จริงอยู่ตรงไหน"
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="highlight-box" style="margin-top: 4px; border-left-color: #0284c7;">
+                        <i class="fas fa-lightbulb" style="color: #0284c7; margin-right: 6px;"></i>
+                        <strong>เทคนิคจิตวิทยา:</strong> มนุษย์กลัวการสูญเสียมากกว่าอยากได้กำไร (Loss Aversion) การชี้ <em>Stakes</em> ให้ชัดเจนว่าเงินจะสูญไปเท่าไร จะทำให้ผู้บริหารตั้งใจฟังทันที 100%!
+                    </div>
+                </div>
+                <aside class="notes">
+                    - อธิบายสูตร Hook Template
+                    - ชี้ให้เห็นว่าถ้าเปิดสไลด์ด้วยประโยคนี้ ทุกคนในห้องจะเงียบและจ้องมาที่สไลด์ทันที
+                </aside>
+            </section>
+
+            <!-- SLIDE 9: PILLAR 2: INSIGHT -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-search" style="color: var(--purple);"></i> เสาหลักที่ 2: Insight — ค้นหา "So What?" ไม่ใช่แค่บอกตัวเลข</h2>
+                        <span class="subtitle">เปลี่ยนจาก Data Point ธรรมดา ให้กลายเป็นความจริงที่นำไปสู่ความได้เปรียบทางธุรกิจ</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-lightbulb"></i> Pillar 2</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-3">
+                        <div class="card" style="text-align: center; border-top: 4px solid var(--text-muted);">
+                            <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">ระดับที่ 1</div>
+                            <h4 style="font-size: 1.1rem; margin: 4px 0 8px; color: var(--dark);">Data / Fact</h4>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.4;">
+                                "เซรั่มสิวขายได้ 2,800 ขวด คิดเป็น 65% ของยอดสั่งซื้อทั้งหมด"
+                            </p>
+                            <div class="tag" style="background: #f1f5f9; color: var(--text-muted); margin-top: 8px;">มีแค่ตัวเลข (So What?)</div>
+                        </div>
+
+                        <div class="card" style="text-align: center; border-top: 4px solid var(--secondary);">
+                            <div style="font-size: 0.8rem; font-weight: 700; color: var(--secondary); text-transform: uppercase;">ระดับที่ 2</div>
+                            <h4 style="font-size: 1.1rem; margin: 4px 0 8px; color: var(--secondary-dark);">Information / Pattern</h4>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.4;">
+                                "เซรั่มสิวบน TikTok Shop มียอดขายเติบโต 85% ขณะที่ช่องทาง Facebook ลดลง 20%"
+                            </p>
+                            <div class="tag blue" style="margin-top: 8px;">เห็นการเปรียบเทียบ</div>
+                        </div>
+
+                        <div class="card" style="text-align: center; border-top: 4px solid var(--purple); background: #faf5ff;">
+                            <div style="font-size: 0.8rem; font-weight: 700; color: var(--purple); text-transform: uppercase;">ระดับที่ 3</div>
+                            <h4 style="font-size: 1.1rem; margin: 4px 0 8px; color: #6d28d9;">Actionable Insight</h4>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.4;">
+                                "ลูกค้าวัยรุ่นไม่เชื่อแอดภาพนิ่งอีกต่อไป แต่ซื้อเพราะคลิปรีวิวเจาะปัญหาสิวของ Micro-KOL บน TikTok ซึ่งสร้าง ROAS สูงถึง 4.8"
+                            </p>
+                            <div class="tag purple" style="margin-top: 8px;">เข้าใจเหตุผล &amp; ชี้ทางแก้</div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="border-left: 4px solid var(--purple); padding: 12px 16px; margin-top: 4px;">
+                        <h4 style="color: var(--purple); margin-bottom: 6px;"><i class="fas fa-question-circle"></i> เทคนิค "The 3x So What? Test" (ถามซ้ำเพื่อหาแก่น)</h4>
+                        <div style="font-size: 0.86rem; color: var(--text-sub); line-height: 1.5;">
+                            • <strong>รอบที่ 1:</strong> "ยอดขาย TikTok Shop โต 85%" ➔ <em>So What?</em> ➔ "แปลว่าลูกค้าของเราย้ายพฤติกรรมไปอยู่ที่ TikTok"<br />
+                            • <strong>รอบที่ 2:</strong> "ลูกค้าไปอยู่ที่ TikTok" ➔ <em>So What?</em> ➔ "แปลว่างบแอด 6 แสนบน Facebook กำลังยิงไปหาความว่างเปล่า"<br />
+                            • <strong>รอบที่ 3:</strong> "งบ Facebook สูญเปล่า" ➔ <em>So What?</em> ➔ <strong>"เราต้องตัดงบ Facebook ทันที แล้วย้ายไปจ้าง Micro-KOL TikTok เพื่อชิงส่วนแบ่งตลาด!"</strong>
+                        </div>
+                    </div>
+                </div>
+                <aside class="notes">
+                    - สาธิตเทคนิค "The 3x So What?" ให้นักศึกษาเห็นวิธีเค้นจากตัวเลขธรรมดา ให้กลายเป็นกลยุทธ์
+                </aside>
+            </section>
+
+            <!-- SLIDE 10: PILLAR 3: ACTION -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-rocket" style="color: var(--success);"></i> เสาหลักที่ 3: Action — ชี้ทางออกที่จับต้องได้และประเมิน ROI</h2>
+                        <span class="subtitle">เปลี่ยนผู้ฟังจาก "ผู้สังเกตการณ์" ให้กลายเป็น "ผู้อนุมัติทรัพยากร"</span>
+                    </div>
+                    <span class="badge-step success"><i class="fas fa-check-double"></i> Pillar 3</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div class="card">
+                            <h4 style="color: var(--dark); margin-bottom: 8px;"><i class="fas fa-clipboard-check" style="color: var(--success);"></i> 4 องค์ประกอบของ Action ที่ดี (SMART Action)</h4>
+                            <div style="display: flex; flex-direction: column; gap: 8px; font-size: 0.85rem;">
+                                <div style="display: flex; gap: 8px; align-items: flex-start;">
+                                    <span class="stat-badge green">1. Specific</span>
+                                    <span>ระบุชัดเจนว่าจะทำอะไร ไม่ใช้คำกว้างๆ เช่น "ทำการตลาดเชิงรุก"</span>
+                                </div>
+                                <div style="display: flex; gap: 8px; align-items: flex-start;">
+                                    <span class="stat-badge green">2. Resource</span>
+                                    <span>ระบุงบประมาณ กำลังคน และเครื่องมือที่ต้องใช้ (Budget &amp; Tools)</span>
+                                </div>
+                                <div style="display: flex; gap: 8px; align-items: flex-start;">
+                                    <span class="stat-badge green">3. Timeline</span>
+                                    <span>มีกรอบเวลาชัดเจน เช่น 30 วันแรก / ไตรมาส 3</span>
+                                </div>
+                                <div style="display: flex; gap: 8px; align-items: flex-start;">
+                                    <span class="stat-badge green">4. Expected ROI</span>
+                                    <span>คาดการณ์ผลตอบแทนที่เป็นตัวเลขกำไรหรือยอดขาย (What-If Projection)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card" style="border-left: 4px solid var(--success); background: #f0fdf4;">
+                            <h4 style="color: #047857; margin-bottom: 8px;"><i class="fas fa-file-invoice-dollar"></i> ตัวอย่าง Action Plan: AuraSkin Lab</h4>
+                            <table class="table-custom" style="font-size: 0.82rem;">
+                                <thead>
+                                    <tr>
+                                        <th>ภารกิจ</th>
+                                        <th>งบประมาณ</th>
+                                        <th>ผลกระทบที่คาดการณ์</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>ตัดงบ Facebook</strong> หว่านแห</td>
+                                        <td>ประหยัด 600,000 ฿</td>
+                                        <td>หยุดการขาดทุนจาก CAC ที่พุ่งสูง</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>แคมเปญ Micro-KOL</strong> 50 คน</td>
+                                        <td>จัดสรร 400,000 ฿</td>
+                                        <td>ยอดดู 3M วิว คาด ROAS 4.5</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Bundle เซรั่ม+คลีนเซอร์</strong></td>
+                                        <td>งบระบบ 50,000 ฿</td>
+                                        <td>AOV เพิ่มจาก 450 เป็น 720 ฿</td>
+                                    </tr>
+                                    <tr style="background: #dcfce7; font-weight: 700;">
+                                        <td>สุทธิ (Net Impact)</td>
+                                        <td>เหลืองบสำรอง 150k</td>
+                                        <td>ยอดขายเพิ่ม +2.4M (กำไร +35%)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="highlight-box success" style="margin-top: 4px;">
+                        <i class="fas fa-bullhorn" style="color: #047857; margin-right: 6px;"></i>
+                        <strong>The Clear "Ask":</strong> สไลด์ Action ต้องจบด้วยคำขอที่ชัดเจนเสมอ เช่น <em>"ขออนุมัติจัดสรรงบ 400,000 บาทสำหรับแคมเปญ TikTok Micro-KOL ภายในวันศุกร์นี้เพื่อเริ่มดีลแรกทันที"</em>
+                    </div>
+                </div>
+                <aside class="notes">
+                    - ชี้ให้เห็นว่าถ้ามี Action Plan ชัดแบบนี้ ผู้บริหารตัดสินใจได้ใน 10 วินาที
+                </aside>
+            </section>
+
+            <!-- SLIDE 11: VISUAL COMPARISON: BAD VS GOOD STORY -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-columns" style="color: var(--primary);"></i> เปรียบเทียบ: สไลด์ข้อมูลพัง (Data Dump) vs. สไลด์เล่าเรื่องทรงพลัง</h2>
+                        <span class="subtitle">ความแตกต่างระหว่างสไลด์ที่ทำให้คนฟังตาลอย กับสไลด์ที่ตรึงสายตาทั้งห้องประชุม</span>
+                    </div>
+                    <span class="badge-step accent"><i class="fas fa-eye"></i> Visual Audit</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div class="card" style="border: 2px dashed #fca5a5; background: #fff5f5;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                <span class="tag" style="background: #fee2e2; color: #b91c1c;">สไลด์แบบเดิม (Data Dump)</span>
+                                <i class="fas fa-thumbs-down" style="color: #ef4444;"></i>
+                            </div>
+                            <h4 style="font-size: 0.95rem; color: #991b1b; margin-bottom: 6px;">"รายงานยอดขายรายไตรมาสแยกตาม SKU และ Channel"</h4>
+                            <div style="background: white; border: 1px solid #f87171; border-radius: 6px; padding: 8px; font-size: 0.78rem; line-height: 1.4; color: #7f1d1d;">
+                                • ตารางข้อมูล 15 แถว 8 คอลัมน์ ตัวเลขทศนิยม 2 ตำแหน่ง<br />
+                                • กราฟวงกลม 3 มิติ 8 สี แยกช่องทางย่อยจนมองไม่เห็นความต่าง<br />
+                                • หัวข้อสไลด์บอกแค่วิธีทำ ไม่บอกว่าเจออะไร<br />
+                                • ไม่มีข้อสรุปว่าข้อมูลนี้บอกอะไรเกี่ยวกับเงินในกระเป๋า
+                            </div>
+                            <div style="margin-top: 8px; font-size: 0.8rem; color: #b91c1c;">
+                                <strong>ความรู้สึกของผู้ฟัง:</strong> <em>"เยอะไปหมด... แล้วจะให้มองอะไรก่อนเนี่ย?"</em>
+                            </div>
+                        </div>
+
+                        <div class="card" style="border: 2px solid #86efac; background: #f0fdf4;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                <span class="tag" style="background: #dcfce7; color: #15803d;">สไลด์เล่าเรื่อง (Data Storytelling)</span>
+                                <i class="fas fa-thumbs-up" style="color: #10b981;"></i>
+                            </div>
+                            <h4 style="font-size: 0.95rem; color: #166534; margin-bottom: 6px;">"เซรั่มสิวสร้างกำไร 72% บน TikTok: จุดที่ควรทุ่มงบ 4 แสน"</h4>
+                            <div style="background: white; border: 1px solid #4ade80; border-radius: 6px; padding: 8px; font-size: 0.78rem; line-height: 1.4; color: #14532d;">
+                                • มีกราฟแท่งแนวนอนอันเดียว ไฮไลต์สีม่วงเฉพาะ 'เซรั่มสิว' อื่นๆ สีเทา<br />
+                                • ตัวเลขใหญ่เบิ้ม: <strong>ROAS 4.8x</strong> เทียบกับ Facebook 1.2x<br />
+                                • สรุปประโยคเดียว: "ย้ายงบ 4 แสนไป TikTok จะสร้างยอด +2.4 ล้าน"<br />
+                                • ชัดเจน สบายตา เข้าใจได้ภายใน 5 วินาที
+                            </div>
+                            <div style="margin-top: 8px; font-size: 0.8rem; color: #15803d;">
+                                <strong>ความรู้สึกของผู้ฟัง:</strong> <em>"ชัดเจนมาก! เห็นด้วยเลย งบ 4 แสนผ่านครับ"</em>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="highlight-box accent" style="margin-top: 6px;">
+                        <i class="fas fa-bolt" style="color: #b45309; margin-right: 6px;"></i>
+                        <strong>กฎ 5 วินาที (The 5-Second Rule):</strong> สไลด์ที่ดี ผู้ฟังควรอ่านหัวข้อและกวาดตามองกราฟ แล้วเข้าใจข้อความหลักได้ภายในเวลาไม่เกิน 5 วินาที!
+                    </div>
+                </div>
+                <aside class="notes">
+                    - ให้สังเกตหัวสไลด์: แบบเดิมบอกว่า "รายงานอะไร" แต่แบบใหม่บอกว่า "สรุปว่าอะไร และต้องทำอะไร"
+                </aside>
+            </section>
+
+            <!-- SLIDE 12: SLIDE DESIGN RULE 1: ONE SLIDE, ONE MESSAGE -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-check-circle" style="color: var(--primary);"></i> กฎการออกแบบที่ 1: One Slide, One Message</h2>
+                        <span class="subtitle">1 สไลด์ = 1 ข้อความหลัก ห้ามโลภใส่ทุกอย่างลงในหน้าเดียว</span>
+                    </div>
+                    <span class="badge-step primary"><i class="fas fa-layer-group"></i> Rule 1</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div class="card">
+                            <h4 style="color: var(--dark); margin-bottom: 8px;"><i class="fas fa-heading" style="color: var(--primary);"></i> Action Title (หัวข้อบอกข้อสรุป)</h4>
+                            <p style="font-size: 0.86rem; color: var(--text-sub); line-height: 1.5; margin-bottom: 10px;">
+                                หัวข้อสไลด์คือพื้นที่ที่มีค่าที่สุด อย่าวางแค่หัวข้อบอกหมวดหมู่ (Topic Title) แต่ให้ใส่ <strong>"ข้อสรุปเชิงการกระทำ" (Action Title)</strong> เสมอ
+                            </p>
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <div style="padding: 8px; background: #fff1f2; border-radius: 6px; font-size: 0.82rem; color: #9f1239;">
+                                    <strong>❌ Topic Title (น่าเบื่อ):</strong> "ยอดขายตามช่องทางจำหน่าย"
+                                </div>
+                                <div style="padding: 8px; background: #ecfdf5; border-radius: 6px; font-size: 0.82rem; color: #065f46;">
+                                    <strong>✅ Action Title (ทรงพลัง):</strong> "TikTok Shop โตแซง Shopee 85% กลายเป็นช่องทางหลักของคนรุ่นใหม่"
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <h4 style="color: var(--dark); margin-bottom: 8px;"><i class="fas fa-cut" style="color: var(--accent);"></i> กฎการตัดทอน (The Subtraction Principle)</h4>
+                            <p style="font-size: 0.86rem; color: var(--text-sub); line-height: 1.5; margin-bottom: 10px;">
+                                ถ้ามีข้อมูล 3 เรื่องที่อยากเล่า <strong>"อย่าบีบให้อยู่ในหน้าเดียว"</strong> แต่ให้แยกเป็น 3 สไลด์ต่อเนื่องกัน:
+                            </p>
+                            <div style="display: flex; flex-direction: column; gap: 6px; font-size: 0.82rem;">
+                                <div class="highlight-box" style="padding: 6px 10px; border-left-color: var(--primary);">
+                                    <strong>Slide A:</strong> ชี้ให้เห็นว่าทำไม Facebook แอดถึง ROAS ต่ำกว่าเกณฑ์
+                                </div>
+                                <div class="highlight-box" style="padding: 6px 10px; border-left-color: var(--secondary);">
+                                    <strong>Slide B:</strong> ชี้ให้เห็นว่าทำไม TikTok Shop ถึงเติบโตสูงและลูกค้าซื้อซ้ำ
+                                </div>
+                                <div class="highlight-box" style="padding: 6px 10px; border-left-color: var(--success);">
+                                    <strong>Slide C:</strong> แผนย้ายงบ 4 แสนบาทเพื่อสเกลยอดขายใน 60 วัน
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="highlight-box" style="margin-top: 6px; border-left-color: var(--primary);">
+                        <i class="fas fa-info-circle" style="color: var(--primary); margin-right: 6px;"></i>
+                        <strong>ความเข้าใจผิด:</strong> หลายคนกลัวว่า "สไลด์เยอะเกินไป" จึงยัดทุกอย่างลงใน 3 หน้า... ความจริงคือ <strong>สไลด์เยอะแต่เปลี่ยนไวและหน้าละประเด็น ชวนติดตามกว่าสไลด์น้อยแต่อัดแน่นจนอ่านไม่ออก 10 เท่า!</strong>
+                    </div>
+                </div>
+                <aside class="notes">
+                    - ย้ำว่า Action Title คือสิ่งที่ผู้บริหารควรอ่านแล้วเข้าใจข้อสรุปทันที
+                </aside>
+            </section>
+
+            <!-- SLIDE 13: SLIDE DESIGN RULE 2: SIGNAL-TO-NOISE RATIO -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-filter" style="color: var(--secondary);"></i> กฎการออกแบบที่ 2: Signal-to-Noise Ratio (ลบขยะสายตา)</h2>
+                        <span class="subtitle">แนวคิด Data-Ink Ratio ของ Edward Tufte: เพิ่มข้อมูล ลดสิ่งรกรุงรัง</span>
+                    </div>
+                    <span class="badge-step" style="background: var(--secondary-light); color: var(--secondary-dark);"><i class="fas fa-broom"></i> Rule 2</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div class="card" style="border-left: 4px solid var(--danger);">
+                            <h4 style="color: var(--danger); margin-bottom: 8px;"><i class="fas fa-trash-alt"></i> สิ่งรกสายตาที่ต้องกำจัด (Visual Noise)</h4>
+                            <ul style="font-size: 0.85rem; color: var(--text-sub); line-height: 1.6; padding-left: 20px;">
+                                <li><strong>เส้นกริดหนาเตอะ (Dark Gridlines):</strong> แย่งความเด่นจากแท่งกราฟ</li>
+                                <li><strong>กรอบรอบกราฟและเงา 3D:</strong> ไม่มีประโยชน์ต่อการสื่อสารข้อมูล</li>
+                                <li><strong>สีสันฉูดฉาดไร้ความหมาย:</strong> ใช้ 7 สีในแท่งกราฟทั้งที่เป็นหมวดเดียวกัน</li>
+                                <li><strong>ตัวเลขทศนิยมเกินจำเป็น:</strong> แสดง 1,245,678.43 บาท แทนที่จะเป็น 1.25M</li>
+                                <li><strong>แกนซ้ำซ้อน:</strong> มีทั้ง Data Label บนแท่งกราฟ และมีทั้งแกน Y ตัวเลข</li>
+                            </ul>
+                        </div>
+
+                        <div class="card" style="border-left: 4px solid var(--success); background: #f0fdf4;">
+                            <h4 style="color: var(--success); margin-bottom: 8px;"><i class="fas fa-sparkles"></i> สัญญาณข้อมูลที่ต้องขับให้เด่น (The Signal)</h4>
+                            <ul style="font-size: 0.85rem; color: var(--text-sub); line-height: 1.6; padding-left: 20px;">
+                                <li><strong>เส้นแนวโน้มที่ชัดเจน (Clean Trendline):</strong> ขจัดเส้นตารางออก</li>
+                                <li><strong>ป้ายกำกับโดยตรง (Direct Labeling):</strong> ใส่ชื่อข้างเส้นกราฟแทนการใช้ Legend กล่องแยกที่ต้องกวาดตากลับไปกลับมา</li>
+                                <li><strong>ตัวเลขกลมๆ อ่านง่าย (Rounded Numbers):</strong> 1.25M หรือ 450k</li>
+                                <li><strong>พื้นที่ว่างสีขาว (White Space):</strong> เว้นระยะให้สายตาได้พักและโฟกัส</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card" style="background: #f8fafc; padding: 10px 14px; margin-top: 4px; border: 1px dashed #cbd5e1;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <i class="fas fa-pencil-ruler" style="font-size: 1.4rem; color: var(--secondary);"></i>
+                            <span style="font-size: 0.88rem; color: var(--dark); line-height: 1.4;">
+                                <strong>สูตรคลีนกราฟ:</strong> <em>"ก่อนเอาสไลด์ไปนำเสนอ ให้ถามตัวเองว่า 'ถ้าลบเส้นนี้ กรอบนี้ หรือคำนี้ออก ผู้ฟังยังเข้าใจเหมือนเดิมไหม?' ถ้าเข้าใจเหมือนเดิม... <strong>ลบออกทันที!</strong>"</em>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <aside class="notes">
+                    - อธิบายเรื่อง Data-Ink Ratio ของ Edward Tufte
+                    - ชี้ให้เห็นว่ากราฟที่สวยไม่ใช่กราฟที่ใส่ลูกเล่นเยอะ แต่คือกราฟที่ไม่มีอะไรให้ตัดออกได้อีกแล้ว
+                </aside>
+            </section>
+
+            <!-- SLIDE 14: SLIDE DESIGN RULE 3: VISUAL HIERARCHY & ACCENT COLOR -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-palette" style="color: var(--purple);"></i> กฎการออกแบบที่ 3: สีนำสายตา (Strategic Color Contrast)</h2>
+                        <span class="subtitle">อย่าใช้สีเพื่อความสวยงามเพียงอย่างเดียว แต่จงใช้สีเพื่อ "ชี้นำสายตาผู้ฟัง"</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-tint"></i> Rule 3</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-3">
+                        <div class="card">
+                            <div style="font-size: 1.5rem; color: #94a3b8; margin-bottom: 6px;"><i class="fas fa-circle"></i></div>
+                            <h4 style="font-size: 1.05rem; margin-bottom: 4px; color: var(--dark);">1. สีเทา = บริบท (Context)</h4>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.45;">
+                                ใช้สีเทาอ่อน (Muted Gray) สำหรับข้อมูลเปรียบเทียบ สิ่งที่ไม่ใช่หัวใจหลัก หรือสินค้าตัวอื่นๆ เพื่อให้เป็นฉากหลัง
+                            </p>
+                            <div style="background: #f1f5f9; border-radius: 4px; padding: 6px; font-size: 0.78rem; margin-top: 6px; color: #64748b;">
+                                ตัวอย่าง: แท่งกราฟ Shopee และ Line ให้ใช้สีเทา #cbd5e1
+                            </div>
+                        </div>
+
+                        <div class="card" style="border: 2px solid var(--primary); background: #faf5ff;">
+                            <div style="font-size: 1.5rem; color: var(--primary); margin-bottom: 6px;"><i class="fas fa-highlighter"></i></div>
+                            <h4 style="font-size: 1.05rem; margin-bottom: 4px; color: var(--primary);">2. สีหลัก = จุดโฟกัส (Hero)</h4>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.45;">
+                                ใช้สีแบรนด์หรือสีสดเพียง 1 สี (Accent Color) ทาลงบนจุดที่เราต้องการให้ทุกคนมองเห็นทันทีในวินาทีแรก
+                            </p>
+                            <div style="background: #e0e7ff; border-radius: 4px; padding: 6px; font-size: 0.78rem; margin-top: 6px; color: var(--primary-dark); font-weight: 600;">
+                                ตัวอย่าง: ไฮไลต์แท่ง 'TikTok Shop' ด้วยสีม่วงสดใส
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div style="font-size: 1.5rem; color: var(--danger); margin-bottom: 6px;"><i class="fas fa-exclamation-triangle"></i></div>
+                            <h4 style="font-size: 1.05rem; margin-bottom: 4px; color: var(--dark);">3. สีสากล = อารมณ์ (Meaning)</h4>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.45;">
+                                ใช้สีที่มีความหมายสากลอย่างเคร่งครัด:<br />
+                                • เขียว = เติบโต, กำไร, ผ่านเกณฑ์<br />
+                                • แดง = ขาดทุน, เสี่ยง, ต่ำกว่าเป้า<br />
+                                • ส้ม = จุดเฝ้าระวัง
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="card" style="padding: 12px 16px; margin-top: 4px; border-left: 4px solid var(--primary);">
+                        <h4 style="color: var(--dark); font-size: 0.95rem; margin-bottom: 4px;"><i class="fas fa-eye" style="color: var(--primary);"></i> กฎ "Where Does Your Eye Go First?"</h4>
+                        <p style="font-size: 0.85rem; color: var(--text-sub); line-height: 1.45;">
+                            เมื่อเปิดสไลด์ขึ้นมา ดวงตาของผู้ฟังจะพุ่งไปที่ <strong>"จุดที่มีความเข้มหรือความต่างของสีสูงสุด"</strong> โดยอัตโนมัติ จงควบคุมสิ่งนั้น อย่าปล่อยให้สายตาคนฟังเคว้งคว้าง!
+                        </p>
+                    </div>
+                </div>
+                <aside class="notes">
+                    - กฎสีนำสายตา: กราฟที่มีสีเยอะเท่ากับไม่มีสี เพราะไม่มีอะไรเด่น
+                    - เทาเป็นฉากหลัง สีสดเป็นจุดโฟกัส
+                </aside>
+            </section>
+
+            <!-- SLIDE 15: 4 DEADLY PRESENTATION TRAPS -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-skull" style="color: var(--danger);"></i> 4 หลุมพรางที่ทำให้นักลงทุนหลับหรือปฏิเสธ</h2>
+                        <span class="subtitle">ข้อผิดพลาดร้ายแรงที่ผู้ก่อตั้งธุรกิจและทีมข้อมูลมักเผลอทำบนเวทีนำเสนอ</span>
+                    </div>
+                    <span class="badge-step danger"><i class="fas fa-ban"></i> Deadly Traps</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-4" style="margin-top: 6px;">
+                        <div class="card" style="border-top: 4px solid #ef4444; height: 100%;">
+                            <div style="font-size: 1.3rem; color: #ef4444; margin-bottom: 6px;"><i class="fas fa-dumpster"></i></div>
+                            <h4 style="font-size: 0.98rem; margin-bottom: 4px; color: var(--dark);">Trap 1: Data Dump</h4>
+                            <p style="font-size: 0.8rem; color: var(--text-sub); line-height: 1.4;">
+                                สาดตารางตัวเลขและกราฟทุกอันที่ทำได้ลงสไลด์ กลัวคนคิดว่าไม่ทำการบ้าน
+                            </p>
+                            <span class="tag" style="background: #fee2e2; color: #b91c1c; margin-top: 6px;">ทำให้สับสน</span>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid #f97316; height: 100%;">
+                            <div style="font-size: 1.3rem; color: #f97316; margin-bottom: 6px;"><i class="fas fa-project-diagram"></i></div>
+                            <h4 style="font-size: 0.98rem; margin-bottom: 4px; color: var(--dark);">Trap 2: Spaghetti Chart</h4>
+                            <p style="font-size: 0.8rem; color: var(--text-sub); line-height: 1.4;">
+                                กราฟเส้น 10 เส้นตัดกันยั้วเยี้ย หรือกราฟวงกลม 12 ชิ้น ลายตาจนอ่านไม่ออก
+                            </p>
+                            <span class="tag" style="background: #ffedd5; color: #c2410c; margin-top: 6px;">ตาลอย</span>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid #eab308; height: 100%;">
+                            <div style="font-size: 1.3rem; color: #eab308; margin-bottom: 6px;"><i class="fas fa-question"></i></div>
+                            <h4 style="font-size: 0.98rem; margin-bottom: 4px; color: var(--dark);">Trap 3: No "So What?"</h4>
+                            <p style="font-size: 0.8rem; color: var(--text-sub); line-height: 1.4;">
+                                อ่านตัวเลขตามสไลด์ แต่ไม่บอกว่าตัวเลขนั้นมีความหมายต่ออนาคตธุรกิจอย่างไร
+                            </p>
+                            <span class="tag" style="background: #fef9c3; color: #a16207; margin-top: 6px;">ไร้ความหมาย</span>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid #64748b; height: 100%;">
+                            <div style="font-size: 1.3rem; color: #64748b; margin-bottom: 6px;"><i class="fas fa-history"></i></div>
+                            <h4 style="font-size: 0.98rem; margin-bottom: 4px; color: var(--dark);">Trap 4: Passive Reporting</h4>
+                            <p style="font-size: 0.8rem; color: var(--text-sub); line-height: 1.4;">
+                                เล่าแค่อดีตที่ผ่านไปแล้ว แต่ไม่มี Action Plan หรือการขออนุมัติทรัพยากร
+                            </p>
+                            <span class="tag" style="background: #f1f5f9; color: #475569; margin-top: 6px;">ไม่มี Action</span>
+                        </div>
+                    </div>
+
+                    <div class="highlight-box accent" style="margin-top: 10px;">
+                        <i class="fas fa-shield-alt" style="color: #b45309; margin-right: 6px;"></i>
+                        <strong>หัวใจของนักธุรกิจ:</strong> ผู้บริหารและนักลงทุนไม่ได้ตัดสินใจจาก "จำนวนข้อมูลที่คุณหามา" แต่เขาตัดสินใจจาก <strong>"ความชัดเจนของทิศทางที่คุณจะพาธุรกิจไป"</strong>!
+                    </div>
+                </div>
+                <aside class="notes">
+                    - ทบทวน 4 กับดักอย่างรวดเร็ว ก่อนจะไปดูตัวอย่างการแก้กับดักในสไลด์ถัดไป
+                </aside>
+            </section>
+
+            <!-- SLIDE 16: TRAP 1 & 2: DATA DUMP & SPAGHETTI CHART -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-tools" style="color: var(--primary);"></i> วิธีแก้มือกับดัก 1 &amp; 2: จาก Data Dump สู่ Focus Chart</h2>
+                        <span class="subtitle">เทคนิคเปลี่ยนตารางรกรุงรังให้กลายเป็นภาพที่สื่อสารคมกริบ</span>
+                    </div>
+                    <span class="badge-step primary"><i class="fas fa-wrench"></i> Solution 1-2</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div class="card">
+                            <h4 style="color: var(--danger); margin-bottom: 6px;"><i class="fas fa-times"></i> ปัญหาเดิม: ตาราง 10 แบรนด์ 5 ช่องทาง</h4>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); margin-bottom: 8px;">
+                                สาดตารางตัวเลขที่มีทั้งตัวเลขค่าแอด, ยอดคลิก, Impression, CPC, และ Conversion Rate รวมกัน 50 ช่อง
+                            </p>
+                            <div class="highlight-box danger" style="font-size: 0.8rem; padding: 6px 10px;">
+                                ผู้ฟังพยายามกวาดสายตาหาจุดสำคัญ แต่ใช้เวลา 3 นาทีก็ยังไม่รู้ว่าสรุปช่องทางไหนทำเงินกันแน่
+                            </div>
+                        </div>
+
+                        <div class="card" style="border-left: 4px solid var(--success); background: #f0fdf4;">
+                            <h4 style="color: var(--success); margin-bottom: 6px;"><i class="fas fa-check"></i> วิธีแก้: กราฟแท่งจัดอันดับ + Callout ข้อสรุป</h4>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); margin-bottom: 8px;">
+                                ยุบตารางเหลือเพียง <strong>กราฟแท่งเปรียบเทียบ ROAS แยกตาม 3 ช่องทางหลัก</strong>
+                            </p>
+                            <div style="background: white; border: 1px solid #86efac; border-radius: 6px; padding: 8px; font-size: 0.8rem;">
+                                • TikTok Shop: <strong>ROAS 4.8x</strong> (แท่งสีม่วงยาวสุด)<br />
+                                • Shopee: <strong>ROAS 2.1x</strong> (แท่งสีเทา)<br />
+                                • Facebook Ads: <strong>ROAS 1.2x</strong> (แท่งสีแดงสั้น ต่ำกว่าคุ้มทุน 1.8x)
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="background: #f8fafc; padding: 10px 14px; margin-top: 4px;">
+                        <h4 style="font-size: 0.92rem; color: var(--dark); margin-bottom: 4px;"><i class="fas fa-lightbulb" style="color: var(--accent);"></i> กฎกอบกู้ Spaghetti Chart:</h4>
+                        <p style="font-size: 0.84rem; color: var(--text-sub); line-height: 1.45;">
+                            ถ้ามีเส้นแนวโน้ม 5 เส้นตัดกัน อย่าแสดงพร้อมกันทั้งหมด ให้ <strong>"ไฮไลต์เฉพาะเส้นพระเอก (Hero Line)"</strong> ด้วยสีสด ส่วนเส้นคู่แข่งหรือค่าเฉลี่ยให้ใช้สีเทาบางๆ และใส่ป้ายกำกับที่ปลายเส้นโดยตรง (Direct End-of-line Label)
+                        </p>
+                    </div>
+                </div>
+                <aside class="notes">
+                    - ให้ดูความแตกต่างระหว่างตารางเต็มจอกับกราฟ ROAS 3 แท่ง
+                </aside>
+            </section>
+
+            <!-- SLIDE 17: TRAP 3 & 4: MISSING SO WHAT & PASSIVE REPORTING -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-tools" style="color: var(--primary);"></i> วิธีแก้มือกับดัก 3 &amp; 4: เติม "So What?" และเปลี่ยนเป็น Active Pitch</h2>
+                        <span class="subtitle">วิธีเปลี่ยนการรายงานข้อมูลในอดีต ให้กลายเป็นการเสนอทางออกแห่งอนาคต</span>
+                    </div>
+                    <span class="badge-step primary"><i class="fas fa-wrench"></i> Solution 3-4</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div class="card">
+                            <h4 style="color: var(--danger); margin-bottom: 6px;"><i class="fas fa-times"></i> การพูดแบบ Passive (รายงานอดีต)</h4>
+                            <div class="highlight-box danger" style="font-size: 0.84rem; line-height: 1.45;">
+                                "ในเดือนที่แล้ว เราใช้เงินแอดบน Facebook ไป 500,000 บาท ได้ยอดขายกลับมา 600,000 บาทครับ อัตราการคลิกลดลง 15% และลูกค้าบ่นเรื่องค่าส่งครับ..."
+                            </div>
+                            <div style="font-size: 0.8rem; color: #b91c1c; margin-top: 6px;">
+                                ❌ คนฟังรู้สึก: <em>"แล้วยังไงต่อ? จะให้พี่ทำยังไง? เสียเงินไปแล้วแก้ไม่ได้"</em>
+                            </div>
+                        </div>
+
+                        <div class="card" style="border-left: 4px solid var(--success); background: #f0fdf4;">
+                            <h4 style="color: var(--success); margin-bottom: 6px;"><i class="fas fa-check"></i> การพูดแบบ Active (ชี้อนาคต + ขอยุทธศาสตร์)</h4>
+                            <div class="highlight-box success" style="font-size: 0.84rem; line-height: 1.45;">
+                                "ผลประกอบการเดือนที่แล้วยืนยันว่า Facebook แอดถึงจุดอิ่มตัวและกินกำไรของเรา ผมจึงขอเสนอ <strong>หยุดยิงแอด Facebook 400,000 บาททันทีตั้งแต่วันจันทร์</strong> และย้ายงบนี้ไปจัดแคมเปญ TikTok Creator ซึ่งจะเพิ่มกำไรสุทธิ 450,000 บาทใน 30 วันข้างหน้า"
+                            </div>
+                            <div style="font-size: 0.8rem; color: #047857; margin-top: 6px;">
+                                ✅ คนฟังรู้สึก: <em>"ชัดเจน กล้าตัดสินใจ มีแผนรองรับ อนุมัติเลย!"</em>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="background: #faf5ff; border: 1px solid #e9d5ff; padding: 10px 14px; margin-top: 4px;">
+                        <h4 style="font-size: 0.92rem; color: var(--purple); margin-bottom: 4px;"><i class="fas fa-magic"></i> The Pivot Formula (สูตรพลิกจาก Fact สู่ Action):</h4>
+                        <div style="font-size: 0.85rem; color: var(--dark); font-weight: 600;">
+                            "ข้อมูลแสดงว่า <span style="color: var(--danger);">[Fact ในอดีต]</span>... ดังนั้น ทางเลือกที่ดีที่สุดสำหรับเราในขณะนี้คือ <span style="color: var(--success);">[Action ในอนาคต]</span> เพื่อให้ได้ผลลัพธ์ <span style="color: var(--primary);">[ROI / กำไร]</span>"
+                        </div>
+                    </div>
+                </div>
+                <aside class="notes">
+                    - เปรียบเทียบสองกรอบคำพูดนี้อย่างตั้งใจ ให้นักศึกษาฝึกอ่านออกเสียงในใจ
+                </aside>
+            </section>
+
+            <!-- SLIDE 18: EXECUTIVE COMMUNICATION & BLUF PRINCIPLE -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-user-tie" style="color: var(--primary);"></i> Executive Communication: สื่อสารกับผู้บริหารด้วยหลักการ BLUF</h2>
+                        <span class="subtitle">Bottom-Line Up Front: วางผลลัพธ์และคำขอไว้หน้าสุด อย่าให้ผู้บริหารต้องลุ้นตอนจบ</span>
+                    </div>
+                    <span class="badge-step primary"><i class="fas fa-bullhorn"></i> Executive Pitch</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div class="card" style="border-left: 4px solid var(--text-muted);">
+                            <h4 style="color: var(--text-muted); margin-bottom: 6px;"><i class="fas fa-book-reader"></i> การเล่าเรื่องแบบนิยาย (Storybook Style)</h4>
+                            <div style="display: flex; flex-direction: column; gap: 6px; font-size: 0.82rem; color: var(--text-sub);">
+                                <div>1. กาลครั้งหนึ่ง... (เกริ่นที่มายืดยาว)</div>
+                                <div>2. ปัญหาและอุปสรรค (เล่ากรรมวิธีโหลดข้อมูล)</div>
+                                <div>3. จุดไคลแมกซ์ (เปิดเผยตัวเลขในหน้าสุดท้าย)</div>
+                                <div>4. บทสรุปและคำขออนุมัติ</div>
+                            </div>
+                            <div class="highlight-box danger" style="margin-top: 8px; font-size: 0.8rem;">
+                                ⚠️ เสี่ยงมาก! ถ้าผู้บริหารมีเวลาแค่ 5 นาที หรือถูกโทรศัพท์แทรก เขาจะเดินออกจากห้องก่อนที่คุณจะได้พูดจุดสำคัญ
+                            </div>
+                        </div>
+
+                        <div class="card" style="border-left: 4px solid var(--primary); background: #f8faff;">
+                            <h4 style="color: var(--primary); margin-bottom: 6px;"><i class="fas fa-bolt"></i> หลักการ BLUF (Bottom-Line Up Front)</h4>
+                            <div style="display: flex; flex-direction: column; gap: 6px; font-size: 0.82rem; color: var(--text-sub);">
+                                <div><strong>1. Conclusion First:</strong> สรุปข้อสรุปและคำขออนุมัติตั้งแต่ 1 นาทีแรก</div>
+                                <div><strong>2. Supporting Insights:</strong> ข้อมูลสนับสนุน 2-3 จุดที่รองรับข้อสรุป</div>
+                                <div><strong>3. Action &amp; Next Steps:</strong> แผนงานและกรอบเวลาการดำเนินงาน</div>
+                                <div><strong>4. Appendix / Backup:</strong> รายละเอียดทางเทคนิคเก็บไว้ตอบคำถาม</div>
+                            </div>
+                            <div class="highlight-box success" style="margin-top: 8px; font-size: 0.8rem;">
+                                ✅ ทรงพลังที่สุด! แม้มีเวลาเพียง 2 นาที ผู้บริหารก็ได้รับสารสำคัญครบถ้วนและพร้อมตัดสินใจ
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="highlight-box accent" style="margin-top: 6px;">
+                        <i class="fas fa-quote-left" style="color: #b45309; margin-right: 6px;"></i>
+                        <strong>กฎทองของ CEO:</strong> <em>"บอกฉันเดี๋ยวนี้ว่าเรากำลังได้หรือเสียเงินเท่าไร และคุณต้องการให้ฉันอนุมัติอะไร... ส่วนที่เหลือ ฉันจะถามถ้าอยากรู้"</em>
+                    </div>
+                </div>
+                <aside class="notes">
+                    - อธิบาย BLUF (Bottom-Line Up Front) เทคนิคนี้มาจากกองทัพและบริษัทที่ปรึกษาอย่าง McKinsey
+                </aside>
+            </section>
+
+            <!-- SLIDE 19: THE 3-MINUTE ELEVATOR PITCH -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-stopwatch" style="color: var(--accent);"></i> The 3-Minute Elevator Pitch: สูตรนำเสนอจบใน 180 วินาที</h2>
+                        <span class="subtitle">โครงสร้างจับเวลา 3 นาทีที่จะทำให้นักลงทุนควักเงิน หรือผู้บริหารเซ็นอนุมัติทันที</span>
+                    </div>
+                    <span class="badge-step accent"><i class="fas fa-hourglass-half"></i> 180 Seconds</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-3" style="margin-top: 6px;">
+                        <div class="card" style="border-top: 4px solid #0284c7;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                <span class="tag blue">นาทีที่ 1 (0:00 - 1:00)</span>
+                                <i class="fas fa-bullseye" style="color: #0284c7;"></i>
+                            </div>
+                            <h4 style="font-size: 1.05rem; margin-bottom: 4px;">Context &amp; The Hook</h4>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.45;">
+                                • บอกเป้าหมายธุรกิจและปัญหาปัจจุบัน<br />
+                                • ชี้เดิมพัน (Stakes): "ถ้าเราไม่เปลี่ยน เราจะเสียเงิน 4.5 แสน"<br />
+                                • เปิดประโยคทอง BLUF
+                            </p>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid var(--purple);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                <span class="tag purple">นาทีที่ 2 (1:00 - 2:00)</span>
+                                <i class="fas fa-chart-line" style="color: var(--purple);"></i>
+                            </div>
+                            <h4 style="font-size: 1.05rem; margin-bottom: 4px;">The Core Insight</h4>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.45;">
+                                • โชว์กราฟพระเอก 1 กราฟที่ตอบโจทย์<br />
+                                • อธิบายทำไมตัวเลขนี้จึงพลิกเกม (The "Why")<br />
+                                • พิสูจน์ด้วยพฤติกรรมลูกค้าจริง
+                            </p>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid var(--success);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                <span class="tag" style="background: #dcfce7; color: #15803d;">นาทีที่ 3 (2:00 - 3:00)</span>
+                                <i class="fas fa-hand-holding-usd" style="color: var(--success);"></i>
+                            </div>
+                            <h4 style="font-size: 1.05rem; margin-bottom: 4px;">Action &amp; The Ask</h4>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.45;">
+                                • แผน 3 ขั้นตอนที่ทำได้ทันที<br />
+                                • ตัวเลขผลกระทบ (Expected ROI: +2.4M)<br />
+                                • คำขออนุมัติงบ/ทรัพยากรที่ชัดเจน
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="card" style="background: #f8fafc; padding: 10px 14px; margin-top: 6px; border: 1px solid var(--border);">
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <span style="font-weight: 700; font-size: 0.88rem; color: var(--dark);">
+                                <i class="fas fa-microphone" style="color: var(--primary); margin-right: 6px;"></i>
+                                กฎเหล็กของการซ้อม (Rehearsal Rule):
+                            </span>
+                            <span style="font-size: 0.82rem; color: var(--text-sub);">
+                                "อย่าซ้อมในใจ แต่ต้องพูดออกเสียงและจับเวลาจริงเสมอ! หากเกิน 3 นาที ให้ตัดทอนเนื้อหา ไม่ใช่พูดเร็วขึ้น!"
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <aside class="notes">
+                    - เน้นย้ำว่า 3 นาทีคือเวลามาตรฐานในห้องประชุมจริง หรือการ Pitch กับนักลงทุน
+                </aside>
+            </section>
+
+            <!-- SLIDE 20: 7-SLIDE MASTER DECK TEMPLATE -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-th-large" style="color: var(--primary);"></i> โครงสร้างสไลด์มาตรฐานระดับสากล (7-Slide Master Deck)</h2>
+                        <span class="subtitle">เทมเพลตสไลด์ 7 หน้าที่ครอบคลุมทุกมิติของ Data Storytelling สำหรับธุรกิจ</span>
+                    </div>
+                    <span class="badge-step primary"><i class="fas fa-layer-group"></i> Template</span>
+                </div>
+                <div class="slide-body">
+                    <table class="table-custom" style="font-size: 0.83rem;">
+                        <thead>
+                            <tr>
+                                <th style="width: 12%;">สไลด์</th>
+                                <th style="width: 25%;">ชื่อหน้า (Slide Focus)</th>
+                                <th style="width: 45%;">วัตถุประสงค์ &amp; องค์ประกอบสำคัญ</th>
+                                <th style="width: 18%;">เฟรมเวิร์ก</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Slide 1</strong></td>
+                                <td><strong>Title &amp; Hook</strong></td>
+                                <td>ชื่อโปรเจกต์, Action Subtitle, วันที่ และชื่อทีม</td>
+                                <td><span class="tag blue">Context</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Slide 2</strong></td>
+                                <td><strong>Executive Summary (BLUF)</strong></td>
+                                <td>สรุปปัญหา ข้อค้นพบหลัก และคำขออนุมัติในหน้าเดียว</td>
+                                <td><span class="tag blue">Context</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Slide 3</strong></td>
+                                <td><strong>Current State &amp; Pain Point</strong></td>
+                                <td>ตัวเลขสถานการณ์เดิม และเดิมพันที่กำลังจะสูญเสีย (Stakes)</td>
+                                <td><span class="tag blue">Context</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Slide 4</strong></td>
+                                <td><strong>Core Insight #1 (Product)</strong></td>
+                                <td>การค้นพบสำคัญเกี่ยวกับสินค้า (Hero SKU / กำไรแฝง)</td>
+                                <td><span class="tag purple">Insight</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Slide 5</strong></td>
+                                <td><strong>Core Insight #2 (Channel/Customer)</strong></td>
+                                <td>พฤติกรรมลูกค้าและช่องทางที่สร้าง ROAS สูงสุด</td>
+                                <td><span class="tag purple">Insight</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Slide 6</strong></td>
+                                <td><strong>Action Plan &amp; What-If ROI</strong></td>
+                                <td>แผนปฏิบัติการ 3 เสาหลัก พร้อมตัวเลขประมาณการกำไร</td>
+                                <td><span class="tag" style="background: #dcfce7; color: #15803d;">Action</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Slide 7</strong></td>
+                                <td><strong>Next Steps &amp; The Ask</strong></td>
+                                <td>Timeline 30-60 วัน และคำขออนุมัติทรัพยากรอย่างชัดเจน</td>
+                                <td><span class="tag" style="background: #dcfce7; color: #15803d;">Action</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="highlight-box" style="margin-top: 4px; border-left-color: var(--primary);">
+                        <i class="fas fa-star" style="color: var(--primary); margin-right: 6px;"></i>
+                        นี่คือโครงสร้างที่นักศึกษาจะได้ลงมือปฏิบัติจริงใน Workshop และนำไปใช้ใน Final Project ของวิชานี้!
+                    </div>
+                </div>
+                <aside class="notes">
+                    - อธิบายภาพรวมของ 7 สไลด์ ซึ่งเป็นโครงสร้างมาตรฐานในการทำงานจริง
+                </aside>
+            </section>
+
+            <!-- SLIDE 21: AURASKIN LAB SLIDE 1-3 -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-file-powerpoint" style="color: #0284c7;"></i> ตัวอย่างจริง AuraSkin Lab (สไลด์ 1–3: บริบทและปัญหา)</h2>
+                        <span class="subtitle">การร้อยเรียงฉากหลัง ปัญหาค่าแอด และเดิมพันที่ผู้บริหารมองข้าม</span>
+                    </div>
+                    <span class="badge-step" style="background: #e0f2fe; color: #0284c7;"><i class="fas fa-play"></i> Part 1 (Context)</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-3">
+                        <div class="card" style="border-top: 4px solid var(--primary);">
+                            <div style="font-size: 0.75rem; font-weight: 700; color: var(--primary); text-transform: uppercase;">Slide 1: Hook</div>
+                            <h4 style="font-size: 0.95rem; margin: 4px 0 6px;">"AuraSkin Lab Q3 Growth Pitch"</h4>
+                            <div style="font-size: 0.8rem; color: var(--text-sub); line-height: 1.4;">
+                                • <strong>Action Subtitle:</strong> "ย้ายงบโฆษณา 400,000 บาทสู่ TikTok Shop เพื่อคว้ากำไร +2.4 ล้านบาท"<br />
+                                • สื่อสารถึงผลลัพธ์ทันทีตั้งแต่หน้าปก
+                            </div>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid var(--danger);">
+                            <div style="font-size: 0.75rem; font-weight: 700; color: var(--danger); text-transform: uppercase;">Slide 2: BLUF</div>
+                            <h4 style="font-size: 0.95rem; margin: 4px 0 6px;">"หยุดงบ Facebook 6 แสนทันที"</h4>
+                            <div style="font-size: 0.8rem; color: var(--text-sub); line-height: 1.4;">
+                                • สรุปสั้น: Facebook แอด ROAS เหลือ 1.2x (ขาดทุน)<br />
+                                • ขออนุมัติย้ายงบ 4 แสนไป TikTok Creator 50 คน<br />
+                                • คาดการณ์กำไรสุทธิโต 35% ใน Q3
+                            </div>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid var(--accent);">
+                            <div style="font-size: 0.75rem; font-weight: 700; color: var(--accent); text-transform: uppercase;">Slide 3: The Stakes</div>
+                            <h4 style="font-size: 0.95rem; margin: 4px 0 6px;">"ต้นทุนลูกค้าใหม่พุ่ง 3 เท่า"</h4>
+                            <div style="font-size: 0.8rem; color: var(--text-sub); line-height: 1.4;">
+                                • กราฟ CAC พุ่งจาก 180 บาท เป็น 540 บาท/คน<br />
+                                • ถ้าดึงดันยิงแอด 1 ล้านแบบเดิม จะขาดทุน 450,000 บาททันทีในไตรมาสนี้
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="highlight-box danger" style="margin-top: 6px;">
+                        <i class="fas fa-exclamation-circle" style="color: var(--danger); margin-right: 6px;"></i>
+                        <strong>ผลทางอารมณ์:</strong> ผ่านไป 3 สไลด์ ผู้บริหารจะเลิกคิดเรื่องการยิงแอด 1 ล้านบาทแบบเดิม และเริ่มถามว่า <em>"แล้วข้อมูลบอกให้เราไปทางไหน?"</em>
+                    </div>
+                </div>
+                <aside class="notes">
+                    - แสดงให้เห็นว่า 3 สไลด์แรกเปลี่ยน Mindset ผู้บริหารได้อย่างไร
+                </aside>
+            </section>
+
+            <!-- SLIDE 22: AURASKIN LAB SLIDE 4-5 -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-file-powerpoint" style="color: var(--purple);"></i> ตัวอย่างจริง AuraSkin Lab (สไลด์ 4–5: ไขรหัสลับ Insight)</h2>
+                        <span class="subtitle">การใช้กราฟแท่งแนวนอนและ Contrast Color ดึงความจริงที่ซ่อนอยู่ใน 4,200 ออเดอร์</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-lightbulb"></i> Part 2 (Insight)</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div class="card" style="border-left: 4px solid var(--primary);">
+                            <div style="font-size: 0.75rem; font-weight: 700; color: var(--primary); text-transform: uppercase;">Slide 4: Product Insight</div>
+                            <h4 style="font-size: 1rem; margin: 4px 0 6px; color: var(--dark);">"เซรั่มสิวใบบัวบก: Hero SKU ที่แบกกำไร 72% ของแบรนด์"</h4>
+                            <div style="background: white; border: 1px solid var(--border); border-radius: 6px; padding: 10px; font-size: 0.82rem; line-height: 1.5;">
+                                • กราฟแท่งจัดอันดับกำไร: เซรั่มสิว <strong>(กำไร 1.8M | สีม่วงสด)</strong> เทียบกับสินค้าอื่นที่ทำกำไรน้อย<br />
+                                • อัตราซื้อซ้ำใน 60 วันสูงถึง <strong>42%</strong> (เทียบกับค่าเฉลี่ยแบรนด์ 28%)<br />
+                                • <strong>Insight:</strong> ลูกค้าเปิดใจลองแบรนด์เราเพราะ "ปัญหาสิว" ไม่ใช่ความขาวกระจ่างใส
+                            </div>
+                        </div>
+
+                        <div class="card" style="border-left: 4px solid var(--secondary);">
+                            <div style="font-size: 0.75rem; font-weight: 700; color: var(--secondary); text-transform: uppercase;">Slide 5: Channel Insight</div>
+                            <h4 style="font-size: 1rem; margin: 4px 0 6px; color: var(--dark);">"TikTok Shop: แหล่งกำไรใหม่ที่มี ROAS 4.8x"</h4>
+                            <div style="background: white; border: 1px solid var(--border); border-radius: 6px; padding: 10px; font-size: 0.82rem; line-height: 1.5;">
+                                • กราฟเปรียบเทียบ ROAS: TikTok <strong>4.8x</strong> vs Shopee 2.1x vs FB 1.2x<br />
+                                • พฤติกรรม: 80% ของออเดอร์บน TikTok มาจากคลิปของ Micro-KOL สายสกินแคร์ที่มีผู้ติดตาม 10k - 50k คน<br />
+                                • <strong>Insight:</strong> วัยรุ่นเชื่อคำแนะนำจริงจากครีเอเตอร์มากกว่าแอดอย่างเป็นทางการ
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="background: #faf5ff; border: 1px solid #e9d5ff; padding: 10px 14px; margin-top: 4px;">
+                        <span style="font-weight: 700; font-size: 0.88rem; color: var(--purple);">
+                            <i class="fas fa-check-double" style="margin-right: 6px;"></i> บทพิสูจน์ "So What?":
+                        </span>
+                        <span style="font-size: 0.84rem; color: var(--text-sub);">
+                            เราไม่จำเป็นต้องมีสินค้า 10 ตัว และไม่ต้องยิงแอดทุกช่องทาง แค่โฟกัส <strong>"เซรั่มสิว + TikTok Micro-KOL"</strong> ก็สามารถสร้างผลกำไรสูงสุดได้ทันที!
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    - ชี้ให้เห็นว่าสไลด์ 4 และ 5 ทำหน้าที่เป็นกระดูกสันหลังของการนำเสนอ
+                </aside>
+            </section>
+
+            <!-- SLIDE 23: AURASKIN LAB SLIDE 6-7 -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-file-powerpoint" style="color: var(--success);"></i> ตัวอย่างจริง AuraSkin Lab (สไลด์ 6–7: แผนปฏิบัติการและ ROI)</h2>
+                        <span class="subtitle">การจบการนำเสนอด้วยตัวเลขกำไรที่ชัดเจน และคำขออนุมัติทรัพยากร</span>
+                    </div>
+                    <span class="badge-step success"><i class="fas fa-check-circle"></i> Part 3 (Action)</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div class="card" style="border-left: 4px solid var(--success);">
+                            <div style="font-size: 0.75rem; font-weight: 700; color: var(--success); text-transform: uppercase;">Slide 6: 90-Day Action Plan &amp; ROI</div>
+                            <h4 style="font-size: 0.98rem; margin: 4px 0 6px; color: var(--dark);">"แผนย้ายงบ 400,000 สู่ยอดขาย +2.4 ล้านบาท"</h4>
+                            <div style="font-size: 0.8rem; color: var(--text-sub); line-height: 1.45;">
+                                • <strong>Phase 1 (Day 1-30):</strong> ดึงงบ 4 แสน ส่งสินค้าให้ Micro-KOL 50 คนรีวิวเน้น Before/After ปัญหาสิว<br />
+                                • <strong>Phase 2 (Day 31-60):</strong> ออกโปร Bundle 'เซรั่มคู่คลีนเซอร์' 690 บาทเพื่อดัน AOV<br />
+                                • <strong>Phase 3 (Day 61-90):</strong> บรอดแคสต์ Line OA ดึงลูกค้าซื้อซ้ำรอบ 60 วัน<br />
+                                • <strong>คาดการณ์ ROI:</strong> ยอดขายรวม 11.6M, กำไรสุทธิเพิ่ม +35%
+                            </div>
+                        </div>
+
+                        <div class="card" style="border-left: 4px solid var(--primary); background: #f0fdf4;">
+                            <div style="font-size: 0.75rem; font-weight: 700; color: var(--primary); text-transform: uppercase;">Slide 7: The Clear Ask</div>
+                            <h4 style="font-size: 0.98rem; margin: 4px 0 6px; color: var(--primary-dark);">"สิ่งที่ทีมงานต้องการเพื่อเริ่มปฏิบัติการ"</h4>
+                            <div style="font-size: 0.8rem; color: var(--text-sub); line-height: 1.45;">
+                                1. <strong>อนุมัติจัดสรรงบ 400,000 บาท</strong> สำหรับสัญญา Micro-KOL 50 รายการ<br />
+                                2. <strong>อนุมัติผลิตเซรั่มสิวล็อตพิเศษ 5,000 ขวด</strong> เพื่อรองรับแคมเปญในสัปดาห์ที่ 3<br />
+                                3. <strong>นัดหมาย Review ผลลัพธ์ 30 วันแรก</strong> ในวันศุกร์ที่ 25 ของเดือนหน้า
+                            </div>
+                            <div class="highlight-box success" style="margin-top: 8px; font-size: 0.82rem;">
+                                <strong>Next Step:</strong> หากได้รับอนุมัติในวันนี้ ทีมงานพร้อมเปิดดีลแรกกับ KOL 10 คนแรกในวันพรุ่งนี้ทันที!
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="highlight-box" style="margin-top: 4px; border-left-color: var(--primary);">
+                        <i class="fas fa-handshake" style="color: var(--primary); margin-right: 6px;"></i>
+                        <strong>ปิดการขายอย่างสมบูรณ์แบบ:</strong> ผู้บริหารไม่ต้องคิดเองว่าจะต้องทำอะไรต่อ ทุกอย่างถูกวางไว้บนโต๊ะพร้อมให้เคาะอนุมัติในทันที!
+                    </div>
+                </div>
+                <aside class="notes">
+                    - ชี้ให้เห็นว่าสไลด์ 6 และ 7 ตอบคำถาม "ใคร ทำอะไร ได้เงินเท่าไร" ครบถ้วน
+                </aside>
+            </section>
+
+            <!-- SLIDE 24: GEMINI AS STORYTELLING CO-PILOT -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-robot" style="color: var(--primary);"></i> ใช้ Gemini เป็น Storytelling Co-Pilot: แปลงตัวเลขเป็นเรื่องเล่า</h2>
+                        <span class="subtitle">AI ไม่ใช่แค่เครื่องมือคำนวณสถิติ แต่เป็นสุดยอดผู้ช่วยร่างโครงเรื่องและขัดเกลาบทพูด</span>
+                    </div>
+                    <span class="badge-step primary"><i class="fas fa-sparkles"></i> AI Co-Pilot</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-3">
+                        <div class="card">
+                            <div style="font-size: 1.4rem; color: var(--primary); margin-bottom: 6px;"><i class="fas fa-sitemap"></i></div>
+                            <h4 style="font-size: 1.05rem; margin-bottom: 4px;">1. ร่าง Story Arc</h4>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.45;">
+                                ป้อนชุดข้อมูลหรือตารางผลวิเคราะห์ให้ Gemini ช่วยวางโครงเรื่องแบบ Context → Insight → Action สำหรับ 5–7 สไลด์
+                            </p>
+                        </div>
+
+                        <div class="card">
+                            <div style="font-size: 1.4rem; color: var(--purple); margin-bottom: 6px;"><i class="fas fa-compress-alt"></i></div>
+                            <h4 style="font-size: 1.05rem; margin-bottom: 4px;">2. สรุปเป็น One-Liner</h4>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.45;">
+                                ให้ AI ช่วยย่อข้อความยาวยืดให้กลายเป็น <strong>Action Title</strong> คมๆ 1 ประโยคที่ไม่เกิน 15 คำ สำหรับหัวสไลด์
+                            </p>
+                        </div>
+
+                        <div class="card">
+                            <div style="font-size: 1.4rem; color: var(--accent); margin-bottom: 6px;"><i class="fas fa-microphone-alt"></i></div>
+                            <h4 style="font-size: 1.05rem; margin-bottom: 4px;">3. ร่างสคริปต์พูด 3 นาที</h4>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.45;">
+                                สั่งให้ Gemini เขียนบทพูดนำเสนอ (Speaker Notes) โดยใช้สำนวนที่กระชับ มั่นใจ และใช้ภาษานักธุรกิจ
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="card" style="border-left: 4px solid var(--primary); padding: 10px 14px; margin-top: 4px;">
+                        <h4 style="font-size: 0.95rem; color: var(--dark); margin-bottom: 4px;"><i class="fas fa-lightbulb" style="color: var(--primary);"></i> เคล็ดลับการสั่งงาน Gemini สำหรับ Data Storytelling:</h4>
+                        <p style="font-size: 0.84rem; color: var(--text-sub); line-height: 1.45;">
+                            อย่าสั่งแค่ว่า <em>"ช่วยทำสไลด์ให้หน่อย"</em> แต่จงกำหนด <strong>ผู้ฟัง (Audience)</strong> เช่น <em>"ผู้ฟังคือนักลงทุนและผู้ก่อตั้งที่มีเวลาเพียง 3 นาที พวกเขาให้ความสำคัญกับ ROI และความเสี่ยงมากที่สุด"</em>
+                        </p>
+                    </div>
+                </div>
+                <aside class="notes">
+                    - อธิบาย 3 บทบาทของ Gemini ในการเป็น Storytelling Co-Pilot
+                </aside>
+            </section>
+
+            <!-- SLIDE 25: MASTER PROMPTS FOR DATA STORYTELLING -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-terminal" style="color: var(--primary);"></i> Master Prompts: คลังคำสั่ง AI สำหรับร่างสไลด์และบทพูด</h2>
+                        <span class="subtitle">Prompt สำเร็จรูปที่คัดสรรมาเพื่อเปลี่ยนข้อมูลดิบให้กลายเป็น Pitch Deck ระดับมืออาชีพ</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-code"></i> Ready-to-Use</span>
+                </div>
+                <div class="slide-body">
+                    <div class="prompt-box" style="margin-bottom: 6px;">
+                        <div class="prompt-header">Prompt 1: แปลงข้อมูลเป็น 7-Slide Master Deck Outline</div>
+                        คุณคือ Chief Strategy Officer และผู้เชี่ยวชาญด้าน Data Storytelling<br />
+                        บริบท: ฉันมีข้อมูลยอดขายและแคมเปญการตลาดของแบรนด์สกินแคร์ AuraSkin Lab ดังนี้ [แนบตาราง/ตัวเลข]<br />
+                        เป้าหมาย: ช่วยออกแบบโครงสร้างสไลด์นำเสนอ 7 หน้า สำหรับนำเสนอต่อคณะกรรมการบริหารเพื่อขออนุมัติงบ 400,000 บาท<br />
+                        ข้อกำหนดผลลัพธ์:<br />
+                        1. ใช้โครงสร้าง: Context (สไลด์ 1-3) ➔ Insight (สไลด์ 4-5) ➔ Action (สไลด์ 6-7)<br />
+                        2. ในแต่ละสไลด์ ให้ระบุ: Action Title 1 ประโยค, ข้อมูล/กราฟที่ควรแสดง, และประโยค Key Takeaway<br />
+                        3. ใช้หลักการ One Slide One Message และเน้นตัวเลข ROI ที่จับต้องได้
+                    </div>
+
+                    <div class="prompt-box">
+                        <div class="prompt-header">Prompt 2: ร่างสคริปต์ 3-Minute Elevator Pitch</div>
+                        จากโครงสร้างสไลด์ข้างต้น ช่วยเขียนบทพูดนำเสนอความยาว 3 นาที (ประมาณ 350-400 คำภาษาไทย)<br />
+                        โดยแบ่งเป็น: นาทีที่ 1 (Hook &amp; Stakes) ➔ นาทีที่ 2 (Core Insight) ➔ นาทีที่ 3 (Action &amp; The Ask)<br />
+                        ใช้น้ำเสียงมั่นใจ กระชับ เหมือนผู้ก่อตั้งสตาร์ทอัพที่กำลัง Pitch บนเวทีจริง
+                    </div>
+                </div>
+                <aside class="notes">
+                    - แนะนำให้นักศึกษาเซฟ Prompt ทั้ง 2 ตัวนี้ไว้ใช้ใน Workshop และ Final Project
+                </aside>
+            </section>
+
+            <!-- SLIDE 26: GEMINI TOUGH Q&A SIMULATION -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-user-ninja" style="color: var(--danger);"></i> Gemini Tough Q&amp;A: ซ้อมรับมือคำถามโหดจากนักลงทุน</h2>
+                        <span class="subtitle">ใช้ AI สวมบทบาทเป็นกรรมการจอมจับผิด เพื่อทดสอบจุดอ่อนของแผนกลยุทธ์ก่อนขึ้นเวทีจริง</span>
+                    </div>
+                    <span class="badge-step danger"><i class="fas fa-fist-raised"></i> Stress Test</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div class="card">
+                            <h4 style="color: var(--primary); margin-bottom: 6px;"><i class="fas fa-terminal"></i> Prompt สั่ง Gemini สวมบทบาทนักลงทุน</h4>
+                            <div class="prompt-box" style="font-size: 0.78rem;">
+                                <div class="prompt-header">The Tough Investor Prompt</div>
+                                สวมบทบาทเป็น "นักลงทุนสายการเงินจอมเคี่ยวและไม่เชื่ออะไรง่ายๆ"<br />
+                                ฉันกำลังจะเสนอแผนย้ายงบ 4 แสนไปทำ TikTok Micro-KOL สำหรับแบรนด์ AuraSkin Lab [แนบแผน]<br />
+                                จงตั้งคำถามที่ยากที่สุด 3 ข้อ เพื่อท้าทายสมมติฐาน ความเสี่ยง และความคุ้มค่าของแผนนี้<br />
+                                อย่าเพิ่งชม ให้จับผิดในจุดที่ข้อมูลอาจไม่สมเหตุสมผล!
+                            </div>
+                        </div>
+
+                        <div class="card" style="border-left: 4px solid var(--danger); background: #fff5f5;">
+                            <h4 style="color: var(--danger); margin-bottom: 6px;"><i class="fas fa-question-circle"></i> ตัวอย่างคำถามยากที่ AI มักตั้ง:</h4>
+                            <div style="display: flex; flex-direction: column; gap: 8px; font-size: 0.82rem; color: #7f1d1d;">
+                                <div>
+                                    <strong>Q1: ความต่อเนื่องของยอดขาย?</strong><br />
+                                    "ROAS 4.8x บน TikTok มาจากคลิปไวรัลแค่ 2 คลิปหรือเปล่า? ถ้าทำซ้ำกับครีเอเตอร์อีก 50 คน ตัวเลขจะไม่ตกลงมาเหลือ 2x เหรอ?"
+                                </div>
+                                <div>
+                                    <strong>Q2: การกระจุกตัวของสินค้า (Product Risk)?</strong><br />
+                                    "พึ่งพาแต่เซรั่มสิวตัวเดียวถึง 72% ถ้าคู่แข่งออกสูตรตามแล้วดัมพ์ราคา แบรนด์จะรอดได้อย่างไร?"
+                                </div>
+                                <div>
+                                    <strong>Q3: กำลังการผลิตและกระแสเงินสด?</strong><br />
+                                    "ถ้าออเดอร์พุ่งจริง สต็อก 5,000 ขวดพร้อมส่งไหม หรือจะติดปัญหาของขาดจนลูกค้าหนี?"
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="highlight-box success" style="margin-top: 4px;">
+                        <i class="fas fa-check-circle" style="color: #047857; margin-right: 6px;"></i>
+                        <strong>ประโยชน์ของการจำลอง Q&amp;A:</strong> คนที่ตอบคำถามบนเวทีได้อย่างมั่นใจ ไม่ใช่คนที่โชคดี แต่คือคนที่ <strong>"ซ้อมตอบคำถามที่ยากที่สุดกับ AI มาแล้วล่วงหน้า"</strong>!
+                    </div>
+                </div>
+                <aside class="notes">
+                    - ชี้ให้เห็นว่าการใช้ AI ซ้อม Q&A ช่วยปิดจุดตายของสไลด์ได้อย่างไร
+                </aside>
+            </section>
+
+            <!-- SLIDE 27: CHECKLIST: 5 THINGS BEFORE PITCHING -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-clipboard-check" style="color: var(--success);"></i> Checklist: 5 ข้อตรวจสอบสไลด์ก่อนขึ้นเวทีนำเสนอ</h2>
+                        <span class="subtitle">The Pitch Readiness Audit — ตรวจเช็กให้ชัวร์เพื่อความมั่นใจ 100%</span>
+                    </div>
+                    <span class="badge-step success"><i class="fas fa-tasks"></i> Quality Audit</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2" style="margin-top: 4px;">
+                        <div class="card" style="border-left: 4px solid var(--primary);">
+                            <h4 style="color: var(--primary); margin-bottom: 6px;">ด้านเนื้อหาและเรื่องเล่า (Story &amp; Strategy)</h4>
+                            <div style="display: flex; flex-direction: column; gap: 8px; font-size: 0.84rem; color: var(--text-sub);">
+                                <label style="display: flex; align-items: center; gap: 8px;">
+                                    <input type="checkbox" checked disabled> <strong>1. มีโครงสร้าง Context → Insight → Action</strong> ครบถ้วน ไม่ขาดตอนใดตอนหนึ่ง
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 8px;">
+                                    <input type="checkbox" checked disabled> <strong>2. ผ่านการทดสอบ "So What?"</strong> ตัวเลขทุกตัวมีคำอธิบายผลกระทบต่อธุรกิจ
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 8px;">
+                                    <input type="checkbox" checked disabled> <strong>3. มี The Clear Ask</strong> คำขออนุมัติงบหรือทรัพยากรชัดเจนในสไลด์สุดท้าย
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="card" style="border-left: 4px solid var(--secondary);">
+                            <h4 style="color: var(--secondary-dark); margin-bottom: 6px;">ด้านการออกแบบและการนำเสนอ (Design &amp; Delivery)</h4>
+                            <div style="display: flex; flex-direction: column; gap: 8px; font-size: 0.84rem; color: var(--text-sub);">
+                                <label style="display: flex; align-items: center; gap: 8px;">
+                                    <input type="checkbox" checked disabled> <strong>4. 1 Slide = 1 Key Message</strong> หัวข้อบอกข้อสรุป (Action Title) ชัดเจน
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 8px;">
+                                    <input type="checkbox" checked disabled> <strong>5. คลีนขยะสายตา (Decluttered)</strong> ใช้สีเน้นเฉพาะจุดสำคัญ และคุมเวลาได้ใน 3 นาที
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="background: #f8fafc; border: 1px solid var(--border); padding: 12px 16px; margin-top: 8px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <span style="font-weight: 700; color: var(--dark); font-size: 0.95rem;">
+                                <i class="fas fa-medal" style="color: var(--accent); margin-right: 8px;"></i>
+                                เป้าหมายสูงสุดของการสื่อสารข้อมูล:
+                            </span>
+                            <span style="font-size: 0.9rem; color: var(--primary); font-weight: 700;">
+                                ไม่ใช่การโชว์ว่าเราฉลาด... แต่คือการทำให้ผู้ฟังตัดสินใจได้อย่างถูกต้องและมั่นใจที่สุด!
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <aside class="notes">
+                    - ให้นักศึกษาใช้ Checklist นี้ตรวจใบงานใน Workshop
+                </aside>
+            </section>
+
+            <!-- SLIDE 28: SESSION SUMMARY -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-bookmark" style="color: var(--primary);"></i> สรุปบทเรียน: 5 กฎเหล็กของ Data Storytelling สำหรับเจ้าของธุรกิจ</h2>
+                        <span class="subtitle">ทบทวนสาระสำคัญประจำคาบเรียนเพื่อก้าวสู่นักสื่อสารข้อมูลชั้นยอด</span>
+                    </div>
+                    <span class="badge-step primary"><i class="fas fa-check"></i> Key Takeaways</span>
+                </div>
+                <div class="slide-body">
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <div class="card" style="padding: 10px 14px; border-left: 4px solid var(--primary); display: flex; align-items: center; gap: 12px;">
+                            <div style="font-size: 1.2rem; font-weight: 800; color: var(--primary);">1</div>
+                            <div style="font-size: 0.88rem; color: var(--dark);">
+                                <strong>ก้าวข้าม The Last Mile Problem:</strong> การวิเคราะห์ข้อมูลจะไม่มีมูลค่าเลย หากไม่สามารถแปลเป็นเรื่องเล่าที่ขับเคลื่อนการลงมือทำจริงได้
+                            </div>
+                        </div>
+
+                        <div class="card" style="padding: 10px 14px; border-left: 4px solid #0284c7; display: flex; align-items: center; gap: 12px;">
+                            <div style="font-size: 1.2rem; font-weight: 800; color: #0284c7;">2</div>
+                            <div style="font-size: 0.88rem; color: var(--dark);">
+                                <strong>โครงสร้างศักดิ์สิทธิ์ 3 ส่วน:</strong> ทุก Data Story ต้องร้อยเรียง <strong>Context (บริบท/เดิมพัน) → Insight (So What?) → Action (แผนปฏิบัติการ &amp; ROI)</strong>
+                            </div>
+                        </div>
+
+                        <div class="card" style="padding: 10px 14px; border-left: 4px solid var(--purple); display: flex; align-items: center; gap: 12px;">
+                            <div style="font-size: 1.2rem; font-weight: 800; color: var(--purple);">3</div>
+                            <div style="font-size: 0.88rem; color: var(--dark);">
+                                <strong>One Slide, One Message:</strong> 1 สไลด์มีข้อความหลักเดียว ใช้ Action Title บอกข้อสรุป ไม่ใช่แค่บอกชื่อหัวข้อ
+                            </div>
+                        </div>
+
+                        <div class="card" style="padding: 10px 14px; border-left: 4px solid var(--accent); display: flex; align-items: center; gap: 12px;">
+                            <div style="font-size: 1.2rem; font-weight: 800; color: #b45309;">4</div>
+                            <div style="font-size: 0.88rem; color: var(--dark);">
+                                <strong>ตัดขยะสายตา ใช้สีนำทาง:</strong> ลด Data Ink ที่ไร้ประโยชน์ เทสีเทาเป็นฉากหลัง และสาดสีสดใสลงบนจุดที่ต้องการเน้นเพียงจุดเดียว
+                            </div>
+                        </div>
+
+                        <div class="card" style="padding: 10px 14px; border-left: 4px solid var(--success); display: flex; align-items: center; gap: 12px;">
+                            <div style="font-size: 1.2rem; font-weight: 800; color: #047857;">5</div>
+                            <div style="font-size: 0.88rem; color: var(--dark);">
+                                <strong>BLUF &amp; 3-Minute Pitch:</strong> วางผลลัพธ์ไว้หน้าสุด ซ้อมพูดให้จบใน 180 วินาที และใช้ AI ช่วยจำลองคำถามยากเพื่อเตรียมพร้อม
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <aside class="notes">
+                    - สรุป 5 กฎเหล็ก ชี้ให้เห็นว่าทั้งหมดนี้เชื่อมโยงกันอย่างเป็นระบบ
+                </aside>
+            </section>
+
+            <!-- SLIDE 29: QUIZIZZ ARENA -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-gamepad" style="color: var(--accent);"></i> Quizizz Arena: ประลองไหวพริบ Data Storytelling Master</h2>
+                        <span class="subtitle">ทดสอบความเข้าใจ 10 ข้อ 3 ตัวเลือก (A, B, C) — พร้อมแล้วหยิบสมาร์ตโฟนขึ้นมาได้เลย!</span>
+                    </div>
+                    <span class="badge-step accent"><i class="fas fa-trophy"></i> Quiz Time</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2" style="margin-top: 4px;">
+                        <div class="card" style="text-align: center; padding: 20px;">
+                            <i class="fas fa-qrcode" style="font-size: 4rem; color: var(--primary); margin-bottom: 12px;"></i>
+                            <h3 style="font-size: 1.3rem; margin-bottom: 6px;">เข้าเล่นผ่าน Quizizz</h3>
+                            <p style="font-size: 0.95rem; color: var(--text-sub); margin-bottom: 12px;">
+                                สแกน QR Code หรือเข้าเว็บไซต์ <strong>joinmyquiz.com</strong>
+                            </p>
+                            <div style="background: #f1f5f9; padding: 8px 16px; border-radius: 8px; display: inline-block; font-family: 'Fira Code', monospace; font-size: 1.2rem; font-weight: 700; color: var(--primary);">
+                                GAME PIN: [รอรหัสจากอาจารย์]
+                            </div>
+                        </div>
+
+                        <div class="card" style="padding: 18px;">
+                            <h4 style="color: var(--dark); font-size: 1.05rem; margin-bottom: 10px;"><i class="fas fa-bullseye" style="color: var(--accent);"></i> หัวข้อสำคัญในแบบทดสอบ:</h4>
+                            <ul style="font-size: 0.88rem; color: var(--text-sub); line-height: 1.6; padding-left: 20px;">
+                                <li>The Last Mile Problem และความหมายของ Data Storytelling</li>
+                                <li>แยกแยะโครงสร้าง Context vs. Insight vs. Action</li>
+                                <li>การแปลง Data/Fact สู่ Actionable Insight ด้วย "So What?"</li>
+                                <li>กฎ One Slide One Message และการเขียน Action Title</li>
+                                <li>การลดสิ่งรกสายตา (Signal-to-Noise Ratio) และสีนำสายตา</li>
+                                <li>หลักการ BLUF และการ Pitch ผู้บริหารใน 3 นาที</li>
+                            </ul>
+                            <div class="highlight-box accent" style="margin-top: 10px; font-size: 0.82rem;">
+                                <strong>เวลา:</strong> 60 วินาทีต่อข้อ คิดวิเคราะห์จากสถานการณ์ธุรกิจจริง!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <aside class="notes">
+                    - เตรียมเปิด Quizizz สำหรับ Session 11
+                    - ให้นักศึกษาแข่งกันตอบคำถาม
+                </aside>
+            </section>
+
+            <!-- SLIDE 30: WORKSHOP BRIEF -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-laptop-code" style="color: var(--success);"></i> Workshop Brief: "AuraSkin Lab Pitch Deck &amp; 3-Min Pitch"</h2>
+                        <span class="subtitle">สวมบทบาททีมกลยุทธ์ข้อมูล ร่างสไลด์ 5–7 หน้าด้วย Gemini และขึ้น Pitch ผู้บริหาร 3 นาที</span>
+                    </div>
+                    <span class="badge-step success"><i class="fas fa-flask"></i> Hands-on Lab</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-4" style="margin-top: 4px;">
+                        <div class="card" style="border-top: 4px solid var(--primary); height: 100%;">
+                            <div style="font-size: 1.2rem; font-weight: 800; color: var(--primary); margin-bottom: 4px;">Mission 1</div>
+                            <h4 style="font-size: 0.95rem; margin-bottom: 4px;">Context &amp; Stakes</h4>
+                            <p style="font-size: 0.78rem; color: var(--text-sub); line-height: 1.4;">
+                                สรุปปัญหาค่าแอดพุ่ง 3 เท่า เดิมพัน 1 ล้าน และเขียนประโยคเปิด Hook
+                            </p>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid var(--secondary); height: 100%;">
+                            <div style="font-size: 1.2rem; font-weight: 800; color: var(--secondary); margin-bottom: 4px;">Mission 2</div>
+                            <h4 style="font-size: 0.95rem; margin-bottom: 4px;">Gemini Story Arc</h4>
+                            <p style="font-size: 0.78rem; color: var(--text-sub); line-height: 1.4;">
+                                ป้อนข้อมูลยอดขายให้ AI ช่วยร่าง Master Deck 7 หน้าตามโครงสร้าง
+                            </p>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid var(--purple); height: 100%;">
+                            <div style="font-size: 1.2rem; font-weight: 800; color: var(--purple); margin-bottom: 4px;">Mission 3</div>
+                            <h4 style="font-size: 0.95rem; margin-bottom: 4px;">Design Audit</h4>
+                            <p style="font-size: 0.78rem; color: var(--text-sub); line-height: 1.4;">
+                                ตรวจสอบกฎ 1 Slide 1 Message, ตัดขยะสายตา และเขียน Action Titles
+                            </p>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid var(--success); height: 100%;">
+                            <div style="font-size: 1.2rem; font-weight: 800; color: var(--success); margin-bottom: 4px;">Mission 4</div>
+                            <h4 style="font-size: 0.95rem; margin-bottom: 4px;">3-Min Live Pitch</h4>
+                            <p style="font-size: 0.78rem; color: var(--text-sub); line-height: 1.4;">
+                                ฝึกนำเสนอ 3 นาทีในกลุ่มย่อย รับ Feedback และตอบ Tough Q&amp;A
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="card" style="background: #faf5ff; border: 1px solid #e9d5ff; padding: 10px 14px; margin-top: 6px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <span class="tag purple"><i class="fas fa-download"></i> ชิ้นงานส่งท้ายคาบ</span>
+                                <span style="font-size: 0.88rem; font-weight: 600; color: var(--dark); margin-left: 8px;">
+                                    โครงร่างสไลด์ 5–7 หน้าในใบงาน + สคริปต์พูด 3 นาที (บันทึกในใบงาน HTML)
+                                </span>
+                            </div>
+                            <div style="font-size: 0.82rem; font-weight: 700; color: var(--primary);">
+                                เวลาปฏิบัติการ: 60 นาที (คะแนนเต็ม 20)
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="highlight-box success" style="margin-top: 4px; text-align: center; font-size: 0.88rem;">
+                        <i class="fas fa-play" style="margin-right: 6px;"></i>
+                        <strong>เปิดไฟล์ใบงาน:</strong> <code>session-11-workshop-worksheet.html</code> และเริ่มปฏิบัติการได้เลยครับ!
+                    </div>
+                </div>
+                <aside class="notes">
+                    - ชี้แจงขั้นตอน Workshop ให้นักศึกษาแบ่งกลุ่มและเริ่มลงมือทำ
+                </aside>
+            </section>
+
+        </div>
+    </div>
+
+    <!-- Reveal.js Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/notes/notes.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/highlight/highlight.js"></script>
+    <script>
+        const deck = new Reveal({
+            width: 1280,
+            height: 800,
+            margin: 0.04,
+            minScale: 0.1,
+            maxScale: 3.0,
+            controls: false,
+            progress: true,
+            center: false,
+            hash: true,
+            transition: 'slide',
+            transitionSpeed: 'default',
+            mouseWheel: true,
+            plugins: [RevealNotes, RevealHighlight]
+        });
+
+        deck.initialize().then(() => {
+            window.deck = deck;
+            window.Reveal = deck;
+
+            // Automated slide height audit (identical to Session 10)
+            window.runSlideHeightAudit = function () {
+                const targetH = deck.getConfig().height || 800;
+                const sections = document.querySelectorAll('.reveal .slides > section');
+                let passed = 0;
+                let failed = 0;
+                const results = [];
+
+                sections.forEach((sec, idx) => {
+                    const scrollH = sec.scrollHeight;
+                    const isPass = scrollH <= targetH + 4;
+                    if (isPass) passed++; else failed++;
+                    results.push({
+                        slide: idx + 1,
+                        scrollH,
+                        targetH,
+                        pass: isPass
+                    });
+                });
+
+                const summary = { total: sections.length, passed, failed, rate: Math.round((passed / sections.length) * 100) };
+
+                const sumDiv = document.getElementById('test-report-summary');
+                const content = document.getElementById('test-report-content');
+                if (sumDiv && content) {
+                    sumDiv.innerHTML = `Pass: <span style="color: #4ade80;">${passed}</span> / Fail: <span style="color: #f43f5e;">${failed}</span> (${summary.rate}%)`;
+                    let html = '';
+                    results.forEach(r => {
+                        html += `<div style="display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px solid #1e293b; color: ${r.pass ? '#cbd5e1' : '#f87171'};">
+                            <span>Slide ${r.slide}</span>
+                            <span>${r.scrollH}px / ${r.targetH}px [${r.pass ? 'PASS' : 'FAIL'}]</span>
+                        </div>`;
+                    });
+                    content.innerHTML = html;
+                }
+
+                return summary;
+            };
+
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('test') === 'true') {
+                const overlay = document.getElementById('test-report-overlay');
+                if (overlay) overlay.style.display = 'block';
+                setTimeout(() => {
+                    window.runSlideHeightAudit();
+                }, 800);
+            }
+
+            window.addEventListener('keydown', (e) => {
+                if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) return;
+
+                // Key 'A' or 'a': Toggle Aspect Ratio (16:10 <-> 16:9)
+                if (e.key === 'a' || e.key === 'A') {
+                    toggleAspectRatio();
+                }
+
+                // Key 'T' or 't': Toggle Slide Audit Test Overlay
+                if (e.key === 't' || e.key === 'T') {
+                    const overlay = document.getElementById('test-report-overlay');
+                    if (overlay) {
+                        overlay.style.display = overlay.style.display === 'block' ? 'none' : 'block';
+                        if (overlay.style.display === 'block') {
+                            window.runSlideHeightAudit();
+                        }
+                    }
+                }
+            });
+        });
+
+        // Show Temporary Aspect Ratio Toast Notification
+        function showRatioToast(msg) {
+            let toast = document.getElementById('aspect-ratio-toast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'aspect-ratio-toast';
+                toast.style.cssText = `
+                    position: fixed;
+                    bottom: 24px;
+                    right: 24px;
+                    background: rgba(15, 23, 42, 0.90);
+                    backdrop-filter: blur(8px);
+                    color: #ffffff;
+                    padding: 8px 18px;
+                    border-radius: 9999px;
+                    font-family: 'Outfit', 'Noto Sans Thai', sans-serif;
+                    font-size: 0.85rem;
+                    font-weight: 600;
+                    letter-spacing: 0.02em;
+                    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+                    border: 1px solid rgba(255, 255, 255, 0.15);
+                    z-index: 99999;
+                    pointer-events: none;
+                    transition: opacity 0.3s ease, transform 0.3s ease;
+                    transform: translateY(0);
+                    opacity: 0;
+                `;
+                document.body.appendChild(toast);
+            }
+            toast.innerHTML = `<i class="fa-solid fa-display" style="margin-right: 8px; color: #818cf8;"></i> ${msg}`;
+            toast.style.opacity = '1';
+            toast.style.transform = 'translateY(0)';
+            clearTimeout(window._ratioToastTimer);
+            window._ratioToastTimer = setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(6px)';
+            }, 1500);
+        }
+
+        // Toggle Aspect Ratio (Key 'A')
+        function toggleAspectRatio() {
+            if (deck.getConfig().height === 800) {
+                deck.configure({ width: 1280, height: 720 });
+                showRatioToast('สลับอัตราส่วนหน้าจอ: 16:9 (1280 × 720)');
+            } else {
+                deck.configure({ width: 1280, height: 800 });
+                showRatioToast('สลับอัตราส่วนหน้าจอ: 16:10 (1280 × 800)');
+            }
+        }
+        window.toggleAspectRatio = toggleAspectRatio;
+    </script>
+</body>
+</html>

@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ใบงาน Workshop ครั้งพิเศษ (Session 6A) — "Toon Coffee CRM Analytics ปฏิบัติการเจาะลึก 1,000 บิลกาแฟ ด้วยพลังสูตรและ Pivot Table"</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #3730a3;
+            --primary-light: #eef2ff;
+            --secondary: #0284c7;
+            --secondary-light: #e0f2fe;
+            --purple: #7c3aed;
+            --purple-light: #f3e8ff;
+            --accent: #e11d48;
+            --accent-warm: #d97706;
+            --success: #059669;
+            --success-light: #ecfdf5;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text-main: #0f172a;
+            --text-sub: #334155;
+            --text-muted: #64748b;
+            --border: #cbd5e1;
+            --border-focus: #4f46e5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Noto Sans Thai', 'Outfit', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 30px 20px;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            background: var(--surface);
+            padding: 40px 45px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.08), 0 8px 10px -6px rgba(0,0,0,0.04);
+            border: 1px solid var(--border);
+        }
+
+        header {
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header-title h1 {
+            font-size: 1.45rem;
+            color: var(--primary-dark);
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-title p {
+            font-size: 0.92rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .badge-info {
+            background: var(--purple-light);
+            color: var(--purple);
+            padding: 8px 16px;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-align: right;
+            border: 1px solid #d8b4fe;
+        }
+
+        .section-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 22px;
+            transition: border-color 0.2s;
+        }
+
+        .section-card.primary { border-top: 4px solid var(--primary); }
+        .section-card.purple { border-top: 4px solid var(--purple); }
+        .section-card.success { border-top: 4px solid var(--success); }
+        .section-card.accent { border-top: 4px solid var(--accent); }
+        .section-card.warm { border-top: 4px solid var(--accent-warm); }
+
+        h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-main);
+        }
+
+        .student-info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-top: 10px;
+        }
+
+        .field-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-sub);
+            margin-bottom: 4px;
+        }
+
+        .field-group input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.92rem;
+        }
+
+        .table-custom {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+            margin: 14px 0;
+        }
+
+        .table-custom th, .table-custom td {
+            border: 1px solid var(--border);
+            padding: 10px 14px;
+            text-align: left;
+        }
+
+        .table-custom th {
+            background-color: #f1f5f9;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .table-custom td input {
+            width: 100%;
+            padding: 6px 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.88rem;
+        }
+
+        .code-box {
+            background: #0f172a;
+            color: #f8fafc;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.88rem;
+            margin: 10px 0;
+            line-height: 1.5;
+        }
+
+        .callout {
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.90rem;
+            margin: 12px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .callout.info {
+            background: var(--primary-light);
+            border-left: 4px solid var(--primary);
+            color: var(--text-main);
+        }
+
+        .callout.warning {
+            background: #fffbeb;
+            border-left: 4px solid var(--accent-warm);
+            color: #92400e;
+        }
+
+        .callout.success {
+            background: var(--success-light);
+            border-left: 4px solid var(--success);
+            color: #065f46;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.92rem;
+            resize: vertical;
+            min-height: 70px;
+            margin-top: 6px;
+        }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; border: none; max-width: 100%; padding: 15px; }
+            .section-card { page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="header-title">
+            <h1><i class="fas fa-mug-hot" style="color: var(--primary);"></i> ใบงาน Workshop: Toon Coffee CRM Analytics</h1>
+            <p>ปฏิบัติการเจาะลึก 1,000 รายการสินค้า (Line Items) จาก 575 บิลกาแฟ ด้วยพลังสูตรสรุปตัวเลข และตารางเดือย (Pivot Table)</p>
+        </div>
+        <div class="badge-info">
+            <div>ครั้งพิเศษ (Session 6A)</div>
+            <div style="font-size: 0.75rem; font-weight: normal;">เวลา 50-60 นาที</div>
+        </div>
+    </header>
+
+    <!-- Student Metadata -->
+    <div class="section-card primary">
+        <h2><i class="fas fa-user-pen" style="color: var(--primary);"></i> ข้อมูลผู้จัดทำ</h2>
+        <div class="student-info-grid">
+            <div class="field-group">
+                <label>ชื่อ-นามสกุล นักศึกษา 1:</label>
+                <input type="text" placeholder="ชื่อ - สกุล">
+            </div>
+            <div class="field-group">
+                <label>รหัสนักศึกษา 1:</label>
+                <input type="text" placeholder="6XXXXXXXX">
+            </div>
+            <div class="field-group">
+                <label>ชื่อ-นามสกุล นักศึกษา 2 (ถ้ามีคู่):</label>
+                <input type="text" placeholder="ชื่อ - สกุล">
+            </div>
+            <div class="field-group">
+                <label>รหัสนักศึกษา 2:</label>
+                <input type="text" placeholder="6XXXXXXXX">
+            </div>
+            <div class="field-group" style="grid-column: span 2;">
+                <label>ลิงก์ Google Sheets ส่งงาน (เปิดสิทธิ์ Anyone with the link can view):</label>
+                <input type="text" placeholder="https://docs.google.com/spreadsheets/d/...">
+            </div>
+        </div>
+    </div>
+
+    <!-- Scenario -->
+    <div class="section-card warm">
+        <h2><i class="fas fa-briefcase" style="color: var(--accent-warm);"></i> บริบทธุรกิจ: "Toon Coffee House & Roast"</h2>
+        <p style="font-size: 0.92rem; color: var(--text-sub);">
+            ร้านกาแฟธีมตัวการ์ตูนสุดคราฟต์ มี 4 สาขา (สยามสแควร์, อารีย์, ทองหล่อ, ลาดพร้าว) บันทึกยอดขายไตรมาสที่ 1 ปี 2026 ได้ทั้งหมด <strong>1,000 รายการสินค้า (Line Items)</strong> จาก <strong>575 คำสั่งซื้อ (Orders)</strong> ในไฟล์ <code>session-6a-coffee-sales-crm.csv</code> (โดย 1 คำสั่งซื้อสามารถสั่งสินค้าได้หลายรายการ) สมาชิกในร้านมีตัวการ์ตูนชื่อดังมากมาย คุณได้รับมอบหมายให้สรุปสุขภาพธุรกิจและพฤติกรรมลูกค้า CRM เพื่อรายงานผู้บริหาร!
+        </p>
+    </div>
+
+    <!-- Mission 1 -->
+    <div class="section-card success">
+        <h2><i class="fas fa-file-import" style="color: var(--success);"></i> Mission 1: นำเข้าข้อมูลสู่ Google Sheets (Data Ingestion)</h2>
+        <ol style="font-size: 0.90rem; color: var(--text-sub); padding-left: 20px; line-height: 1.6;">
+            <li>เปิด Google Sheets ใหม่ ตั้งชื่อว่า <code>Toon_Coffee_Analytics_[รหัสนักศึกษา]</code></li>
+            <li>ไปที่ <strong>ไฟล์ (File) &gt; นำเข้า (Import) &gt; อัปโหลด (Upload)</strong> เลือกไฟล์ <code>session-6a-coffee-sales-crm.csv</code></li>
+            <li>เปลี่ยนชื่อแผ่นงานเป็น <code>raw_data</code></li>
+        </ol>
+        <div class="callout success">
+            <i class="fas fa-check-circle" style="font-size: 1.2rem;"></i>
+            <span><strong>Checklist ตรวจสอบ:</strong> แถวหัวตารางครบ 25 คอลัมน์, แถวข้อมูลมีตั้งแต่แถวที่ 2 ถึง 1001 (1,000 แถวรายการสินค้า จาก 575 คำสั่งซื้อ), คอลัมน์ Net_Amount เป็นตัวเลข</span>
+        </div>
+    </div>
+
+    <!-- Mission 2 -->
+    <div class="section-card primary">
+        <h2><i class="fas fa-calculator" style="color: var(--primary);"></i> Mission 2: คำนวณสรุปตัวเลขหลักด้วย 4 สูตรพื้นฐาน</h2>
+        <p style="font-size: 0.90rem; color: var(--text-sub); margin-bottom: 8px;">
+            สร้างชีตใหม่ชื่อ <code>KPI_Summary</code> แล้วเขียนสูตรคำนวณสรุปตัวชี้วัดต่อไปนี้:
+        </p>
+        <table class="table-custom">
+            <thead>
+                <tr>
+                    <th style="width: 35%;">ตัวชี้วัดธุรกิจ (KPI)</th>
+                    <th style="width: 45%;">สูตร Google Sheets ที่ใช้จริง</th>
+                    <th style="width: 20%;">ผลลัพธ์ที่ได้</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>1. ยอดขายสุทธิรวมทั้งหมด</strong> (Net Sales)</td>
+                    <td><code>=SUM(raw_data!V2:V1001)</code></td>
+                    <td><input type="text" placeholder="ใส่ตัวเลข บาท"></td>
+                </tr>
+                <tr>
+                    <td><strong>2. ยอดขายเฉลี่ยต่อรายการสินค้า</strong> (Average Line Item)</td>
+                    <td><code>=AVERAGE(raw_data!V2:V1001)</code></td>
+                    <td><input type="text" placeholder="ใส่ตัวเลข บาท/รายการ"></td>
+                </tr>
+                <tr>
+                    <td><strong>3. จำนวนชิ้นสินค้าที่ขายได้ทั้งหมด</strong> (Qty)</td>
+                    <td><code>=SUM(raw_data!Q2:Q1001)</code></td>
+                    <td><input type="text" placeholder="ใส่จำนวน ชิ้น"></td>
+                </tr>
+                <tr>
+                    <td><strong>4. จำนวนแถวรายการที่มีการบันทึกยอดเงิน</strong> (COUNT)</td>
+                    <td><code>=COUNT(raw_data!V2:V1001)</code></td>
+                    <td><input type="text" placeholder="ใส่จำนวน รายการ"></td>
+                </tr>
+                <tr>
+                    <td><strong>5. จำนวนแถวรายการที่มีชื่อลูกค้า</strong> (COUNTA)</td>
+                    <td><code>=COUNTA(raw_data!H2:H1001)</code></td>
+                    <td><input type="text" placeholder="ใส่จำนวน รายการ"></td>
+                </tr>
+                <tr>
+                    <td><strong>6. งบส่วนลดรวมที่ให้ลูกค้าทั้งหมด</strong> (Discount)</td>
+                    <td><code>=SUM(raw_data!U2:U1001)</code></td>
+                    <td><input type="text" placeholder="ใส่ตัวเลข บาท"></td>
+                </tr>
+                <tr>
+                    <td><strong>7. คะแนนความพึงพอใจเฉลี่ย</strong> (Rating)</td>
+                    <td><code>=AVERAGE(raw_data!Y2:Y1001)</code></td>
+                    <td><input type="text" placeholder="ใส่ตัวเลข ดาว"></td>
+                </tr>
+                <tr>
+                    <td><strong>8. ยอดขายต่ำสุดต่อรายการ</strong> (MIN)</td>
+                    <td><code>=MIN(raw_data!V2:V1001)</code></td>
+                    <td><input type="text" placeholder="ใส่ตัวเลข บาท"></td>
+                </tr>
+                <tr>
+                    <td><strong>9. ยอดขายสูงสุดต่อรายการ</strong> (MAX)</td>
+                    <td><code>=MAX(raw_data!V2:V1001)</code></td>
+                    <td><input type="text" placeholder="ใส่ตัวเลข บาท"></td>
+                </tr>
+                <tr>
+                    <td><strong>10. ค่ามัธยฐานของยอดขาย</strong> (MEDIAN)</td>
+                    <td><code>=MEDIAN(raw_data!V2:V1001)</code></td>
+                    <td><input type="text" placeholder="ใส่ตัวเลข บาท"></td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="callout warning">
+            <i class="fas fa-triangle-exclamation"></i>
+            <span><strong>คำถามเจาะลึก 1:</strong> ทำไมในข้อ 5 ถึงต้องใช้ <code>COUNTA</code> แทนที่จะเป็น <code>COUNT</code>? ถ้าใช้ COUNT จะได้ผลลัพธ์เป็นอะไร?<br>
+            <input type="text" style="width: 100%; margin-top: 6px; padding: 6px 10px; border-radius: 6px; border: 1px solid #cbd5e1;" placeholder="อธิบายสั้นๆ..."></span>
+            <span style="display: block; margin-top: 8px;"><strong>คำถามเจาะลึก 2 (AOV ที่แท้จริง):</strong> หากยอดขายรวมคือ ฿126,375.75 และมีคำสั่งซื้อทั้งหมด 575 คำสั่งซื้อ (บิล) ยอดสั่งซื้อเฉลี่ยต่อบิล (AOV = ยอดขายรวม / 575) มีค่าเท่ากับกี่บาท?<br>
+            <input type="text" style="width: 100%; margin-top: 6px; padding: 6px 10px; border-radius: 6px; border: 1px solid #cbd5e1;" placeholder="ใส่คำตอบ (บาท/บิล)..."></span>
+            <span style="display: block; margin-top: 8px;"><strong>คำถามเจาะลึก 3 (MEDIAN vs AVERAGE):</strong> ทำไมค่าเฉลี่ยต่อรายการได้ ฿126.38 แต่ค่ามัธยฐานได้เพียง ฿95.00? ความต่างนี้บอกอะไรแก่เจ้าของร้าน?<br>
+            <input type="text" style="width: 100%; margin-top: 6px; padding: 6px 10px; border-radius: 6px; border: 1px solid #cbd5e1;" placeholder="อธิบายเชิงพฤติกรรมลูกค้า..."></span>
+        </div>
+    </div>
+
+    <!-- Mission 3 -->
+    <div class="section-card accent">
+        <h2><i class="fas fa-filter-circle-dollar" style="color: var(--accent);"></i> Mission 3: การคำนวณแบบมีเงื่อนไขและฟังก์ชันช่วย (SUMIF, COUNTIF &amp; UNIQUE)</h2>
+        <div style="font-size: 0.90rem; color: var(--text-sub); line-height: 1.8;">
+            <p><strong>1. ยอดขายสุทธิเฉพาะ "สาขาสยามสแควร์":</strong></p>
+            <input type="text" style="width: 100%; padding: 6px 10px; margin: 4px 0 8px 0; border: 1px solid var(--border); border-radius: 6px;" placeholder="สูตร: =SUMIF(raw_data!L2:L1001, &quot;สาขาสยามสแควร์&quot;, raw_data!V2:V1001)">
+            <p>ได้ยอดขาย: <input type="text" style="width: 200px; padding: 4px 8px; border: 1px solid var(--border); border-radius: 4px;" placeholder="บาท"> (คิดเป็นกี่ % ของยอดขายรวม? <input type="text" style="width: 80px; padding: 4px 8px; border: 1px solid var(--border); border-radius: 4px;" placeholder="%">)</p>
+
+            <p style="margin-top: 12px;"><strong>2. ยอดขายสุทธิจากกลุ่มสมาชิก "Platinum":</strong></p>
+            <input type="text" style="width: 100%; padding: 6px 10px; margin: 4px 0 8px 0; border: 1px solid var(--border); border-radius: 6px;" placeholder="สูตร: =SUMIF(...)">
+            <p>ได้ยอดขาย: <input type="text" style="width: 200px; padding: 4px 8px; border: 1px solid var(--border); border-radius: 4px;" placeholder="บาท"></p>
+
+            <p style="margin-top: 12px;"><strong>3. จำนวนรายการสินค้าที่สั่งผ่านช่องทาง "เดลิเวอรี่ (Delivery)":</strong></p>
+            <input type="text" style="width: 100%; padding: 6px 10px; margin: 4px 0 8px 0; border: 1px solid var(--border); border-radius: 6px;" placeholder="สูตร: =COUNTIF(raw_data!M2:M1001, &quot;เดลิเวอรี่ (Delivery)&quot;)">
+            <p>ได้จำนวน: <input type="text" style="width: 200px; padding: 4px 8px; border: 1px solid var(--border); border-radius: 4px;" placeholder="รายการสินค้า"></p>
+
+            <p style="margin-top: 12px;"><strong>4. ทดลองใช้ฟังก์ชัน UNIQUE ดึงรายชื่อหมวดหมู่สินค้าทั้งหมด:</strong></p>
+            <input type="text" style="width: 100%; padding: 6px 10px; margin: 4px 0 8px 0; border: 1px solid var(--border); border-radius: 6px;" placeholder="สูตร: =UNIQUE(raw_data!N2:N1001)">
+            <p>หมวดหมู่ที่ได้: <input type="text" style="width: 100%; padding: 4px 8px; border: 1px solid var(--border); border-radius: 4px;" placeholder="เช่น Coffee, Bakery..."></p>
+        </div>
+    </div>
+
+    <!-- Mission 4 -->
+    <div class="section-card purple">
+        <h2><i class="fas fa-table-cells-large" style="color: var(--purple);"></i> Mission 4: ปลดล็อก 3 ตารางเดือย (Pivot Table Challenges)</h2>
+        
+        <h3 style="font-size: 1rem; color: var(--purple); margin: 10px 0 6px 0;">4.1 วิเคราะห์พฤติกรรมลูกค้า CRM ตาม Member Tier (ชีต `Pivot_CRM`)</h3>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px;">ตั้งค่า Rows: Member_Tier | Values: Net_Amount (SUM), Net_Amount (AVERAGE), Transaction_ID (COUNTA)</p>
+        <table class="table-custom">
+            <thead>
+                <tr>
+                    <th>Member Tier</th>
+                    <th>จำนวนรายการ (COUNTA)</th>
+                    <th>ยอดขายรวม (SUM)</th>
+                    <th>ยอดเฉลี่ยต่อรายการ (AVERAGE บาท)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Platinum</strong></td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                </tr>
+                <tr>
+                    <td><strong>Gold</strong></td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                </tr>
+                <tr>
+                    <td><strong>Silver</strong></td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                </tr>
+                <tr>
+                    <td><strong>Regular</strong></td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                </tr>
+                <tr>
+                    <td><em>Non-Member</em></td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3 style="font-size: 1rem; color: var(--purple); margin: 16px 0 6px 0;">4.2 Cross-Tabulation สาขา x หมวดหมู่สินค้า (ชีต `Pivot_Branch_Category`)</h3>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px;">ตั้งค่า Rows: Branch | Columns: Product_Category | Values: Net_Amount (SUM)</p>
+        <table class="table-custom">
+            <thead>
+                <tr>
+                    <th>สาขา</th>
+                    <th>Bakery</th>
+                    <th>Coffee</th>
+                    <th>Non-Coffee</th>
+                    <th>Merchandise</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>สยามสแควร์</td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                </tr>
+                <tr>
+                    <td>อารีย์</td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                </tr>
+                <tr>
+                    <td>ทองหล่อ</td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                </tr>
+                <tr>
+                    <td>ลาดพร้าว</td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3 style="font-size: 1rem; color: var(--purple); margin: 16px 0 6px 0;">4.3 ช่วงเวลาทองคำ x ช่องทางการขาย (ชีต `Pivot_Time_Slot`)</h3>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px;">ตั้งค่า Rows: Time_Slot | Columns: Sales_Channel | Values: Transaction_ID (COUNTA)</p>
+        <table class="table-custom">
+            <thead>
+                <tr>
+                    <th>ช่วงเวลาของวัน</th>
+                    <th>หน้าร้าน (Dine-in)</th>
+                    <th>ซื้อกลับ (Takeaway)</th>
+                    <th>เดลิเวอรี่ (Delivery)</th>
+                    <th>รวมรายการทั้งหมด</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>เช้า (07:00-10:59)</td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                </tr>
+                <tr>
+                    <td>กลางวัน (11:00-13:59)</td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                </tr>
+                <tr>
+                    <td>บ่าย (14:00-16:59)</td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                </tr>
+                <tr>
+                    <td>เย็น (17:00-20:30)</td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Mission 5 -->
+    <div class="section-card warm">
+        <h2><i class="fas fa-lightbulb" style="color: var(--accent-warm);"></i> Mission 5: เสนอแนะกลยุทธ์ธุรกิจจริง (Data to Action)</h2>
+        <div style="font-size: 0.90rem; color: var(--text-sub); margin-top: 8px;">
+            <label><strong>1. แผนดันยอดสมาชิก CRM (จะดูแลกลุ่ม Gold และกระตุ้นกลุ่ม Regular อย่างไร?):</strong></label>
+            <textarea placeholder="พิมพ์ข้อเสนอแนะเชิงธุรกิจ..."></textarea>
+
+            <label style="margin-top: 10px; display: block;"><strong>2. แผนบริหารสินค้าประจำสาขา (จากยอด Merchandise ที่สยามสแควร์ และ Bakery ที่ทองหล่อ):</strong></label>
+            <textarea placeholder="พิมพ์ข้อเสนอแนะเชิงธุรกิจ..."></textarea>
+
+            <label style="margin-top: 10px; display: block;"><strong>3. แผนบริหารช่วงเวลา (เช้าซื้อกลับเยอะ และเย็นยอดตกฮวบ):</strong></label>
+            <textarea placeholder="พิมพ์ข้อเสนอแนะเชิงธุรกิจ..."></textarea>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

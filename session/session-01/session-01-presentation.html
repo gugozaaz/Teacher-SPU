@@ -1,0 +1,1436 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ครั้งที่ 1: Data Science คืออะไร และทำไมเจ้าของธุรกิจต้องรู้ | Fundamentals of Data Science</title>
+    
+    <!-- Reveal.js & Fonts -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #4f46e5;          /* Indigo 600 */
+            --primary-glow: rgba(79, 70, 229, 0.12);
+            --secondary: #0284c7;        /* Sky 600 */
+            --accent: #e11d48;           /* Rose 600 */
+            --accent-warm: #d97706;      /* Amber 600 */
+            --success: #059669;          /* Emerald 600 */
+            --bg-main: #f8fafc;          /* Slate 50 */
+            --bg-card: #ffffff;
+            --bg-card-hover: #ffffff;
+            --border-card: #e2e8f0;      /* Slate 200 */
+            --border-glass: #e2e8f0;
+            --text-main: #0f172a;        /* Slate 900 */
+            --text-sub: #334155;         /* Slate 700 */
+            --text-muted: #64748b;       /* Slate 500 */
+            --gradient-main: linear-gradient(135deg, #4f46e5 0%, #0284c7 100%);
+            --gradient-accent: linear-gradient(135deg, #e11d48 0%, #d97706 100%);
+            --gradient-green: linear-gradient(135deg, #059669 0%, #0284c7 100%);
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: var(--bg-main);
+        }
+
+        .reveal {
+            font-family: 'Noto Sans Thai', 'Outfit', sans-serif;
+            color: var(--text-main);
+            background: var(--bg-main);
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(79, 70, 229, 0.05) 0%, transparent 45%),
+                radial-gradient(circle at 85% 85%, rgba(2, 132, 199, 0.05) 0%, transparent 45%);
+            font-size: 24px;
+        }
+
+        .reveal .slides {
+            text-align: left;
+        }
+
+        /* Enforce exact slide height and full container usage */
+        .reveal .slides section {
+            height: 100% !important;
+            max-height: 720px !important;
+            box-sizing: border-box !important;
+            padding: 22px 36px 26px 36px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: flex-start !important;
+            overflow: hidden !important;
+            background: transparent;
+        }
+
+        /* Slide Content Flow Container */
+        .slide-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+
+        /* Typography */
+        .reveal h1, .reveal h2, .reveal h3, .reveal h4 {
+            font-family: 'Noto Sans Thai', 'Outfit', sans-serif;
+            font-weight: 800;
+            text-transform: none;
+            letter-spacing: -0.02em;
+            line-height: 1.22;
+            color: var(--text-main);
+            margin: 0;
+        }
+
+        .reveal h1 {
+            font-size: 2.1em;
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+        }
+
+        .reveal h2 {
+            font-size: 1.38em;
+            color: var(--text-main);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .reveal h2 i {
+            color: var(--secondary);
+            font-size: 0.85em;
+        }
+
+        .reveal h3 {
+            font-size: 1.05em;
+            color: var(--secondary);
+            margin-bottom: 8px;
+        }
+
+        .reveal p, .reveal li {
+            font-size: 0.78em;
+            line-height: 1.5;
+            color: var(--text-sub);
+            font-weight: 400;
+            margin: 0 0 6px 0;
+        }
+
+        .reveal ul, .reveal ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .reveal li {
+            margin-bottom: 4px;
+        }
+
+        .reveal strong {
+            color: var(--secondary);
+            font-weight: 700;
+        }
+
+        .reveal em {
+            color: var(--accent);
+            font-style: normal;
+            font-weight: 600;
+        }
+
+        /* Badges & Pills */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 0.62em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .badge-primary {
+            background: #eef2ff;
+            color: #4338ca;
+            border: 1px solid #c7d2fe;
+        }
+
+        .badge-accent {
+            background: #fff1f2;
+            color: #be123c;
+            border: 1px solid #fecdd3;
+        }
+
+        .badge-success {
+            background: #ecfdf5;
+            color: #047857;
+            border: 1px solid #a7f3d0;
+        }
+
+        /* Header Navigation Info */
+        .slide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid var(--border-card);
+            font-size: 0.62em;
+            color: var(--text-muted);
+            flex-shrink: 0;
+        }
+
+        /* Cards */
+        .glass-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 12px;
+            padding: 14px 18px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s ease;
+        }
+
+        .glass-card:hover {
+            border-color: #cbd5e1;
+            box-shadow: var(--shadow-md);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        /* Pipeline Step Card */
+        .step-container {
+            display: flex;
+            align-items: stretch;
+            gap: 10px;
+            margin: 8px 0;
+        }
+
+        .step-card {
+            flex: 1;
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 10px;
+            padding: 12px 10px;
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .step-card .step-num {
+            width: 26px;
+            height: 26px;
+            background: var(--gradient-main);
+            color: white;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.78em;
+            margin-bottom: 6px;
+        }
+
+        .step-card h4 {
+            font-size: 0.82em;
+            color: var(--secondary);
+            margin-bottom: 4px;
+        }
+
+        .step-card p {
+            font-size: 0.65em;
+            line-height: 1.35;
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        /* Comparison Table */
+        .comp-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border-card);
+            font-size: 0.72em;
+            margin-top: 6px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .comp-table th {
+            padding: 10px 14px;
+            background: #eef2ff;
+            color: #3730a3;
+            font-weight: 700;
+            border-bottom: 1px solid var(--border-card);
+        }
+
+        .comp-table td {
+            padding: 9px 14px;
+            border-bottom: 1px solid #f1f5f9;
+            background: #ffffff;
+            color: var(--text-sub);
+            line-height: 1.4;
+        }
+
+        .comp-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Case study card */
+        .case-card {
+            border: 1px solid #e0f2fe;
+            border-left: 4px solid var(--secondary);
+            padding: 12px 16px;
+            background: #f0f9ff;
+            border-radius: 0 10px 10px 0;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .case-card.pink {
+            border-color: #ffe4e6;
+            border-left-color: var(--accent);
+            background: #fff1f2;
+        }
+
+        .case-card.green {
+            border-color: #dcfce7;
+            border-left-color: var(--success);
+            background: #f0fdf4;
+        }
+
+        .case-card.orange {
+            border-color: #fef3c7;
+            border-left-color: var(--accent-warm);
+            background: #fffbeb;
+        }
+
+        /* Prompt preview code block */
+        .code-box {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.68em;
+            color: #38bdf8;
+            line-height: 1.45;
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Highlight Box */
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.05), rgba(2, 132, 199, 0.05));
+            border: 1px solid rgba(79, 70, 229, 0.18);
+            border-radius: 10px;
+            padding: 10px 16px;
+            margin-top: 8px;
+            font-size: 0.72em;
+            color: var(--text-main);
+        }
+
+        /* Custom Navigation Footer */
+        .deck-footer {
+            position: fixed;
+            bottom: 10px;
+            left: 24px;
+            right: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: var(--text-muted);
+            z-index: 100;
+            pointer-events: none;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        /* Automated Test Overlay */
+        #test-report-overlay {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 380px;
+            max-height: 90vh;
+            background: rgba(255, 255, 255, 0.98);
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            padding: 16px;
+            z-index: 9999;
+            box-shadow: var(--shadow-lg);
+            font-family: 'Outfit', 'Noto Sans Thai', sans-serif;
+            font-size: 12px;
+            color: var(--text-main);
+            overflow-y: auto;
+        }
+        #test-report-overlay h3 {
+            margin: 0 0 10px 0;
+            color: var(--secondary);
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .test-pass { color: #059669; font-weight: 600; }
+        .test-fail { color: #dc2626; font-weight: 700; }
+        .test-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+    </style>
+</head>
+<body>
+
+<div class="reveal">
+    <div class="slides">
+
+        <!-- SLIDE 1: Title Slide -->
+        <section data-background-gradient="radial-gradient(circle at 50% 50%, #e0e7ff 0%, #f8fafc 100%)">
+            <div style="text-align: center; margin: auto 0; padding: 20px 10px;">
+                <div style="margin-bottom: 14px;">
+                    <span class="badge badge-primary"><i class="fas fa-graduation-cap"></i> ภาคเรียนที่ 1/2569</span>
+                    <span class="badge badge-accent" style="margin-left: 6px;"><i class="fas fa-rocket"></i> ครั้งที่ 1 / 15</span>
+                </div>
+                <h1 style="font-size: 2.3em; margin-bottom: 12px; font-weight: 900; line-height: 1.2;">
+                    Data Science คืออะไร<br>และทำไมเจ้าของธุรกิจต้องรู้
+                </h1>
+                <p style="font-size: 1.05em; color: var(--secondary); font-weight: 600; margin-bottom: 22px;">
+                    Fundamentals of Data Science (พื้นฐานวิทยาการข้อมูล)
+                </p>
+                <div style="display: inline-block; padding: 10px 24px; background: #ffffff; border-radius: 9999px; border: 1px solid var(--border-card); box-shadow: var(--shadow-sm);">
+                    <p style="font-size: 0.82em; margin: 0; color: var(--text-sub);">
+                        <i class="fas fa-user-tie" style="color: var(--secondary); margin-right: 6px;"></i>
+                        <strong>ผู้สอน:</strong> อาจารย์สุรชัย โกยสันติสุข | คณะการสร้างเจ้าของธุรกิจ มหาวิทยาลัยศรีปทุม
+                    </p>
+                </div>
+            </div>
+            <aside class="notes">
+                [Script เปิดคาบ]:
+                - ทักทายนักศึกษา สร้างบรรยากาศผ่อนคลาย
+                - ยืนยัน: วิชานี้ไม่ต้องเขียนโค้ด (Zero-coding required)
+                - เป้าหมาย: สร้าง Data Thinking + AI Copilot
+            </aside>
+        </section>
+
+        <!-- SLIDE 2: Warm-up & Course Mindset -->
+        <section>
+            <div class="slide-header">
+                <span><i class="fas fa-compass"></i> Course Orientation</span>
+                <span>Module 1: Data Thinking</span>
+            </div>
+            <h2><i class="fas fa-hand-holding-heart"></i> สบายใจได้... วิชานี้ "ไม่ต้องเขียนโค้ด!"</h2>
+            
+            <div class="slide-body">
+                <div class="grid-2">
+                    <div class="glass-card" style="border-left: 4px solid var(--accent);">
+                        <h3 style="color: var(--accent);"><i class="fas fa-times-circle"></i> สิ่งที่วิชานี้ "ไม่ใช่"</h3>
+                        <ul style="font-size: 0.76em;">
+                            <li>ไม่ใช่การนั่งท่องจำโค้ด Python หรือ R</li>
+                            <li>ไม่ใช่การคำนวณสูตรคณิตศาสตร์/แคลคูลัส</li>
+                            <li>ไม่ใช่การเขียนโปรแกรมคอมพิวเตอร์ทั้งวัน</li>
+                            <li>ไม่ใช่การฝึกให้คุณไปเป็น Programmer</li>
+                        </ul>
+                    </div>
+
+                    <div class="glass-card" style="border-left: 4px solid var(--success);">
+                        <h3 style="color: var(--success);"><i class="fas fa-check-circle"></i> สิ่งที่วิชานี้ "มุ่งเน้น"</h3>
+                        <ul style="font-size: 0.76em;">
+                            <li><strong>Data Thinking:</strong> มองปัญหาธุรกิจผ่านเลนส์ข้อมูล</li>
+                            <li><strong>ตั้งคำถามที่ทรงพลัง:</strong> ถามให้ตรงจุดเพื่อแก้ปัญหาธุรกิจ</li>
+                            <li><strong>Excel Master:</strong> จัดการและวิเคราะห์ข้อมูลอย่างคล่องแคล่ว</li>
+                            <li><strong>AI Copilot:</strong> ใช้ ChatGPT/Gemini/Claude ช่วยหา Insight</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="highlight-box" style="text-align: center;">
+                    💡 <strong>เป้าหมาย:</strong> สร้างคุณให้เป็น <strong>"เจ้าของธุรกิจที่ใช้ข้อมูลและ AI ขับเคลื่อนการตัดสินใจ (Data-Driven Entrepreneur)"</strong>
+                </div>
+            </div>
+            <aside class="notes">
+                เน้นย้ำ: เราเรียนเพื่อเป็น "ผู้นำทางธุรกิจที่ใช้ข้อมูล"
+            </aside>
+        </section>
+
+        <!-- SLIDE 3: Course Structure & Timeline -->
+        <section>
+            <div class="slide-header">
+                <span><i class="fas fa-sitemap"></i> ภาพรวมหลักสูตร 15 ครั้ง</span>
+                <span>5 Modules to Master</span>
+            </div>
+            <h2><i class="fas fa-layer-group"></i> แผนที่การเรียนรู้ 15 สัปดาห์</h2>
+
+            <div class="slide-body">
+                <div class="grid-3">
+                    <div class="glass-card" style="border-top: 3px solid var(--secondary);">
+                        <span class="badge badge-primary">Module 1 (ครั้งที่ 1-3)</span>
+                        <h4 style="margin: 6px 0 4px 0; color: var(--secondary); font-size: 0.85em;">Data Thinking</h4>
+                        <p style="font-size: 0.7em; color: var(--text-muted);">รู้จัก Data Science, ศิลปะการตั้งคำถามและสมมติฐาน, แหล่งข้อมูลธุรกิจ & PDPA</p>
+                    </div>
+
+                    <div class="glass-card" style="border-top: 3px solid var(--primary);">
+                        <span class="badge badge-primary">Module 2 (ครั้งที่ 4-5)</span>
+                        <h4 style="margin: 6px 0 4px 0; color: var(--primary); font-size: 0.85em;">เตรียมข้อมูลให้พร้อม</h4>
+                        <p style="font-size: 0.7em; color: var(--text-muted);">หลักการ Tidy Data, โครงสร้างตาราง, Data Cleaning กำจัดขยะข้อมูลใน Excel</p>
+                    </div>
+
+                    <div class="glass-card" style="border-top: 3px solid var(--accent-warm);">
+                        <span class="badge badge-primary">Module 3 (ครั้งที่ 6-8)</span>
+                        <h4 style="margin: 6px 0 4px 0; color: var(--accent-warm); font-size: 0.85em;">สถิติ & AI Assistant</h4>
+                        <p style="font-size: 0.7em; color: var(--text-muted);">สถิติธุรกิจ, การอ่านกราฟ Visualization, และ Prompt Engineering สำหรับ Data</p>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="glass-card" style="border-top: 3px solid var(--accent);">
+                        <span class="badge badge-primary">Module 4 (ครั้งที่ 9-11)</span>
+                        <h4 style="margin: 6px 0 4px 0; color: var(--accent); font-size: 0.85em;">วิเคราะห์เจาะลึกด้วย AI</h4>
+                        <p style="font-size: 0.7em; color: var(--text-muted);">Correlation, การพยากรณ์ยอดขาย (Forecasting), แบ่งกลุ่มลูกค้า (Segmentation) & What-If</p>
+                    </div>
+
+                    <div class="glass-card" style="border-top: 3px solid var(--success);">
+                        <span class="badge badge-primary">Module 5 (ครั้งที่ 12-15)</span>
+                        <h4 style="margin: 6px 0 4px 0; color: var(--success); font-size: 0.85em;">Data Storytelling & Project</h4>
+                        <p style="font-size: 0.7em; color: var(--text-muted);">การเล่าเรื่องด้วยข้อมูล, จริยธรรม AI, พัฒนาโปรเจกต์กลุ่ม และนำเสนอผลงานจริง</p>
+                    </div>
+                </div>
+            </div>
+            <aside class="notes">
+                ชี้ให้นักศึกษาเห็นภาพรวม: ร้อยเรียงจาก คิดเป็น -> เตรียมข้อมูล -> วิเคราะห์ -> สื่อสาร
+            </aside>
+        </section>
+
+        <!-- SLIDE 4: Grading & Class Structure -->
+        <section>
+            <div class="slide-header">
+                <span><i class="fas fa-calculator"></i> การวัดผลและการจัดสรรเวลา</span>
+                <span>Course Structure</span>
+            </div>
+            <h2><i class="fas fa-tasks"></i> สัดส่วนคะแนน & การจัดสรรเวลา 150 นาที</h2>
+
+            <div class="slide-body">
+                <div class="grid-2">
+                    <div class="glass-card">
+                        <h3 style="font-size: 0.95em; color: var(--secondary);"><i class="fas fa-chart-pie"></i> สัดส่วนคะแนน (100%)</h3>
+                        <table style="width: 100%; font-size: 0.72em; border-collapse: collapse;">
+                            <tr style="border-bottom: 1px solid var(--border-card);">
+                                <td style="padding: 6px 0;">🎮 <strong>Quiz Game ท้ายคาบ (Kahoot)</strong></td>
+                                <td style="text-align: right; color: var(--secondary); font-weight: 700;">20%</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border-card);">
+                                <td style="padding: 6px 0;">📝 <strong>Workshop & การมีส่วนร่วม</strong></td>
+                                <td style="text-align: right; color: var(--secondary); font-weight: 700;">20%</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border-card);">
+                                <td style="padding: 6px 0;">📑 <strong>ข้อสอบ Midterm (ครั้งที่ 1-8)</strong></td>
+                                <td style="text-align: right; color: var(--secondary); font-weight: 700;">20%</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 6px 0;">🚀 <strong>โปรเจกต์กลุ่มวิเคราะห์ธุรกิจจริง</strong></td>
+                                <td style="text-align: right; color: var(--success); font-weight: 700;">40%</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="glass-card">
+                        <h3 style="font-size: 0.95em; color: var(--accent-warm);"><i class="fas fa-clock"></i> ลำดับเวลาในแต่ละคาบ (150 นาที)</h3>
+                        <div style="font-size: 0.7em; line-height: 1.45;">
+                            <div style="padding: 6px 8px; background: rgba(79,70,229,0.08); border-radius: 6px; margin-bottom: 5px;">
+                                <strong>ช่วงที่ 1: บรรยายเนื้อหา (50 นาที)</strong><br>
+                                09.00 - 09.50 น. | คอนเซ็ปต์, กรณีศึกษา และตัวอย่างจริง
+                            </div>
+                            <div style="padding: 4px 8px; background: rgba(15,23,42,0.04); border-radius: 4px; margin-bottom: 5px; color: var(--text-muted);">
+                                ☕ <strong>พักเบรก (10 นาที)</strong> | 09.50 - 10.00 น.
+                            </div>
+                            <div style="padding: 6px 8px; background: rgba(2,132,199,0.08); border-radius: 6px; margin-bottom: 5px;">
+                                <strong>ช่วงที่ 2: Workshop ปฏิบัติการ (70 นาที)</strong><br>
+                                10.00 - 11.10 น. | ลงมือทำกลุ่มจริงด้วย Excel & AI Chat
+                            </div>
+                            <div style="padding: 6px 8px; background: rgba(225,29,72,0.08); border-radius: 6px;">
+                                <strong>ช่วงที่ 3: Kahoot Quiz & สรุป (20 นาที)</strong><br>
+                                11.10 - 11.30 น. | แข่งขันตอบคำถามเก็บคะแนน + สรุปประเด็น
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <aside class="notes">
+                ย้ำกฎ: ส่งงานตรงเวลา ทุกคาบมีคะแนนสะสม
+            </aside>
+        </section>
+
+        <!-- SLIDE 5: The Era of Data -->
+        <section>
+            <div class="slide-header">
+                <span><i class="fas fa-globe"></i> The World of Data</span>
+                <span>ทำไมยุคนี้ต้อง Data-Driven?</span>
+            </div>
+            <h2><i class="fas fa-database"></i> ยุคที่ "ความรู้สึก" ไม่เพียงพอสำหรับธุรกิจ</h2>
+
+            <div class="slide-body">
+                <div class="grid-2">
+                    <div class="glass-card" style="border-left: 4px solid var(--accent);">
+                        <h3 style="color: var(--accent); font-size: 0.98em;"><i class="fas fa-heart-crack"></i> ตัดสินใจด้วยสัญชาตญาณ (Intuition)</h3>
+                        <p style="font-size: 0.75em; margin-bottom: 6px;"><em>"ผมคิดว่าลูกค้าน่าจะชอบโปรนี้..."</em></p>
+                        <p style="font-size: 0.75em; margin-bottom: 6px;"><em>"เปิดร้านแถวนี้น่าจะขายดี คนเดินเยอะดี..."</em></p>
+                        <p style="font-size: 0.75em;"><em>"สั่งของมาตุนไว้เยอะๆ ก่อน เผื่อขายหมด..."</em></p>
+                        <div style="margin-top: 10px; padding: 6px 10px; background: #fff1f2; border: 1px solid #fecdd3; border-radius: 6px; font-size: 0.68em; color: #be123c;">
+                            ⚠️ <strong>ความเสี่ยง:</strong> สต็อกล้น, เงินจม, โปรโมชั่นแป้ก, ขาดทุนเงียบ
+                        </div>
+                    </div>
+
+                    <div class="glass-card" style="border-left: 4px solid var(--success);">
+                        <h3 style="color: var(--success); font-size: 0.98em;"><i class="fas fa-chart-line"></i> ตัดสินใจด้วยข้อมูล (Data-Driven)</h3>
+                        <p style="font-size: 0.75em; margin-bottom: 6px;"><strong>"ข้อมูลชี้ว่า</strong> ลูกค้า 70% สั่งเซ็ตคู่ช่วงเที่ยง"</p>
+                        <p style="font-size: 0.75em; margin-bottom: 6px;"><strong>"ยอดเสิร์ช Trends</strong> ย่านนี้เพิ่มขึ้น 250%"</p>
+                        <p style="font-size: 0.75em;"><strong>"พยากรณ์ว่า</strong> วันพุธฝนตก Delivery โต 40% เตรียมของพอดี"</p>
+                        <div style="margin-top: 10px; padding: 6px 10px; background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 6px; font-size: 0.68em; color: #047857;">
+                            ✨ <strong>ผลลัพธ์:</strong> ลดของเสีย, เพิ่มกำไร, ยิงแอดตรงเป้า, เติบโตยั่งยืน
+                        </div>
+                    </div>
+                </div>
+
+                <div class="highlight-box" style="text-align: center;">
+                    📌 <strong>คำกล่าวของ W. Edwards Deming:</strong> <em>"Without data, you're just another person with an opinion."</em>
+                </div>
+            </div>
+            <aside class="notes">
+                ชี้ความต่าง: มีข้อมูล = มีเรดาร์นำทางธุรกิจ
+            </aside>
+        </section>
+
+        <!-- SLIDE 6: Data Science vs Data Analytics -->
+        <section>
+            <div class="slide-header">
+                <span><i class="fas fa-balance-scale"></i> Core Concept</span>
+                <span>DS vs DA ต่างกันอย่างไร?</span>
+            </div>
+            <h2><i class="fas fa-arrows-split-up-and-left"></i> Data Science vs Data Analytics</h2>
+            <p style="font-size: 0.76em; color: var(--text-muted); margin-bottom: 4px;">สองวิชาที่เรียนคู่ขนานกัน แต่โฟกัสคนละมิติของเวลา:</p>
+
+            <div class="slide-body">
+                <div class="grid-2">
+                    <div class="glass-card" style="border-top: 3px solid var(--secondary);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                            <h3 style="color: var(--secondary); margin: 0; font-size: 0.95em;">Data Analytics (DA)</h3>
+                            <span class="badge badge-primary">อดีต & ปัจจุบัน</span>
+                        </div>
+                        <div style="margin: 8px 0; text-align: center;">
+                            <span style="font-size: 2em;">🚗🪞</span>
+                            <p style="font-size: 0.72em; color: var(--secondary); font-weight: 600; margin: 2px 0;">"กระจกมองหลังของรถยนต์"</p>
+                        </div>
+                        <ul style="font-size: 0.7em;">
+                            <li>ตอบคำถาม: <strong>เกิดอะไรขึ้น? (What happened?)</strong></li>
+                            <li>ตอบคำถาม: <strong>ทำไมมันถึงเกิดขึ้น? (Why did it happen?)</strong></li>
+                            <li>เน้นการสรุปรายงาน, Dashboard, ยอดขายย้อนหลัง</li>
+                        </ul>
+                    </div>
+
+                    <div class="glass-card" style="border-top: 3px solid var(--accent);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                            <h3 style="color: var(--accent); margin: 0; font-size: 0.95em;">Data Science (DS)</h3>
+                            <span class="badge badge-accent">อนาคต & อัตโนมัติ</span>
+                        </div>
+                        <div style="margin: 8px 0; text-align: center;">
+                            <span style="font-size: 2em;">🛰️🤖</span>
+                            <p style="font-size: 0.72em; color: var(--accent); font-weight: 600; margin: 2px 0;">"GPS นำทาง & Autopilot"</p>
+                        </div>
+                        <ul style="font-size: 0.7em;">
+                            <li>ตอบคำถาม: <strong>อะไรจะเกิดขึ้นข้างหน้า? (What will happen?)</strong></li>
+                            <li>ตอบคำถาม: <strong>เราควรทำอย่างไร? (What should we do?)</strong></li>
+                            <li>เน้นการพยากรณ์ (Forecasting), โมเดลแนะนำ, AI Automation</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <aside class="notes">
+                Metaphor สำคัญ: กระจกมองหลัง vs GPS อัจฉริยะ
+            </aside>
+        </section>
+
+        <!-- SLIDE 7: Comparison Table -->
+        <section>
+            <div class="slide-header">
+                <span><i class="fas fa-table"></i> ตารางเปรียบเทียบเชิงลึก</span>
+                <span>Deep Comparison</span>
+            </div>
+            <h2><i class="fas fa-exchange-alt"></i> สรุปความต่าง DA vs DS สำหรับเจ้าของธุรกิจ</h2>
+
+            <div class="slide-body">
+                <table class="comp-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 24%;">มิติการเปรียบเทียบ</th>
+                            <th style="width: 38%;">Data Analytics (DA)</th>
+                            <th style="width: 38%;">Data Science (DS)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>ช่วงเวลาที่โฟกัส</strong></td>
+                            <td>อดีต (Past) ถึง ปัจจุบัน (Present)</td>
+                            <td>ปัจจุบัน ถึง <strong>อนาคต (Future)</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>เป้าหมายหลัก</strong></td>
+                            <td>ค้นหา Insight อธิบายสถานะและสาเหตุ</td>
+                            <td><strong>พยากรณ์แนวโน้ม</strong> และตัดสินใจอัตโนมัติ</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ตัวอย่างคำถาม</strong></td>
+                            <td>"เดือนก่อนเมนูไหนขายดี ทำไมยอดตก?"</td>
+                            <td>"สัปดาห์หน้าต้องตุนสต็อกกี่ชิ้น ควรตั้งราคาเท่าไร?"</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ผลลัพธ์ที่ได้</strong></td>
+                            <td>Dashboard, กราฟสรุป, รายงาน KPI</td>
+                            <td><strong>โมเดลพยากรณ์</strong>, ระบบแนะนำสินค้า, AI Pricing</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="highlight-box" style="text-align: center;">
+                    🤝 <strong>ความสัมพันธ์:</strong> ธุรกิจที่ประสบความสำเร็จต้องใช้ <strong>DA สรุปบทเรียนในอดีต</strong> ควบคู่กับ <strong>DS วางแผนอนาคต</strong>
+                </div>
+            </div>
+            <aside class="notes">
+                อธิบายให้เห็นว่า 2 วิชานี้ทำงานประสานกัน
+            </aside>
+        </section>
+
+        <!-- SLIDE 8: 3 Pillars of Data Science -->
+        <section>
+            <div class="slide-header">
+                <span><i class="fas fa-shapes"></i> เสาหลักของ Data Science</span>
+                <span>3 Pillars</span>
+            </div>
+            <h2><i class="fas fa-cubes"></i> 3 องค์ประกอบของ Data Science</h2>
+            <p style="font-size: 0.74em; color: var(--text-muted); margin-bottom: 4px;">Data Science เกิดจากการรวม 3 ศาสตร์ โดยข้อ 3 คือจุดแข็งที่สุดของเรา:</p>
+
+            <div class="slide-body">
+                <div class="grid-3">
+                    <div class="glass-card" style="text-align: center; border-bottom: 3px solid var(--secondary);">
+                        <div style="font-size: 1.8em; margin-bottom: 4px;">📐</div>
+                        <h4 style="color: var(--secondary); font-size: 0.88em; margin-bottom: 4px;">1. สถิติและคณิตศาสตร์</h4>
+                        <p style="font-size: 0.68em; color: var(--text-muted);">
+                            เข้าใจค่าเฉลี่ย มัธยฐาน การกระจายตัว ความสัมพันธ์ เพื่ออ่านตัวเลขได้ถูกต้อง
+                        </p>
+                    </div>
+
+                    <div class="glass-card" style="text-align: center; border-bottom: 3px solid var(--primary);">
+                        <div style="font-size: 1.8em; margin-bottom: 4px;">💻</div>
+                        <h4 style="color: var(--primary); font-size: 0.88em; margin-bottom: 4px;">2. เทคโนโลยี & AI</h4>
+                        <p style="font-size: 0.68em; color: var(--text-muted);">
+                            การใช้เครื่องมือประมวลผล (Excel + AI Chat) ช่วยคิดคำนวณและจำลองผลลัพธ์
+                        </p>
+                    </div>
+
+                    <div class="glass-card" style="text-align: center; border-bottom: 3px solid var(--accent); background: #fff1f2;">
+                        <div style="font-size: 1.8em; margin-bottom: 4px;">💼</div>
+                        <h4 style="color: var(--accent); font-size: 0.88em; margin-bottom: 4px;">3. ความรู้ธุรกิจ (Domain)</h4>
+                        <p style="font-size: 0.68em; color: #9f1239;">
+                            <strong>หัวใจของพวกเรา!</strong> ความเข้าใจลูกค้า, ตลาด, กำไร-ขาดทุน และตั้งคำถามถูกจุด
+                        </p>
+                    </div>
+                </div>
+
+                <div class="highlight-box" style="text-align: center;">
+                    🎯 <strong>ความจริง:</strong> คนเขียนโปรแกรมเก่งแต่ไม่เข้าใจธุรกิจ สร้างโมเดลที่ไร้ประโยชน์ได้ — <em>Business Domain คือตัวนำทาง!</em>
+                </div>
+            </div>
+            <aside class="notes">
+                เสริมความมั่นใจให้นักศึกษาธุรกิจ: Domain Knowledge ของเรามีค่ามหาศาล
+            </aside>
+        </section>
+
+        <!-- SLIDE 9: 5-Step Data Science Process -->
+        <section>
+            <div class="slide-header">
+                <span><i class="fas fa-project-diagram"></i> Data Science Process</span>
+                <span>กระบวนการทำงาน 5 ขั้นตอน</span>
+            </div>
+            <h2><i class="fas fa-route"></i> วงจร Data Science 5 ขั้นตอนสำหรับธุรกิจ</h2>
+
+            <div class="slide-body">
+                <div class="step-container">
+                    <div class="step-card">
+                        <div class="step-num">1</div>
+                        <h4>1. ASK</h4>
+                        <p>ตั้งคำถามธุรกิจ & สมมติฐาน</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-num">2</div>
+                        <h4>2. COLLECT</h4>
+                        <p>รวบรวมข้อมูล (POS, Web, CRM)</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-num">3</div>
+                        <h4>3. PREPARE</h4>
+                        <p>จัดตาราง & Clean ข้อมูลใน Excel</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-num">4</div>
+                        <h4>4. ANALYZE</h4>
+                        <p>วิเคราะห์ & ให้ AI ค้นหา Pattern</p>
+                    </div>
+                    <div class="step-card" style="border-color: rgba(5, 150, 105, 0.4);">
+                        <div class="step-num" style="background: var(--gradient-green);">5</div>
+                        <h4 style="color: var(--success);">5. ACT</h4>
+                        <p>สื่อสาร & ลงมือตัดสินใจเชิงธุรกิจ</p>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <i class="fas fa-lightbulb" style="color: var(--accent-warm); margin-right: 6px;"></i>
+                    <strong>กฎทอง:</strong> หากขั้นตอนที่ 1 (ตั้งคำถาม) ไม่ชัดเจน ขั้นตอนที่ 2–5 จะกลายเป็นความสูญเปล่าทันที!
+                </div>
+            </div>
+            <aside class="notes">
+                อธิบายภาพรวมทั้ง 5 ขั้นตอน
+            </aside>
+        </section>
+
+        <!-- SLIDE 10: Step 1 & 2 in Detail -->
+        <section>
+            <div class="slide-header">
+                <span><i class="fas fa-search"></i> Process Deep Dive</span>
+                <span>ขั้นตอนที่ 1 และ 2</span>
+            </div>
+            <h2><i class="fas fa-question-circle"></i> ขั้นที่ 1: ตั้งคำถาม & ขั้นที่ 2: รวบรวมข้อมูล</h2>
+
+            <div class="slide-body">
+                <div class="grid-2">
+                    <div class="glass-card">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                            <span class="badge badge-primary">Step 1</span>
+                            <h3 style="margin: 0; font-size: 0.95em; color: var(--secondary);">Ask: ตั้งคำถามที่ดี</h3>
+                        </div>
+                        <div style="font-size: 0.72em; line-height: 1.45;">
+                            <p style="color: var(--accent); margin-bottom: 4px;">❌ <em>คำถามกว้างไป:</em> "ทำไมยอดขายไม่ดี?"</p>
+                            <p style="color: var(--success); margin-bottom: 8px;">✅ <em>คำถามที่ดี:</em> "ลูกค้ากลุ่มไหนที่หยุดซื้อซ้ำในรอบ 30 วัน และเกิดจากเมนูใด?"</p>
+                            <p style="color: var(--text-muted);">คำถามที่ดีต้องเจาะจง วัดผลได้ และนำไปสู่ Action</p>
+                        </div>
+                    </div>
+
+                    <div class="glass-card">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                            <span class="badge badge-primary">Step 2</span>
+                            <h3 style="margin: 0; font-size: 0.95em; color: var(--primary);">Collect: รวบรวมข้อมูล</h3>
+                        </div>
+                        <div style="font-size: 0.72em; line-height: 1.45;">
+                            <p><strong>ข้อมูลภายใน (Internal):</strong></p>
+                            <ul style="padding-left: 16px; margin-bottom: 4px; color: var(--text-muted);">
+                                <li>ประวัติการขายใน POS, ยอดบิล, ข้อมูลสมาชิก</li>
+                            </ul>
+                            <p><strong>ข้อมูลภายนอก (External):</strong></p>
+                            <ul style="padding-left: 16px; color: var(--text-muted);">
+                                <li>สภาพอากาศ, Google Trends, วันหยุดนักขัตฤกษ์</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <aside class="notes">
+                ยกตัวอย่างการตั้งคำถามที่ชัดเจน
+            </aside>
+        </section>
+
+        <!-- SLIDE 11: Step 3, 4 & 5 in Detail -->
+        <section>
+            <div class="slide-header">
+                <span><i class="fas fa-cogs"></i> Process Deep Dive</span>
+                <span>ขั้นตอนที่ 3, 4 และ 5</span>
+            </div>
+            <h2><i class="fas fa-magic"></i> ขั้นที่ 3: เตรียม → ขั้นที่ 4: วิเคราะห์ → ขั้นที่ 5: นำไปใช้</h2>
+
+            <div class="slide-body">
+                <div class="grid-3">
+                    <div class="glass-card">
+                        <span class="badge badge-primary">Step 3</span>
+                        <h4 style="margin: 6px 0 4px 0; color: var(--secondary); font-size: 0.85em;">3. PREPARE</h4>
+                        <p style="font-size: 0.68em; color: var(--text-muted);">
+                            <strong>Data Cleaning:</strong> ข้อมูลจริงมักพิมพ์ผิด วันที่สลับฟอร์แมต ช่องว่างเกิน ต้องคลีนใน Excel ให้เรียบร้อย (Garbage In = Garbage Out)
+                        </p>
+                    </div>
+
+                    <div class="glass-card">
+                        <span class="badge badge-accent">Step 4</span>
+                        <h4 style="margin: 6px 0 4px 0; color: var(--accent); font-size: 0.85em;">4. ANALYZE</h4>
+                        <p style="font-size: 0.68em; color: var(--text-muted);">
+                            <strong>หา Pattern & Insight:</strong> สรุปสถิติพื้นฐาน และส่งข้อมูลให้ AI Chat ช่วยวิเคราะห์หาสินค้าขายดี/ช้า และคาดการณ์แนวโน้ม
+                        </p>
+                    </div>
+
+                    <div class="glass-card">
+                        <span class="badge badge-success">Step 5</span>
+                        <h4 style="margin: 6px 0 4px 0; color: var(--success); font-size: 0.85em;">5. ACT</h4>
+                        <p style="font-size: 0.68em; color: var(--text-muted);">
+                            <strong>ลงมือตัดสินใจ:</strong> นำผลลัพธ์มาปรับโปรโมชั่น, วางแผนสต็อกวัตถุดิบ, หรือปรับเปลี่ยนราคาสินค้าเพื่อเพิ่มกำไร
+                        </p>
+                    </div>
+                </div>
+
+                <div class="highlight-box" style="text-align: center;">
+                    🚀 <strong>เป้าหมายปลายทาง:</strong> ข้อมูลต้องนำไปสู่ <strong>"การกระทำที่สร้างผลลัพธ์ทางธุรกิจ (Business Action)"</strong>
+                </div>
+            </div>
+            <aside class="notes">
+                ย้ำคำว่า Garbage In, Garbage Out
+            </aside>
+        </section>
+
+        <!-- SLIDE 12: Case Studies Thailand Title -->
+        <section data-background-gradient="linear-gradient(135deg, #e0f2fe 0%, #eef2ff 100%)">
+            <div style="text-align: center; margin: auto 0; padding: 20px 10px;">
+                <span class="badge badge-accent" style="font-size: 0.75em; margin-bottom: 12px;">
+                    <i class="fas fa-fire"></i> Thailand Case Studies
+                </span>
+                <h1 style="font-size: 2.2em; margin-bottom: 15px;">
+                    Data Science ในชีวิตจริง<br>ของธุรกิจไทยรอบตัวเรา
+                </h1>
+                <p style="font-size: 0.9em; color: var(--secondary); max-width: 650px; margin: 0 auto; font-weight: 500;">
+                    มาดูกันว่าแอปพลิเคชันและธุรกิจที่เราใช้บริการทุกวัน นำ Data Science มาขับเคลื่อนและสร้างรายได้มหาศาลได้อย่างไร
+                </p>
+            </div>
+            <aside class="notes">
+                เกริ่นเข้าสู่กรณีศึกษาธุรกิจจริงในไทย
+            </aside>
+        </section>
+
+        <!-- SLIDE 13: Case Study 1: Grab & LINE MAN -->
+        <section>
+            <div class="slide-header">
+                <span><i class="fas fa-motorcycle"></i> Case Study 1: Ride Hailing & Delivery</span>
+                <span>Grab & LINE MAN</span>
+            </div>
+            <h2><i class="fas fa-taxi"></i> Grab & LINE MAN: Dynamic Pricing & Matching</h2>
+
+            <div class="slide-body">
+                <div class="grid-2">
+                    <div class="case-card">
+                        <h3 style="color: var(--secondary); font-size: 0.95em;"><i class="fas fa-bolt"></i> 1. Dynamic Pricing (ราคาตามสถานการณ์)</h3>
+                        <p style="font-size: 0.72em; line-height: 1.45;">
+                            ฝนตกหนักตอน 18.00 น. คนกดเรียกรถ 1,000 คน แต่มีคนขับ 100 คัน...<br>
+                            <strong>Data Science Model:</strong> ปรับราคาขึ้นอัตโนมัติ เพื่อจูงใจให้คนขับเปิดแอป และจัดสรรรถให้คนที่จำเป็นที่สุด
+                        </p>
+                    </div>
+
+                    <div class="case-card green">
+                        <h3 style="color: var(--success); font-size: 0.95em;"><i class="fas fa-map-marked-alt"></i> 2. Intelligent Driver Matching</h3>
+                        <p style="font-size: 0.72em; line-height: 1.45;">
+                            ไม่ใช่แค่เลือกรถที่อยู่ใกล้สุด แต่คำนวณจาก <strong>สภาพจราจรแบบ Real-time, ทิศทางการกลับรถ, ประวัติการรับงาน</strong> เพื่อให้ผู้โดยสารรอน้อยที่สุด
+                        </p>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <i class="fas fa-info-circle" style="color: var(--secondary); margin-right: 6px;"></i>
+                    <strong>เบื้องหลัง:</strong> ใช้ข้อมูล GPS, ประวัติการเดินทาง, สภาพอากาศ, และความหนาแน่นจราจร ประมวลผลแบบ Real-time
+                </div>
+            </div>
+            <aside class="notes">
+                ชวนคุย: Dynamic Pricing บาลานซ์ Demand & Supply
+            </aside>
+        </section>
+
+        <!-- SLIDE 14: Case Study 2: Shopee / E-Commerce -->
+        <section>
+            <div class="slide-header">
+                <span><i class="fas fa-shopping-bag"></i> Case Study 2: E-Commerce</span>
+                <span>Shopee & TikTok Shop</span>
+            </div>
+            <h2><i class="fas fa-cart-arrow-down"></i> Shopee: Personalized Recommendation</h2>
+
+            <div class="slide-body">
+                <div class="grid-2">
+                    <div class="glass-card">
+                        <h3 style="color: var(--accent-warm); font-size: 0.95em;"><i class="fas fa-user-astronaut"></i> หน้าแรกของทุกคน "ไม่เหมือนกัน"</h3>
+                        <p style="font-size: 0.72em; color: var(--text-muted); margin-bottom: 6px;">
+                            แอป Shopee ประมวลผลพฤติกรรมของคุณทันที:
+                        </p>
+                        <ul style="font-size: 0.68em; padding-left: 16px; color: var(--text-sub);">
+                            <li>สินค้าที่คุณเคยคลิกดูในรอบ 24 ชั่วโมง</li>
+                            <li>สินค้าค้างในตะกร้าที่ยังไม่ชำระเงิน</li>
+                            <li>หมวดหมู่สินค้าที่คุณใช้เวลาดูนานที่สุด</li>
+                        </ul>
+                    </div>
+
+                    <div class="case-card orange">
+                        <h3 style="color: var(--accent-warm); font-size: 0.95em;"><i class="fas fa-bullseye"></i> พลังของ Recommendation Engine</h3>
+                        <p style="font-size: 0.72em; line-height: 1.45;">
+                            ระบบ AI จะเลือกแสดงสินค้าที่มีโอกาสที่คุณจะ <strong>"กดซื้อทันที"</strong> สูงสุด ส่งผลให้อัตราการปิดการขาย (Conversion Rate) เพิ่มขึ้นหลายเท่าตัว!
+                        </p>
+                        <div style="margin-top: 6px; font-size: 0.68em; color: #b45309;">
+                            🎯 <em>"รู้ใจลูกค้า ก่อนที่ลูกค้าจะรู้ตัวเอง"</em>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <aside class="notes">
+                ให้นักศึกษาลองเปิดเทียบหน้าจอ Shopee กับเพื่อน
+            </aside>
+        </section>
+
+        <!-- SLIDE 15: Case Study 3: SME Cafe & Restaurant -->
+        <section>
+            <div class="slide-header">
+                <span><i class="fas fa-mug-hot"></i> Case Study 3: SME & Cafe</span>
+                <span>ร้านกาแฟ & ร้านอาหารขนาดเล็ก</span>
+            </div>
+            <h2><i class="fas fa-store"></i> ร้านกาแฟ SME ใช้ Data Science ทำอะไรได้บ้าง?</h2>
+
+            <div class="slide-body">
+                <div class="grid-3">
+                    <div class="glass-card" style="border-top: 3px solid var(--secondary);">
+                        <div style="font-size: 1.5em; margin-bottom: 4px;">📦</div>
+                        <h4 style="color: var(--secondary); font-size: 0.82em; margin-bottom: 4px;">Demand Forecasting</h4>
+                        <p style="font-size: 0.67em; color: var(--text-muted);">
+                            คาดการณ์ยอดสั่งเครื่องดื่มล่วงหน้า สั่งนมสดและเมล็ดกาแฟพอดี ลดของเสียหมดอายุ (Zero Waste)
+                        </p>
+                    </div>
+
+                    <div class="glass-card" style="border-top: 3px solid var(--accent-warm);">
+                        <div style="font-size: 1.5em; margin-bottom: 4px;">🥐☕</div>
+                        <h4 style="color: var(--accent-warm); font-size: 0.82em; margin-bottom: 4px;">Basket Analysis</h4>
+                        <p style="font-size: 0.67em; color: var(--text-muted);">
+                            วิเคราะห์ว่ากาแฟตัวไหนมักถูกสั่งคู่กับครัวซองต์ จัด Bundle Set เพิ่มยอดใช้จ่ายต่อบิล
+                        </p>
+                    </div>
+
+                    <div class="glass-card" style="border-top: 3px solid var(--success);">
+                        <div style="font-size: 1.5em; margin-bottom: 4px;">👥⏱️</div>
+                        <h4 style="color: var(--success); font-size: 0.82em; margin-bottom: 4px;">Shift Scheduling</h4>
+                        <p style="font-size: 0.67em; color: var(--text-muted);">
+                            วิเคราะห์ชั่วโมง Peak Hours จัดตารางบาริสต้าให้พอดี ลูกค้าไม่ต้องรอนาน และไม่เปลืองค่าแรง
+                        </p>
+                    </div>
+                </div>
+
+                <div class="highlight-box" style="text-align: center;">
+                    💡 <strong>บทเรียน:</strong> Data Science ไม่จำเป็นต้องลงทุนหลักล้าน — ร้านเล็กๆ ที่ใช้ข้อมูลเป็น ก็สร้างความได้เปรียบได้ทันที!
+                </div>
+            </div>
+            <aside class="notes">
+                ชี้ความใกล้ตัว: ธุรกิจ SME ทำได้ทันที
+            </aside>
+        </section>
+
+        <!-- SLIDE 16: Essential Skills for Entrepreneurs -->
+        <section>
+            <div class="slide-header">
+                <span><i class="fas fa-user-check"></i> Entrepreneur Skills</span>
+                <span>ทักษะเจ้าของธุรกิจยุคใหม่</span>
+            </div>
+            <h2><i class="fas fa-crown"></i> 3 ทักษะข้อมูลของเจ้าของธุรกิจยุค AI</h2>
+
+            <div class="slide-body">
+                <div class="grid-3">
+                    <div class="glass-card" style="border-left: 4px solid var(--secondary);">
+                        <span class="badge badge-primary">Skill 1</span>
+                        <h4 style="margin: 6px 0 4px 0; color: var(--secondary); font-size: 0.88em;">Data Thinking</h4>
+                        <p style="font-size: 0.68em; color: var(--text-muted);">
+                            ความสามารถในการมองเห็นโอกาสทางธุรกิจจากข้อมูล และตั้งคำถามที่ชัดเจนเพื่อหาคำตอบ
+                        </p>
+                    </div>
+
+                    <div class="glass-card" style="border-left: 4px solid var(--accent);">
+                        <span class="badge badge-accent">Skill 2</span>
+                        <h4 style="margin: 6px 0 4px 0; color: var(--accent); font-size: 0.88em;">Data Translation</h4>
+                        <p style="font-size: 0.68em; color: var(--text-muted);">
+                            ทักษะการแปลผลตัวเลขกราฟิก ให้กลายเป็น <strong>"แผนการตัดสินใจและกลยุทธ์ทางธุรกิจ"</strong>
+                        </p>
+                    </div>
+
+                    <div class="glass-card" style="border-left: 4px solid var(--success);">
+                        <span class="badge badge-success">Skill 3</span>
+                        <h4 style="margin: 6px 0 4px 0; color: var(--success); font-size: 0.88em;">AI Collaboration</h4>
+                        <p style="font-size: 0.68em; color: var(--text-muted);">
+                            ความสามารถในการสั่งงาน AI Chat (Prompt) ให้เป็นผู้ช่วยวิเคราะห์ พร้อมตรวจสอบความถูกต้อง
+                        </p>
+                    </div>
+                </div>
+
+                <div class="highlight-box" style="text-align: center;">
+                    🤝 เราไม่จำเป็นต้องเป็น Coder แต่ต้องเป็น <strong>"Data-Driven Leader"</strong> ที่สั่งงานและอ่านผลออก!
+                </div>
+            </div>
+            <aside class="notes">
+                ย้ำบทบาทของเจ้าของธุรกิจ: ผู้นำที่ใช้ข้อมูล
+            </aside>
+        </section>
+
+        <!-- SLIDE 17: Introducing AI Chat as Copilot -->
+        <section>
+            <div class="slide-header">
+                <span><i class="fas fa-robot"></i> Your 24/7 Data Assistant</span>
+                <span>AI Chat Copilot</span>
+            </div>
+            <h2><i class="fas fa-sparkles"></i> แนะนำผู้ช่วยตลอดหลักสูตร: AI Chat</h2>
+            <p style="font-size: 0.74em; color: var(--text-muted); margin-bottom: 4px;">เราจะใช้ AI Chat ชั้นนำเป็น "ที่ปรึกษาธุรกิจและนักวิเคราะห์ข้อมูลส่วนตัว":</p>
+
+            <div class="slide-body">
+                <div class="grid-3">
+                    <div class="glass-card" style="text-align: center;">
+                        <div style="font-size: 1.6em; margin-bottom: 4px; color: #10a37f;"><i class="fas fa-brain"></i></div>
+                        <h4 style="color: var(--success); font-size: 0.88em; margin-bottom: 4px;">ChatGPT</h4>
+                        <p style="font-size: 0.67em; color: var(--text-muted);">
+                            เด่นเรื่องการคิดวิเคราะห์เชิงตรรกะ, วางโครงสร้างข้อมูล, และช่วยคิดกลยุทธ์ธุรกิจ
+                        </p>
+                    </div>
+
+                    <div class="glass-card" style="text-align: center;">
+                        <div style="font-size: 1.6em; margin-bottom: 4px; color: #0284c7;"><i class="fab fa-google"></i></div>
+                        <h4 style="color: var(--secondary); font-size: 0.88em; margin-bottom: 4px;">Google Gemini</h4>
+                        <p style="font-size: 0.67em; color: var(--text-muted);">
+                            เก่งภาษาไทยที่ลื่นไหล, เชื่อมต่อข้อมูล Real-time และอ่านเอกสารขนาดใหญ่
+                        </p>
+                    </div>
+
+                    <div class="glass-card" style="text-align: center;">
+                        <div style="font-size: 1.6em; margin-bottom: 4px; color: #d97706;"><i class="fas fa-feather-alt"></i></div>
+                        <h4 style="color: var(--accent-warm); font-size: 0.88em; margin-bottom: 4px;">Claude</h4>
+                        <p style="font-size: 0.67em; color: var(--text-muted);">
+                            เชี่ยวชาญการอ่านเอกสารยาวๆ และการสื่อสารเชิง Data Storytelling ที่สละสลวย
+                        </p>
+                    </div>
+                </div>
+
+                <div class="highlight-box" style="text-align: center;">
+                    📱 สมัครบัญชีใช้งานฟรีเตรียมไว้บนเบราว์เซอร์หรือสมาร์ทโฟนของทุกคน
+                </div>
+            </div>
+            <aside class="notes">
+                แนะนำให้นักศึกษาเตรียมบัญชีใช้งาน
+            </aside>
+        </section>
+
+        <!-- SLIDE 18: Prompting AI & Critical Thinking -->
+        <section>
+            <div class="slide-header">
+                <span><i class="fas fa-terminal"></i> AI Prompting & Caution</span>
+                <span>Prompt Preview & Ethics</span>
+            </div>
+            <h2><i class="fas fa-shield-alt"></i> กฎเหล็กในการใช้ AI วิเคราะห์ข้อมูลธุรกิจ</h2>
+
+            <div class="slide-body">
+                <div class="grid-2">
+                    <div class="glass-card">
+                        <h3 style="font-size: 0.95em; color: var(--secondary);"><i class="fas fa-comment-dots"></i> โครงสร้างการสั่งงาน (Prompting)</h3>
+                        <div class="code-box">
+                            "คุณคือที่ปรึกษาธุรกิจร้านอาหาร (Role)<br>
+                            นี่คือข้อมูลยอดขาย 1 สัปดาห์ (Context & Data)<br>
+                            ช่วยวิเคราะห์ว่าเมนูไหนควรงดขายวันธรรมดา (Task)<br>
+                            สรุปเป็นตาราง พร้อมเหตุผล 3 ข้อ (Format)"
+                        </div>
+                    </div>
+
+                    <div class="glass-card" style="border-left: 4px solid var(--accent);">
+                        <h3 style="font-size: 0.95em; color: var(--accent);"><i class="fas fa-exclamation-triangle"></i> 3 สิ่งที่ต้องระวังเด็ดขาด!</h3>
+                        <ul style="font-size: 0.68em; padding-left: 16px; line-height: 1.45;">
+                            <li><strong>AI Hallucination:</strong> AI อาจ "กุข้อมูลเอง" ต้อง Fact-check เสมอ</li>
+                            <li><strong>PDPA & Privacy:</strong> ห้ามอัปโหลดชื่อลูกค้า, เลขบัตรประชาชน หรือเบอร์โทรศัพท์ลง AI สาธารณะ</li>
+                            <li><strong>Decision Maker:</strong> AI เป็นเพียงผู้ช่วย (Copilot) เราคือผู้ตัดสินใจ</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <aside class="notes">
+                ย้ำเรื่อง Critical Thinking และ PDPA
+            </aside>
+        </section>
+
+        <!-- SLIDE 19: Workshop Kickoff -->
+        <section data-background-gradient="linear-gradient(135deg, #dcfce7 0%, #eff6ff 100%)">
+            <div style="text-align: center; margin: auto 0; padding: 20px 10px;">
+                <span class="badge badge-success" style="font-size: 0.8em; margin-bottom: 12px;">
+                    <i class="fas fa-laptop-code"></i> Workshop Time (70 นาที)
+                </span>
+                <h1 style="font-size: 2.1em; margin-bottom: 12px;">
+                    กิจกรรม: "Data ในชีวิตประจำวันของธุรกิจ"
+                </h1>
+                <p style="font-size: 0.95em; color: var(--secondary); margin-bottom: 20px; font-weight: 500;">
+                    สำรวจจุดกำเนิดข้อมูล 1 วัน + ตั้ง 5 คำถามทองคำทางธุรกิจ + ทดลองใช้ AI Chat
+                </p>
+                <div style="display: inline-flex; gap: 12px; font-size: 0.78em;">
+                    <span class="badge badge-primary"><i class="fas fa-users"></i> กลุ่มละ 4–5 คน</span>
+                    <span class="badge badge-accent"><i class="fas fa-clock"></i> เวลา: 10.00 - 11.10 น.</span>
+                </div>
+            </div>
+            <aside class="notes">
+                เปิดสไลด์นี้ก่อนปล่อยพักเบรก 10 นาที
+            </aside>
+        </section>
+
+        <!-- SLIDE 20: Workshop Mission Steps -->
+        <section>
+            <div class="slide-header">
+                <span><i class="fas fa-tasks"></i> Workshop Mission</span>
+                <span>ภารกิจ 4 ตอนของกลุ่ม</span>
+            </div>
+            <h2><i class="fas fa-clipboard-list"></i> 4 ภารกิจในใบงาน Workshop</h2>
+
+            <div class="slide-body">
+                <div class="grid-4">
+                    <div class="glass-card" style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 4px; color: var(--secondary); font-weight: 800;">1</div>
+                        <h4 style="font-size: 0.8em; color: var(--secondary); margin-bottom: 2px;">เลือกโมเดลธุรกิจ</h4>
+                        <p style="font-size: 0.65em; color: var(--text-muted); margin: 0;">
+                            เลือก 1 ธุรกิจ (คาเฟ่, เสื้อผ้า, คาร์แคร์, ชานม) กำหนดชื่อร้าน & ลูกค้า
+                        </p>
+                    </div>
+
+                    <div class="glass-card" style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 4px; color: var(--primary); font-weight: 800;">2</div>
+                        <h4 style="font-size: 0.8em; color: var(--primary); margin-bottom: 2px;">Data Touchpoints</h4>
+                        <p style="font-size: 0.65em; color: var(--text-muted); margin: 0;">
+                            สำรวจ 1 วันของร้าน มีข้อมูลอะไรเกิดขึ้นและเก็บไว้ที่ไหน (POS, LINE)
+                        </p>
+                    </div>
+
+                    <div class="glass-card" style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 4px; color: var(--accent); font-weight: 800;">3</div>
+                        <h4 style="font-size: 0.8em; color: var(--accent); margin-bottom: 2px;">5 คำถามทองคำ</h4>
+                        <p style="font-size: 0.65em; color: var(--text-muted); margin: 0;">
+                            ตั้งคำถาม 5 ด้าน (ยอดขาย, ลูกค้า, สต็อก, ช่องทางขาย, และคำถามพยากรณ์)
+                        </p>
+                    </div>
+
+                    <div class="glass-card" style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 4px; color: var(--success); font-weight: 800;">4</div>
+                        <h4 style="font-size: 0.8em; color: var(--success); margin-bottom: 2px;">ลองถาม AI Chat</h4>
+                        <p style="font-size: 0.65em; color: var(--text-muted); margin: 0;">
+                            นำคำถามใส่ Prompt ถาม AI Chat บันทึกข้อเสนอแนะที่น่าสนใจ
+                        </p>
+                    </div>
+                </div>
+
+                <div class="highlight-box" style="text-align: center;">
+                    🎤 <strong>ช่วงท้าย (10.50 - 11.10 น.):</strong> สุ่มตัวแทน 3-4 กลุ่ม ออกมา Pitching หน้าห้อง กลุ่มละ 2 นาที!
+                </div>
+            </div>
+            <aside class="notes">
+                อาจารย์เดินโค้ชรายกลุ่ม
+            </aside>
+        </section>
+
+        <!-- SLIDE 21: Kahoot Quiz Arena -->
+        <section data-background-gradient="radial-gradient(circle at 50% 50%, #fae8ff 0%, #f8fafc 100%)">
+            <div style="text-align: center; margin: auto 0; padding: 20px 10px;">
+                <div style="margin-bottom: 12px;">
+                    <span class="badge badge-accent" style="font-size: 0.85em;"><i class="fas fa-trophy"></i> คะแนนเก็บ 20%</span>
+                </div>
+                <h1 style="font-size: 2.3em; margin-bottom: 12px;">
+                    🎮 Kahoot! Quiz Arena
+                </h1>
+                <p style="font-size: 1.05em; color: var(--secondary); margin-bottom: 20px; font-weight: 600;">
+                    ประลองความรู้ 10 ข้อ · มีทั้งคำตอบเดียวและเลือกหลายคำตอบ!
+                </p>
+                
+                <div class="glass-card" style="max-width: 500px; margin: 0 auto; padding: 16px;">
+                    <p style="font-size: 0.85em; margin-bottom: 8px; color: var(--text-main);">
+                        📲 เปิดสมาร์ทโฟน เข้าเว็บ <strong>kahoot.it</strong> หรือเปิดแอป
+                    </p>
+                    <p style="font-size: 0.75em; color: var(--text-muted); margin: 0;">
+                        ใส่ชื่อเล่นตามด้วยรหัสนักศึกษา เช่น: <strong style="color: var(--secondary);">โบ๊ท 66123456</strong>
+                    </p>
+                </div>
+            </div>
+            <aside class="notes">
+                เปิดจอ PIN Kahoot เริ่มเกม
+            </aside>
+        </section>
+
+        <!-- SLIDE 22: Summary & Next Session Preview -->
+        <section>
+            <div class="slide-header">
+                <span><i class="fas fa-flag-checkered"></i> Wrap-up & Next Step</span>
+                <span>สรุปบทเรียนประจำสัปดาห์</span>
+            </div>
+            <h2><i class="fas fa-bookmark"></i> สรุปประเด็นสำคัญประจำครั้งที่ 1</h2>
+
+            <div class="slide-body">
+                <div class="grid-2">
+                    <div class="glass-card">
+                        <h3 style="font-size: 0.95em; color: var(--secondary);"><i class="fas fa-check-double"></i> สิ่งที่เราได้เรียนรู้วันนี้</h3>
+                        <ul style="font-size: 0.7em; padding-left: 16px; line-height: 1.45;">
+                            <li><strong>Data Science</strong> คือการแปลงข้อมูลให้เกิดการตัดสินใจและมูลค่าธุรกิจ</li>
+                            <li><strong>DA มองย้อนหลัง (กระจกมองหลัง)</strong> vs <strong>DS มองอนาคต (GPS นำทาง)</strong></li>
+                            <li><strong>5 ขั้นตอน:</strong> Ask → Collect → Prepare → Analyze → Act</li>
+                            <li><strong>AI Chat</strong> คือผู้ช่วยวิเคราะห์ (Copilot) เราคือผู้ตัดสินใจ</li>
+                        </ul>
+                    </div>
+
+                    <div class="glass-card" style="border-top: 3px solid var(--accent-warm);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                            <h3 style="font-size: 0.95em; color: var(--accent-warm); margin: 0;"><i class="fas fa-arrow-right"></i> ครั้งที่ 2 สัปดาห์หน้า</h3>
+                            <span class="badge badge-primary">Session 2 Preview</span>
+                        </div>
+                        <p style="font-size: 0.78em; font-weight: 700; color: var(--text-main); margin-bottom: 4px;">
+                            Data Thinking — ศิลปะการตั้งคำถามและสมมติฐาน
+                        </p>
+                        <ul style="font-size: 0.68em; padding-left: 16px; color: var(--text-muted); line-height: 1.4;">
+                            <li>การตั้งคำถามที่ดี (Asking the Right Questions)</li>
+                            <li>Hypothesis Thinking (การตั้งสมมติฐานก่อนวิเคราะห์)</li>
+                            <li>4 ระดับการวิเคราะห์: Descriptive → Diagnostic → Predictive → Prescriptive</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 6px;">
+                    <p style="font-size: 0.78em; color: var(--success); font-weight: 600; margin: 0;">
+                        🎉 ขอบคุณทุกคนสำหรับความตั้งใจ และพบกันใหม่วันพุธหน้า 09.00 น. ครับ!
+                    </p>
+                </div>
+            </div>
+            <aside class="notes">
+                กล่าวขอบคุณ และเตือนส่งใบงาน
+            </aside>
+        </section>
+
+    </div>
+</div>
+
+<div class="deck-footer">
+    <span>📘 Fundamentals of Data Science | ม.ศรีปทุม</span>
+    <span>อาจารย์สุรชัย โกยสันติสุข</span>
+</div>
+
+<!-- Test Report Overlay -->
+<div id="test-report-overlay">
+    <h3>
+        <span>Automated Slide Inspector</span>
+        <button onclick="document.getElementById('test-report-overlay').style.display='none'" style="background:none; border:none; color:var(--text-main); font-size:14px; cursor:pointer;">✕</button>
+    </h3>
+    <div id="test-report-content">Running automated test...</div>
+</div>
+
+<!-- Reveal.js Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/notes/notes.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/highlight/highlight.js"></script>
+<script>
+    const deck = new Reveal({
+        width: 1280,
+        height: 720,
+        margin: 0.04,
+        minScale: 0.1,
+        maxScale: 3.0,
+        controls: true,
+        progress: true,
+        center: false,
+        hash: true,
+        transition: 'slide',
+        transitionSpeed: 'default',
+        plugins: [ RevealNotes, RevealHighlight ]
+    });
+
+    deck.initialize().then(() => {
+        // Expose test function to window for automation
+        window.runSlideHeightAudit = function() {
+            const sections = document.querySelectorAll('.reveal .slides > section');
+            const results = [];
+            let totalPassed = 0;
+            const containerHeight = 720;
+
+            sections.forEach((sec, idx) => {
+                // Navigate to slide to get active layout calculations
+                const scrollH = sec.scrollHeight;
+                const clientH = sec.clientHeight || containerHeight;
+                const isOverflown = scrollH > containerHeight + 2; // allowance 2px
+                
+                if (!isOverflown) totalPassed++;
+
+                results.push({
+                    slideIndex: idx + 1,
+                    title: sec.querySelector('h1, h2')?.innerText?.trim()?.substring(0, 30) || `Slide ${idx+1}`,
+                    scrollHeight: scrollH,
+                    containerHeight: containerHeight,
+                    passed: !isOverflown
+                });
+            });
+
+            const summary = {
+                totalSlides: sections.length,
+                passedCount: totalPassed,
+                failedCount: sections.length - totalPassed,
+                isAllPassed: totalPassed === sections.length,
+                details: results
+            };
+
+            // Render to overlay if visible
+            const overlay = document.getElementById('test-report-overlay');
+            const content = document.getElementById('test-report-content');
+            if (overlay && content) {
+                let html = `<div style="margin-bottom: 8px; font-weight: bold; color: ${summary.isAllPassed ? '#059669' : '#dc2626'}">
+                    Result: ${summary.passedCount}/${summary.totalSlides} slides passed (${summary.isAllPassed ? '100% OK' : 'OVERFLOW DETECTED'})
+                </div>`;
+                results.forEach(r => {
+                    html += `<div class="test-row">
+                        <span>#${r.slideIndex} ${r.title}</span>
+                        <span class="${r.passed ? 'test-pass' : 'test-fail'}">${r.scrollHeight}px / 720px ${r.passed ? '✓' : '✗'}</span>
+                    </div>`;
+                });
+                content.innerHTML = html;
+            }
+
+            return summary;
+        };
+
+        // Check if ?test=true is in URL or press 't' key
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('test') === 'true') {
+            document.getElementById('test-report-overlay').style.display = 'block';
+            setTimeout(() => {
+                const res = window.runSlideHeightAudit();
+                console.log("SLIDE_AUDIT_RESULT:", JSON.stringify(res));
+            }, 800);
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 't' || e.key === 'T') {
+                const overlay = document.getElementById('test-report-overlay');
+                overlay.style.display = overlay.style.display === 'block' ? 'none' : 'block';
+                if (overlay.style.display === 'block') {
+                    window.runSlideHeightAudit();
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>

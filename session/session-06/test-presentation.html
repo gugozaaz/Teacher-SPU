@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automated Layout Test Runner — Session 06 Presentation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Noto+Sans+Thai:wght@400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0b0f19;
+            --surface: #131b2e;
+            --border: #1e293b;
+            --primary: #6366f1;
+            --secondary: #06b6d4;
+            --success: #10b981;
+            --fail: #f43f5e;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Outfit', 'Noto Sans Thai', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            padding: 24px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-run {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-run:hover { opacity: 0.9; }
+        .btn-run.secondary { background: var(--surface); border: 1px solid var(--primary); color: var(--primary); }
+
+        .summary-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .metric {
+            flex: 1;
+            text-align: center;
+            border-right: 1px solid var(--border);
+        }
+        .metric:last-child { border-right: none; }
+        .metric .val { font-size: 2rem; font-weight: 700; }
+        .metric .lbl { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; }
+
+        .table-container {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+        }
+
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: rgba(255, 255, 255, 0.02);
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .badge-status {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .badge-pass { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+        .badge-fail { background: rgba(244, 63, 94, 0.2); color: var(--fail); }
+
+        .preview-pane {
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        iframe {
+            width: 1280px;
+            height: 800px;
+            border: none;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+            transform-origin: center center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>
+        <span>🧪</span> Automated Layout Test Runner — Session 06
+    </h1>
+    <div class="controls">
+        <select id="version-select" onchange="changePresentationFile(this.value)" style="background: var(--surface); color: var(--text); border: 1px solid var(--border); padding: 9px 14px; border-radius: 8px; font-size: 0.92rem; font-family: inherit; font-weight: 600; cursor: pointer;">
+            <option value="session-06-presentation-v2.html" selected>V2: session-06-presentation-v2.html (Toon CRM)</option>
+            <option value="session-06-presentation.html">V1: session-06-presentation.html (Original)</option>
+        </select>
+        <button id="run-btn-800" class="btn-run" onclick="runAutomatedTests(800)">▶ Test 16:10 (1280x800 Default)</button>
+        <button id="run-btn-720" class="btn-run secondary" onclick="runAutomatedTests(720)">▶ Test 16:9 (1280x720)</button>
+    </div>
+</div>
+
+<div class="summary-card">
+    <div class="metric">
+        <div class="val" id="metric-total">-</div>
+        <div class="lbl">Total Slides</div>
+    </div>
+    <div class="metric">
+        <div class="val" id="metric-passed" style="color: var(--success);">-</div>
+        <div class="lbl">Passed</div>
+    </div>
+    <div class="metric">
+        <div class="val" id="metric-failed" style="color: var(--fail);">-</div>
+        <div class="lbl">Failed</div>
+    </div>
+    <div class="metric">
+        <div class="val" id="metric-rate">-</div>
+        <div class="lbl">Pass Rate</div>
+    </div>
+</div>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 80px;">Slide #</th>
+                <th>Slide Title / Header</th>
+                <th style="width: 140px;">Scroll Height</th>
+                <th style="width: 140px;">Container Height</th>
+                <th style="width: 120px;">Margin</th>
+                <th style="width: 100px;">Status</th>
+            </tr>
+        </thead>
+        <tbody id="test-results-body">
+            <tr>
+                <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 24px;">
+                    Loading slides and preparing tests...
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="preview-pane">
+    <iframe id="presentation-frame" src="session-06-presentation-v2.html"></iframe>
+</div>
+
+<script>
+    const frame = document.getElementById('presentation-frame');
+
+    function changePresentationFile(fileName) {
+        frame.src = fileName;
+        document.getElementById('metric-total').innerText = '-';
+        document.getElementById('metric-passed').innerText = '-';
+        document.getElementById('metric-failed').innerText = '-';
+        document.getElementById('metric-rate').innerText = '-';
+        document.getElementById('test-results-body').innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 24px;">เปลี่ยนไฟล์เป็น ' + fileName + ' เรียบร้อย กดปุ่ม Test เพื่อเริ่มทดสอบ</td></tr>';
+    }
+
+    async function runAutomatedTests(targetHeight = 800) {
+        frame.style.height = targetHeight + 'px';
+        const btn720 = document.getElementById('run-btn-720');
+        const btn800 = document.getElementById('run-btn-800');
+        
+        btn720.disabled = true;
+        btn800.disabled = true;
+        
+        if (targetHeight === 800) {
+            btn800.innerText = "⏳ Running...";
+        } else {
+            btn720.innerText = "⏳ Running...";
+        }
+
+        // Wait for frame to be fully loaded
+        await new Promise(resolve => {
+            const checkReady = () => {
+                const win = frame.contentWindow;
+                const r = win && (win.deck || win.Reveal);
+                if (r && typeof r.isReady === 'function' && r.isReady()) {
+                    resolve();
+                } else {
+                    setTimeout(checkReady, 300);
+                }
+            };
+            checkReady();
+        });
+
+        const win = frame.contentWindow;
+        const doc = frame.contentDocument || win.document;
+        const reveal = win.deck || win.Reveal;
+
+        // Configure reveal dimensions
+        reveal.configure({
+            width: 1280,
+            height: targetHeight
+        });
+
+        await new Promise(r => setTimeout(r, 200));
+
+        const sections = doc.querySelectorAll('.reveal .slides > section');
+        const tbody = document.getElementById('test-results-body');
+        tbody.innerHTML = '';
+
+        let passed = 0;
+        let failed = 0;
+        const total = sections.length;
+        const maxHeight = targetHeight;
+
+        for (let i = 0; i < total; i++) {
+            reveal.slide(i);
+            await new Promise(r => setTimeout(r, 80));
+
+            const sec = sections[i];
+            const scrollH = sec.scrollHeight;
+            const title = sec.querySelector('h1, h2')?.innerText?.trim() || `Slide ${i+1}`;
+            
+            // Allow 4px threshold for sub-pixel rendering differences
+            const isPass = scrollH <= maxHeight + 4; 
+            const margin = maxHeight - scrollH;
+
+            if (isPass) {
+                passed++;
+            } else {
+                failed++;
+            }
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td style="font-family: 'Fira Code', monospace; font-weight: 600;">#${i+1}</td>
+                <td><strong>${title.substring(0, 45)}</strong></td>
+                <td style="font-family: 'Fira Code', monospace; color: ${isPass ? 'var(--text)' : 'var(--fail)'};">${scrollH}px</td>
+                <td style="font-family: 'Fira Code', monospace; color: var(--text-muted);">${maxHeight}px</td>
+                <td style="font-family: 'Fira Code', monospace; color: ${margin >= 0 ? 'var(--success)' : 'var(--fail)'};">${margin >= 0 ? '+' + margin : margin}px</td>
+                <td><span class="badge-status ${isPass ? 'badge-pass' : 'badge-fail'}">${isPass ? 'PASS' : 'FAIL'}</span></td>
+            `;
+            tbody.appendChild(tr);
+        }
+
+        // Update metrics
+        document.getElementById('metric-total').innerText = total;
+        document.getElementById('metric-passed').innerText = passed;
+        document.getElementById('metric-failed').innerText = failed;
+        const rate = Math.round((passed / total) * 100);
+        document.getElementById('metric-rate').innerText = rate + '%';
+
+        // Reset buttons
+        btn720.disabled = false;
+        btn800.disabled = false;
+        btn720.innerText = "▶ Test 16:9 (1280x720)";
+        btn800.innerText = "▶ Test 16:10 (1280x800 Default)";
+
+        console.log(`TEST RUNNER COMPLETE: ${passed}/${total} passed (${rate}%) at ${maxHeight}px`);
+        return { total, passed, failed, rate };
+    }
+
+    window.addEventListener('load', () => {
+        setTimeout(() => runAutomatedTests(800), 1200);
+    });
+</script>
+
+</body>
+</html>

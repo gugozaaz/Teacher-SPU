@@ -1,0 +1,2479 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>ครั้งที่ 9: ขั้นที่ 4 'ANALYZE' (ส่วนที่ 4) — การพยากรณ์ยอดขายเบื้องต้น (Sales Forecasting) | Fundamentals of Data Science</title>
+    <!-- Reveal.js & Fonts -->
+    <link href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800;900&amp;family=Outfit:wght@400;500;600;700;800&amp;family=Fira+Code:wght@400;500&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #3730a3;
+            --primary-glow: rgba(79, 70, 229, 0.12);
+            --secondary: #0284c7;
+            --accent: #e11d48;
+            --accent-warm: #d97706;
+            --success: #059669;
+            --purple: #7c3aed;
+            --bg-main: #f8fafc;
+            --bg-card: #ffffff;
+            --border-card: #e2e8f0;
+            --text-main: #0f172a;
+            --text-sub: #334155;
+            --text-muted: #64748b;
+            --gradient-main: linear-gradient(135deg, #4f46e5 0%, #0284c7 100%);
+            --gradient-purple: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
+            --gradient-accent: linear-gradient(135deg, #e11d48 0%, #d97706 100%);
+            --gradient-warm: linear-gradient(135deg, #d97706 0%, #ea580c 100%);
+            --gradient-green: linear-gradient(135deg, #059669 0%, #0284c7 100%);
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: var(--bg-main);
+            font-size: 24px;
+        }
+
+        .reveal {
+            font-family: 'Noto Sans Thai', 'Outfit', sans-serif;
+            color: var(--text-main);
+            background: var(--bg-main);
+            background-image:
+                radial-gradient(circle at 12% 15%, rgba(79, 70, 229, 0.05) 0%, transparent 45%),
+                radial-gradient(circle at 88% 85%, rgba(2, 132, 199, 0.05) 0%, transparent 45%);
+            font-size: 26px;
+        }
+
+        .reveal .slides {
+            text-align: left;
+        }
+
+        .reveal .slides section {
+            height: 100% !important;
+            box-sizing: border-box !important;
+            padding: 22px 38px 24px 38px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: flex-start !important;
+            overflow: hidden !important;
+            background: transparent;
+        }
+
+        @media print {
+            #aspect-ratio-toast,
+            #test-report-overlay {
+                display: none !important;
+            }
+        }
+
+        .slide-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+
+        .reveal h1,
+        .reveal h2,
+        .reveal h3,
+        .reveal h4 {
+            font-family: 'Noto Sans Thai', 'Outfit', sans-serif;
+            font-weight: 800;
+            text-transform: none;
+            letter-spacing: -0.02em;
+            margin: 0;
+            line-height: 1.25;
+            color: var(--text-main);
+        }
+
+        .reveal h1 {
+            font-size: 2.35rem;
+        }
+
+        .reveal h2 {
+            font-size: 1.48rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            line-height: 1.25;
+            letter-spacing: -0.015em;
+        }
+
+        .reveal h3 {
+            font-size: 1.25rem;
+            color: var(--primary);
+        }
+
+        .reveal p {
+            margin: 0;
+            line-height: 1.5;
+            color: var(--text-sub);
+            font-size: 1.02rem;
+        }
+
+        .slide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 2px solid rgba(79, 70, 229, 0.12);
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+            gap: 16px;
+        }
+
+        .slide-header .title-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .slide-header .subtitle {
+            font-size: 1.02rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .badge-step {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #eef2ff;
+            color: var(--primary);
+            padding: 6px 14px;
+            border-radius: 9999px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+            border: 1px solid rgba(79, 70, 229, 0.2);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .badge-step.purple {
+            background: #f5f3ff;
+            color: var(--purple);
+            border-color: rgba(124, 58, 237, 0.2);
+        }
+
+        .badge-step.warm {
+            background: #fffbeb;
+            color: var(--accent-warm);
+            border-color: rgba(217, 119, 6, 0.2);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .badge-primary {
+            background: #e0e7ff;
+            color: var(--primary-dark);
+        }
+
+        .badge-accent {
+            background: #ffe4e6;
+            color: var(--accent);
+        }
+
+        .badge-warm {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-success {
+            background: #dcfce7;
+            color: var(--success);
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: var(--shadow-sm);
+            position: relative;
+        }
+
+        .card-header-sm {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .card-header-sm h4 {
+            font-size: 1.08rem;
+            margin: 0;
+            color: var(--text-main);
+        }
+
+        .card-header-sm i {
+            font-size: 1.15rem;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .callout-box {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 0.92rem;
+            line-height: 1.45;
+        }
+
+        .callout-box.info {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            color: #0369a1;
+        }
+
+        .callout-box.warning {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            color: #92400e;
+        }
+
+        .callout-box.danger {
+            background: #fff1f2;
+            border: 1px solid #fecdd3;
+            color: #9f1239;
+        }
+
+        .callout-box.success {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+        }
+
+        .code-box {
+            background: #0f172a;
+            color: #f8fafc;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            line-height: 1.45;
+            overflow-x: auto;
+        }
+
+        .code-box .code-keyword {
+            color: #38bdf8;
+            font-weight: 600;
+        }
+
+        .code-box .code-func {
+            color: #4ade80;
+            font-weight: 600;
+        }
+
+        .code-box .code-str {
+            color: #fcd34d;
+        }
+
+        .code-box .code-comment {
+            color: #94a3b8;
+            font-style: italic;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.84rem;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 7px 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-card);
+        }
+
+        .data-table th {
+            background: #f1f5f9;
+            color: var(--text-main);
+            font-weight: 700;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .data-table tr:hover td {
+            background: #f8fafc;
+        }
+
+        .step-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: white;
+            padding: 10px 14px;
+            border-radius: 12px;
+            border: 1px solid var(--border-card);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .step-card {
+            flex: 1;
+            text-align: center;
+            padding: 8px 6px;
+            border-radius: 8px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s ease;
+        }
+
+        .step-card.active {
+            border: 2px solid var(--primary);
+            transform: scale(1.03);
+            background: #eef2ff;
+            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.15);
+        }
+
+        .step-card .step-num {
+            font-size: 0.72rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .step-card.active .step-num {
+            color: var(--primary);
+        }
+
+        .step-card .step-title {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .step-card.active .step-title {
+            color: var(--primary);
+        }
+
+        .step-card .step-desc {
+            font-size: 0.72rem;
+            color: var(--text-sub);
+            margin-top: 2px;
+        }
+
+        .compare-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        /* Test overlay */
+        #test-report-overlay {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            color: #f8fafc;
+            padding: 16px;
+            border-radius: 12px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.8rem;
+            z-index: 100000;
+            width: 320px;
+            max-height: 85vh;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="test-report-overlay">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; padding-bottom: 8px; margin-bottom: 8px;">
+            <strong style="color: #38bdf8;">SLIDE AUDIT REPORT</strong>
+            <span id="test-report-summary" style="font-size: 0.75rem;">Running...</span>
+        </div>
+        <div id="test-report-content"></div>
+    </div>
+
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- SLIDE 1: Title Slide -->
+            <section data-background-gradient="radial-gradient(circle at 50% 50%, #e0e7ff 0%, #f8fafc 100%)">
+                <div style="text-align: center; margin: auto 0; padding: 20px 10px;">
+                    <div style="margin-bottom: 14px;">
+                        <span class="badge badge-primary"><i class="fas fa-graduation-cap"></i> ภาคเรียนที่ 1/2569</span>
+                        <span class="badge badge-accent" style="margin-left: 6px;"><i class="fas fa-chart-line"></i> ครั้งที่ 9 / 14</span>
+                    </div>
+                    <h1 style="font-size: 2.2em; margin-bottom: 12px; font-weight: 900; line-height: 1.2;">
+                        ขั้นที่ 4 'ANALYZE' (ส่วนที่ 4)<br />การพยากรณ์ยอดขายเบื้องต้น (Sales Forecasting)
+                    </h1>
+                    <p style="font-size: 1.05em; color: var(--secondary); font-weight: 600; margin-bottom: 20px;">
+                        Fundamentals of Data Science (พื้นฐานวิทยาการข้อมูล)
+                    </p>
+                    <div style="display: inline-block; padding: 8px 24px; background: #ffffff; border-radius: 9999px; border: 1px solid var(--border-card); box-shadow: var(--shadow-sm);">
+                        <p style="font-size: 0.85em; margin: 0; color: var(--text-sub);">
+                            <i class="fas fa-user-tie" style="color: var(--secondary); margin-right: 6px;"></i>
+                            <strong>ผู้สอน:</strong> อาจารย์สุรชัย โกยสันติสุข | คณะการสร้างเจ้าของธุรกิจ มหาวิทยาลัยศรีปทุม
+                        </p>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Script เปิดคาบ]:
+                    - ยินดีต้อนรับนักศึกษาสู่การเรียนครั้งที่ 9
+                    - วันนี้เราเข้าสู่หัวใจสำคัญที่สุดข้อหนึ่งของเจ้าของธุรกิจ: การมองเห็นอนาคตเพื่อวางแผนล่วงหน้า (Sales Forecasting)
+                </aside>
+            </section>
+
+            <!-- SLIDE 2: Session Recap - Bridge from Correlation to Forecasting -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-route" style="color: var(--primary);"></i> วงจร Data Science: เจาะลึกขั้น 'ANALYZE' (Part 4)</h2>
+                        <span class="subtitle">จากความเข้าใจอดีตและสหสัมพันธ์ สู่การทำนายอนาคตเพื่อวางแผนธุรกิจเชิงรุก</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-compass"></i> Step 4 of 5</span>
+                </div>
+                <div class="slide-body">
+                    <div class="step-container">
+                        <div class="step-card">
+                            <div class="step-num">Step 1</div>
+                            <div class="step-title">ASK</div>
+                            <div class="step-desc">ตั้งคำถามธุรกิจ (Session 1-2)</div>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-num">Step 2</div>
+                            <div class="step-title">COLLECT</div>
+                            <div class="step-desc">Tidy Data &amp; Forms (Session 3-4)</div>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-num">Step 3</div>
+                            <div class="step-title">PREPARE</div>
+                            <div class="step-desc">ทำความสะอาดข้อมูล (Session 5)</div>
+                        </div>
+                        <div class="step-card active">
+                            <div class="step-num">Step 4 (สัปดาห์นี้)</div>
+                            <div class="step-title">ANALYZE</div>
+                            <div class="step-desc">Sales Forecasting (Session 9)</div>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-num">Step 5</div>
+                            <div class="step-title">ACT</div>
+                            <div class="step-desc">Storytelling &amp; กลยุทธ์ (Session 11-14)</div>
+                        </div>
+                    </div>
+
+                    <div class="compare-container" style="margin-top: 4px;">
+                        <div class="card" style="border-left: 4px solid var(--secondary); padding: 12px 16px;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-project-diagram" style="color: var(--secondary);"></i>
+                                <h4 style="color: var(--secondary); font-size: 1.02rem;">คาบที่แล้ว (Session 8: Correlation &amp; Trend)</h4>
+                            </div>
+                            <p style="font-size: 0.88rem; color: var(--text-sub); line-height: 1.45;">
+                                • วิเคราะห์ความสัมพันธ์ในอดีตด้วยค่า <strong>Pearson r</strong> (-1.00 ถึง +1.00)<br />
+                                • ยึดกฎเหล็ก <strong>Correlation ≠ Causation</strong> รู้ทันความสัมพันธ์ลวงตา<br />
+                                • แยกแยะ <strong>Trend</strong> (ทิศทางโต) ออกจาก <strong>Seasonality</strong> (รอบฤดูกาล)
+                            </p>
+                        </div>
+                        <div class="card" style="border-left: 4px solid var(--purple); padding: 12px 16px; background: #faf5ff;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-crystal-ball" style="color: var(--purple);"></i>
+                                <h4 style="color: var(--purple); font-size: 1.02rem;">คาบนี้ (Session 9: Sales Forecasting)</h4>
+                            </div>
+                            <p style="font-size: 0.88rem; color: var(--text-sub); line-height: 1.45;">
+                                • เปลี่ยนข้อมูลอดีตเป็น <strong>เข็มทิศพยากรณ์อนาคต</strong> 3 เดือนข้างหน้า<br />
+                                • ทำความเข้าใจ <strong>Moving Average</strong> และ <strong>Linear Trend</strong><br />
+                                • ผสานพลัง AI (Gemini) + Google Sheets วางแผน <strong>3 เสาหลักธุรกิจ</strong>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="callout-box warning" style="margin-top: 6px; padding: 8px 14px;">
+                        <i class="fas fa-shield-alt" style="color: var(--accent-warm); font-size: 1.2rem;"></i>
+                        <span style="font-size: 0.86rem; color: var(--text-main);">
+                            <strong>กฎเหล็ก GIGO ของการพยากรณ์:</strong> "Garbage In, Garbage Out — ถ้าข้อมูลยอดขายในอดีตสกปรกหรือขาดหาย โมเดลทำนายอนาคตจะพาธุรกิจลงเหวทันที!"
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 2 Notes]:
+                    - ชี้ให้นักศึกษาเห็นว่าเราอยู่ในขั้นตอนที่ 4 'ANALYZE'
+                    - คาบที่แล้วเราหา Correlation ในอดีต แต่วันนี้เราจะก้าวไปอีกขั้น คือนำแพทเทิร์นนั้นมา "ทำนายอนาคต"
+                </aside>
+            </section>
+
+            <!-- SLIDE 3: SESSION ROADMAP -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-map-signs" style="color: var(--primary);"></i> แผนที่การเรียนรู้ประจำคาบ (Session Roadmap)</h2>
+                        <span class="subtitle">4 เสาหลักสู่การเป็นผู้ประกอบการที่คาดการณ์แม่นยำ บริหารสต็อกและเงินสดไร้รอยต่อ</span>
+                    </div>
+                    <span class="badge badge-primary"><i class="fas fa-clock"></i> 150 นาที</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-4" style="margin-top: 4px;">
+                        <div class="card" style="padding: 14px; border-top: 4px solid var(--primary);">
+                            <div class="card-header-sm">
+                                <i class="fas fa-hourglass-start" style="color: var(--primary);"></i>
+                                <h4 style="color: var(--text-main); font-size: 0.96rem;">1. ทำไมต้องพยากรณ์</h4>
+                            </div>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.4;">
+                                ต้นทุนของ "ของขาด vs ของเหลือ" และ 3 เสาหลัก: สต็อกวัตถุดิบ, กะพนักงาน, และกระแสเงินสด
+                            </p>
+                        </div>
+                        <div class="card" style="padding: 14px; border-top: 4px solid var(--accent-warm);">
+                            <div class="card-header-sm">
+                                <i class="fas fa-chart-line" style="color: var(--accent-warm);"></i>
+                                <h4 style="color: var(--text-main); font-size: 0.96rem;">2. สองโมเดลพื้นฐาน</h4>
+                            </div>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.4;">
+                                เจาะลึก Moving Average (ค่าเฉลี่ยเคลื่อนที่) vs Linear Trend (แนวโน้มเชิงเส้น) เลือกใช้ให้ถูกจุด
+                            </p>
+                        </div>
+                        <div class="card" style="padding: 14px; border-top: 4px solid var(--purple);">
+                            <div class="card-header-sm">
+                                <i class="fas fa-robot" style="color: var(--purple);"></i>
+                                <h4 style="color: var(--text-main); font-size: 0.96rem;">3. สั่ง Gemini &amp; กับดัก</h4>
+                            </div>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.4;">
+                                Prompt F-O-R-E-C-A-S-T พร้อมจำลอง 3 Scenarios และ 4 หลุมพรางที่ห้ามเชื่อ AI แบบตาบอด
+                            </p>
+                        </div>
+                        <div class="card" style="padding: 14px; border-top: 4px solid var(--success);">
+                            <div class="card-header-sm">
+                                <i class="fas fa-table" style="color: var(--success);"></i>
+                                <h4 style="color: var(--text-main); font-size: 0.96rem;">4. Sheets Lab &amp; แอ็กชัน</h4>
+                            </div>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.4;">
+                                ฟังก์ชัน =FORECAST() ใน Google Sheets, Forward Trendline และการคำนวณ Safety Stock จริง
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="callout-box info" style="margin-top: 8px; padding: 10px 16px;">
+                        <i class="fas fa-bread-slice" style="color: var(--accent-warm); font-size: 1.3rem;"></i>
+                        <span style="font-size: 0.88rem; color: var(--text-main);">
+                            <strong>กรณีศึกษาหลักประจำคาบ:</strong> ร้าน <em>"อิ่มใจ เบเกอรี่สตูดิโอ" (Imjai Bakery Studio)</em> — คราฟต์ครัวซองต์และขนมอบพรีเมียม วัตถุดิบเนยฝรั่งเศสอายุสั้น หมักแป้ง 48 ชม. สั่งเกินเน่าเสีย สั่งขาดลูกค้าหนี!
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 3 Notes]:
+                    - แนะนำ Roadmap 4 หัวข้อ
+                    - แนะนำกรณีศึกษาใหม่: ร้านขนมอบ "อิ่มใจ เบเกอรี่สตูดิโอ" ซึ่งตอบโจทย์เรื่องสต็อกและ Lead Time อย่างชัดเจน
+                </aside>
+            </section>
+
+            <!-- SLIDE 4: THE CORE QUESTION: WHY LOOK INTO THE FUTURE? -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-question-circle" style="color: var(--primary);"></i> ปริศนาของเจ้าของธุรกิจ: ขนมหมด vs ขนมเหลือทิ้ง</h2>
+                        <span class="subtitle">ทำไมธุรกิจ SME ถึงล้มละลาย ทั้งๆ ที่หน้าร้านมีลูกค้าต่อคิวยาวเหยียดทุกบ่าย?</span>
+                    </div>
+                    <span class="badge-step warm"><i class="fas fa-balance-scale"></i> Business Dilemma</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div class="card" style="border-top: 4px solid var(--accent); padding: 14px;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-trash-alt" style="color: var(--accent);"></i>
+                                <h4 style="color: var(--accent); font-size: 1.05rem;">ฝันร้ายที่ 1: สั่งวัตถุดิบเกิน (Overstocking)</h4>
+                            </div>
+                            <ul style="font-size: 0.86rem; color: var(--text-sub); line-height: 1.5; padding-left: 20px; margin: 0;">
+                                <li>เนยแท้ฝรั่งเศสนำเข้ากิโลกรัมละ 480 บาท และนมสดมีอายุจัดเก็บสั้น (Perishable)</li>
+                                <li>เมื่ออบครัวซองต์ออกมาเกิน ขนมค้างคืนขายไม่ออก ต้องทิ้งเป็น <strong>Food Waste</strong></li>
+                                <li>เงินสดจมไปกับวัตถุดิบที่เน่าเสีย กำไรทั้งเดือนหดหายในพริบตา</li>
+                            </ul>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid var(--accent-warm); padding: 14px;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-store-slash" style="color: var(--accent-warm);"></i>
+                                <h4 style="color: var(--accent-warm); font-size: 1.05rem;">ฝันร้ายที่ 2: ของขาดมือ (Stockout / Understocking)</h4>
+                            </div>
+                            <ul style="font-size: 0.86rem; color: var(--text-sub); line-height: 1.5; padding-left: 20px; margin: 0;">
+                                <li>ครัวซองต์ต้องใช้เวลาหมักแป้งและรีดชั้นเนย <strong>Lead Time 48 ชั่วโมง</strong></li>
+                                <li>เมื่อขนมหมดตู้ตอน 11:30 น. ไม่สามารถอบเพิ่มได้ทันที</li>
+                                <li>เกิด <strong>Lost Sales Opportunity</strong> ลูกค้าผิดหวังและเดินไปซื้อร้านคู่แข่งข้างเคียง</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="callout-box info" style="margin-top: 6px; padding: 10px 16px;">
+                        <i class="fas fa-quote-left" style="color: var(--secondary); font-size: 1.2rem;"></i>
+                        <span style="font-size: 0.88rem; color: var(--text-main);">
+                            <strong>Forecasting ไม่ใช่การเดาอนาคตแบบหมอดู:</strong> แต่คือการใช้หลักฐานจากข้อมูลในอดีต (Historical Data) มาคำนวณความน่าจะเป็นเพื่อ <em>"ลดความสูญเปล่าและคว้าโอกาสทำกำไรสูงสุด"</em>
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 4 Notes]:
+                    - ชี้ประเด็น Pain Point สำคัญ: Overstocking vs Stockout
+                    - ขนมเบเกอรี่มี Lead Time หมักแป้ง 48 ชม. อบเพิ่มเดี๋ยวนั้นไม่ได้เด็ดขาด
+                </aside>
+            </section>
+
+            <!-- SLIDE 5: 3 BUSINESS PILLARS OF FORECASTING -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-monument" style="color: var(--primary);"></i> 3 เสาหลักที่ต้องพึ่งพาตัวเลขพยากรณ์ยอดขาย</h2>
+                        <span class="subtitle">ตัวเลขคาดการณ์ยอดขาย 1 ตัวแปร ขับเคลื่อนการตัดสินใจผู้บริหารใน 3 มิติหลัก</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-cubes"></i> 3 Executive Pillars</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-3" style="margin-top: 4px;">
+                        <div class="card" style="border-top: 4px solid #0284c7; padding: 14px;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-boxes-stacked" style="color: #0284c7;"></i>
+                                <h4 style="font-size: 1.02rem;">1. สต็อกวัตถุดิบ (Inventory)</h4>
+                            </div>
+                            <p style="font-size: 0.84rem; color: var(--text-sub); line-height: 1.45;">
+                                <strong>สั่งอะไร เท่าไร เมื่อใด?</strong><br />
+                                คำนวณปริมาณแป้งสาลี เนย ช็อกโกแลต และแพ็กเกจจิ้งกล่องของขวัญล่วงหน้า พร้อมคำนวณ Safety Stock กันของขาด
+                            </p>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid #7c3aed; padding: 14px;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-user-clock" style="color: #7c3aed;"></i>
+                                <h4 style="font-size: 1.02rem;">2. กำลังคน (Staff Scheduling)</h4>
+                            </div>
+                            <p style="font-size: 0.84rem; color: var(--text-sub); line-height: 1.45;">
+                                <strong>จัดกะใคร กี่คน วันไหน?</strong><br />
+                                เดือนที่พยากรณ์ว่ายอดพุ่ง ต้องเพิ่มช่างอบขนมกะเช้ามืด และพนักงานแคชเชียร์หน้าร้าน เพื่อไม่ให้บริการล่าช้า
+                            </p>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid #059669; padding: 14px;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-money-bill-trend-up" style="color: #059669;"></i>
+                                <h4 style="font-size: 1.02rem;">3. กระแสเงินสด (Cash Flow)</h4>
+                            </div>
+                            <p style="font-size: 0.84rem; color: var(--text-sub); line-height: 1.45;">
+                                <strong>สำรองเงินสดหมุนเวียนเท่าไร?</strong><br />
+                                คาดการณ์รายรับ-รายจ่ายล่วงหน้า เพื่อเตรียมเงินสดจ่ายซัพพลายเออร์ค่าเนยก่อนที่ยอดขายจริงจะเข้ามา
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="callout-box success" style="margin-top: 8px; padding: 10px 16px;">
+                        <i class="fas fa-check-circle" style="color: var(--success); font-size: 1.2rem;"></i>
+                        <span style="font-size: 0.88rem; color: var(--text-main);">
+                            <strong>Insight สำคัญ:</strong> ถ้าไม่มีตัวเลขพยากรณ์ ธุรกิจจะบริหารแบบ <em>"ตั้งรับวันต่อวัน" (Reactive)</em> แต่ถ้ามีตัวเลขพยากรณ์ ธุรกิจจะกลายเป็น <em>"ผู้คุมเกมเชิงรุก" (Proactive)</em> ที่พร้อมรับมือทุกสถานการณ์
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 5 Notes]:
+                    - เน้น 3 เสาหลัก: สต็อก, กะพนักงาน, และเงินสด
+                    - ให้นักศึกษาเห็นว่าทำไมผู้ประกอบการทุกคนต้องเรียนรู้วิธีทำนายยอดขาย
+                </aside>
+            </section>
+
+            <!-- SLIDE 6: CASE STUDY INTRODUCTION: "อิ่มใจ เบเกอรี่สตูดิโอ" -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-store" style="color: var(--primary);"></i> กรณีศึกษา: "อิ่มใจ เบเกอรี่สตูดิโอ" (Imjai Bakery)</h2>
+                        <span class="subtitle">ร้านคราฟต์เบเกอรี่ &amp; ครัวซองต์เนยฝรั่งเศสอบสด ที่กำลังเตรียมวางแผนไตรมาสถัดไป</span>
+                    </div>
+                    <span class="badge-step warm"><i class="fas fa-bread-slice"></i> Thai Business Case</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div class="card" style="padding: 14px;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-info-circle" style="color: var(--secondary);"></i>
+                                <h4 style="font-size: 1.02rem;">บริบทธุรกิจของร้านอิ่มใจ</h4>
+                            </div>
+                            <ul style="font-size: 0.84rem; color: var(--text-sub); line-height: 1.45; padding-left: 18px; margin: 0;">
+                                <li>เปิดบริการมาแล้ว 1 ปีเต็ม จำหน่ายครัวซองต์เนยสด คาเนเล่ และขนมอบพรีเมียม</li>
+                                <li>ราคาครัวซองต์เฉลี่ย 95 บาท/ชิ้น</li>
+                                <li>นำเข้าเนยสด AOP จากฝรั่งเศส ต้องสั่งจองล่วงหน้าเป็นรอบเดือน</li>
+                                <li>ปัจจุบันบันทึกยอดขายย้อนหลังครบ 12 เดือน (เดือน 1 - 12)</li>
+                            </ul>
+                        </div>
+
+                        <div class="card" style="padding: 14px; background: #fffbeb; border: 1px solid #fde68a;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-bullseye" style="color: var(--accent-warm);"></i>
+                                <h4 style="color: #92400e; font-size: 1.02rem;">โจทย์ใหญ่ของผู้จัดการร้าน</h4>
+                            </div>
+                            <p style="font-size: 0.84rem; color: #92400e; line-height: 1.45;">
+                                <em>"อีก 3 เดือนข้างหน้า (เดือนที่ 13, 14, 15) ร้านเราควรเตรียมอบครัวซองต์กี่ชิ้น? และต้องเตรียมสั่งสต็อกเนยฝรั่งเศสกี่กิโลกรัม เพื่อไม่ให้เกิดปัญหาขนมหมดจนเสียลูกค้า หรืออบเกินจนเน่าเสียทิ้ง?"</em>
+                            </p>
+                            <div style="margin-top: 8px; font-size: 0.8rem; font-weight: 700; color: var(--primary);">
+                                <i class="fas fa-arrow-right"></i> เป้าหมายวันนี้: พยากรณ์ยอดขายเดือน 13, 14, 15
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="callout-box info" style="margin-top: 6px; padding: 8px 14px;">
+                        <i class="fas fa-database" style="color: var(--secondary); font-size: 1.2rem;"></i>
+                        <span style="font-size: 0.86rem; color: var(--text-main);">
+                            <strong>พร้อมลงมือ:</strong> เรามีชุดข้อมูลตัวเลขจริง 12 เดือนของร้านอิ่มใจ ที่ผ่านขั้นตอน <em>COLLECT</em> และ <em>PREPARE</em> ทำความสะอาดข้อมูลเรียบร้อยแล้ว!
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 6 Notes]:
+                    - เล่าสตอรี่ร้านอิ่มใจ เบเกอรี่สตูดิโอ
+                    - วัตถุดิบพรีเมียม นำเข้าเนยฝรั่งเศส ต้องสั่งจองรอบเดือน
+                </aside>
+            </section>
+
+            <!-- SLIDE 7: HISTORICAL DATA TABLE: 12-MONTH SALES RECORD -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-table" style="color: var(--primary);"></i> ตารางยอดขายจริง 12 เดือน (Historical Sales Data)</h2>
+                        <span class="subtitle">บันทึกยอดขายครัวซองต์ (ชิ้น) และรายได้ (บาท) ตั้งแต่เดือนมกราคม ถึง ธันวาคม</span>
+                    </div>
+                    <span class="badge badge-primary"><i class="fas fa-file-excel"></i> 12 Periods</span>
+                </div>
+                <div class="slide-body">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 12%;">คาบ (t)</th>
+                                <th style="width: 20%;">เดือน</th>
+                                <th style="width: 24%;">ยอดขายครัวซองต์ (ชิ้น)</th>
+                                <th style="width: 24%;">รายได้รวม (บาท)</th>
+                                <th>หมายเหตุ / เหตุการณ์สำคัญ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>ม.ค. (ปี 1)</td>
+                                <td><strong>1,200</strong> ชิ้น</td>
+                                <td>114,000 ฿</td>
+                                <td>เปิดร้านเดือนแรก เริ่มสร้างฐานลูกค้า</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>ก.พ.</td>
+                                <td><strong>1,350</strong> ชิ้น</td>
+                                <td>128,250 ฿</td>
+                                <td>เทศกาลวาเลนไทน์ กล่องของขวัญ</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>มี.ค.</td>
+                                <td><strong>1,300</strong> ชิ้น</td>
+                                <td>123,500 ฿</td>
+                                <td>ยอดกลับสู่ระดับปกติ</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>เม.ย.</td>
+                                <td><strong>1,450</strong> ชิ้น</td>
+                                <td>137,750 ฿</td>
+                                <td>วันหยุดยาวสงกรานต์ ลูกค้าสั่งไปปาร์ตี้</td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>พ.ค.</td>
+                                <td><strong>1,500</strong> ชิ้น</td>
+                                <td>142,500 ฿</td>
+                                <td>เริ่มมีออเดอร์จัดเบรคสัมมนา</td>
+                            </tr>
+                            <tr>
+                                <td>6</td>
+                                <td>มิ.ย.</td>
+                                <td><strong>1,620</strong> ชิ้น</td>
+                                <td>153,900 ฿</td>
+                                <td>เปิดตัวรสชาติใหม่ ช็อกโกแลตลาวา</td>
+                            </tr>
+                            <tr>
+                                <td>7</td>
+                                <td>ก.ค.</td>
+                                <td><strong>1,580</strong> ชิ้น</td>
+                                <td>150,100 ฿</td>
+                                <td>ฤดูฝน ลูกค้าหน้าร้านลดลงเล็กน้อย</td>
+                            </tr>
+                            <tr>
+                                <td>8</td>
+                                <td>ส.ค.</td>
+                                <td><strong>1,750</strong> ชิ้น</td>
+                                <td>166,250 ฿</td>
+                                <td>เทศกาลวันแม่ เซตของขวัญยอดฮิต</td>
+                            </tr>
+                            <tr>
+                                <td>9</td>
+                                <td>ก.ย.</td>
+                                <td><strong>1,800</strong> ชิ้น</td>
+                                <td>171,000 ฿</td>
+                                <td>ขยายฐานลูกค้าเดลิเวอรี</td>
+                            </tr>
+                            <tr>
+                                <td>10</td>
+                                <td>ต.ค.</td>
+                                <td><strong>1,920</strong> ชิ้น</td>
+                                <td>182,400 ฿</td>
+                                <td>ออเดอร์จัดเลี้ยงปลายปีเริ่มจอง</td>
+                            </tr>
+                            <tr>
+                                <td>11</td>
+                                <td>พ.ย.</td>
+                                <td><strong>2,050</strong> ชิ้น</td>
+                                <td>194,750 ฿</td>
+                                <td>เตรียมเข้าสู่เทศกาลปีใหม่</td>
+                            </tr>
+                            <tr>
+                                <td>12</td>
+                                <td>ธ.ค.</td>
+                                <td><strong>2,300</strong> ชิ้น</td>
+                                <td>218,500 ฿</td>
+                                <td>เทศกาลคริสต์มาส &amp; ปีใหม่ (Peak Season)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="callout-box info" style="margin-top: 4px; padding: 6px 14px;">
+                        <i class="fas fa-lightbulb" style="color: var(--secondary); font-size: 1.1rem;"></i>
+                        <span style="font-size: 0.84rem; color: var(--text-main);">
+                            <strong>ข้อสังเกตจากข้อมูล:</strong> ยอดขายมีทิศทางเติบโตอย่างต่อเนื่อง (Uptrend) จาก 1,200 สู่ 2,300 ชิ้น แต่มีระลอกคลื่นความผันผวนขึ้นลงตามฤดูกาลและวันหยุด
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 7 Notes]:
+                    - แสดงตารางข้อมูล 12 เดือน
+                    - ให้นักเรียนสังเกตตัวเลขว่ามีแนวโน้มขาขึ้น (Uptrend) พร้อมทั้งมี Peak ช่วงปลายปี
+                </aside>
+            </section>
+
+            <!-- SLIDE 8: FORECASTING METHOD 1: MOVING AVERAGE -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-wave-square" style="color: var(--primary);"></i> วิธีที่ 1: ค่าเฉลี่ยเคลื่อนที่ (Moving Average - MA)</h2>
+                        <span class="subtitle">เทคนิคการเกลี่ยคลื่นความผันผวนระยะสั้น เพื่อมองหาแนวโน้มที่แท้จริง</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-calculator"></i> Method 1</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div class="card" style="padding: 14px;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-filter" style="color: var(--primary);"></i>
+                                <h4 style="font-size: 1.02rem;">หลักการของ Moving Average</h4>
+                            </div>
+                            <p style="font-size: 0.85rem; color: var(--text-sub); line-height: 1.45;">
+                                นำยอดขายจริงของ <strong>N ช่วงเวลาย้อนหลังล่าสุด</strong> มารวมกันแล้วหารด้วย N เพื่อใช้เป็นตัวแทนยอดขายของช่วงถัดไป<br /><br />
+                                <strong>ทำไมต้องใช้ค่าเฉลี่ยเคลื่อนที่?</strong>
+                            </p>
+                            <ul style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.4; padding-left: 18px; margin: 4px 0 0 0;">
+                                <li>ช่วยตัด "สัญญาณรบกวน" (Noise) หรือความผันผวนชั่วคราว</li>
+                                <li>เหมาะสำหรับสินค้าที่ยอดขายค่อนข้างนิ่ง หรือผันผวนเป็นรอบสั้น</li>
+                                <li>เข้าใจง่าย ผู้จัดการร้านคำนวณได้ทันทีโดยไม่ต้องใช้สถิติชั้นสูง</li>
+                            </ul>
+                        </div>
+
+                        <div class="card" style="padding: 14px; background: #f8fafc; border: 1px solid #cbd5e1;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-square-root-variable" style="color: var(--secondary);"></i>
+                                <h4 style="font-size: 1.02rem;">สูตร 3-Month Moving Average (MA-3)</h4>
+                            </div>
+                            <div style="background: white; padding: 12px; border-radius: 8px; border: 1px dashed var(--primary); text-align: center; margin: 8px 0;">
+                                <span style="font-size: 1.15rem; font-weight: 800; color: var(--primary); font-family: 'Fira Code', monospace;">
+                                    Forecast<sub>t+1</sub> = (Y<sub>t</sub> + Y<sub>t-1</sub> + Y<sub>t-2</sub>) / 3
+                                </span>
+                            </div>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.4;">
+                                <strong>ตัวอย่าง:</strong> ต้องการพยากรณ์ยอดขายเดือนที่ 13 (ม.ค. ปี 2)<br />
+                                นำยอดขาย 3 เดือนล่าสุดมารวมกัน (ต.ค. + พ.ย. + ธ.ค.):<br />
+                                <span style="font-family: 'Fira Code', monospace; color: var(--success); font-weight: 700;">
+                                    = (1,920 + 2,050 + 2,300) / 3 = 2,090 ชิ้น
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="callout-box warning" style="margin-top: 6px; padding: 8px 14px;">
+                        <i class="fas fa-exclamation-triangle" style="color: var(--accent-warm); font-size: 1.2rem;"></i>
+                        <span style="font-size: 0.86rem; color: var(--text-main);">
+                            <strong>จุดอ่อนสำคัญของ MA:</strong> Moving Average จะ <em>"วิ่งตามหลังความจริงเสมอ" (Lagging Indicator)</em> ถ้าธุรกิจกำลังเติบโตขาขึ้นอย่างรวดเร็ว MA จะพยากรณ์ตัวเลขต่ำกว่าความเป็นจริง!
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 8 Notes]:
+                    - อธิบายสูตร Moving Average 3 เดือน
+                    - ชี้ข้อดีคือเกลี่ย noise แต่ข้อเสียคือ lagging วิ่งตามหลังแนวโน้มจริง
+                </aside>
+            </section>
+
+            <!-- SLIDE 9: CALCULATION DEMO: 3-MONTH MOVING AVERAGE -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-chart-column" style="color: var(--primary);"></i> ตัวอย่างตารางคำนวณ 3-Month Moving Average</h2>
+                        <span class="subtitle">การเลื่อนหน้าต่างคำนวณทีละเดือน และการสังเกตผลกระทบจากความล่าช้า (Lag Effect)</span>
+                    </div>
+                    <span class="badge badge-primary"><i class="fas fa-calculator"></i> Step-by-Step</span>
+                </div>
+                <div class="slide-body">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 15%;">เดือน</th>
+                                <th style="width: 25%;">ยอดขายจริง (Actual)</th>
+                                <th style="width: 35%;">สูตรคำนวณ MA-3</th>
+                                <th>ผลพยากรณ์ (MA-3)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>เดือน 1 (ม.ค.)</td>
+                                <td>1,200 ชิ้น</td>
+                                <td><span style="color: var(--text-muted);">- ข้อมูลยังไม่ครบ 3 เดือน -</span></td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <td>เดือน 2 (ก.พ.)</td>
+                                <td>1,350 ชิ้น</td>
+                                <td><span style="color: var(--text-muted);">- ข้อมูลยังไม่ครบ 3 เดือน -</span></td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <td>เดือน 3 (มี.ค.)</td>
+                                <td>1,300 ชิ้น</td>
+                                <td><span style="color: var(--text-muted);">- ข้อมูลยังไม่ครบ 3 เดือน -</span></td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <td>เดือน 4 (เม.ย.)</td>
+                                <td>1,450 ชิ้น</td>
+                                <td>(1,200 + 1,350 + 1,300) / 3</td>
+                                <td><strong>1,283</strong> ชิ้น</td>
+                            </tr>
+                            <tr>
+                                <td>เดือน 5 (พ.ค.)</td>
+                                <td>1,500 ชิ้น</td>
+                                <td>(1,350 + 1,300 + 1,450) / 3</td>
+                                <td><strong>1,367</strong> ชิ้น</td>
+                            </tr>
+                            <tr>
+                                <td>...</td>
+                                <td>...</td>
+                                <td>...</td>
+                                <td>...</td>
+                            </tr>
+                            <tr style="background: #eff6ff; font-weight: 700;">
+                                <td>เดือน 13 (ทำนาย)</td>
+                                <td><span style="color: var(--primary);">? (อนาคต)</span></td>
+                                <td>(1,920 + 2,050 + 2,300) / 3</td>
+                                <td style="color: var(--primary); font-size: 0.95rem;">2,090 ชิ้น</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="grid-2" style="margin-top: 6px;">
+                        <div class="card" style="padding: 10px 14px; background: white;">
+                            <span style="font-size: 0.84rem; color: var(--text-sub);">
+                                <strong>เลือก N เท่าไรดี?</strong><br />
+                                • N น้อย (เช่น 3 เดือน): ตอบสนองการเปลี่ยนแปลงเร็ว แต่อาจแกว่งตาม Noise<br />
+                                • N มาก (เช่น 6 หรือ 12 เดือน): กราฟนิ่งเรียบ แต่ช้ามากต่อเทรนด์ใหม่
+                            </span>
+                        </div>
+                        <div class="card" style="padding: 10px 14px; background: #faf5ff; border: 1px solid #e9d5ff;">
+                            <span style="font-size: 0.84rem; color: var(--purple);">
+                                <strong>ข้อคิดสำหรับร้านอิ่มใจ:</strong><br />
+                                เดือน 12 ขายได้ 2,300 ชิ้น แต่ MA-3 ทำนายเดือน 13 ไว้เพียง <strong>2,090 ชิ้น</strong> หากร้านเติบโตต่อ ตัวเลขนี้อาจทำให้สต็อกเนยขาดได้!
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 9 Notes]:
+                    - อธิบายการเลื่อนคำนวณ
+                    - เปรียบเทียบ N น้อย vs N มาก
+                    - ชี้ให้เห็นว่าทำไมร้านอิ่มใจต้องพิจารณาวิธีที่ 2 ด้วย
+                </aside>
+            </section>
+
+            <!-- SLIDE 10: FORECASTING METHOD 2: LINEAR TREND & REGRESSION -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-arrow-trend-up" style="color: var(--primary);"></i> วิธีที่ 2: แนวโน้มเชิงเส้น (Linear Trend / Regression)</h2>
+                        <span class="subtitle">การต่อยอดเส้นตรงแห่งการเติบโต สู่การทำนายอนาคตด้วยสมการคณิตศาสตร์</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-calculator"></i> Method 2</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div class="card" style="padding: 14px;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-chart-line" style="color: var(--primary);"></i>
+                                <h4 style="font-size: 1.02rem;">หลักการของ Linear Trend</h4>
+                            </div>
+                            <p style="font-size: 0.84rem; color: var(--text-sub); line-height: 1.45;">
+                                เมื่อข้อมูลมีทิศทางเติบโตสม่ำเสมอ เราสามารถลากเส้น <strong>Best-fit Line (เส้นตรงที่ดีที่สุด)</strong> ผ่านจุดข้อมูลในอดีต และลากยืดเส้นตรงนั้นต่อไปข้างหน้าในอนาคต (Extrapolation)<br /><br />
+                                <strong>สมการเชิงเส้น:</strong>
+                            </p>
+                            <div style="background: #eef2ff; padding: 10px; border-radius: 8px; text-align: center; margin: 4px 0;">
+                                <span style="font-size: 1.15rem; font-weight: 800; color: var(--primary); font-family: 'Fira Code', monospace;">
+                                    y = mx + c
+                                </span>
+                            </div>
+                            <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.4;">
+                                • <strong>y:</strong> ยอดขายที่พยากรณ์ได้ (ชิ้น)<br />
+                                • <strong>x:</strong> ลำดับเดือน (1, 2, 3... 13, 14, 15)<br />
+                                • <strong>m (Slope):</strong> อัตราการเติบโตเฉลี่ยต่อเดือน<br />
+                                • <strong>c (Intercept):</strong> จุดตัดแกน Y (ยอดขายเริ่มต้น)
+                            </p>
+                        </div>
+
+                        <div class="card" style="padding: 14px; background: #f8fafc; border: 1px solid #cbd5e1;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-calculator" style="color: var(--success);"></i>
+                                <h4 style="font-size: 1.02rem;">ตัวอย่างการคำนวณของร้านอิ่มใจ</h4>
+                            </div>
+                            <p style="font-size: 0.84rem; color: var(--text-sub); line-height: 1.45;">
+                                จากข้อมูล 12 เดือน คำนวณความชัน (Slope) ได้ประมาณ:<br />
+                                <span style="font-family: 'Fira Code', monospace; color: var(--success); font-weight: 700;">
+                                    m ≈ +92.5 ชิ้น/เดือน (โตเฉลี่ยเดือนละ 92.5 ชิ้น)
+                                </span><br />
+                                จุดเริ่มต้น (c) ≈ 1,065 ชิ้น
+                            </p>
+                            <div style="background: white; border: 1px solid var(--border-card); border-radius: 8px; padding: 10px; margin-top: 8px;">
+                                <strong style="font-size: 0.85rem; color: var(--text-main);">ผลพยากรณ์เดือนที่ 13:</strong><br />
+                                <span style="font-family: 'Fira Code', monospace; font-size: 0.88rem; color: var(--primary);">
+                                    y = (92.5 × 13) + 1,065 = <strong>2,268 ชิ้น</strong>
+                                </span>
+                            </div>
+                            <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 6px;">
+                                <em>(ใน Google Sheets คำนวณได้ทันทีด้วยสูตร =FORECAST โดยไม่ต้องแก้สมการเอง!)</em>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="callout-box success" style="margin-top: 6px; padding: 8px 14px;">
+                        <i class="fas fa-check-double" style="color: var(--success); font-size: 1.2rem;"></i>
+                        <span style="font-size: 0.86rem; color: var(--text-main);">
+                            <strong>ข้อดีเด่นชัด:</strong> Linear Trend สามารถสะท้อนทิศทางการเติบโตของธุรกิจได้ดีกว่า Moving Average โดยพยากรณ์ว่าเดือน 13 จะขายได้ถึง <strong>2,268 ชิ้น</strong> (ใกล้เคียงกับเดือน 12 ที่ขายได้ 2,300 ชิ้น)
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 10 Notes]:
+                    - อธิบายสมการเชิงเส้น y = mx + c
+                    - เปรียบเทียบผลลัพธ์: Linear Trend ได้ 2,268 ชิ้น ขณะที่ MA ได้ 2,090 ชิ้น
+                </aside>
+            </section>
+
+            <!-- SLIDE 11: MOVING AVERAGE VS LINEAR TREND COMPARISON -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-code-compare" style="color: var(--primary);"></i> ศึกประชันโมเดล: Moving Average vs Linear Trend</h2>
+                        <span class="subtitle">ตารางเปรียบเทียบจุดแข็ง จุดอ่อน และหลักการเลือกใช้ให้เหมาะกับโจทย์ธุรกิจจริง</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-scale-balanced"></i> Model Comparison</span>
+                </div>
+                <div class="slide-body">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 20%;">มิติการเปรียบเทียบ</th>
+                                <th style="width: 40%; color: var(--primary);">Moving Average (MA)</th>
+                                <th style="width: 40%; color: var(--success);">Linear Trend (Regression)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>หลักการพื้นฐาน</strong></td>
+                                <td>หาค่าเฉลี่ยของ N เดือนย้อนหลังล่าสุด</td>
+                                <td>ลากเส้นตรง Best-fit Line ยืดไปในอนาคต</td>
+                            </tr>
+                            <tr>
+                                <td><strong>สมมติฐานหลัก</strong></td>
+                                <td>เชื่อว่าอนาคตจะใกล้เคียงกับอดีตระยะใกล้ ๆ</td>
+                                <td>เชื่อว่าธุรกิจมีทิศทางเติบโต/ชะลอตัวต่อเนื่อง</td>
+                            </tr>
+                            <tr>
+                                <td><strong>จุดแข็ง</strong></td>
+                                <td>ตัด Noise ความผันผวนระยะสั้นได้ดี คำนวณง่ายมาก</td>
+                                <td>สะท้อนการเติบโต (Growth Trend) ได้แม่นยำ ไม่ตกเทรนด์</td>
+                            </tr>
+                            <tr>
+                                <td><strong>จุดอ่อน</strong></td>
+                                <td>Lagging วิ่งตามหลังช้า พยากรณ์ต่ำเกินไปในขาขึ้น</td>
+                                <td>มองไม่เห็นจุดหักเห สมมติว่าโตเป็นเส้นตรงตลอดไป</td>
+                            </tr>
+                            <tr>
+                                <td><strong>เหมาะกับธุรกิจแบบใด?</strong></td>
+                                <td>ธุรกิจมั่นคง ยอดขายนิ่ง สินค้าอุปโภคบริโภคพื้นฐาน</td>
+                                <td>ธุรกิจ Startup / SME ช่วงขยายตลาด ยอดขายกำลังพุ่ง</td>
+                            </tr>
+                            <tr style="background: #fdf4ff;">
+                                <td><strong>ตัวเลขเดือน 13 (ร้านอิ่มใจ)</strong></td>
+                                <td><strong style="color: var(--primary);">2,090 ชิ้น</strong> (ระมัดระวังตัวสูง)</td>
+                                <td><strong style="color: var(--success);">2,268 ชิ้น</strong> (สอดคล้องกับขาขึ้น)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="callout-box info" style="margin-top: 6px; padding: 8px 14px;">
+                        <i class="fas fa-compass" style="color: var(--secondary); font-size: 1.2rem;"></i>
+                        <span style="font-size: 0.86rem; color: var(--text-main);">
+                            <strong>คำแนะนำสำหรับผู้ประกอบการ:</strong> อย่าใช้โมเดลเดียวโดด ๆ! ผู้บริหารฉลาดจะใช้ Moving Average เป็นตัวแทน <em>"สถานการณ์ปกติแบบระมัดระวัง"</em> และใช้ Linear Trend เป็นตัวแทน <em>"สถานการณ์เติบโตต่อเนื่อง"</em>
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 11 Notes]:
+                    - สรุปเปรียบเทียบจุดเด่นจุดด้อย
+                    - ชี้แนะให้นักศึกษาใช้ทั้งสองตัวเลขเพื่อกำหนดกรอบบนและล่าง (Range)
+                </aside>
+            </section>
+
+            <!-- SLIDE 12: INCORPORATING SEASONALITY & EVENTS -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-calendar-check" style="color: var(--primary);"></i> ตัวแปรเปลี่ยนเกม: ปัจจัยฤดูกาลและเทศกาล (Seasonality)</h2>
+                        <span class="subtitle">คณิตศาสตร์คำนวณเส้นตรง แต่โลกธุรกิจหมุนตามปฏิทินเทศกาลและวันหยุด</span>
+                    </div>
+                    <span class="badge-step warm"><i class="fas fa-holly-berry"></i> Real-World Adjustment</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-3" style="margin-top: 4px;">
+                        <div class="card" style="border-top: 4px solid var(--primary); padding: 14px;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-snowflake" style="color: var(--primary);"></i>
+                                <h4 style="font-size: 1rem;">1. ปรากฏการณ์หลังปีใหม่ (Jan Drop)</h4>
+                            </div>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.45;">
+                                เดือน 13 คือ <strong>มกราคม</strong>!<br />
+                                คนเพิ่งฉลองปีใหม่และใช้เงินก้อนโตไปในเดือน ธ.ค. มักมีพฤติกรรมรัดเข็มขัดและลดของหวาน ยอดขายอาจชะลอตัวลงกว่าเดือน ธ.ค.
+                            </p>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid var(--accent); padding: 14px;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-heart" style="color: var(--accent);"></i>
+                                <h4 style="font-size: 1rem;">2. ระลอกวาเลนไทน์ (Feb Surge)</h4>
+                            </div>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.45;">
+                                เดือน 14 คือ <strong>กุมภาพันธ์</strong>!<br />
+                                มีเทศกาลวันแห่งความรักและตรุษจีน ขนมกล่องของขวัญและช็อกโกแลตครัวซองต์จะมียอดสั่งจองล่วงหน้าพุ่งสูงเป็นพิเศษ
+                            </p>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid var(--accent-warm); padding: 14px;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-graduation-cap" style="color: var(--accent-warm);"></i>
+                                <h4 style="font-size: 1rem;">3. ปิดเทอม &amp; งานสัมมนา (Mar Shift)</h4>
+                            </div>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.45;">
+                                เดือน 15 คือ <strong>มีนาคม</strong>!<br />
+                                สถาบันการศึกษาเริ่มปิดเทอม กลุ่มลูกค้านักศึกษาลดลง แต่กลุ่มลูกค้าองค์กรจัดประชุมสัมมนาประจำปีงบประมาณจะสั่ง Snack Box เพิ่ม
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="callout-box warning" style="margin-top: 8px; padding: 10px 16px;">
+                        <i class="fas fa-wrench" style="color: var(--accent-warm); font-size: 1.2rem;"></i>
+                        <span style="font-size: 0.88rem; color: var(--text-main);">
+                            <strong>กฎการปรับแต่งตัวเลข (Adjustment Factor):</strong> สูตรทางสถิติไม่รู้ว่าเดือนหน้าคือวาเลนไทน์! เจ้าของธุรกิจต้องนำความรู้เรื่อง Seasonality จาก Session 8 มา <em>"ปรับบวกหรือลบตัวเลขพยากรณ์" (Domain Knowledge Tuning)</em> เสมอ
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 12 Notes]:
+                    - เชื่อมโยงกลับไป Session 8 เรื่อง Seasonality
+                    - เน้นย้ำว่าโมเดล Linear Trend ไม่รู้เรื่องปฏิทินเทศกาล มนุษย์เจ้าของธุรกิจต้องเข้ามาปรับแต่ง
+                </aside>
+            </section>
+
+            <!-- SLIDE 13: THE GOLDEN LIMITATION: PAST IS NOT GUARANTEED FUTURE -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-triangle-exclamation" style="color: var(--accent);"></i> กฎแห่งความไม่แน่นอน: อดีตไม่ได้การันตีอนาคต 100%</h2>
+                        <span class="subtitle">หลุมพรางทางจิตวิทยาที่ทำให้ผู้ประกอบการเจ๊งมานักต่อนัก เพราะหลงเชื่อตัวเลขพยากรณ์</span>
+                    </div>
+                    <span class="badge-step warm"><i class="fas fa-skull-crossbones"></i> Reality Check</span>
+                </div>
+                <div class="slide-body">
+                    <div style="background: white; border: 2px dashed var(--accent); border-radius: 12px; padding: 14px 20px; text-align: center;">
+                        <span style="font-size: 1.35rem; font-weight: 900; color: var(--accent); line-height: 1.4;">
+                            "All models are wrong, but some are useful."<br />
+                            <span style="font-size: 1.05rem; font-weight: 600; color: var(--text-main);">
+                                — George E. P. Box (นักสถิติระดับโลก)
+                            </span>
+                        </span>
+                        <p style="font-size: 0.86rem; color: var(--text-sub); margin-top: 6px;">
+                            (โมเดลการพยากรณ์ทุกโมเดลบนโลกล้วนมีความผิดพลาด แต่บางโมเดลมีประโยชน์อย่างยิ่งในการช่วยนำทาง)
+                        </p>
+                    </div>
+
+                    <div class="grid-2" style="margin-top: 8px;">
+                        <div class="card" style="padding: 12px 16px; border-left: 4px solid var(--accent);">
+                            <h4 style="font-size: 0.98rem; color: var(--accent); margin-bottom: 6px;">
+                                <i class="fas fa-car-rear"></i> เหมือนการขับรถโดยมองกระจกหลัง
+                            </h4>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.45;">
+                                การพยากรณ์คือการใช้ข้อมูลในอดีต (กระจกมองหลัง) มาทำนายถนนข้างหน้า ถ้าถนนข้างหน้าเลี้ยวหักศอก แต่เรายังขับตามกระจกหลัง รถย่อมแหกโค้งทันที
+                            </p>
+                        </div>
+
+                        <div class="card" style="padding: 12px 16px; border-left: 4px solid var(--secondary);">
+                            <h4 style="font-size: 0.98rem; color: var(--secondary); margin-bottom: 6px;">
+                                <i class="fas fa-shield-halved"></i> วัตถุประสงค์ที่แท้จริงของการพยากรณ์
+                            </h4>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.45;">
+                                ไม่ใช่การ "ทายแม่นเป๊ะแบบไม่มีพลาด" แต่คือการ <strong>"เตรียมความพร้อมรับมือความเสี่ยง"</strong> เพื่อให้ธุรกิจไม่ล้มละลายเมื่อเกิดเหตุไม่คาดฝัน
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="callout-box info" style="margin-top: 6px; padding: 8px 14px;">
+                        <i class="fas fa-lightbulb" style="color: var(--secondary); font-size: 1.1rem;"></i>
+                        <span style="font-size: 0.86rem; color: var(--text-main);">
+                            <strong>Mindset ผู้ประกอบการ:</strong> มองตัวเลขพยากรณ์เป็น <em>"จุดอ้างอิงเริ่มต้น" (Baseline)</em> แล้วเตรียมแผนสำรองสำหรับสถานการณ์ที่ดีกว่าและแย่กว่าเสมอ
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 13 Notes]:
+                    - โควทของ George Box: All models are wrong, but some are useful
+                    - ปรับ Mindset นักศึกษา ไม่ใช่ทายหวย แต่คือการลดความเสี่ยง
+                </aside>
+            </section>
+
+            <!-- SLIDE 14: 4 BLIND SPOTS OF FORECASTING -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-eye-slash" style="color: var(--accent);"></i> 4 จุดบอดของการพยากรณ์ (4 Blind Spots to Watch)</h2>
+                        <span class="subtitle">เหตุการณ์นอกตารางข้อมูลที่พร้อมพังโมเดลคณิตศาสตร์ในชั่วข้ามคืน</span>
+                    </div>
+                    <span class="badge-step warm"><i class="fas fa-radiation"></i> Risk Assessment</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-4" style="margin-top: 4px;">
+                        <div class="card" style="padding: 12px; border-top: 3px solid var(--accent);">
+                            <div class="card-header-sm">
+                                <i class="fas fa-feather" style="color: var(--accent);"></i>
+                                <h4 style="font-size: 0.94rem;">1. Black Swan</h4>
+                            </div>
+                            <p style="font-size: 0.8rem; color: var(--text-sub); line-height: 1.4;">
+                                เหตุการณ์หายากแต่รุนแรง เช่น โรคระบาดล็อกดาวน์ น้ำท่วมใหญ่ ไฟไหม้ตลาด ข้อมูลในอดีตไม่เคยบันทึกไว้
+                            </p>
+                        </div>
+
+                        <div class="card" style="padding: 12px; border-top: 3px solid var(--accent-warm);">
+                            <div class="card-header-sm">
+                                <i class="fas fa-store" style="color: var(--accent-warm);"></i>
+                                <h4 style="font-size: 0.94rem;">2. Market Shock</h4>
+                            </div>
+                            <p style="font-size: 0.8rem; color: var(--text-sub); line-height: 1.4;">
+                                มีร้านเบเกอรี่แบรนด์ดังมาเปิดข้างร้าน หรือเกิดไวรัลลบใน TikTok คู่แข่งตัดราคาจัดโปร 1 แถม 1
+                            </p>
+                        </div>
+
+                        <div class="card" style="padding: 12px; border-top: 3px solid #7c3aed;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-truck-ramp-box" style="color: #7c3aed;"></i>
+                                <h4 style="font-size: 0.94rem;">3. Supply Shock</h4>
+                            </div>
+                            <p style="font-size: 0.8rem; color: var(--text-sub); line-height: 1.4;">
+                                เนยฝรั่งเศสขาดตลาด ค่าเงินบาทอ่อนทำให้ต้นทุนพุ่ง 30% หรือการขนส่งทางเรือติดขัด
+                            </p>
+                        </div>
+
+                        <div class="card" style="padding: 12px; border-top: 3px solid #059669;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-scale-unbalanced" style="color: #059669;"></i>
+                                <h4 style="font-size: 0.94rem;">4. GIGO &amp; Overfit</h4>
+                            </div>
+                            <p style="font-size: 0.8rem; color: var(--text-sub); line-height: 1.4;">
+                                ข้อมูลในอดีตถูกบันทึกผิดพลาด หรือพยายามปรับสูตรจนพอดีกับอดีตเกินไปแต่ใช้กับอนาคตไม่ได้
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="callout-box danger" style="margin-top: 8px; padding: 10px 16px;">
+                        <i class="fas fa-hand-holding-dollar" style="color: var(--accent); font-size: 1.2rem;"></i>
+                        <span style="font-size: 0.88rem; color: var(--text-main);">
+                            <strong>บทเรียนจากธุรกิจจริง:</strong> ร้านที่รอดพ้นวิกฤตไม่ใช่ร้านที่พยากรณ์แม่นที่สุด แต่คือร้านที่มี <em>"สายป่านเงินสดสำรองและความยืดหยุ่นในการปรับตัว" (Agility &amp; Cash Buffer)</em> เมื่อตัวเลขจริงไม่ตรงกับที่ทำนายไว้!
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 14 Notes]:
+                    - แนะนำ 4 จุดบอด: Black Swan, Market Shock, Supply Shock, GIGO
+                    - ตอกย้ำว่าเงินสดสำรองคือสิ่งที่จะช่วยธุรกิจรอดพ้น
+                </aside>
+            </section>
+
+            <!-- SLIDE 15: GEMINI AS YOUR FORECASTING ADVISOR -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-robot" style="color: var(--primary);"></i> ใช้ Gemini Advanced เป็นที่ปรึกษาการพยากรณ์</h2>
+                        <span class="subtitle">ผสานพลังคณิตศาสตร์เชิงปริมาณ (Quantitative) เข้ากับตรรกะเชิงคุณภาพ (Qualitative Reasoning)</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-brain"></i> AI Assistant</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div class="card" style="padding: 14px;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-calculator" style="color: var(--text-muted);"></i>
+                                <h4 style="font-size: 1.02rem;">Google Sheets เพียงอย่างเดียว</h4>
+                            </div>
+                            <ul style="font-size: 0.84rem; color: var(--text-sub); line-height: 1.45; padding-left: 18px; margin: 0;">
+                                <li>คำนวณตัวเลขตามสูตรคณิตศาสตร์เพียว ๆ</li>
+                                <li>ให้ผลลัพธ์เป็นตัวเลขเดียว (เช่น 2,268 ชิ้น)</li>
+                                <li><strong>ไม่รู้บริบทธุรกิจ</strong> ไม่รู้ว่ามีเทศกาลวันวาเลนไทน์</li>
+                                <li>ไม่สามารถบอกเหตุผลหรือเสนอแนะกลยุทธ์สต็อกได้</li>
+                            </ul>
+                        </div>
+
+                        <div class="card" style="padding: 14px; background: #faf5ff; border: 1px solid #e9d5ff;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-sparkles" style="color: var(--purple);"></i>
+                                <h4 style="color: var(--purple); font-size: 1.02rem;">เมื่อผสานพลังกับ Gemini Advanced</h4>
+                            </div>
+                            <ul style="font-size: 0.84rem; color: var(--text-sub); line-height: 1.45; padding-left: 18px; margin: 0;">
+                                <li>ช่วยวิเคราะห์ทั้ง Trend และ Seasonality พร้อมกัน</li>
+                                <li><strong>ระบุสมมติฐาน (Assumptions)</strong> และปัจจัยเสี่ยงเบื้องหลังตัวเลข</li>
+                                <li>จำลอง <strong>Scenario Planning</strong> (Best / Base / Worst Case)</li>
+                                <li>แปลงตัวเลขเป็นแผนจัดการสต็อกเนยและจัดกะพนักงาน</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="callout-box success" style="margin-top: 6px; padding: 8px 14px;">
+                        <i class="fas fa-check-circle" style="color: var(--success); font-size: 1.2rem;"></i>
+                        <span style="font-size: 0.86rem; color: var(--text-main);">
+                            <strong>สูตรสำเร็จของเจ้าของธุรกิจยุค AI:</strong> ใช้ Google Sheets คำนวณตัวเลขฐานทางสถิติ แล้วส่งให้ Gemini ช่วยตรวจทาน วิเคราะห์รอบด้าน และวางแผนกลยุทธ์รับมือ 3 สถานการณ์
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 15 Notes]:
+                    - ชี้ข้อจำกัดของ Sheets (คำนวณเลขตรงๆ) vs จุดแข็งของ Gemini (ตรรกะและบริบท)
+                    - นำเข้าสู่ Prompt Template
+                </aside>
+            </section>
+
+            <!-- SLIDE 16: MASTER PROMPT TEMPLATE: FORECAST FRAMEWORK -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-terminal" style="color: var(--primary);"></i> Master Prompt: โครงสร้างคำสั่งพยากรณ์ยอดขาย</h2>
+                        <span class="subtitle">เทคนิคการเขียน Prompt ที่ดึงศักยภาพสูงสุดของ Gemini ในการวิเคราะห์ตัวเลขและเสนอแนะ</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-code"></i> Prompt Engineering</span>
+                </div>
+                <div class="slide-body">
+                    <div class="code-box" style="font-size: 0.82rem; line-height: 1.42;">
+                        <span class="code-comment"># MASTER PROMPT: SALES FORECASTING FOR SME</span><br />
+                        <span class="code-keyword">Context:</span> คุณคือประธานเจ้าหน้าที่ฝ่ายข้อมูล (Chief Data Officer) และที่ปรึกษาธุรกิจร้านอาหาร/เบเกอรี่<br />
+                        <span class="code-keyword">Business:</span> ร้าน "อิ่มใจ เบเกอรี่สตูดิโอ" ครัวซองต์พรีเมียมราคา 95 บาท วัตถุดิบเนยฝรั่งเศสอายุสั้น Lead time 48 ชม.<br />
+                        <span class="code-keyword">Historical Data:</span> ยอดขาย 12 เดือนที่ผ่านมา (เดือน 1-12) ตามตารางที่แนบมานี้...<br />
+                        <span class="code-keyword">Objective:</span><br />
+                        1. พยากรณ์ยอดขายครัวซองต์ 3 เดือนข้างหน้า (เดือน 13: ม.ค., เดือน 14: ก.พ., เดือน 15: มี.ค.)<br />
+                        2. เปรียบเทียบ 2 วิธี: 3-Month Moving Average vs Linear Trend<br />
+                        3. ปรับตัวเลขด้วยปัจจัยเทศกาลจริง (หลังปีใหม่, วาเลนไทน์, ปิดเทอม)<br />
+                        4. จำลอง 3 สถานการณ์ (Best Case, Base Case, Worst Case) พร้อมระบุสมมติฐาน<br />
+                        5. สรุปเป็นแผนสั่งสต็อกเนยสด (กก.) และการจัดกะช่างอบขนม
+                    </div>
+
+                    <div class="callout-box info" style="margin-top: 6px; padding: 8px 14px;">
+                        <i class="fas fa-key" style="color: var(--secondary); font-size: 1.1rem;"></i>
+                        <span style="font-size: 0.84rem; color: var(--text-main);">
+                            <strong>กุญแจสำคัญ:</strong> ต้องบอก AI เรื่อง <em>Lead Time 48 ชั่วโมง</em> และ <em>วัตถุดิบอายุสั้น</em> เสมอ เพื่อให้คำแนะนำเรื่องสต็อกของ AI ไม่หลุดโลกและนำไปใช้ปฏิบัติได้จริง
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 16 Notes]:
+                    - แนะนำโครงสร้าง Master Prompt
+                    - ย้ำเรื่องการใส่บริบท Lead Time และ Perishable Goods ลงใน Prompt
+                </aside>
+            </section>
+
+            <!-- SLIDE 17: LIVE AI DEMO: GEMINI SALES FORECAST FOR "อิ่มใจ เบเกอรี่" -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-desktop" style="color: var(--primary);"></i> ผลลัพธ์จริงจาก Gemini Advanced: ถอดรหัสตัวเลขทำนาย</h2>
+                        <span class="subtitle">ตัวอย่างบทวิเคราะห์และตัวเลขพยากรณ์ที่ได้จากการรัน Master Prompt</span>
+                    </div>
+                    <span class="badge badge-success"><i class="fas fa-check-circle"></i> AI Output</span>
+                </div>
+                <div class="slide-body">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 15%;">คาบพยากรณ์</th>
+                                <th style="width: 25%;">ผลพยากรณ์ Linear Trend</th>
+                                <th style="width: 25%;">ผลพยากรณ์ MA-3</th>
+                                <th>การปรับแต่งตามบริบทธุรกิจ (AI Insight)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>เดือน 13</strong><br />(ม.ค. ปี 2)</td>
+                                <td>2,268 ชิ้น</td>
+                                <td>2,090 ชิ้น</td>
+                                <td><span style="color: var(--accent-warm);">ปรับลดเหลือ ~2,150 ชิ้น</span> เนื่องจากปรากฏการณ์ Post-Holiday Slump คนลดของหวานหลังปีใหม่</td>
+                            </tr>
+                            <tr>
+                                <td><strong>เดือน 14</strong><br />(ก.พ. ปี 2)</td>
+                                <td>2,360 ชิ้น</td>
+                                <td>2,216 ชิ้น</td>
+                                <td><span style="color: var(--accent);">ปรับเพิ่มเป็น ~2,500 ชิ้น</span> รับแรงหนุนจากวาเลนไทน์และตรุษจีน เซตของขวัญครัวซองต์ช็อกโกแลต</td>
+                            </tr>
+                            <tr>
+                                <td><strong>เดือน 15</strong><br />(มี.ค. ปี 2)</td>
+                                <td>2,453 ชิ้น</td>
+                                <td>2,322 ชิ้น</td>
+                                <td><span style="color: var(--success);">คงระดับ ~2,400 ชิ้น</span> ขยายโปรโมชัน Snack Box งานสัมมนา ชดเชยกลุ่มนักศึกษาปิดเทอม</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="card" style="padding: 10px 14px; background: #faf5ff; border: 1px solid #e9d5ff; margin-top: 6px;">
+                        <div style="font-size: 0.85rem; color: var(--purple); font-weight: 700; margin-bottom: 4px;">
+                            <i class="fas fa-quote-left"></i> สรุปคำแนะนำเชิงกลยุทธ์จาก AI:
+                        </div>
+                        <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.4;">
+                            <em>"ในเดือนมกราคม ให้ระวังการสั่งเนยเกินสต็อก แต่ตั้งแต่สัปดาห์ที่ 3 ของเดือนมกราคม ต้องเริ่มสั่งจองเนยล่วงหน้าเพิ่ม 20% ทันทีเพื่อเตรียมรับมือคลื่นออเดอร์วาเลนไทน์ในเดือนกุมภาพันธ์!"</em>
+                        </p>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 17 Notes]:
+                    - ชี้ให้นักศึกษาเห็นว่า AI ไม่ได้แค่คำนวณสูตร แต่ช่วยปรับแต่งตัวเลขตามเทศกาล
+                    - สังเกตเดือน ก.พ. พุ่งเป็น 2,500 ชิ้นเพราะวาเลนไทน์
+                </aside>
+            </section>
+
+            <!-- SLIDE 18: SCENARIO PLANNING WITH AI: BEST / BASE / WORST CASE -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-diagram-project" style="color: var(--primary);"></i> บริหารความไม่แน่นอนด้วย 3 สถานการณ์ (Scenario Planning)</h2>
+                        <span class="subtitle">การกระจายความเสี่ยงอย่างมืออาชีพ: อย่าเดิมพันอนาคตทั้งร้านไว้กับตัวเลขเพียงตัวเดียว</span>
+                    </div>
+                    <span class="badge-step warm"><i class="fas fa-shield-alt"></i> 3 Scenarios</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-3" style="margin-top: 4px;">
+                        <div class="card" style="border-top: 4px solid var(--accent); padding: 14px;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-cloud-rain" style="color: var(--accent);"></i>
+                                <h4 style="font-size: 0.98rem; color: var(--accent);">Worst Case (-15%)</h4>
+                            </div>
+                            <div style="font-size: 1.1rem; font-weight: 800; color: var(--accent); margin: 4px 0;">
+                                1,850 - 1,950 ชิ้น
+                            </div>
+                            <p style="font-size: 0.78rem; color: var(--text-sub); line-height: 1.4;">
+                                <strong>สมมติฐาน:</strong> มีคู่แข่งเปิดใหม่ตัดราคา, เศรษฐกิจซบเซาหนัก, ฝนตกต่อเนื่อง<br />
+                                <strong>แอ็กชัน:</strong> สั่งเนยขั้นต่ำ ไม่จ้างพนักงานพาร์ทไทม์เพิ่ม เน้นรักษาเงินสดสำรอง
+                            </p>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid var(--primary); padding: 14px; background: #eef2ff;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-chart-line" style="color: var(--primary);"></i>
+                                <h4 style="font-size: 0.98rem; color: var(--primary);">Base Case (โมเดลปกติ)</h4>
+                            </div>
+                            <div style="font-size: 1.1rem; font-weight: 800; color: var(--primary); margin: 4px 0;">
+                                2,150 - 2,250 ชิ้น
+                            </div>
+                            <p style="font-size: 0.78rem; color: var(--text-sub); line-height: 1.4;">
+                                <strong>สมมติฐาน:</strong> เติบโตตาม Trend ปกติ เทศกาลตามคาดการณ์ ไม่มีเหตุการณ์รุนแรง<br />
+                                <strong>แอ็กชัน:</strong> สั่งสต็อกตามแผนปกติ จัดกะพนักงานเต็มเวลา สต็อกเนยพร้อม Safety Stock 10%
+                            </p>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid var(--success); padding: 14px;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-rocket" style="color: var(--success);"></i>
+                                <h4 style="font-size: 0.98rem; color: var(--success);">Best Case (+20%)</h4>
+                            </div>
+                            <div style="font-size: 1.1rem; font-weight: 800; color: var(--success); margin: 4px 0;">
+                                2,550 - 2,700 ชิ้น
+                            </div>
+                            <p style="font-size: 0.78rem; color: var(--text-sub); line-height: 1.4;">
+                                <strong>สมมติฐาน:</strong> ครัวซองต์กลายเป็นไวรัลใน TikTok ได้ออเดอร์จัดเบรคบริษัทขนาดใหญ่<br />
+                                <strong>แอ็กชัน:</strong> ทำสัญญาจองเนยล่วงหน้าแบบยืดหยุ่น เตรียมเรียกช่างอบพาร์ทไทม์สแตนด์บาย
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="callout-box info" style="margin-top: 8px; padding: 10px 16px;">
+                        <i class="fas fa-lightbulb" style="color: var(--secondary); font-size: 1.2rem;"></i>
+                        <span style="font-size: 0.88rem; color: var(--text-main);">
+                            <strong>หัวใจของผู้บริหาร:</strong> การมี 3 Scenarios ทำให้ร้านไม่ตื่นตระหนก ถ้าเดือนหน้าขายดีทะลุเป้า เรามีเบอร์โทรช่างอบพาร์ทไทม์พร้อมโทรเรียกทันที ถ้าขายฝืด เราก็สั่งของน้อยไม่เจ็บตัว
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 18 Notes]:
+                    - อธิบาย 3 สถานการณ์: Worst, Base, Best
+                    - การทำธุรกิจต้องมีแผนรองรับทั้ง 3 ทางเสมอ
+                </aside>
+            </section>
+
+            <!-- SLIDE 19: CRITICAL AI AUDIT: 3-STEP SANITY CHECK -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-clipboard-check" style="color: var(--accent);"></i> 3 ด่านตรวจเช็กความสมเหตุสมผลของตัวเลข AI (Sanity Check)</h2>
+                        <span class="subtitle">อย่าเซ็นอนุมัติงบสต็อกเพียงเพราะ AI บอกมา — ต้องผ่าน 3 คำถามกรองความจริง</span>
+                    </div>
+                    <span class="badge-step warm"><i class="fas fa-user-shield"></i> Human-in-the-Loop</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-3" style="margin-top: 4px;">
+                        <div class="card" style="padding: 14px; border-left: 4px solid var(--primary);">
+                            <div class="card-header-sm">
+                                <i class="fas fa-industry" style="color: var(--primary);"></i>
+                                <h4 style="font-size: 0.98rem;">ด่านที่ 1: กำลังผลิตรองรับไหวไหม? (Capacity Limit)</h4>
+                            </div>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.45;">
+                                เตาอบมีกี่ช่อง? ตู้หมักแป้งจุได้กี่ถาด?<br />
+                                ถ้า AI พยากรณ์ว่าเดือน ก.พ. จะขายได้ 3,500 ชิ้น แต่เตาอบของร้านอบได้สูงสุดแค่ 2,600 ชิ้น/เดือน ตัวเลขนั้นก็เป็นไปไม่ได้ในทางกายภาพ!
+                            </p>
+                        </div>
+
+                        <div class="card" style="padding: 14px; border-left: 4px solid var(--accent-warm);">
+                            <div class="card-header-sm">
+                                <i class="fas fa-wallet" style="color: var(--accent-warm);"></i>
+                                <h4 style="font-size: 0.98rem;">ด่านที่ 2: เงินสดสำรองพอจ่ายไหม? (Cash Constraint)</h4>
+                            </div>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.45;">
+                                การจะสั่งเนยมาอบ 2,700 ชิ้น ต้องใช้เงินสดจ่ายซัพพลายเออร์ล่วงหน้า 80,000 บาท ร้านมีกระแสเงินสดหมุนเวียนพอหรือไม่? ถ้าไม่พอ อาจเสร็จก่อนได้ขาย
+                            </p>
+                        </div>
+
+                        <div class="card" style="padding: 14px; border-left: 4px solid var(--success);">
+                            <div class="card-header-sm">
+                                <i class="fas fa-boxes-packing" style="color: var(--success);"></i>
+                                <h4 style="font-size: 0.98rem;">ด่านที่ 3: พื้นที่จัดเก็บพอหรือไม่? (Storage Space)</h4>
+                            </div>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.45;">
+                                ตู้เย็นควบคุมอุณหภูมิสำหรับเก็บเนยสดและตู้แช่แข็งแป้งครัวซองต์มีพื้นที่เพียงพอหรือไม่? ถ้าสั่งมาเกินตู้แช่ เนยจะละลายเสียคุณภาพ
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="callout-box warning" style="margin-top: 8px; padding: 10px 16px;">
+                        <i class="fas fa-brain" style="color: var(--accent-warm); font-size: 1.2rem;"></i>
+                        <span style="font-size: 0.88rem; color: var(--text-main);">
+                            <strong>กฎเหล็กผู้ประกอบการ:</strong> AI ให้ตัวเลขทางคณิตศาสตร์ แต่ <strong>มนุษย์เจ้าของธุรกิจคือผู้ตัดสินใจขั้นสุดท้าย</strong> โดยต้องเอาข้อจำกัดจริง (เตาอบ, เงินสด, ตู้เย็น) มากำกับตัวเลข AI เสมอ!
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 19 Notes]:
+                    - สอน Sanity Check 3 ข้อ: กำลังผลิตเตาอบ, เงินสดจ่ายซัพพลายเออร์, ตู้เย็นแช่เนย
+                    - ห้ามเชื่อตัวเลข AI ลอยๆ
+                </aside>
+            </section>
+
+            <!-- SLIDE 20: SPREADSHEET LAB: THE =FORECAST() & =FORECAST.LINEAR() -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-table" style="color: var(--primary);"></i> Google Sheets Lab: ฟังก์ชัน =FORECAST() และไวยากรณ์</h2>
+                        <span class="subtitle">การคำนวณแนวโน้มเชิงเส้นอย่างแม่นยำด้วยสูตรสำเร็จรูปมาตรฐานสากล</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-laptop-code"></i> Spreadsheet Lab</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div class="card" style="padding: 14px;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-code" style="color: var(--primary);"></i>
+                                <h4 style="font-size: 1.02rem;">ไวยากรณ์สูตร (Syntax)</h4>
+                            </div>
+                            <div class="code-box" style="margin: 8px 0; font-size: 0.88rem;">
+                                <span class="code-func">=FORECAST</span>(x, known_data_y, known_data_x)<br />
+                                <span class="code-comment">-- หรือใน Google Sheets รุ่นใหม่ --</span><br />
+                                <span class="code-func">=FORECAST.LINEAR</span>(x, known_y's, known_x's)
+                            </div>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.45;">
+                                • <strong>x:</strong> จุดข้อมูลในอนาคตที่ต้องการทำนาย (เช่น เลข 13)<br />
+                                • <strong>known_data_y:</strong> ช่วงเซลล์ของยอดขายจริงในอดีต (เช่น C2:C13)<br />
+                                • <strong>known_data_x:</strong> ช่วงเซลล์ของลำดับเวลาในอดีต (เช่น A2:A13)
+                            </p>
+                        </div>
+
+                        <div class="card" style="padding: 14px; background: #fffbeb; border: 1px solid #fde68a;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-triangle-exclamation" style="color: var(--accent-warm);"></i>
+                                <h4 style="color: #92400e; font-size: 1.02rem;">3 กฎเหล็กป้องกันสูตรพัง (#VALUE! / #N/A)</h4>
+                            </div>
+                            <ul style="font-size: 0.82rem; color: #92400e; line-height: 1.45; padding-left: 18px; margin: 4px 0 0 0;">
+                                <li><strong>กฎข้อที่ 1: y ขึ้นก่อน x เสมอ!</strong> มือใหม่ชอบเอา x ขึ้นก่อน ทำให้สลับแกนทำนายผิด</li>
+                                <li><strong>กฎข้อที่ 2: ขนาด Range ต้องเท่ากันเป๊ะ!</strong> ถ้า Y คือ C2:C13 (12 แถว) X ก็ต้องเป็น A2:A13 (12 แถว) ห้ามแถมแถวรวมเด็ดขาด</li>
+                                <li><strong>กฎข้อที่ 3: ต้องเป็นตัวเลขล้วน (Pure Numbers)!</strong> ห้ามมีตัวหนังสือ เช่น "1,200 ชิ้น" ปนอยู่ในเซลล์คำนวณ</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="callout-box success" style="margin-top: 6px; padding: 8px 14px;">
+                        <i class="fas fa-check-circle" style="color: var(--success); font-size: 1.2rem;"></i>
+                        <span style="font-size: 0.86rem; color: var(--text-main);">
+                            <strong>ฟังก์ชันทรงพลัง:</strong> Google Sheets จะคำนวณหาความชัน (Slope) และจุดตัดแกน (Intercept) ผ่านสมการ Linear Regression ให้อัตโนมัติในเสี้ยววินาที!
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 20 Notes]:
+                    - เน้นกฎ y ขึ้นก่อน x เสมอ
+                    - ย้ำเรื่องขนาด Range เท่ากัน และข้อมูลตัวเลขล้วน
+                </aside>
+            </section>
+
+            <!-- SLIDE 21: SPREADSHEET LAB: STEP-BY-STEP CALCULATION -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-list-ol" style="color: var(--primary);"></i> สาธิตการเขียนสูตรทำนายเดือน 13, 14, 15 ใน Sheets</h2>
+                        <span class="subtitle">การล็อกเซลล์ด้วยเครื่องหมาย $ (Absolute Reference) เพื่อลากสูตรลงมาคำนวณอัตโนมัติ</span>
+                    </div>
+                    <span class="badge badge-primary"><i class="fas fa-keyboard"></i> Practical Hands-on</span>
+                </div>
+                <div class="slide-body">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 10%;">แถว</th>
+                                <th style="width: 15%;">คอลัมน์ A (คาบ x)</th>
+                                <th style="width: 20%;">คอลัมน์ B (เดือน)</th>
+                                <th style="width: 25%;">คอลัมน์ C (ยอดขายจริง y)</th>
+                                <th>คอลัมน์ D (สูตรพยากรณ์ =FORECAST)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2</td>
+                                <td>1</td>
+                                <td>ม.ค.</td>
+                                <td>1,200</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <td>...</td>
+                                <td>...</td>
+                                <td>...</td>
+                                <td>...</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <td>13</td>
+                                <td>12</td>
+                                <td>ธ.ค.</td>
+                                <td>2,300</td>
+                                <td>-</td>
+                            </tr>
+                            <tr style="background: #eff6ff;">
+                                <td><strong>14</strong></td>
+                                <td><strong>13</strong></td>
+                                <td><strong>ม.ค. (ปี 2)</strong></td>
+                                <td><span style="color: var(--text-muted);">-</span></td>
+                                <td><code style="color: var(--primary); font-weight: 700;">=FORECAST(A14, $C$2:$C$13, $A$2:$A$13)</code></td>
+                            </tr>
+                            <tr style="background: #eff6ff;">
+                                <td><strong>15</strong></td>
+                                <td><strong>14</strong></td>
+                                <td><strong>ก.พ. (ปี 2)</strong></td>
+                                <td><span style="color: var(--text-muted);">-</span></td>
+                                <td><code style="color: var(--primary); font-weight: 700;">=FORECAST(A15, $C$2:$C$13, $A$2:$A$13)</code></td>
+                            </tr>
+                            <tr style="background: #eff6ff;">
+                                <td><strong>16</strong></td>
+                                <td><strong>15</strong></td>
+                                <td><strong>มี.ค. (ปี 2)</strong></td>
+                                <td><span style="color: var(--text-muted);">-</span></td>
+                                <td><code style="color: var(--primary); font-weight: 700;">=FORECAST(A16, $C$2:$C$13, $A$2:$A$13)</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="callout-box info" style="margin-top: 6px; padding: 8px 14px;">
+                        <i class="fas fa-lock" style="color: var(--secondary); font-size: 1.2rem;"></i>
+                        <span style="font-size: 0.86rem; color: var(--text-main);">
+                            <strong>เทคนิคโปร Google Sheets:</strong> ใส่เครื่องหมาย <strong>$</strong> เพื่อล็อกช่วงข้อมูลในอดีต <code>$C$2:$C$13</code> และ <code>$A$2:$A$13</code> เมื่อลากสูตรลงมาที่แถว 15 และ 16 ช่วงข้อมูลอ้างอิงจะไม่เลื่อนหนี!
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 21 Notes]:
+                    - สาธิตการเขียนสูตรจริงในตาราง
+                    - อธิบายการใช้เครื่องหมาย $ ล็อกช่วงข้อมูล
+                </aside>
+            </section>
+
+            <!-- SLIDE 22: SPREADSHEET LAB: MOVING AVERAGE FORMULAS -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-calculator" style="color: var(--primary);"></i> Google Sheets Lab: สูตรหา Moving Average 3 เดือน</h2>
+                        <span class="subtitle">การใช้ฟังก์ชัน =AVERAGE() เลื่อนคำนวณยอดขาย 3 เดือนล่าสุด</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-laptop-code"></i> Formula Guide</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div class="card" style="padding: 14px;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-square-root-variable" style="color: var(--primary);"></i>
+                                <h4 style="font-size: 1.02rem;">สูตร =AVERAGE() เคลื่อนที่</h4>
+                            </div>
+                            <p style="font-size: 0.84rem; color: var(--text-sub); line-height: 1.45;">
+                                เริ่มเขียนสูตรในแถวที่ 4 (เดือน 4: เม.ย.) เพื่อเฉลี่ยเดือน 1, 2, 3:
+                            </p>
+                            <div class="code-box" style="margin: 8px 0; font-size: 0.85rem;">
+                                <span class="code-comment">-- เซลล์ E5 (พยากรณ์เดือน 4) --</span><br />
+                                <span class="code-func">=AVERAGE</span>(C2:C4)<br /><br />
+                                <span class="code-comment">-- เซลล์ E6 (พยากรณ์เดือน 5) --</span><br />
+                                <span class="code-func">=AVERAGE</span>(C3:C5)<br /><br />
+                                <span class="code-comment">-- เซลล์ E14 (พยากรณ์เดือน 13) --</span><br />
+                                <span class="code-func">=AVERAGE</span>(C11:C13)
+                            </div>
+                            <p style="font-size: 0.8rem; color: var(--text-muted);">
+                                <em>(ไม่ต้องใส่เครื่องหมาย $ เพราะเราต้องการให้หน้าต่างคำนวณเลื่อนตามแถวลงมาเรื่อยๆ)</em>
+                            </p>
+                        </div>
+
+                        <div class="card" style="padding: 14px; background: #f8fafc; border: 1px solid #cbd5e1;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-chart-line" style="color: var(--success);"></i>
+                                <h4 style="font-size: 1.02rem;">เปรียบเทียบผลลัพธ์ใน Google Sheets</h4>
+                            </div>
+                            <table class="data-table" style="margin-top: 6px;">
+                                <thead>
+                                    <tr>
+                                        <th>เดือนทำนาย</th>
+                                        <th>=FORECAST()</th>
+                                        <th>=AVERAGE() MA-3</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>เดือน 13 (ม.ค.)</td>
+                                        <td><strong>2,268</strong> ชิ้น</td>
+                                        <td><strong>2,090</strong> ชิ้น</td>
+                                    </tr>
+                                    <tr>
+                                        <td>เดือน 14 (ก.พ.)</td>
+                                        <td><strong>2,360</strong> ชิ้น</td>
+                                        <td><strong>2,216</strong> ชิ้น*</td>
+                                    </tr>
+                                    <tr>
+                                        <td>เดือน 15 (มี.ค.)</td>
+                                        <td><strong>2,453</strong> ชิ้น</td>
+                                        <td><strong>2,322</strong> ชิ้น*</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <p style="font-size: 0.76rem; color: var(--text-muted); margin-top: 6px;">
+                                *หมายเหตุ: การคำนวณ MA ในเดือน 14 และ 15 ต้องใช้ตัวเลขที่พยากรณ์ได้จากเดือน 13 มาเป็น input ทอดถัดไป (Rolling Forecast)
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="callout-box success" style="margin-top: 6px; padding: 8px 14px;">
+                        <i class="fas fa-check-double" style="color: var(--success); font-size: 1.2rem;"></i>
+                        <span style="font-size: 0.86rem; color: var(--text-main);">
+                            <strong>เห็นภาพชัดเจน:</strong> สูตรทั้งสองแบบทำงานต่างกันอย่างชัดเจน FORECAST จะดันตัวเลขขึ้นตามความชัน ส่วน AVERAGE จะเกลี่ยค่าเฉลี่ยแบบค่อยเป็นค่อยไป
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 22 Notes]:
+                    - สาธิตการเขียนสูตร AVERAGE เคลื่อนที่
+                    - เน้นย้ำเรื่อง Rolling Forecast ในเดือนถัดๆ ไป
+                </aside>
+            </section>
+
+            <!-- SLIDE 23: SPREADSHEET LAB: TRENDLINE FORWARD FORECAST CHART -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-chart-line" style="color: var(--primary);"></i> Google Sheets Lab: สร้างกราฟพยากรณ์ Forward Trendline</h2>
+                        <span class="subtitle">การคลิกสร้างกราฟเส้นแนวโน้มพยากรณ์ไปข้างหน้า 3 คาบเวลาโดยไม่ต้องเขียนโค้ด</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-chart-area"></i> Chart Master</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-3" style="margin-top: 4px;">
+                        <div class="card" style="padding: 14px;">
+                            <div class="card-header-sm">
+                                <span style="background: var(--primary); color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.78rem; font-weight: 800;">1</span>
+                                <h4 style="font-size: 0.96rem;">สร้าง Line Chart</h4>
+                            </div>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.45;">
+                                ลากคลุมข้อมูลจริง 12 เดือน (คอลัมน์เดือนและยอดขายจริง) จากนั้นคลิก <strong>Insert &gt; Chart</strong> และเลือกชาร์ตแบบ <strong>Line Chart (กราฟเส้น)</strong>
+                            </p>
+                        </div>
+
+                        <div class="card" style="padding: 14px;">
+                            <div class="card-header-sm">
+                                <span style="background: var(--secondary); color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.78rem; font-weight: 800;">2</span>
+                                <h4 style="font-size: 0.96rem;">เปิดใช้ Trendline</h4>
+                            </div>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.45;">
+                                ในแผงควบคุมด้านขวา เลือกแท็บ <strong>Customize &gt; Series</strong> เลื่อนลงมาติ๊กถูกที่ช่อง <strong>"Trendline" (เส้นแนวโน้ม)</strong> และเลือก Type เป็น "Linear"
+                            </p>
+                        </div>
+
+                        <div class="card" style="padding: 14px;">
+                            <div class="card-header-sm">
+                                <span style="background: var(--success); color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.78rem; font-weight: 800;">3</span>
+                                <h4 style="font-size: 0.96rem;">ใส่ Forward Forecast</h4>
+                            </div>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.45;">
+                                ในหัวข้อ Forecast ให้ใส่ช่อง <strong>"Forward" = 3 periods</strong> เส้นแนวโน้มจะยืดทะลุออกไปพยากรณ์ล่วงหน้าอีก 3 เดือน (เดือน 13, 14, 15) ทันทีบนหน้าจอ!
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="callout-box info" style="margin-top: 8px; padding: 10px 16px;">
+                        <i class="fas fa-eye" style="color: var(--secondary); font-size: 1.2rem;"></i>
+                        <span style="font-size: 0.88rem; color: var(--text-main);">
+                            <strong>พลังของการมองเห็น (Data Visualization):</strong> ผู้บริหารและนักลงทุนไม่ต้องอ่านสมการคณิตศาสตร์ แต่เมื่อมองเส้นประ Trendline ที่ยืดต่อไปข้างหน้า 3 เดือน จะเข้าใจแนวโน้มการเติบโตของร้านได้ใน 3 วินาที!
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 23 Notes]:
+                    - แนะนำ 3 ขั้นตอนเปิด Forward Forecast ใน Sheets
+                    - แสดงให้เห็นว่ากราฟทำให้สื่อสารกับทีมงานได้ง่ายมาก
+                </aside>
+            </section>
+
+            <!-- SLIDE 24: SPREADSHEET LAB: COMPARING AI VS GOOGLE SHEETS -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-balance-scale" style="color: var(--primary);"></i> สรุปผลประชัน: Google Sheets vs Gemini Advanced</h2>
+                        <span class="subtitle">บูรณาการตัวเลขคณิตศาสตร์เข้ากับวิสัยทัศน์ทางธุรกิจเพื่อสรุปตัวเลขฟันธง</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-handshake"></i> Synergy</span>
+                </div>
+                <div class="slide-body">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 14%;">เดือนพยากรณ์</th>
+                                <th style="width: 20%;">Sheets: =FORECAST</th>
+                                <th style="width: 20%;">Sheets: MA-3</th>
+                                <th style="width: 22%; color: var(--purple);">Gemini AI Reasoning</th>
+                                <th style="width: 24%; color: var(--success);">ตัวเลขฟันธงของผู้บริหาร (Executive Consensus)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>เดือน 13</strong><br />(ม.ค.)</td>
+                                <td>2,268 ชิ้น</td>
+                                <td>2,090 ชิ้น</td>
+                                <td>ชี้ผลกระทบ Post-Holiday ให้ปรับลดลง</td>
+                                <td><strong style="color: var(--success); font-size: 0.95rem;">2,150 ชิ้น</strong> (ระวังสต็อกเนย)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>เดือน 14</strong><br />(ก.พ.)</td>
+                                <td>2,360 ชิ้น</td>
+                                <td>2,216 ชิ้น</td>
+                                <td>ชี้เทศกาลวาเลนไทน์ + ตรุษจีน ให้เร่งเครื่อง</td>
+                                <td><strong style="color: var(--success); font-size: 0.95rem;">2,500 ชิ้น</strong> (เตรียมแคมเปญใหญ่)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>เดือน 15</strong><br />(มี.ค.)</td>
+                                <td>2,453 ชิ้น</td>
+                                <td>2,322 ชิ้น</td>
+                                <td>แนะนำรุกตลาด Snack Box ออฟฟิศ</td>
+                                <td><strong style="color: var(--success); font-size: 0.95rem;">2,400 ชิ้น</strong> (ขยาย B2B เบรคประชุม)</td>
+                            </tr>
+                            <tr style="background: #f0fdf4; font-weight: 700;">
+                                <td><strong>รวมไตรมาส 1</strong></td>
+                                <td>7,081 ชิ้น</td>
+                                <td>6,628 ชิ้น</td>
+                                <td>รวม 7,050 ชิ้น</td>
+                                <td style="color: var(--success); font-size: 1.02rem;">7,050 ชิ้น (~669,750 ฿)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="callout-box success" style="margin-top: 6px; padding: 8px 14px;">
+                        <i class="fas fa-trophy" style="color: var(--success); font-size: 1.2rem;"></i>
+                        <span style="font-size: 0.86rem; color: var(--text-main);">
+                            <strong>นี่คือ Data-Driven Decision Making:</strong> ไม่ใช่การเดาตามอารมณ์ และไม่ใช่การเชื่อคอมพิวเตอร์ 100% แต่คือการเอา <em>ข้อมูลสถิติ + การคิดเชิงธุรกิจ</em> มารวมกันจนได้ตัวเลขฟันธงที่เฉียบคมที่สุด!
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 24 Notes]:
+                    - สรุปตัวเลขฟันธงของผู้บริหาร: รวมไตรมาสแรก 7,050 ชิ้น คิดเป็นรายได้ราว 6.7 แสนบาท
+                    - นำตัวเลขนี้ไปแปลงเป็นแผน 3 เสาในสไลด์ถัดไป
+                </aside>
+            </section>
+
+            <!-- SLIDE 25: EXECUTIVE ACTION PLAN: 3 PILLARS IN ACTION -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-sitemap" style="color: var(--primary);"></i> แปลงตัวเลขพยากรณ์สู่แผนปฏิบัติการจริง 3 เสาหลัก</h2>
+                        <span class="subtitle">จากตัวเลข 7,050 ชิ้น กลายมาเป็นคำสั่งงานจริงที่หน้าเตาอบและเคาน์เตอร์แคชเชียร์</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-tasks"></i> Executive Action Plan</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-3" style="margin-top: 4px;">
+                        <div class="card" style="border-top: 4px solid #0284c7; padding: 14px;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-boxes-stacked" style="color: #0284c7;"></i>
+                                <h4 style="font-size: 0.98rem;">1. แผนสต็อกเนย &amp; วัตถุดิบ</h4>
+                            </div>
+                            <ul style="font-size: 0.8rem; color: var(--text-sub); line-height: 1.45; padding-left: 18px; margin: 0;">
+                                <li>ครัวซองต์ 1 ชิ้นใช้เนยสด 40 กรัม</li>
+                                <li>เดือน 13 (2,150 ชิ้น) ต้องใช้เนย 86 กก. + Safety Stock 10 กก. = <strong>สั่ง 96 กก.</strong></li>
+                                <li>เดือน 14 (2,500 ชิ้น) ต้องสั่งเนยล่วงหน้า <strong>110 กก.</strong> พร้อมกล่องของขวัญรูปหัวใจ 800 ใบ</li>
+                            </ul>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid #7c3aed; padding: 14px;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-users-gear" style="color: #7c3aed;"></i>
+                                <h4 style="font-size: 0.98rem;">2. แผนจัดกะพนักงาน</h4>
+                            </div>
+                            <ul style="font-size: 0.8rem; color: var(--text-sub); line-height: 1.45; padding-left: 18px; margin: 0;">
+                                <li>เดือน 13: ตารางงานปกติ ช่างอบ 2 คน แคชเชียร์ 2 คน</li>
+                                <li>เดือน 14: สัปดาห์วาเลนไทน์ (10-15 ก.พ.) <strong>เพิ่มช่างอบกะเช้ามืด 1 คน</strong> และรับพาร์ทไทม์ช่วยแพ็กกล่องของขวัญหน้าร้าน</li>
+                                <li>เดือน 15: จัดพนักงานดูแลออเดอร์ Snack Box องค์กรโดยเฉพาะ</li>
+                            </ul>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid #059669; padding: 14px;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-sack-dollar" style="color: #059669;"></i>
+                                <h4 style="font-size: 0.98rem;">3. แผนกระแสเงินสดสำรอง</h4>
+                            </div>
+                            <ul style="font-size: 0.8rem; color: var(--text-sub); line-height: 1.45; padding-left: 18px; margin: 0;">
+                                <li>เตรียมเงินสดจ่ายค่าเนยและแป้งนำเข้าล่วงหน้า <strong>55,000 บาท/เดือน</strong></li>
+                                <li>สำรอง Cash Buffer สำหรับค่าแรงพาร์ทไทม์ช่วงวาเลนไทน์ 12,000 บาท</li>
+                                <li>คาดการณ์กระแสเงินสดรับเข้าทั้งไตรมาส ~669,750 บาท (กำไรขั้นต้นราว 60%)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="callout-box success" style="margin-top: 8px; padding: 10px 16px;">
+                        <i class="fas fa-check-circle" style="color: var(--success); font-size: 1.2rem;"></i>
+                        <span style="font-size: 0.88rem; color: var(--text-main);">
+                            <strong>ผลลัพธ์ของการมี Action Plan:</strong> ร้านอิ่มใจไม่ต้องวิ่งวุ่นหาเนยในวันวาเลนไทน์ ไม่ต้องปล่อยให้ลูกค้าต่อคิวรอนาน และมีขนมอบสดใหม่พร้อมขายเต็มตู้สร้างกำไรสูงสุดตลอดไตรมาส!
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 25 Notes]:
+                    - แปลงยอดพยากรณ์เป็นคำสั่งงานจริง: เนยกี่กิโล, พนักงานกี่คน, เงินสดเท่าไร
+                    - ให้นักศึกษาเห็นภาพชัดเจน
+                </aside>
+            </section>
+
+            <!-- SLIDE 26: SAFETY STOCK & BUFFER CALCULATION -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-shield-halved" style="color: var(--primary);"></i> เทคนิคบริหารความเสี่ยง: สต็อกกันชน (Safety Stock)</h2>
+                        <span class="subtitle">การคำนวณส่วนเผื่อเพื่อรองรับความคลาดเคลื่อนของการพยากรณ์และความล่าช้าของซัพพลายเออร์</span>
+                    </div>
+                    <span class="badge-step warm"><i class="fas fa-warehouse"></i> Inventory Buffer</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div class="card" style="padding: 14px;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-question-circle" style="color: var(--primary);"></i>
+                                <h4 style="font-size: 1.02rem;">Safety Stock คืออะไร?</h4>
+                            </div>
+                            <p style="font-size: 0.84rem; color: var(--text-sub); line-height: 1.45;">
+                                คือปริมาณสินค้าหรือวัตถุดิบที่สำรองไว้เกินจากยอดพยากรณ์ปกติ เพื่อทำหน้าที่เป็น <strong>"เบาะกันกระแทก" (Buffer Cushion)</strong> รองรับ 2 ความเสี่ยงหลัก:
+                            </p>
+                            <ul style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.4; padding-left: 18px; margin: 4px 0 0 0;">
+                                <li><strong>Demand Volatility:</strong> จู่ ๆ มีลูกค้าบริษัทเดินเข้ามาเหมาครัวซองต์ 50 ชิ้นกะทันหัน</li>
+                                <li><strong>Lead Time Delay:</strong> รถส่งเนยจากซัพพลายเออร์เสีย หรือส่งของล่าช้ากว่ากำหนด 1-2 วัน</li>
+                            </ul>
+                        </div>
+
+                        <div class="card" style="padding: 14px; background: #f8fafc; border: 1px solid #cbd5e1;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-calculator" style="color: var(--success);"></i>
+                                <h4 style="font-size: 1.02rem;">กฎสำรอง Safety Stock สำหรับร้าน SME</h4>
+                            </div>
+                            <div style="background: white; border: 1px dashed var(--primary); border-radius: 8px; padding: 10px; margin: 4px 0;">
+                                <span style="font-size: 0.95rem; font-weight: 800; color: var(--primary);">
+                                    Safety Stock = ยอดขายเฉลี่ยต่อวัน × วันกันชน (Buffer Days)
+                                </span>
+                            </div>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.45;">
+                                <strong>ตัวอย่างร้านอิ่มใจ:</strong><br />
+                                • ยอดขายเฉลี่ยวันละ 70 ชิ้น (ใช้เนยวันละ 2.8 กก.)<br />
+                                • ซัพพลายเออร์ส่งของทุก 3 วัน เผื่อล่าช้า 2 วัน (Buffer 2 Days)<br />
+                                • Safety Stock เนย = 2.8 กก. × 2 วัน = <strong>สำรองเนย 5.6 กก.</strong>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="callout-box warning" style="margin-top: 6px; padding: 8px 14px;">
+                        <i class="fas fa-balance-scale" style="color: var(--accent-warm); font-size: 1.2rem;"></i>
+                        <span style="font-size: 0.86rem; color: var(--text-main);">
+                            <strong>สมดุลที่ลงตัว (The Right Balance):</strong> Safety Stock น้อยเกินไป = ของขาดเสียลูกค้า, Safety Stock มากเกินไป = เงินจมและเนยเน่าเสียทิ้ง ต้องคำนวณให้พอดีกับ Lead Time จริงของร้าน!
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 26 Notes]:
+                    - อธิบายสูตรและแนวคิด Safety Stock
+                    - ย้ำเรื่องความสมดุล เงินจม vs ของขาด
+                </aside>
+            </section>
+
+            <!-- SLIDE 27: SUMMARY & 5 GOLDEN RULES OF FORECASTING -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-award" style="color: var(--primary);"></i> สรุปบทเรียน: 5 กฎเหล็กของการพยากรณ์ยอดขาย</h2>
+                        <span class="subtitle">หัวใจสำคัญที่ผู้ประกอบการยุค AI ต้องจำให้ขึ้นใจก่อนลงมือวิเคราะห์ธุรกิจจริง</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-crown"></i> Key Takeaways</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2" style="gap: 12px; margin-top: 4px;">
+                        <div class="card" style="padding: 10px 14px; border-left: 4px solid var(--primary);">
+                            <strong style="font-size: 0.88rem; color: var(--primary);">1. ข้อมูลต้องสะอาดก่อนทำนาย (GIGO Rule)</strong>
+                            <p style="font-size: 0.78rem; color: var(--text-sub); line-height: 1.35; margin-top: 2px;">
+                                ข้อมูลในอดีตต้องผ่านการ Clean ตัด Outlier และจัดโครงสร้าง Tidy Data มิฉะนั้นผลพยากรณ์จะผิดเพี้ยนทั้งหมด
+                            </p>
+                        </div>
+
+                        <div class="card" style="padding: 10px 14px; border-left: 4px solid var(--secondary);">
+                            <strong style="font-size: 0.88rem; color: var(--secondary);">2. เลือกโมเดลให้ตรงทิศทาง (Model Selection)</strong>
+                            <p style="font-size: 0.78rem; color: var(--text-sub); line-height: 1.35; margin-top: 2px;">
+                                สินค้านิ่งใช้ Moving Average ตัด Noise, ธุรกิจกำลังขยายตัวใช้ Linear Trend สะท้อนการเติบโต
+                            </p>
+                        </div>
+
+                        <div class="card" style="padding: 10px 14px; border-left: 4px solid var(--accent-warm);">
+                            <strong style="font-size: 0.88rem; color: var(--accent-warm);">3. ปรับตัวเลขด้วยบริบทจริง (Seasonality Tuning)</strong>
+                            <p style="font-size: 0.78rem; color: var(--text-sub); line-height: 1.35; margin-top: 2px;">
+                                อย่าเชื่อสูตรคณิตศาสตร์เพียว ๆ ต้องเอาวันหยุด เทศกาล และปฏิทินพฤติกรรมผู้บริโภคมาปรับแต่งเสมอ
+                            </p>
+                        </div>
+
+                        <div class="card" style="padding: 10px 14px; border-left: 4px solid var(--purple);">
+                            <strong style="font-size: 0.88rem; color: var(--purple);">4. วางแผน 3 สถานการณ์ (3 Scenarios Mindset)</strong>
+                            <p style="font-size: 0.78rem; color: var(--text-sub); line-height: 1.35; margin-top: 2px;">
+                                เตรียมพร้อมรับทั้ง Best Case, Base Case และ Worst Case เพื่อให้ร้านมีทางหนีทีไล่และไม่ประมาท
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="card" style="padding: 10px 14px; border-left: 4px solid var(--success); margin-top: 6px; background: #f0fdf4;">
+                        <strong style="font-size: 0.88rem; color: var(--success);">5. แปลงตัวเลขเป็น 3 เสาปฏิบัติการ (From Number to Action)</strong>
+                        <p style="font-size: 0.78rem; color: var(--text-sub); line-height: 1.35; margin-top: 2px;">
+                            ตัวเลขพยากรณ์จะไร้ค่าทันที ถ้าไม่ได้แปลงเป็นคำสั่งสต็อกเนย, ตารางจัดกะพนักงาน, และการกันสำรองเงินสดหมุนเวียน
+                        </p>
+                    </div>
+
+                    <div class="callout-box info" style="margin-top: 6px; padding: 6px 14px;">
+                        <i class="fas fa-forward" style="color: var(--secondary); font-size: 1.1rem;"></i>
+                        <span style="font-size: 0.82rem; color: var(--text-main);">
+                            <strong>ก้าวถัดไป (Session 10):</strong> เมื่อพยากรณ์ยอดรวมได้แล้ว สัปดาห์หน้าเราจะเจาะลึก <em>Customer Segmentation &amp; What-If Analysis</em> เพื่อแบ่งกลุ่มลูกค้าและจำลองสถานการณ์เปลี่ยนราคา!
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 27 Notes]:
+                    - สรุป 5 กฎเหล็ก
+                    - เกริ่นเชื่อมโยงไปยัง Session 10 สัปดาห์หน้า
+                </aside>
+            </section>
+
+            <!-- SLIDE 28: QUIZIZZ ARENA: FORECASTING CHALLENGE -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-gamepad" style="color: var(--primary);"></i> Quizizz Arena: ประลองความรู้นักพยากรณ์ยอดขาย</h2>
+                        <span class="subtitle">ทดสอบความเข้าใจเชิงลึก 10 ข้อ 3 ตัวเลือก ข้อละ 60 วินาที พร้อมวัดผลคะแนนสดในห้องเรียน</span>
+                    </div>
+                    <span class="badge-step warm"><i class="fas fa-stopwatch"></i> 15 นาที</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div class="card" style="padding: 16px; text-align: center;">
+                            <div style="width: 60px; height: 60px; border-radius: 50%; background: #e0e7ff; color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin: 0 auto 10px auto;">
+                                <i class="fas fa-qrcode"></i>
+                            </div>
+                            <h4 style="font-size: 1.1rem; color: var(--text-main); margin-bottom: 6px;">เข้าสู่สมรภูมิ Quizizz</h4>
+                            <p style="font-size: 0.86rem; color: var(--text-sub); line-height: 1.45;">
+                                1. เปิดเบราว์เซอร์ไปที่ <strong>joinmyquiz.com</strong><br />
+                                2. กรอก <strong>Game PIN 6 หลัก</strong> บนจอโปรเจกเตอร์<br />
+                                3. ตั้งชื่อผู้เล่นด้วย <strong>"รหัสนักศึกษา_ชื่อเล่น"</strong>
+                            </p>
+                        </div>
+
+                        <div class="card" style="padding: 16px; background: #f8fafc; border: 1px solid #cbd5e1;">
+                            <h4 style="font-size: 1rem; color: var(--text-main); margin-bottom: 8px;">
+                                <i class="fas fa-list-check" style="color: var(--secondary);"></i> ขอบเขตข้อสอบ 10 ข้อ (Key Topics)
+                            </h4>
+                            <ul style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.45; padding-left: 18px; margin: 0;">
+                                <li>ความสำคัญของพยากรณ์: Overstocking vs Stockout (2 ข้อ)</li>
+                                <li>เปรียบเทียบ Moving Average vs Linear Trend (2 ข้อ)</li>
+                                <li>การปรับตัวเลขตาม Seasonality และ Lead Time (2 ข้อ)</li>
+                                <li>ข้อจำกัดและ 4 Blind Spots ของการพยากรณ์ (2 ข้อ)</li>
+                                <li>สูตรคำนวณใน Google Sheets และ 3 เสา Action Plan (2 ข้อ)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="callout-box warning" style="margin-top: 8px; padding: 10px 16px;">
+                        <i class="fas fa-trophy" style="color: var(--accent-warm); font-size: 1.2rem;"></i>
+                        <span style="font-size: 0.88rem; color: var(--text-main);">
+                            <strong>กติกาการแข่งขัน:</strong> ตอบถูกและตอบไวได้คะแนนโบนัส! เฉลยละเอียดพร้อมกันหลังจบเกมทันที เพื่อตอกย้ำความเข้าใจก่อนลุย Workshop
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 28 Notes]:
+                    - เริ่มกิจกรรม Quizizz 15 นาที
+                    - ให้นักเรียนสแกน QR Code หรือเข้า joinmyquiz.com
+                </aside>
+            </section>
+
+            <!-- SLIDE 29: WORKSHOP BRIEF: "BAKERY FORECAST MASTER" -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-laptop-code" style="color: var(--primary);"></i> Workshop Brief: "Bakery Forecast Master" (65 นาที)</h2>
+                        <span class="subtitle">สวมบทบาททีมผู้บริหารร้านอิ่มใจ พยากรณ์ยอดขาย 3 เดือนข้างหน้าพร้อมวางแผน 3 เสาหลัก</span>
+                    </div>
+                    <span class="badge badge-primary"><i class="fas fa-users"></i> Group Work</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-4" style="margin-top: 4px;">
+                        <div class="card" style="padding: 12px; border-top: 3px solid var(--primary);">
+                            <strong style="font-size: 0.9rem; color: var(--primary);">Mission 1: Sheets Lab</strong>
+                            <p style="font-size: 0.78rem; color: var(--text-sub); line-height: 1.35; margin-top: 4px;">
+                                นำเข้าชุดข้อมูล 12 เดือน เขียนสูตร <code>=FORECAST()</code> และ <code>=AVERAGE()</code> ทำนายเดือน 13, 14, 15 พร้อมสร้าง Forward Trendline Chart
+                            </p>
+                        </div>
+
+                        <div class="card" style="padding: 12px; border-top: 3px solid var(--purple);">
+                            <strong style="font-size: 0.9rem; color: var(--purple);">Mission 2: AI Advisor</strong>
+                            <p style="font-size: 0.78rem; color: var(--text-sub); line-height: 1.35; margin-top: 4px;">
+                                สั่งงาน Gemini Advanced ด้วย Master Prompt ให้ AI ช่วยประเมิน Seasonality และปรับตัวเลขให้ตรงกับบริบทจริง
+                            </p>
+                        </div>
+
+                        <div class="card" style="padding: 12px; border-top: 3px solid var(--accent-warm);">
+                            <strong style="font-size: 0.9rem; color: var(--accent-warm);">Mission 3: Scenarios</strong>
+                            <p style="font-size: 0.78rem; color: var(--text-sub); line-height: 1.35; margin-top: 4px;">
+                                กำหนด 3 สถานการณ์ (Best / Base / Worst Case) พร้อมระบุสมมติฐานและตรวจสอบ 3 ด่าน Sanity Check
+                            </p>
+                        </div>
+
+                        <div class="card" style="padding: 12px; border-top: 3px solid var(--success);">
+                            <strong style="font-size: 0.9rem; color: var(--success);">Mission 4: 3-Pillar Plan</strong>
+                            <p style="font-size: 0.78rem; color: var(--text-sub); line-height: 1.35; margin-top: 4px;">
+                                แปลงตัวเลขเป็นแผน 3 เสา: สั่งเนยสด (กก.) + Safety Stock, ตารางกะช่างอบ, และเงินสดสำรอง เตรียมนำเสนอ 2 นาที
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="callout-box info" style="margin-top: 8px; padding: 10px 16px;">
+                        <i class="fas fa-file-lines" style="color: var(--secondary); font-size: 1.2rem;"></i>
+                        <span style="font-size: 0.88rem; color: var(--text-main);">
+                            <strong>การส่งงาน:</strong> เปิดไฟล์ใบงาน <code>session-09-workshop-worksheet.html</code> กรอกผลลัพธ์และแนบลิงก์ Google Sheets ส่งในระบบภายในเวลา 11:30 น.
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 29 Notes]:
+                    - ชี้แจง 4 ภารกิจใน Workshop
+                    - ให้นักศึกษาแบ่งหน้าที่ 5 บทบาทในกลุ่ม
+                </aside>
+            </section>
+
+            <!-- SLIDE 30: WORKSHOP DELIVERABLE & EVALUATION RUBRIC -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-clipboard-check" style="color: var(--primary);"></i> เกณฑ์การประเมิน Workshop (Evaluation Rubric 20 คะแนน)</h2>
+                        <span class="subtitle">การสุ่มตัวแทนนำเสนอ (Spotlight Presentation) 2-3 กลุ่ม กลุ่มละ 2 นาที</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-medal"></i> Rubric &amp; Feedback</span>
+                </div>
+                <div class="slide-body">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 25%;">มิติการประเมิน</th>
+                                <th style="width: 25%; color: var(--success);">ยอดเยี่ยม (5 คะแนน)</th>
+                                <th style="width: 25%; color: var(--secondary);">ดี (3-4 คะแนน)</th>
+                                <th>ต้องปรับปรุง (1-2 คะแนน)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>1. ความถูกต้องใน Sheets (Mission 1)</strong></td>
+                                <td>เขียนสูตร FORECAST และ MA ครบ 3 เดือน พร้อมเปิด Forward Trendline ถูกต้องสมบูรณ์</td>
+                                <td>เขียนสูตรถูกแต่ลืมล็อก $ หรือเปิดกราฟไม่ครบ</td>
+                                <td>สูตรขึ้น #VALUE! หรือคำนวณสลับแกน X/Y</td>
+                            </tr>
+                            <tr>
+                                <td><strong>2. การใช้ AI &amp; ปรับแต่ง (Mission 2)</strong></td>
+                                <td>Prompt ครบถ้วน ได้บทวิเคราะห์ Seasonality และปรับตัวเลขสอดคล้องกับพฤติกรรมผู้บริโภค</td>
+                                <td>ใช้ AI ได้แต่ไม่ได้ปรับตัวเลขตามบริบทเทศกาล</td>
+                                <td>ไม่ได้ใช้ AI หรือผลลัพธ์ไม่ตรงประเด็น</td>
+                            </tr>
+                            <tr>
+                                <td><strong>3. Scenario &amp; Sanity Check (Mission 3)</strong></td>
+                                <td>จำลอง 3 สถานการณ์สมเหตุสมผล พร้อมตรวจผ่านข้อจำกัดเตาอบ เงินสด และตู้เย็น</td>
+                                <td>มี 3 สถานการณ์แต่ขาดการตรวจข้อจำกัดจริง</td>
+                                <td>ไม่มี Scenario หรือตัวเลขหลุดโลกเกินความจริง</td>
+                            </tr>
+                            <tr>
+                                <td><strong>4. แผนปฏิบัติการ 3 เสา (Mission 4)</strong></td>
+                                <td>แผนสต็อกเนย (กก.) + Safety Stock, กะช่างอบ, และเงินสด ชัดเจน นำไปใช้ได้ทันที</td>
+                                <td>มีแผนแต่ยังเป็นนามธรรม ขาดตัวเลขกิโลกรัม/คน</td>
+                                <td>แผนไม่ครบ 3 เสาหลัก หรือไม่สัมพันธ์กับยอดขาย</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="callout-box success" style="margin-top: 6px; padding: 8px 14px;">
+                        <i class="fas fa-microphone" style="color: var(--success); font-size: 1.2rem;"></i>
+                        <span style="font-size: 0.86rem; color: var(--text-main);">
+                            <strong>Spotlight Presentation:</strong> ช่วง 15 นาทีสุดท้าย อาจารย์จะสุ่มเปิดจอ Google Sheets ของ 2-3 กลุ่ม ให้เวลาพิทช์แผน 3 เสาหลัก 2 นาทีเพื่อแลกเปลี่ยนมุมมอง!
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 30 Notes]:
+                    - อธิบาย Rubric 20 คะแนน
+                    - เตรียมสุ่มตัวแทนนำเสนอ 2 นาที
+                </aside>
+            </section>
+
+        </div>
+    </div>
+
+    <!-- Reveal.js and Script Setup -->
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/notes/notes.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/highlight/highlight.js"></script>
+    <script>
+        const deck = new Reveal({
+            width: 1280,
+            height: 800,
+            margin: 0.04,
+            minScale: 0.1,
+            maxScale: 3.0,
+            controls: false,
+            progress: true,
+            center: false,
+            hash: true,
+            transition: 'slide',
+            transitionSpeed: 'default',
+            mouseWheel: true,
+            plugins: [RevealNotes, RevealHighlight]
+        });
+
+        deck.initialize().then(() => {
+            window.deck = deck;
+            window.Reveal = deck;
+
+            window.runSlideHeightAudit = function () {
+                const targetH = deck.getConfig().height || 800;
+                const sections = document.querySelectorAll('.reveal .slides > section');
+                let passed = 0;
+                let failed = 0;
+                const results = [];
+
+                sections.forEach((sec, idx) => {
+                    const scrollH = sec.scrollHeight;
+                    const isPass = scrollH <= targetH + 4;
+                    if (isPass) passed++; else failed++;
+                    results.push({
+                        slide: idx + 1,
+                        scrollH,
+                        targetH,
+                        pass: isPass
+                    });
+                });
+
+                const summary = { total: sections.length, passed, failed, rate: Math.round((passed / sections.length) * 100) };
+
+                const sumDiv = document.getElementById('test-report-summary');
+                const content = document.getElementById('test-report-content');
+                if (sumDiv && content) {
+                    sumDiv.innerHTML = `Pass: <span style="color: #4ade80;">${passed}</span> / Fail: <span style="color: #f43f5e;">${failed}</span> (${summary.rate}%)`;
+                    let html = '';
+                    results.forEach(r => {
+                        html += `<div style="display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px solid #1e293b; color: ${r.pass ? '#cbd5e1' : '#f87171'};">
+                            <span>Slide ${r.slide}</span>
+                            <span>${r.scrollH}px / ${r.targetH}px [${r.pass ? 'PASS' : 'FAIL'}]</span>
+                        </div>`;
+                    });
+                    content.innerHTML = html;
+                }
+
+                return summary;
+            };
+
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('test') === 'true') {
+                const overlay = document.getElementById('test-report-overlay');
+                if (overlay) overlay.style.display = 'block';
+                setTimeout(() => {
+                    window.runSlideHeightAudit();
+                }, 800);
+            }
+
+            window.addEventListener('keydown', (e) => {
+                if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) return;
+
+                // Key 'A' or 'a': Toggle Aspect Ratio (16:10 <-> 16:9)
+                if (e.key === 'a' || e.key === 'A') {
+                    toggleAspectRatio();
+                }
+
+                // Key 'T' or 't': Toggle Slide Audit Test Overlay
+                if (e.key === 't' || e.key === 'T') {
+                    const overlay = document.getElementById('test-report-overlay');
+                    if (overlay) {
+                        overlay.style.display = overlay.style.display === 'block' ? 'none' : 'block';
+                        if (overlay.style.display === 'block') {
+                            window.runSlideHeightAudit();
+                        }
+                    }
+                }
+            });
+        });
+
+        // Show Temporary Aspect Ratio Toast Notification
+        function showRatioToast(msg) {
+            let toast = document.getElementById('aspect-ratio-toast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'aspect-ratio-toast';
+                toast.style.cssText = `
+                    position: fixed;
+                    bottom: 24px;
+                    right: 24px;
+                    background: rgba(15, 23, 42, 0.90);
+                    backdrop-filter: blur(8px);
+                    color: #ffffff;
+                    padding: 8px 18px;
+                    border-radius: 9999px;
+                    font-family: 'Outfit', 'Noto Sans Thai', sans-serif;
+                    font-size: 0.85rem;
+                    font-weight: 600;
+                    letter-spacing: 0.02em;
+                    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+                    border: 1px solid rgba(255, 255, 255, 0.15);
+                    z-index: 99999;
+                    pointer-events: none;
+                    transition: opacity 0.3s ease, transform 0.3s ease;
+                    transform: translateY(0);
+                    opacity: 0;
+                `;
+                document.body.appendChild(toast);
+            }
+            toast.innerHTML = `<i class="fa-solid fa-display" style="margin-right: 8px; color: #818cf8;"></i> ${msg}`;
+            toast.style.opacity = '1';
+            toast.style.transform = 'translateY(0)';
+            clearTimeout(window._ratioToastTimer);
+            window._ratioToastTimer = setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(6px)';
+            }, 1500);
+        }
+
+        // Toggle Aspect Ratio (Key 'A')
+        function toggleAspectRatio() {
+            if (deck.getConfig().height === 800) {
+                deck.configure({ width: 1280, height: 720 });
+                showRatioToast('สลับอัตราส่วนหน้าจอ: 16:9 (1280 × 720)');
+            } else {
+                deck.configure({ width: 1280, height: 800 });
+                showRatioToast('สลับอัตราส่วนหน้าจอ: 16:10 (1280 × 800)');
+            }
+        }
+        window.toggleAspectRatio = toggleAspectRatio;
+    </script>
+</body>
+
+</html>

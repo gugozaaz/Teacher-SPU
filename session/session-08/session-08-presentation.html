@@ -1,0 +1,2315 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>ครั้งที่ 8: ขั้นที่ 4 'ANALYZE' (ส่วนที่ 3) — ค้นหาความสัมพันธ์และแนวโน้ม (Correlation & Trend) | Fundamentals of Data Science</title>
+    <!-- Reveal.js & Fonts -->
+    <link href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/theme/white.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800;900&amp;family=Outfit:wght@400;500;600;700;800&amp;family=Fira+Code:wght@400;500&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #3730a3;
+            --primary-glow: rgba(79, 70, 229, 0.12);
+            --secondary: #0284c7;
+            --accent: #e11d48;
+            --accent-warm: #d97706;
+            --success: #059669;
+            --purple: #7c3aed;
+            --bg-main: #f8fafc;
+            --bg-card: #ffffff;
+            --border-card: #e2e8f0;
+            --text-main: #0f172a;
+            --text-sub: #334155;
+            --text-muted: #64748b;
+            --gradient-main: linear-gradient(135deg, #4f46e5 0%, #0284c7 100%);
+            --gradient-purple: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
+            --gradient-accent: linear-gradient(135deg, #e11d48 0%, #d97706 100%);
+            --gradient-green: linear-gradient(135deg, #059669 0%, #0284c7 100%);
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: var(--bg-main);
+            font-size: 24px;
+        }
+
+        .reveal {
+            font-family: 'Noto Sans Thai', 'Outfit', sans-serif;
+            color: var(--text-main);
+            background: var(--bg-main);
+            background-image:
+                radial-gradient(circle at 12% 15%, rgba(79, 70, 229, 0.05) 0%, transparent 45%),
+                radial-gradient(circle at 88% 85%, rgba(2, 132, 199, 0.05) 0%, transparent 45%);
+            font-size: 26px;
+        }
+
+        .reveal .slides {
+            text-align: left;
+        }
+
+        .reveal .slides section {
+            height: 100% !important;
+            box-sizing: border-box !important;
+            padding: 22px 38px 24px 38px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: flex-start !important;
+            overflow: hidden !important;
+            background: transparent;
+        }
+
+        @media print {
+            #aspect-ratio-toast,
+            #test-report-overlay {
+                display: none !important;
+            }
+        }
+
+        .slide-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+
+        .reveal h1,
+        .reveal h2,
+        .reveal h3,
+        .reveal h4 {
+            font-family: 'Noto Sans Thai', 'Outfit', sans-serif;
+            font-weight: 800;
+            text-transform: none;
+            letter-spacing: -0.02em;
+            margin: 0;
+            line-height: 1.25;
+            color: var(--text-main);
+        }
+
+        .reveal h1 {
+            font-size: 2.35rem;
+        }
+
+        .reveal h2 {
+            font-size: 1.48rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            line-height: 1.25;
+            letter-spacing: -0.015em;
+        }
+
+        .reveal h3 {
+            font-size: 1.25rem;
+            color: var(--primary);
+        }
+
+        .reveal p {
+            margin: 0;
+            line-height: 1.5;
+            color: var(--text-sub);
+            font-size: 1.02rem;
+        }
+
+        .slide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 2px solid rgba(79, 70, 229, 0.12);
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+            gap: 16px;
+        }
+
+        .slide-header .title-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .slide-header .subtitle {
+            font-size: 1.02rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .badge-step {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 9999px;
+            background: rgba(79, 70, 229, 0.08);
+            border: 1px solid rgba(79, 70, 229, 0.2);
+            color: var(--primary);
+            font-size: 0.88rem;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .badge-step.purple {
+            background: rgba(124, 58, 237, 0.08);
+            border-color: rgba(124, 58, 237, 0.2);
+            color: var(--purple);
+        }
+
+        .badge-step.accent {
+            background: rgba(225, 29, 72, 0.08);
+            border-color: rgba(225, 29, 72, 0.2);
+            color: var(--accent);
+        }
+
+        .badge-step.success {
+            background: rgba(5, 150, 105, 0.08);
+            border-color: rgba(5, 150, 105, 0.2);
+            color: var(--success);
+        }
+
+        .badge-step.warm {
+            background: rgba(217, 119, 6, 0.08);
+            border-color: rgba(217, 119, 6, 0.2);
+            color: var(--accent-warm);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+        }
+
+        .badge-primary {
+            background: #e0e7ff;
+            color: #4338ca;
+        }
+
+        .badge-accent {
+            background: #ffe4e6;
+            color: #be123c;
+        }
+
+        .badge-success {
+            background: #ecfdf5;
+            color: #047857;
+        }
+
+        .badge-purple {
+            background: #f3e8ff;
+            color: #6b21a8;
+        }
+
+        .badge-warm {
+            background: #fef3c7;
+            color: #b45309;
+        }
+
+        .step-container {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .step-card {
+            background: #ffffff;
+            border: 1px solid var(--border-card);
+            border-radius: 10px;
+            padding: 10px 12px;
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .step-card.active {
+            border: 2px solid var(--primary);
+            background: #eef2ff;
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
+        }
+
+        .step-num {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .step-card.active .step-num {
+            color: var(--primary);
+        }
+
+        .step-title {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin: 2px 0;
+        }
+
+        .step-card.active .step-title {
+            color: var(--primary);
+        }
+
+        .step-desc {
+            font-size: 0.72rem;
+            color: var(--text-sub);
+            line-height: 1.25;
+        }
+
+        .compare-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .card {
+            background: #ffffff;
+            border: 1px solid var(--border-card);
+            border-radius: 12px;
+            padding: 14px 18px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .card-header-sm {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+
+        .callout-box {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            border-radius: 10px;
+            padding: 10px 16px;
+            background: #ffffff;
+            border: 1px solid var(--border-card);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .callout-box.info {
+            background: #f0f9ff;
+            border-left: 4px solid var(--secondary);
+        }
+
+        .callout-box.warning {
+            background: #fefce8;
+            border-left: 4px solid var(--accent-warm);
+        }
+
+        .callout-box.accent {
+            background: #fff1f2;
+            border-left: 4px solid var(--accent);
+        }
+
+        .callout-box.success {
+            background: #ecfdf5;
+            border-left: 4px solid var(--success);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .data-table-sm {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+            background: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border-card);
+        }
+
+        .data-table-sm th,
+        .data-table-sm td {
+            padding: 6px 10px;
+            border: 1px solid var(--border-card);
+            text-align: left;
+        }
+
+        .data-table-sm th {
+            background: #f1f5f9;
+            color: var(--text-main);
+            font-weight: 700;
+        }
+
+        .data-table-sm tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        .code-box {
+            font-family: 'Fira Code', monospace;
+            background: #0f172a;
+            color: #38bdf8;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            border: 1px solid #1e293b;
+        }
+
+        .stat-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.78rem;
+            font-family: 'Fira Code', monospace;
+        }
+
+        .stat-pos { background: #dcfce7; color: #15803d; }
+        .stat-neg { background: #fee2e2; color: #b91c1c; }
+        .stat-zero { background: #f1f5f9; color: #475569; }
+
+        .key-num {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 900;
+            line-height: 1;
+            margin-bottom: 2px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- SLIDE 1: Title Slide -->
+            <section data-background-gradient="radial-gradient(circle at 50% 50%, #e0e7ff 0%, #f8fafc 100%)">
+                <div style="text-align: center; margin: auto 0; padding: 20px 10px;">
+                    <div style="margin-bottom: 14px;">
+                        <span class="badge badge-primary"><i class="fas fa-graduation-cap"></i> ภาคเรียนที่ 1/2569</span>
+                        <span class="badge badge-accent" style="margin-left: 6px;"><i class="fas fa-chart-line"></i> ครั้งที่ 8 / 14</span>
+                    </div>
+                    <h1 style="font-size: 2.25em; margin-bottom: 12px; font-weight: 900; line-height: 1.2;">
+                        ขั้นที่ 4 'ANALYZE' (ส่วนที่ 3)<br />ค้นหาความสัมพันธ์และแนวโน้ม (Correlation &amp; Trend)
+                    </h1>
+                    <p style="font-size: 1.05em; color: var(--secondary); font-weight: 600; margin-bottom: 20px;">
+                        Fundamentals of Data Science (พื้นฐานวิทยาการข้อมูล)
+                    </p>
+                    <div style="display: inline-block; padding: 8px 24px; background: #ffffff; border-radius: 9999px; border: 1px solid var(--border-card); box-shadow: var(--shadow-sm);">
+                        <p style="font-size: 0.85em; margin: 0; color: var(--text-sub);">
+                            <i class="fas fa-user-tie" style="color: var(--secondary); margin-right: 6px;"></i>
+                            <strong>ผู้สอน:</strong> อาจารย์สุรชัย โกยสันติสุข | คณะการสร้างเจ้าของธุรกิจ มหาวิทยาลัยศรีปทุม
+                        </p>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Script เปิดคาบ]:
+                    - ยินดีต้อนรับนักศึกษาสู่ครั้งที่ 8 อย่างเป็นทางการ
+                    - วันนี้เราเจาะลึกขั้นตอน ANALYZE สู่มิติเชิงลึก: "ค้นหาความสัมพันธ์และแนวโน้ม"
+                    - เราจะมาดูกันว่ายอดขายขึ้นเพราะอะไร ยิงแอดแล้วได้ผลจริงไหม ฝนตกแล้วต้องแก้เกมอย่างไร!
+                </aside>
+            </section>
+
+            <!-- SLIDE 2: Session Recap - Bridge from Visualization to Correlation & Trend -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-route" style="color: var(--primary);"></i> วงจร Data Science: เจาะลึกขั้น 'ANALYZE' (Part 3)</h2>
+                        <span class="subtitle">ต่อยอดจากการมองเห็นภาพ สู่การวิเคราะห์หาสาเหตุและถอดรหัสความสัมพันธ์ของตัวแปร</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-compass"></i> Step 4 of 5</span>
+                </div>
+                <div class="slide-body">
+                    <div class="step-container">
+                        <div class="step-card">
+                            <div class="step-num">Step 1</div>
+                            <div class="step-title">ASK</div>
+                            <div class="step-desc">ตั้งคำถาม &amp; สมมติฐาน (Session 1-2)</div>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-num">Step 2</div>
+                            <div class="step-title">COLLECT</div>
+                            <div class="step-desc">Tidy Data &amp; Forms (Session 3-4)</div>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-num">Step 3</div>
+                            <div class="step-title">PREPARE</div>
+                            <div class="step-desc">ล้างตารางสะอาด (Session 5)</div>
+                        </div>
+                        <div class="step-card active">
+                            <div class="step-num">Step 4 (สัปดาห์นี้)</div>
+                            <div class="step-title">ANALYZE</div>
+                            <div class="step-desc">Correlation &amp; Trend (Session 8)</div>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-num">Step 5</div>
+                            <div class="step-title">ACT</div>
+                            <div class="step-desc">กลยุทธ์ &amp; เล่าเรื่อง (Session 11-14)</div>
+                        </div>
+                    </div>
+
+                    <div class="compare-container" style="margin-top: 4px;">
+                        <div class="card" style="border-left: 4px solid var(--secondary); padding: 12px 16px;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-chart-pie" style="color: var(--secondary);"></i>
+                                <h4 style="color: var(--secondary); font-size: 1.05rem;">คาบที่แล้ว (Session 7: Data Visualization)</h4>
+                            </div>
+                            <p style="font-size: 0.88rem; color: var(--text-sub); line-height: 1.45;">
+                                • มองเห็นภาพรวมธุรกิจผ่าน <strong>4 กราฟหลัก</strong> (Bar, Line, Donut, Scatter)<br />
+                                • สกัด Insight ใน 3 วินาทีด้วยพลังของภาพและ Action Title<br />
+                                • รู้ทัน 4 กับดักกราฟหลอกตา ไม่หลงกลสเกลแกน Y ที่ถูกตัด
+                            </p>
+                        </div>
+                        <div class="card" style="border-left: 4px solid var(--purple); padding: 12px 16px; background: #faf5ff;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-project-diagram" style="color: var(--purple);"></i>
+                                <h4 style="color: var(--purple); font-size: 1.05rem;">คาบนี้ (Session 8: Correlation &amp; Trend)</h4>
+                            </div>
+                            <p style="font-size: 0.88rem; color: var(--text-sub); line-height: 1.45;">
+                                • ถอดรหัส <strong>Correlation</strong>: ตัวแปรใดขับเคลื่อนยอดขายจริง<br />
+                                • กฎเหล็กสูงสุด: <strong>Correlation ≠ Causation</strong> จับไต๋ความสัมพันธ์ลวงตา<br />
+                                • แยกแยะ <strong>Trend</strong> (ทิศทางโต) vs <strong>Seasonality</strong> (รอบฤดูกาล) ด้วย AI &amp; Sheets
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="callout-box warning" style="margin-top: 6px; padding: 8px 14px;">
+                        <i class="fas fa-shield-alt" style="color: var(--accent-warm); font-size: 1.2rem;"></i>
+                        <span style="font-size: 0.88rem; color: var(--text-main);">
+                            <strong>กฎเหล็กผู้ประกอบการ:</strong> "เห็นเส้นกราฟชี้ขึ้นพร้อมกัน อย่าเพิ่งด่วนสรุปว่าเป็นสาเหตุ! ถ้าไม่ตรวจหา Confounder คุณอาจกำลังทุ่มเงินล้านไปกับภาพลวงตา"
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 2 Notes]:
+                    - ทบทวน: ครั้งที่แล้วเรารู้จัก Scatter Plot เป็นกราฟดูความสัมพันธ์
+                    - วันนี้เราจะวัดค่าความสัมพันธ์นั้นเป็นตัวเลขคณิตศาสตร์ที่ชัดเจน เรียกว่า Pearson r
+                </aside>
+            </section>
+
+            <!-- SLIDE 3: Session Roadmap -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-map-signs" style="color: var(--primary);"></i> แผนที่การเรียนรู้ประจำคาบ (Session Roadmap)</h2>
+                        <span class="subtitle">4 เสาหลักสู่การเป็นนักสืบข้อมูลที่ถอดรหัสความสัมพันธ์และรอบเวลาธุรกิจได้อย่างแม่นยำ</span>
+                    </div>
+                    <span class="badge badge-primary"><i class="fas fa-clock"></i> 150 นาที</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-4" style="margin-top: 4px;">
+                        <div class="card" style="padding: 14px; border-top: 4px solid var(--primary);">
+                            <div class="card-header-sm">
+                                <i class="fas fa-arrows-split-up-and-left" style="color: var(--primary);"></i>
+                                <h4 style="color: var(--text-main); font-size: 0.98rem;">1. สหสัมพันธ์ (Correlation)</h4>
+                            </div>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.4;">
+                                นิยาม Pearson r (-1.00 ถึง +1.00), 3 ทิศทาง (+, -, 0) และการตีความความแรงของตัวแปรธุรกิจ
+                            </p>
+                        </div>
+                        <div class="card" style="padding: 14px; border-top: 4px solid var(--accent);">
+                            <div class="card-header-sm">
+                                <i class="fas fa-triangle-exclamation" style="color: var(--accent);"></i>
+                                <h4 style="color: var(--text-main); font-size: 0.98rem;">2. Correlation ≠ Causation</h4>
+                            </div>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.4;">
+                                หลุมพราง Spurious Correlation และตัวแปรแอบแฝง (Confounding Variable) ที่หลอกตานักธุรกิจ
+                            </p>
+                        </div>
+                        <div class="card" style="padding: 14px; border-top: 4px solid var(--accent-warm);">
+                            <div class="card-header-sm">
+                                <i class="fas fa-wave-square" style="color: var(--accent-warm);"></i>
+                                <h4 style="color: var(--text-main); font-size: 0.98rem;">3. Trend &amp; Seasonality</h4>
+                            </div>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.4;">
+                                แยกแยะทิศทางเติบโตระยะยาว ออกจากรอบเวลาวันในสัปดาห์ ปลายเดือน และสภาพอากาศ
+                            </p>
+                        </div>
+                        <div class="card" style="padding: 14px; border-top: 4px solid var(--success);">
+                            <div class="card-header-sm">
+                                <i class="fas fa-laptop-code" style="color: var(--success);"></i>
+                                <h4 style="color: var(--text-main); font-size: 0.98rem;">4. AI &amp; Spreadsheet Lab</h4>
+                            </div>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.4;">
+                                สั่ง Gemini วิเคราะห์ด้วย C-R-O-D-A และคำนวณจริงด้วยสูตร =CORREL() และ R² ใน Google Sheets
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="callout-box info" style="margin-top: 8px; padding: 10px 16px;">
+                        <i class="fas fa-store" style="color: var(--secondary); font-size: 1.3rem;"></i>
+                        <span style="font-size: 0.88rem; color: var(--text-main);">
+                            <strong>กรณีศึกษาหลักประจำคาบ:</strong> ร้าน <em>"ชื่นใจ สมูทตี้ &amp; อาซาอิโบวล์"</em> — ไขปริศนาทำไมงบแอดเดลิเวอรียอดพุ่ง แต่ฝนตกหน้าร้านเงียบกริบ และตัวเลขค่าไฟที่พุ่งตามยอดขายมีใครอยู่เบื้องหลัง!
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 3 Notes]:
+                    - แนะนำ 4 เสาหลักของคาบเรียนนี้
+                    - ตลอดคาบเราจะใช้เคสร้านน้ำปั่น "ชื่นใจ สมูทตี้" เป็นตัวอย่างจริง
+                </aside>
+            </section>
+
+            <!-- SLIDE 4: The Core Question: Why Do Variables Move Together? -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-question-circle" style="color: var(--primary);"></i> ปริศนาของเจ้าของธุรกิจ: ตัวแปรเหล่านี้เกี่ยวข้องกันไหม?</h2>
+                        <span class="subtitle">ในแต่ละวัน มีตัวเลขทางธุรกิจนับสิบตัวแปรที่ขยับขึ้นลงพร้อมกัน สิ่งใดขับเคลื่อนสิ่งใดกันแน่?</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-lightbulb"></i> Executive Question</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-3" style="gap: 12px;">
+                        <div class="card" style="border-left: 4px solid var(--primary); padding: 14px;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-bullhorn" style="color: var(--primary);"></i>
+                                <h4 style="font-size: 0.98rem;">งบโฆษณา vs ยอดขาย</h4>
+                            </div>
+                            <p style="font-size: 0.84rem; color: var(--text-sub); line-height: 1.4;">
+                                อัดฉีดเงินยิงแอด TikTok วันละ 2,000 บาท ได้ออเดอร์เดลิเวอรีเพิ่มขึ้นจริง หรือเป็นเพราะช่วงเงินเดือนออกพอดี?
+                            </p>
+                        </div>
+                        <div class="card" style="border-left: 4px solid var(--secondary); padding: 14px;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-cloud-rain" style="color: var(--secondary);"></i>
+                                <h4 style="font-size: 0.98rem;">สภาพอากาศ vs ลูกค้า</h4>
+                            </div>
+                            <p style="font-size: 0.84rem; color: var(--text-sub); line-height: 1.4;">
+                                วันที่ฝนตกหนัก 50 มม. ลูกค้าหน้าร้านหายไปครึ่งหนึ่ง แต่ยอดเดลิเวอรีพุ่งขึ้นสองเท่า ธุรกิจควรวางแผนรับมืออย่างไร?
+                            </p>
+                        </div>
+                        <div class="card" style="border-left: 4px solid var(--accent); padding: 14px;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-bolt" style="color: var(--accent);"></i>
+                                <h4 style="font-size: 0.98rem;">ค่าไฟฟ้า vs รายได้</h4>
+                            </div>
+                            <p style="font-size: 0.84rem; color: var(--text-sub); line-height: 1.4;">
+                                บิลค่าไฟพุ่งขึ้นสอดคล้องกับยอดขายสมูทตี้เป๊ะ ถ้าเปิดแอร์ทั้งคืนจะช่วยให้ยอดขายเพิ่มขึ้นได้จริงหรือ?
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="callout-box warning" style="margin-top: 10px; padding: 10px 16px;">
+                        <i class="fas fa-compass" style="color: var(--accent-warm); font-size: 1.3rem;"></i>
+                        <span style="font-size: 0.88rem; color: var(--text-main);">
+                            <strong>หน้าที่ของ Data Thinking:</strong> เปลี่ยนจากการ <em>"เดาใจลูกค้า"</em> หรือใช้ <em>"สัญชาตญาณความรู้สึก"</em> มาเป็นการคำนวณ <strong>ตัวเลขความสัมพันธ์ (Correlation)</strong> เพื่อตัดสินใจอย่างมีหลักการทางวิทยาศาสตร์
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 4 Notes]:
+                    - ตั้งคำถามชวนคิด: ในฐานะเจ้าของร้าน เราจะรู้ได้อย่างไรว่างบโฆษณาที่จ่ายไปได้ผลจริง
+                    - หรือฝนตกแล้วเราต้องนั่งทำใจอย่างเดียว หรือมีวิธีแก้เกม
+                </aside>
+            </section>
+
+            <!-- SLIDE 5: What is Correlation? -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-link" style="color: var(--primary);"></i> สหสัมพันธ์ (Correlation) คืออะไร?</h2>
+                        <span class="subtitle">การวัดทางสถิติที่บอกว่า "ตัวแปรสองตัวเคลื่อนที่ตามกันมากน้อยเพียงใด"</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-chart-line"></i> Definition</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2" style="gap: 14px;">
+                        <div class="card" style="padding: 16px;">
+                            <h4 style="color: var(--primary); font-size: 1.05rem; margin-bottom: 8px;">
+                                <i class="fas fa-microscope"></i> นิยามทางสถิติธุรกิจ
+                            </h4>
+                            <p style="font-size: 0.86rem; color: var(--text-sub); line-height: 1.45; margin-bottom: 8px;">
+                                <strong>Correlation (สหสัมพันธ์)</strong> คือการวัดระดับความสัมพันธ์เชิงเส้น (Linear Relationship) ระหว่างตัวแปรเชิงปริมาณ 2 ตัว (X และ Y)
+                            </p>
+                            <ul style="font-size: 0.82rem; color: var(--text-sub); padding-left: 18px; margin: 0; line-height: 1.4;">
+                                <li>บอก <strong>ทิศทาง (Direction)</strong>: วิ่งไปทางเดียวกัน หรือวิ่งสวนทางกัน</li>
+                                <li>บอก <strong>ขนาดความแรง (Strength)</strong>: สัมพันธ์กันแน่นแฟ้น หรือแทบไม่เกี่ยวกัน</li>
+                                <li><strong>ไม่บอกสาเหตุ</strong>: ไม่สามารถบอกได้ว่า X เป็นต้นเหตุของ Y หรือไม่</li>
+                            </ul>
+                        </div>
+                        <div class="card" style="padding: 16px; background: #f8fafc;">
+                            <h4 style="color: var(--secondary); font-size: 1.05rem; margin-bottom: 8px;">
+                                <i class="fas fa-chart-scatter"></i> มองทะลุผ่าน Scatter Plot
+                            </h4>
+                            <p style="font-size: 0.84rem; color: var(--text-sub); line-height: 1.45; margin-bottom: 8px;">
+                                กราฟกระจาย (Scatter Plot) คือเครื่องมือที่ดีที่สุดในการมองเห็น Correlation ด้วยตาเปล่า:
+                            </p>
+                            <div style="background: white; border: 1px solid var(--border-card); border-radius: 8px; padding: 10px; font-size: 0.8rem;">
+                                <div><i class="fas fa-arrow-trend-up" style="color: var(--success);"></i> <strong>จุดเกาะกลุ่มชี้ขึ้น:</strong> ยิ่ง X มาก Y ยิ่งมาก (บวก)</div>
+                                <div style="margin-top: 4px;"><i class="fas fa-arrow-trend-down" style="color: var(--accent);"></i> <strong>จุดเกาะกลุ่มชี้ลง:</strong> ยิ่ง X มาก Y ยิ่งน้อย (ลบ)</div>
+                                <div style="margin-top: 4px;"><i class="fas fa-braille" style="color: var(--text-muted);"></i> <strong>จุดกระจายสะเปะสะปะ:</strong> ไม่มีความสัมพันธ์ (ศูนย์)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="callout-box info" style="margin-top: 8px; padding: 10px 16px;">
+                        <i class="fas fa-info-circle" style="color: var(--secondary); font-size: 1.3rem;"></i>
+                        <span style="font-size: 0.88rem; color: var(--text-main);">
+                            <strong>Core Concept:</strong> Correlation ตอบคำถามว่า <em>"สองสิ่งนี้เกิดขึ้นคู่กันบ่อยแค่ไหน?"</em> เช่น ยอดสั่งเดลิเวอรีขยับตามงบแอด TikTok มากน้อยเพียงใด
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 5 Notes]:
+                    - นิยามสหสัมพันธ์ให้เข้าใจง่าย: ตัวแปร 2 ตัวขยับไปด้วยกันไหม
+                    - ใช้ Scatter Plot เป็นตัวแทนภาพ
+                </aside>
+            </section>
+
+            <!-- SLIDE 6: The 3 Directions of Correlation -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-compass" style="color: var(--primary);"></i> 3 ทิศทางของสหสัมพันธ์ (The 3 Directions)</h2>
+                        <span class="subtitle">ตัวแปรทางธุรกิจสามารถเคลื่อนไหวสัมพันธ์กันได้ 3 รูปแบบหลัก</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-arrows-alt"></i> Directions</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-3" style="gap: 12px;">
+                        <div class="card" style="border-top: 4px solid var(--success); padding: 14px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                <h4 style="color: var(--success); font-size: 0.98rem;"><i class="fas fa-arrow-up-right-dots"></i> เชิงบวก (Positive)</h4>
+                                <span class="stat-badge stat-pos">r > 0</span>
+                            </div>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.4; margin-bottom: 6px;">
+                                <strong>เคลื่อนที่ไปในทิศทางเดียวกัน:</strong> เมื่อตัวแปรหนึ่งเพิ่มขึ้น อีกตัวแปรหนึ่งจะเพิ่มขึ้นตามด้วย
+                            </p>
+                            <div style="background: #f0fdf4; border-radius: 6px; padding: 6px 10px; font-size: 0.78rem; color: #166534;">
+                                <strong>ตัวอย่าง:</strong> งบแอด TikTok เพิ่ม &rarr; ยอดสั่งเดลิเวอรีเพิ่มขึ้น
+                            </div>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid var(--accent); padding: 14px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                <h4 style="color: var(--accent); font-size: 0.98rem;"><i class="fas fa-arrow-down-right-dots"></i> เชิงลบ (Negative)</h4>
+                                <span class="stat-badge stat-neg">r &lt; 0</span>
+                            </div>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.4; margin-bottom: 6px;">
+                                <strong>เคลื่อนที่สวนทางกัน:</strong> เมื่อตัวแปรหนึ่งเพิ่มขึ้น อีกตัวแปรหนึ่งจะลดลง
+                            </p>
+                            <div style="background: #fef2f2; border-radius: 6px; padding: 6px 10px; font-size: 0.78rem; color: #991b1b;">
+                                <strong>ตัวอย่าง:</strong> ปริมาณฝนตกหนัก &rarr; จำนวนลูกค้าเดินเข้าร้านลดลง
+                            </div>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid var(--text-muted); padding: 14px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                <h4 style="color: var(--text-sub); font-size: 0.98rem;"><i class="fas fa-circle-dot"></i> ใกล้ศูนย์ (Zero)</h4>
+                                <span class="stat-badge stat-zero">r &approx; 0</span>
+                            </div>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.4; margin-bottom: 6px;">
+                                <strong>ไม่มีความสัมพันธ์เชิงเส้น:</strong> การเปลี่ยนแปลงของตัวแปรหนึ่งไม่ส่งผลต่ออีกตัวแปร
+                            </p>
+                            <div style="background: #f1f5f9; border-radius: 6px; padding: 6px 10px; font-size: 0.78rem; color: #334155;">
+                                <strong>ตัวอย่าง:</strong> แนวเพลงที่เปิดในร้าน &rarr; ยอดขายเครื่องดื่ม (r = +0.03)
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="callout-box warning" style="margin-top: 8px; padding: 10px 16px;">
+                        <i class="fas fa-lightbulb" style="color: var(--accent-warm); font-size: 1.3rem;"></i>
+                        <span style="font-size: 0.88rem; color: var(--text-main);">
+                            <strong>มุมมองผู้บริหาร:</strong> ค่าติดลบ (Negative) <strong>ไม่ได้แปลว่าธุรกิจล้มเหลวเสมอไป!</strong> มันคือ "ระบบเตือนภัยล่วงหน้า" ที่บอกให้เราเตรียมแผนสำรองมารับมือความเสี่ยงได้ทันท่วงที
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 6 Notes]:
+                    - เน้นย้ำข้อสอบ: 3 ทิศทาง (+, -, 0)
+                    - เน้นว่าตัวเลขติดลบคือความสัมพันธ์แบบสวนทาง ไม่ใช่เรื่องแย่ แต่คือ Early Warning System
+                </aside>
+            </section>
+
+            <!-- SLIDE 7: The Pearson Correlation Coefficient -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-calculator" style="color: var(--primary);"></i> ค่าสัมประสิทธิ์สหสัมพันธ์ Pearson (r)</h2>
+                        <span class="subtitle">มาตรวัดคณิตศาสตร์มาตรฐานที่แปลงความสัมพันธ์เป็นตัวเลขสากลระหว่าง -1.00 ถึง +1.00</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-ruler-combined"></i> Metric</span>
+                </div>
+                <div class="slide-body">
+                    <div class="card" style="padding: 12px 16px; margin-bottom: 8px; background: linear-gradient(90deg, #fee2e2 0%, #ffffff 50%, #dcfce7 100%); border: 1px solid var(--border-card);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; text-align: center;">
+                            <div style="flex: 1;">
+                                <div style="color: var(--accent); font-weight: 800; font-size: 1.1rem;">-1.00</div>
+                                <div style="font-size: 0.75rem; color: var(--text-sub);">Perfect Negative</div>
+                            </div>
+                            <div style="flex: 1;">
+                                <div style="color: var(--accent-warm); font-weight: 700; font-size: 0.95rem;">-0.70</div>
+                                <div style="font-size: 0.72rem; color: var(--text-muted);">Strong Neg</div>
+                            </div>
+                            <div style="flex: 1;">
+                                <div style="color: var(--text-muted); font-weight: 800; font-size: 1.1rem;">0.00</div>
+                                <div style="font-size: 0.75rem; color: var(--text-sub);">No Correlation</div>
+                            </div>
+                            <div style="flex: 1;">
+                                <div style="color: var(--secondary); font-weight: 700; font-size: 0.95rem;">+0.70</div>
+                                <div style="font-size: 0.72rem; color: var(--text-muted);">Strong Pos</div>
+                            </div>
+                            <div style="flex: 1;">
+                                <div style="color: var(--success); font-weight: 800; font-size: 1.1rem;">+1.00</div>
+                                <div style="font-size: 0.75rem; color: var(--text-sub);">Perfect Positive</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <table class="data-table-sm" style="margin-bottom: 8px;">
+                        <thead>
+                            <tr>
+                                <th style="width: 25%;">ช่วงค่า Pearson (r)</th>
+                                <th style="width: 28%;">ระดับความสัมพันธ์ (Strength)</th>
+                                <th>ความหมายและการตัดสินใจสำหรับเจ้าของธุรกิจ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="stat-badge stat-pos">&plusmn; 0.70 ถึง &plusmn; 1.00</span></td>
+                                <td><strong>สูงมาก (Strong)</strong></td>
+                                <td>มีอิทธิพลสูงมาก ใช้เป็นปัจจัยหลักในการวางแผนและจัดสรรงบประมาณ</td>
+                            </tr>
+                            <tr>
+                                <td><span class="stat-badge stat-zero">&plusmn; 0.40 ถึง &plusmn; 0.69</span></td>
+                                <td><strong>ปานกลาง (Moderate)</strong></td>
+                                <td>มีความเชื่อมโยงระดับหนึ่ง ควรติดตามร่วมกับตัวแปรเสริมอื่น</td>
+                            </tr>
+                            <tr>
+                                <td><span class="stat-badge stat-neg">&plusmn; 0.00 ถึง &plusmn; 0.39</span></td>
+                                <td><strong>ต่ำมาก / ไม่มี (Weak / None)</strong></td>
+                                <td>แทบไม่มีผล ตัดทิ้งจากการตัดสินใจ (Prune the Irrelevant) เลิกเสียเวลาโฟกัส</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="callout-box info" style="padding: 8px 14px;">
+                        <i class="fas fa-check-circle" style="color: var(--secondary); font-size: 1.2rem;"></i>
+                        <span style="font-size: 0.85rem; color: var(--text-main);">
+                            <strong>กฎเหล็กทางคณิตศาสตร์:</strong> ค่า $r$ <strong>ต้องอยู่ระหว่าง -1.00 ถึง +1.00 เสมอ</strong> หากคำนวณได้เกิน 1 หรือติดลบเกิน -1 แสดงว่าสูตรหรือข้อมูลผิดพลาด 100%!
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 7 Notes]:
+                    - ชี้แจงช่วงค่า Pearson r: -1 ถึง +1
+                    - เกณฑ์ 0.70+ ถือเป็น Strong Correlation
+                </aside>
+            </section>
+
+            <!-- SLIDE 8: Case Study 1: Positive Correlation -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-arrow-trend-up" style="color: var(--success);"></i> กรณีศึกษา 1: สหสัมพันธ์เชิงบวก (Positive Correlation)</h2>
+                        <span class="subtitle">ร้านชื่นใจ สมูทตี้บาร์: งบโฆษณา TikTok vs ยอดสั่งซื้อเดลิเวอรี (r = +0.87)</span>
+                    </div>
+                    <span class="badge-step success"><i class="fas fa-bolt"></i> Strong Pos (+0.87)</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2" style="gap: 14px;">
+                        <div class="card" style="padding: 14px;">
+                            <h4 style="font-size: 0.98rem; color: var(--success); margin-bottom: 8px;">
+                                <i class="fas fa-table"></i> ตัวเลขการทดสอบ 14 วัน
+                            </h4>
+                            <table class="data-table-sm" style="font-size: 0.78rem;">
+                                <thead>
+                                    <tr>
+                                        <th>วันที่</th>
+                                        <th>งบแอด TikTok (฿)</th>
+                                        <th>ยอดเดลิเวอรี (฿)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>16 พ.ค.</td><td>800</td><td>18,200</td></tr>
+                                    <tr><td>17 พ.ค.</td><td>1,200</td><td>24,500</td></tr>
+                                    <tr><td>20 พ.ค.</td><td>700</td><td>16,500</td></tr>
+                                    <tr><td>22 พ.ค. (ฝนตก)</td><td>1,500</td><td>28,400</td></tr>
+                                    <tr><td>28 พ.ค. (Payday)</td><td>1,800</td><td>29,800</td></tr>
+                                    <tr><td>29 พ.ค. (Payday)</td><td>2,000</td><td>33,400</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="card" style="padding: 14px; background: #f0fdf4; border: 1px solid #bbf7d0;">
+                            <h4 style="font-size: 0.98rem; color: #166534; margin-bottom: 6px;">
+                                <i class="fas fa-brain"></i> การถอดรหัสและการตัดสินใจ
+                            </h4>
+                            <div style="font-size: 0.84rem; color: var(--text-sub); line-height: 1.45;">
+                                <p style="margin-bottom: 6px;">
+                                    • <strong>ค่า r = +0.87 (Strong Positive):</strong> แสดงว่าเม็ดเงินโฆษณา TikTok กับยอดสั่งเดลิเวอรีมีความสัมพันธ์เชิงบวกระดับสูงมาก
+                                </p>
+                                <p style="margin-bottom: 6px;">
+                                    • <strong>พฤติกรรมลูกค้า:</strong> เห็นคลิปสั้นสมูทตี้ผลไม้สดบน TikTok &rarr; กดลิงก์สั่งผ่าน LINE MAN / Grab ทันที
+                                </p>
+                                <p>
+                                    • <strong>Action Plan:</strong> เพิ่มงบยิงแอดในวันที่ต้องการดันยอดขายเดลิเวอรี โดยเฉพาะช่วงเวลา 11.00 - 14.00 น.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="callout-box success" style="margin-top: 8px; padding: 10px 16px;">
+                        <i class="fas fa-coins" style="color: var(--success); font-size: 1.3rem;"></i>
+                        <span style="font-size: 0.88rem; color: var(--text-main);">
+                            <strong>Executive Takeaway:</strong> เม็ดเงินโฆษณาที่คุ้มค่า จะต้องมีค่า $r \ge +0.70$ กับยอดขายจริง หากยิงแอดแล้วได้ค่า $r$ ต่ำกว่า 0.30 แสดงว่างบโฆษณานั้นกำลังสูญเปล่า!
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 8 Notes]:
+                    - กรณีศึกษา 1: ตัวอย่างความสัมพันธ์เชิงบวกสูง (+0.87)
+                    - เชื่อมโยงกับคำถามข้อ 1 ใน Quiz
+                </aside>
+            </section>
+
+            <!-- SLIDE 9: Case Study 2: Negative Correlation -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-arrow-trend-down" style="color: var(--accent);"></i> กรณีศึกษา 2: สหสัมพันธ์เชิงลบ (Negative Correlation)</h2>
+                        <span class="subtitle">ร้านชื่นใจ สมูทตี้บาร์: ปริมาณน้ำฝน vs จำนวนลูกค้าหน้าร้าน (r = -0.76)</span>
+                    </div>
+                    <span class="badge-step accent"><i class="fas fa-cloud-showers-heavy"></i> Strong Neg (-0.76)</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2" style="gap: 14px;">
+                        <div class="card" style="padding: 14px;">
+                            <h4 style="font-size: 0.98rem; color: var(--accent); margin-bottom: 8px;">
+                                <i class="fas fa-umbrella"></i> สภาพอากาศส่งผลสวนทางชัดเจน
+                            </h4>
+                            <div style="font-size: 0.84rem; color: var(--text-sub); line-height: 1.45;">
+                                <p style="margin-bottom: 6px;">
+                                    • <strong>ค่า r = -0.76 (Strong Negative):</strong> เมื่อฝนตกหนัก ปริมาณลูกค้าเดินเข้าร้านจะลดลงฮวบฮาบ
+                                </p>
+                                <p style="margin-bottom: 6px;">
+                                    • <strong>เคส 22 พ.ค. (ฝนตก 48 มม.):</strong> หน้าร้านมียอดเพียง 4,200 บาท (ร่วงลง 65% จากปกติ)
+                                </p>
+                                <p>
+                                    • แต่ในวันเดียวกัน <strong>ยอดเดลิเวอรีกลับพุ่งแตะ 28,400 บาท!</strong> เพราะลูกค้าไม่อยากเปียกฝนแต่อยากดื่มน้ำปั่น
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="card" style="padding: 14px; background: #fff1f2; border: 1px solid #fecdd3;">
+                            <h4 style="font-size: 0.98rem; color: #9f1239; margin-bottom: 6px;">
+                                <i class="fas fa-shield-halved"></i> ตัวเลขติดลบคือ "ระบบเตือนภัยล่วงหน้า"
+                            </h4>
+                            <div style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.4;">
+                                <div style="margin-bottom: 6px;">
+                                    <strong>1. โยกกำลังคน (Staff Reallocation):</strong><br />
+                                    ดึงพนักงานหน้าร้านมาช่วยปั่นและแพ็กกล่องเดลิเวอรีทันทีที่ฝนเริ่มตก
+                                </div>
+                                <div>
+                                    <strong>2. แคมเปญวันฝนพรำ (Rainy Promotion):</strong><br />
+                                    ยิงโปรโมชัน "ส่งฟรีวันฝนตก" บน Grab/LINE MAN เพื่อดึงดูดลูกค้าและชดเชยยอดหน้าร้านที่หายไป
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="callout-box accent" style="margin-top: 8px; padding: 10px 16px;">
+                        <i class="fas fa-bullseye" style="color: var(--accent); font-size: 1.3rem;"></i>
+                        <span style="font-size: 0.88rem; color: var(--text-main);">
+                            <strong>Executive Takeaway:</strong> Negative Correlation ช่วยให้ธุรกิจ <strong>Hedge Risk (บริหารความเสี่ยง)</strong> เปลี่ยนวิกฤตหน้าร้านให้กลายเป็นโอกาสทองของเดลิเวอรีได้ทันที!
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 9 Notes]:
+                    - อธิบายเคสฝนตก vs หน้าร้าน
+                    - เชื่อมกับ Quiz ข้อ 2 และข้อ 10 เรื่องการวาง Action Plan
+                </aside>
+            </section>
+
+            <!-- SLIDE 10: Zero Correlation: The Art of Pruning -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-ban" style="color: var(--text-muted);"></i> สหสัมพันธ์ใกล้ศูนย์: ศิลปะการตัดสิ่งที่ไม่เกี่ยวทิ้ง</h2>
+                        <span class="subtitle">กรณีศึกษา: แนวเพลงที่เปิดในร้าน vs ยอดขายเครื่องดื่ม (r = +0.03)</span>
+                    </div>
+                    <span class="badge-step"><i class="fas fa-scissors"></i> Pruning</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2" style="gap: 14px;">
+                        <div class="card" style="padding: 14px;">
+                            <h4 style="font-size: 0.98rem; color: var(--text-main); margin-bottom: 8px;">
+                                <i class="fas fa-music"></i> การทดลองเปิดเพลง 3 สไตล์
+                            </h4>
+                            <div style="font-size: 0.84rem; color: var(--text-sub); line-height: 1.45;">
+                                <p style="margin-bottom: 6px;">
+                                    เจ้าของร้านทดลองเปลี่ยนเพลย์ลิสต์เพลงในร้าน 1 เดือน:
+                                </p>
+                                <ul style="padding-left: 18px; margin-bottom: 8px;">
+                                    <li>สัปดาห์ที่ 1: เพลงแจ๊ส Lo-Fi นั่งชิลล์</li>
+                                    <li>สัปดาห์ที่ 2: เพลงป็อป K-POP จังหวะสนุกสนาน</li>
+                                    <li>สัปดาห์ที่ 3: เพลงอคูสติกฟังสบาย</li>
+                                </ul>
+                                <p style="font-weight: 700; color: var(--accent);">
+                                    ผลลัพธ์คำนวณค่า r = +0.03 (ไม่มีความสัมพันธ์ใดๆ)
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="card" style="padding: 14px; background: #f8fafc; border: 1px solid var(--border-card);">
+                            <h4 style="font-size: 0.98rem; color: var(--primary); margin-bottom: 6px;">
+                                <i class="fas fa-bullseye"></i> ประโยชน์สูงสุด: Pruning the Irrelevant
+                            </h4>
+                            <div style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.45;">
+                                <p style="margin-bottom: 6px;">
+                                    เจ้าของธุรกิจมักเสียเวลาและพลังงานไปกับสิ่งที่ไม่สร้างเงิน:
+                                </p>
+                                <ul style="padding-left: 18px; margin-bottom: 6px;">
+                                    <li>เถียงกันเรื่องเปิดเพลงอะไรในร้าน</li>
+                                    <li>เปลี่ยนสีหลอดไฟซ้ำไปซ้ำมา</li>
+                                    <li>กังวลเรื่องที่ตัวเลขพิสูจน์แล้วว่า "ไม่มีผล"</li>
+                                </ul>
+                                <p style="font-weight: 700; color: var(--success);">
+                                    ตัดทิ้งไป! เอาเวลาไปโฟกัสสูตรเครื่องดื่มและการบริการที่ขับเคลื่อนยอดขายจริง
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="callout-box info" style="margin-top: 8px; padding: 10px 16px;">
+                        <i class="fas fa-check-double" style="color: var(--secondary); font-size: 1.3rem;"></i>
+                        <span style="font-size: 0.88rem; color: var(--text-main);">
+                            <strong>Executive Takeaway:</strong> การวิเคราะห์ข้อมูลไม่ได้มีไว้แค่หาว่า <em>"อะไรเวิร์ก"</em> แต่สิ่งที่ประเสริฐกว่าคือการบอกให้รู้ว่า <strong>"อะไรไม่เกี่ยว เพื่อเราจะได้หยุดเสียเงินและเสียเวลากับมัน!"</strong>
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 10 Notes]:
+                    - Pruning the irrelevant: ตัดสิ่งที่ไม่สร้างผลกระทบ
+                    - เชื่อมกับคำถามข้อ 3 ใน Quiz
+                </aside>
+            </section>
+
+            <!-- SLIDE 11: The Golden Rule: Correlation ≠ Causation -->
+            <section data-background-gradient="radial-gradient(circle at 50% 50%, #fff1f2 0%, #f8fafc 100%)">
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-triangle-exclamation" style="color: var(--accent);"></i> กฎเหล็กสูงสุด: Correlation ≠ Causation</h2>
+                        <span class="subtitle">สัมพันธ์กัน ไม่ได้แปลว่าเป็นเหตุเป็นผลกันเสมอไป!</span>
+                    </div>
+                    <span class="badge-step accent"><i class="fas fa-lock"></i> Golden Rule</span>
+                </div>
+                <div class="slide-body">
+                    <div style="text-align: center; margin: 6px 0;">
+                        <div style="font-size: 1.7rem; font-weight: 900; color: var(--accent); letter-spacing: -0.02em;">
+                            "ความสัมพันธ์ทางสถิติ &ne; ความเป็นเหตุเป็นผล"
+                        </div>
+                        <p style="font-size: 0.92rem; color: var(--text-muted); margin-top: 2px;">
+                            การที่ตัวเลขสองชุดขยับตามกัน อาจเป็นเพียงเรื่องบังเอิญ หรือมีตัวแปรที่สามคอยบงการอยู่เบื้องหลัง
+                        </p>
+                    </div>
+
+                    <div class="grid-3" style="gap: 12px; margin-top: 6px;">
+                        <div class="card" style="padding: 12px; border-top: 3px solid var(--primary);">
+                            <h4 style="font-size: 0.92rem; color: var(--primary); margin-bottom: 4px;">
+                                <i class="fas fa-arrow-right"></i> 1. A เป็นสาเหตุของ B
+                            </h4>
+                            <p style="font-size: 0.8rem; color: var(--text-sub); line-height: 1.35;">
+                                งบโฆษณา TikTok เพิ่มขึ้น นำไปสู่การรับรู้และยอดสั่งซื้อที่เพิ่มขึ้นจริง (Direct Causation)
+                            </p>
+                        </div>
+                        <div class="card" style="padding: 12px; border-top: 3px solid var(--accent-warm);">
+                            <h4 style="font-size: 0.92rem; color: var(--accent-warm); margin-bottom: 4px;">
+                                <i class="fas fa-arrows-left-right"></i> 2. บังเอิญตรงกัน (Coincidence)
+                            </h4>
+                            <p style="font-size: 0.8rem; color: var(--text-sub); line-height: 1.35;">
+                                ปริมาณการนำเข้าน้ำมันดิบกับจำนวนคนที่ถูกแมงมุมกัดในสหรัฐฯ (Spurious Correlation)
+                            </p>
+                        </div>
+                        <div class="card" style="padding: 12px; border-top: 3px solid var(--purple);">
+                            <h4 style="font-size: 0.92rem; color: var(--purple); margin-bottom: 4px;">
+                                <i class="fas fa-mask"></i> 3. มีตัวแปรแอบแฝง (Confounder)
+                            </h4>
+                            <p style="font-size: 0.8rem; color: var(--text-sub); line-height: 1.35;">
+                                มีตัวแปรตัวที่ 3 (เช่น อุณหภูมิฤดูร้อน) ที่ดันทั้งตัวแปร A และ B ให้พุ่งขึ้นพร้อมกัน
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="callout-box warning" style="margin-top: 8px; padding: 10px 16px;">
+                        <i class="fas fa-skull-crossbones" style="color: var(--accent); font-size: 1.3rem;"></i>
+                        <span style="font-size: 0.88rem; color: var(--text-main);">
+                            <strong>คำเตือนผู้บริหาร:</strong> ถ้าด่วนสรุปว่า Correlation คือ Causation คุณอาจตัดสินใจผิดทุ่มเงินไปในสิ่งที่ไม่ก่อให้เกิดผลลัพธ์จริง จนธุรกิจขาดทุนมหาศาล!
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 11 Notes]:
+                    - เน้นย้ำข้อสอบข้อ 4
+                    - อธิบายกฎเหล็ก Correlation ไม่เท่ากับ Causation
+                </aside>
+            </section>
+
+            <!-- SLIDE 12: Spurious Correlation: The Illusion -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-wand-magic-sparkles" style="color: var(--accent);"></i> Spurious Correlation: ความสัมพันธ์ลวงโลก</h2>
+                        <span class="subtitle">กรณีศึกษาคลาสสิกระดับโลก: ยอดขายไอศกรีม vs อัตราคนจมน้ำเสียชีวิต (r = +0.93)</span>
+                    </div>
+                    <span class="badge-step accent"><i class="fas fa-ghost"></i> Illusion</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2" style="gap: 14px;">
+                        <div class="card" style="padding: 14px;">
+                            <h4 style="font-size: 0.98rem; color: var(--accent); margin-bottom: 8px;">
+                                <i class="fas fa-ice-cream"></i> ตัวเลขหลอกตา (Data Illusion)
+                            </h4>
+                            <p style="font-size: 0.85rem; color: var(--text-sub); line-height: 1.45; margin-bottom: 8px;">
+                                ในช่วงเดือน มิ.ย. - ส.ค. ข้อมูลพบว่า:
+                            </p>
+                            <ul style="font-size: 0.82rem; color: var(--text-sub); padding-left: 18px; margin-bottom: 8px; line-height: 1.4;">
+                                <li>ยอดขายไอศกรีมพุ่งสูงขึ้นอย่างมาก</li>
+                                <li>จำนวนผู้เสียชีวิตจากการจมน้ำพุ่งสูงขึ้นตามเป๊ะ ($r = +0.93$)</li>
+                            </ul>
+                            <div style="background: #fef2f2; border-left: 3px solid var(--accent); padding: 6px 10px; font-size: 0.8rem; color: #991b1b;">
+                                <strong>ข้อสรุปที่บ้าบอ:</strong> "การกินไอศกรีมทำให้คนเป็นตะคริวจมน้ำตาย... สั่งแบนการขายไอศกรีมด่วน?!"
+                            </div>
+                        </div>
+
+                        <div class="card" style="padding: 14px; background: #fffbeb; border: 1px solid #fde68a;">
+                            <h4 style="font-size: 0.98rem; color: #92400e; margin-bottom: 6px;">
+                                <i class="fas fa-sun" style="color: var(--accent-warm);"></i> ผู้ชักใยเบื้องหลังตัวจริง!
+                            </h4>
+                            <div style="font-size: 0.84rem; color: var(--text-sub); line-height: 1.45;">
+                                <p style="margin-bottom: 6px;">
+                                    ทั้งสองสิ่งไม่ได้เป็นสาเหตุของกันและกัน แต่ถูกขับเคลื่อนโดยตัวแปรแอบแฝงเดียวกัน:
+                                </p>
+                                <div style="background: white; border: 1px solid #fde68a; border-radius: 6px; padding: 8px 10px; margin-bottom: 6px; text-align: center; font-weight: 700; color: #b45309;">
+                                    "สภาพอากาศร้อนจัดช่วงซัมเมอร์" (Summer Heat)
+                                </div>
+                                <ul style="font-size: 0.8rem; color: var(--text-sub); padding-left: 18px; line-height: 1.35;">
+                                    <li>อากาศร้อน &rarr; คนอยากกินไอศกรีมคลายร้อน</li>
+                                    <li>อากาศร้อน &rarr; คนแห่ไปเล่นน้ำทะเล/สระว่ายน้ำ อุบัติเหตุจึงเพิ่มขึ้น</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="callout-box warning" style="margin-top: 8px; padding: 10px 16px;">
+                        <i class="fas fa-magnifying-glass" style="color: var(--accent-warm); font-size: 1.3rem;"></i>
+                        <span style="font-size: 0.88rem; color: var(--text-main);">
+                            <strong>ข้อคิดสำหรับผู้ประกอบการ:</strong> ความสัมพันธ์ลวงตา (Spurious Correlation) เกิดขึ้นตลอดเวลาในโลกธุรกิจ หากไม่สืบหาตัวแปรแอบแฝง เราจะตั้งงบแก้ปัญหาผิดจุดแบบแบนไอศกรีมเพื่อหวังลดคนจมน้ำ!
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 12 Notes]:
+                    - เคสคลาสสิก: ไอศกรีมกับคนจมน้ำ
+                    - เชื่อมกับคำถามข้อ 5 ใน Quiz
+                </aside>
+            </section>
+
+            <!-- SLIDE 13: The Hidden Culprit: Confounding Variable -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-mask" style="color: var(--purple);"></i> ตัวแปรแอบแฝง (Confounding Variable) ในธุรกิจ</h2>
+                        <span class="subtitle">กรณีศึกษาร้านชื่นใจ: ค่าไฟพุ่ง vs ยอดขายพุ่ง (r = +0.91)</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-user-secret"></i> Confounder</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2" style="gap: 14px;">
+                        <div class="card" style="padding: 14px;">
+                            <h4 style="font-size: 0.98rem; color: var(--accent); margin-bottom: 8px;">
+                                <i class="fas fa-bolt"></i> กับดักตรรกะวิบัติของผู้จัดการร้าน
+                            </h4>
+                            <div style="font-size: 0.84rem; color: var(--text-sub); line-height: 1.45;">
+                                <p style="margin-bottom: 6px;">
+                                    ผู้จัดการร้านเห็นตัวเลข 14 วันพบว่า:
+                                </p>
+                                <div style="background: #f1f5f9; padding: 8px 12px; border-radius: 6px; font-family: 'Fira Code', monospace; font-size: 0.82rem; margin-bottom: 8px;">
+                                    =CORREL(ยอดขายรวม, ค่าไฟ) &rarr; +0.91 (สูงมาก!)
+                                </div>
+                                <p style="color: #991b1b; font-weight: 600;">
+                                    ผู้จัดการเสนอ: "เราควรเปิดแอร์และตู้เย็นทิ้งไว้ตลอด 24 ชั่วโมง เพื่อดันค่าไฟให้สูง ยอดขายจะได้ขึ้นตาม?!"
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="card" style="padding: 14px; background: #faf5ff; border: 1px solid #e9d5ff;">
+                            <h4 style="font-size: 0.98rem; color: var(--purple); margin-bottom: 6px;">
+                                <i class="fas fa-temperature-high" style="color: var(--accent);"></i> เฉลย Confounder ตัวจริง!
+                            </h4>
+                            <div style="font-size: 0.84rem; color: var(--text-sub); line-height: 1.45;">
+                                <div style="text-align: center; background: white; border: 1px solid #d8b4fe; border-radius: 6px; padding: 8px; margin-bottom: 8px; font-weight: 800; color: var(--purple);">
+                                    "อุณหภูมิภายนอกที่ร้อนจัด (36–38 &deg;C)"
+                                </div>
+                                <p style="margin-bottom: 6px;">
+                                    • อากาศร้อนจัด &rarr; ลูกค้ากระหายน้ำ สั่งสมูทตี้เพิ่มขึ้น (ยอดขายพุ่ง)<br />
+                                    • อากาศร้อนจัด &rarr; คอมเพรสเซอร์แอร์และตู้แช่ผลไม้ทำงานหนัก (ค่าไฟพุ่ง)
+                                </p>
+                                <p style="color: var(--accent); font-weight: 600;">
+                                    หากเปิดแอร์ทิ้งไว้ในวันที่ฝนตก ยอดขายจะไม่เพิ่มขึ้น มีแต่จะขาดทุนค่าไฟฟรี!
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="callout-box warning" style="margin-top: 8px; padding: 10px 16px;">
+                        <i class="fas fa-lightbulb" style="color: var(--accent-warm); font-size: 1.3rem;"></i>
+                        <span style="font-size: 0.88rem; color: var(--text-main);">
+                            <strong>Executive Rule:</strong> ก่อนจะสรุปว่า A ทำให้เกิด B ให้ถามตัวเองเสมอว่า <em>"มีปัจจัย C ซ่อนอยู่เบื้องหลังที่ขับเคลื่อนทั้งคู่พร้อมกันหรือไม่?"</em>
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 13 Notes]:
+                    - Confounding Variable: อุณหภูมิภายนอก
+                    - เชื่อมกับคำถามข้อ 6 ใน Quiz
+                </aside>
+            </section>
+
+            <!-- SLIDE 14: How Business Leaders Prove Causation -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-flask" style="color: var(--primary);"></i> เจ้าของธุรกิจจะพิสูจน์ "สาเหตุที่แท้จริง" ได้อย่างไร?</h2>
+                        <span class="subtitle">วิธีเดียวที่จะยืนยัน Causation ได้ คือการทำ Controlled Experiment &amp; A/B Testing</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-vial"></i> Experimentation</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-3" style="gap: 12px;">
+                        <div class="card" style="padding: 14px; border-top: 3px solid var(--primary);">
+                            <div class="card-header-sm">
+                                <i class="fas fa-code-compare" style="color: var(--primary);"></i>
+                                <h4 style="font-size: 0.95rem;">1. ทำ A/B Testing</h4>
+                            </div>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.4;">
+                                เปรียบเทียบ 2 เงื่อนไขในเวลาเดียวกัน เช่น สาขา A ยิงแอด TikTok ส่วนสาขา B ไม่ยิงแอด แล้วดูความต่างของยอดขาย
+                            </p>
+                        </div>
+                        <div class="card" style="padding: 14px; border-top: 3px solid var(--secondary);">
+                            <div class="card-header-sm">
+                                <i class="fas fa-clock-rotate-left" style="color: var(--secondary);"></i>
+                                <h4 style="font-size: 0.95rem;">2. การสลับช่วงเวลา (Holdout)</h4>
+                            </div>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.4;">
+                                ลองปิดโฆษณา TikTok ชั่วคราว 3 วัน หากยอดเดลิเวอรีตกลงทันที และพุ่งกลับมาเมื่อเปิดใหม่ ย่อมพิสูจน์ว่าเป็นสาเหตุจริง
+                            </p>
+                        </div>
+                        <div class="card" style="padding: 14px; border-top: 3px solid var(--success);">
+                            <div class="card-header-sm">
+                                <i class="fas fa-sliders" style="color: var(--success);"></i>
+                                <h4 style="font-size: 0.95rem;">3. ควบคุมตัวแปรอื่น (Control)</h4>
+                            </div>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.4;">
+                                ทดสอบในวันที่อุณหภูมิปกติ และไม่ใช่สัปดาห์เงินเดือนออก เพื่อตัดอิทธิพลของ Confounder ออกจากการทดลอง
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="callout-box info" style="margin-top: 8px; padding: 10px 16px;">
+                        <i class="fas fa-award" style="color: var(--secondary); font-size: 1.3rem;"></i>
+                        <span style="font-size: 0.88rem; color: var(--text-main);">
+                            <strong>Mindset ผู้ประกอบการระดับโลก:</strong> บริษัทยักษ์ใหญ่อย่าง Amazon, Netflix, และ Grab รันการทดลอง A/B Test หลายหมื่นครั้งต่อปี เพื่อพิสูจน์ "สาเหตุจริง" ก่อนทุ่มงบประมาณระดับพันล้าน
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 14 Notes]:
+                    - สอนวิธีพิสูจน์ Causation ด้วย A/B Testing และ Control Variables
+                </aside>
+            </section>
+
+            <!-- SLIDE 15: Decoding Trend: The Long-Term Direction -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-arrow-trend-up" style="color: var(--primary);"></i> ถอดรหัสแนวโน้ม (Decoding Trend)</h2>
+                        <span class="subtitle">Trend คือทิศทางการเติบโตภาพรวมระยะยาวของธุรกิจ (Long-Term Trajectory)</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-chart-line"></i> Trend</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-3" style="gap: 12px;">
+                        <div class="card" style="padding: 14px; border-left: 4px solid var(--success);">
+                            <h4 style="color: var(--success); font-size: 0.98rem; margin-bottom: 6px;">
+                                <i class="fas fa-arrow-trend-up"></i> 1. แนวโน้มขาขึ้น (Uptrend)
+                            </h4>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.4;">
+                                ธุรกิจเติบโตต่อเนื่อง ยอดขายเฉลี่ยรายเดือนสูงขึ้นเรื่อย ๆ บ่งชี้ว่า Product-Market Fit ดี และฐานลูกค้าขยายตัว
+                            </p>
+                        </div>
+                        <div class="card" style="padding: 14px; border-left: 4px solid var(--accent);">
+                            <h4 style="color: var(--accent); font-size: 0.98rem; margin-bottom: 6px;">
+                                <i class="fas fa-arrow-trend-down"></i> 2. แนวโน้มขาลง (Downtrend)
+                            </h4>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.4;">
+                                ยอดขายค่อย ๆ ซึมลง บ่งบอกถึงคู่แข่งแย่งตลาด สินค้าเริ่มล้าสมัย หรือลูกค้าไม่กลับมาซื้อซ้ำ
+                            </p>
+                        </div>
+                        <div class="card" style="padding: 14px; border-left: 4px solid var(--text-muted);">
+                            <h4 style="color: var(--text-sub); font-size: 0.98rem; margin-bottom: 6px;">
+                                <i class="fas fa-arrows-left-right"></i> 3. แนวโน้มทรงตัว (Flat)
+                            </h4>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.4;">
+                                ยอดขายคงที่สม่ำเสมอ เป็นธุรกิจที่อิ่มตัว (Matured) เหมาะกับการเน้นบริหารต้นทุนและรักษากำไร
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="card" style="padding: 12px 16px; margin-top: 8px; background: #f8fafc;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <i class="fas fa-wave-square" style="color: var(--secondary); font-size: 1.3rem;"></i>
+                            <div style="font-size: 0.85rem; color: var(--text-sub);">
+                                <strong>เทคนิคสกัด Trend:</strong> ใช้ <strong>Moving Average (ค่าเฉลี่ยเคลื่อนที่ 7 วัน หรือ 30 วัน)</strong> เพื่อตัดคลื่นความผันผวนรายวันทิ้งไป ช่วยให้เห็นทิศทางที่แท้จริงของธุรกิจได้อย่างชัดเจน
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 15 Notes]:
+                    - นิยาม Trend: ขาขึ้น ขาลง ทรงตัว
+                    - อธิบาย Moving Average เบื้องต้น
+                </aside>
+            </section>
+
+            <!-- SLIDE 16: Decoding Seasonality: The Repeating Cycles -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-calendar-days" style="color: var(--accent-warm);"></i> ถอดรหัสรอบฤดูกาล (Decoding Seasonality)</h2>
+                        <span class="subtitle">Seasonality คือความผันผวนที่เกิดขึ้นซ้ำ ๆ ตามรอบเวลาที่คาดการณ์ล่วงหน้าได้</span>
+                    </div>
+                    <span class="badge-step warm"><i class="fas fa-repeat"></i> Seasonality</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-3" style="gap: 12px;">
+                        <div class="card" style="padding: 14px; border-top: 3px solid var(--secondary);">
+                            <div class="card-header-sm">
+                                <i class="fas fa-calendar-week" style="color: var(--secondary);"></i>
+                                <h4 style="font-size: 0.95rem;">1. รอบสัปดาห์ (Weekly)</h4>
+                            </div>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.4;">
+                                ยอดขายเสาร์-อาทิตย์พุ่งสูง ขณะที่วันจันทร์-อังคารเงียบเหงา พบได้บ่อยในร้านอาหาร คาเฟ่ และสถานที่ท่องเที่ยว
+                            </p>
+                        </div>
+                        <div class="card" style="padding: 14px; border-top: 3px solid var(--accent);">
+                            <div class="card-header-sm">
+                                <i class="fas fa-money-bill-wave" style="color: var(--accent);"></i>
+                                <h4 style="font-size: 0.95rem;">2. รอบเดือน (Payday Cycle)</h4>
+                            </div>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.4;">
+                                ยอดขายจะพุ่งกระฉูดช่วงวันที่ 28 ถึงวันที่ 3 ของทุกเดือน เพราะเป็นช่วงที่มนุษย์เงินเดือนได้รับค่าจ้าง
+                            </p>
+                        </div>
+                        <div class="card" style="padding: 14px; border-top: 3px solid var(--success);">
+                            <div class="card-header-sm">
+                                <i class="fas fa-cloud-sun" style="color: var(--success);"></i>
+                                <h4 style="font-size: 0.95rem;">3. รอบปี (Annual / Weather)</h4>
+                            </div>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.4;">
+                                หน้าหนาวขายเสื้อกันหนาว หน้าร้อนขายน้ำปั่น/เครื่องปรับอากาศ เทศกาลปีใหม่ขายกระเช้าของขวัญ
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="callout-box warning" style="margin-top: 8px; padding: 10px 16px;">
+                        <i class="fas fa-bullhorn" style="color: var(--accent-warm); font-size: 1.3rem;"></i>
+                        <span style="font-size: 0.88rem; color: var(--text-main);">
+                            <strong>ทำไมเจ้าของธุรกิจต้องรู้ Seasonality?</strong> เพื่อจะได้ไม่ตกใจเมื่อยอดขายตกในวันธรรมดา และไม่ประมาทหลงคิดว่าธุรกิจโตถาวรในสัปดาห์เงินเดือนออก!
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 16 Notes]:
+                    - นิยาม Seasonality: รอบเวลาที่เกิดขึ้นซ้ำสม่ำเสมอ
+                    - เชื่อมกับ Quiz ข้อ 7
+                </aside>
+            </section>
+
+            <!-- SLIDE 17: Seasonality Pattern 1: Day-of-Week Effect -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-calendar-check" style="color: var(--primary);"></i> Seasonality 1: รอบวันในสัปดาห์ (Day-of-Week Effect)</h2>
+                        <span class="subtitle">ร้านชื่นใจ: วันเสาร์-อาทิตย์หน้าร้านทะลุ 28,000+ บาท แต่วันจันทร์เหลือ 8,900 บาท!</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-users"></i> Weekend Peak</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2" style="gap: 14px;">
+                        <div class="card" style="padding: 14px;">
+                            <h4 style="font-size: 0.98rem; color: var(--primary); margin-bottom: 8px;">
+                                <i class="fas fa-store"></i> พฤติกรรมหน้าร้าน (Dine-in)
+                            </h4>
+                            <div style="font-size: 0.84rem; color: var(--text-sub); line-height: 1.45;">
+                                <p style="margin-bottom: 6px;">
+                                    • <strong>เสาร์ 18 &amp; 25 พ.ค.:</strong> ยอดพุ่ง 28,400 และ 29,500 บาท ลูกค้ากลุ่มครอบครัวและวัยรุ่นมานั่งทานที่ร้าน
+                                </p>
+                                <p style="margin-bottom: 6px;">
+                                    • <strong>จันทร์ 20 &amp; 27 พ.ค.:</strong> ยอดลดเหลือ 11,200 และ 8,900 บาท คนกลับไปทำงานประจำ
+                                </p>
+                                <p style="color: var(--secondary); font-weight: 600;">
+                                    &rarr; ผลต่างระหว่างสุดสัปดาห์กับต้นสัปดาห์สูงถึง 3 เท่าตัว!
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="card" style="padding: 14px; background: #eef2ff; border: 1px solid #c7d2fe;">
+                            <h4 style="font-size: 0.98rem; color: var(--primary-dark); margin-bottom: 6px;">
+                                <i class="fas fa-user-gear"></i> การปรับการดำเนินงาน (Operations)
+                            </h4>
+                            <div style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.4;">
+                                <div style="margin-bottom: 6px;">
+                                    <strong>1. จัดเวรพนักงาน (Rostering):</strong><br />
+                                    จัดพนักงานเต็มอัตรา (4 คน) ในวันเสาร์-อาทิตย์ และให้สลับหยุดในวันจันทร์-อังคาร (เหลือ 2 คน)
+                                </div>
+                                <div>
+                                    <strong>2. สต็อกผลไม้สด (Inventory):</strong><br />
+                                    สั่งอาซาอิและมะม่วงสุกเข้าสต็อกในวันศุกร์เย็น เพื่อให้สดใหม่และเพียงพอรับรอบพีค
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="callout-box success" style="margin-top: 8px; padding: 10px 16px;">
+                        <i class="fas fa-check" style="color: var(--success); font-size: 1.3rem;"></i>
+                        <span style="font-size: 0.88rem; color: var(--text-main);">
+                            <strong>Insight สรุป:</strong> เมื่อเข้าใจ Day-of-Week Seasonality ร้านจะไม่เสียค่าแรงพนักงานฟรีในวันเงียบ และจะไม่เกิดปัญหาสินค้าหมดในวันคนแน่น!
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 17 Notes]:
+                    - เจาะเคสวันธรรมดา vs เสาร์อาทิตย์
+                    - การแปลงเป็นแผนจัดกะพนักงาน
+                </aside>
+            </section>
+
+            <!-- SLIDE 18: Seasonality Pattern 2: Payday Surge & Weather Shock -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-bolt-lightning" style="color: var(--accent);"></i> Seasonality 2: คลื่นเงินเดือนออก &amp; ปรากฏการณ์ช็อก</h2>
+                        <span class="subtitle">รอบเวลาสิ้นเดือน (Payday Surge) ปะทะ สภาพอากาศผันผวน (Weather Shock)</span>
+                    </div>
+                    <span class="badge-step accent"><i class="fas fa-fire"></i> Payday &amp; Weather</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2" style="gap: 14px;">
+                        <div class="card" style="padding: 14px;">
+                            <h4 style="font-size: 0.98rem; color: var(--success); margin-bottom: 8px;">
+                                <i class="fas fa-money-check-dollar"></i> 1. Payday Surge (28-29 พ.ค.)
+                            </h4>
+                            <div style="font-size: 0.84rem; color: var(--text-sub); line-height: 1.45;">
+                                <p style="margin-bottom: 6px;">
+                                    • ยอดรวมทะยานสู่ 48,200 และ 54,900 บาทต่อวัน (สูงสุดในรอบเดือน!)
+                                </p>
+                                <p style="margin-bottom: 6px;">
+                                    • ลูกค้ามีกำลังซื้อสูงขึ้น ยินดีสั่งเมนูพรีเมียม (Acai Bowl Extra Topping)
+                                </p>
+                                <p style="color: var(--success); font-weight: 600;">
+                                    &rarr; ต้องเตรียมสต็อกวัตถุดิบพรีเมียมล่วงหน้า 2 วัน
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="card" style="padding: 14px; background: #fefce8; border: 1px solid #fef08a;">
+                            <h4 style="font-size: 0.98rem; color: #854d0e; margin-bottom: 6px;">
+                                <i class="fas fa-cloud-bolt"></i> 2. Weather Shock (22 พ.ค.)
+                            </h4>
+                            <div style="font-size: 0.84rem; color: var(--text-sub); line-height: 1.45;">
+                                <p style="margin-bottom: 6px;">
+                                    • พายุเข้า ฝนกระหน่ำ 48 มม. ทำให้พฤติกรรมลูกค้าบิดเบือนทันที
+                                </p>
+                                <p style="margin-bottom: 6px;">
+                                    • ยอดหน้าร้านเหลือ 4,200 บาท แต่เดลิเวอรีพุ่ง 28,400 บาท
+                                </p>
+                                <p style="color: #b45309; font-weight: 600;">
+                                    &rarr; นี่คือ "Shock Event" ไม่ใช่แนวโน้มถาวร ห้ามด่วนสรุปปิดหน้าร้าน
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="callout-box warning" style="margin-top: 8px; padding: 10px 16px;">
+                        <i class="fas fa-triangle-exclamation" style="color: var(--accent-warm); font-size: 1.3rem;"></i>
+                        <span style="font-size: 0.88rem; color: var(--text-main);">
+                            <strong>กฎแยกแยะ:</strong> อย่าสับสนระหว่าง <strong>"Shock ชั่วคราว"</strong> (เช่น ฝนตกวันเดียว) กับ <strong>"Trend ขาลงจริง"</strong> เจ้าของธุรกิจที่ดีต้องนิ่งพอที่จะดูข้อมูลข้ามสัปดาห์
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 18 Notes]:
+                    - แยกแยะ Payday Surge กับ Weather Shock
+                    - เชื่อมกับ Workshop ข้อ 3.2
+                </aside>
+            </section>
+
+            <!-- SLIDE 19: Distinguishing Trend vs Seasonality in Business -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-scale-balanced" style="color: var(--primary);"></i> สรุปเปรียบเทียบ: Trend vs Seasonality</h2>
+                        <span class="subtitle">ตารางเปรียบเทียบความแตกต่างเพื่อการวางแผนเชิงกลยุทธ์ของเจ้าของธุรกิจ</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-table-columns"></i> Comparison</span>
+                </div>
+                <div class="slide-body">
+                    <table class="data-table-sm" style="margin-bottom: 8px;">
+                        <thead>
+                            <tr>
+                                <th style="width: 22%;">มิติการเปรียบเทียบ</th>
+                                <th style="width: 39%;">แนวโน้มระยะยาว (Trend)</th>
+                                <th style="width: 39%;">รอบเวลาฤดูกาล (Seasonality)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>นิยามหลัก</strong></td>
+                                <td>ทิศทางภาพรวมระยะยาว (ปีต่อปี / ไตรมาส)</td>
+                                <td>ความผันผวนที่เกิดขึ้นซ้ำสม่ำเสมอตามรอบเวลา</td>
+                            </tr>
+                            <tr>
+                                <td><strong>รูปแบบตัวเลข</strong></td>
+                                <td>เส้นตรงหรือเส้นโค้งชี้ขึ้น/ลง ต่อเนื่อง</td>
+                                <td>กราฟรูปคลื่น (Wave) ขึ้นๆ ลงๆ เป็นจังหวะ</td>
+                            </tr>
+                            <tr>
+                                <td><strong>ตัวอย่างธุรกิจ</strong></td>
+                                <td>ยอดขายร้านโตเฉลี่ย 15% ต่อปีตลอด 3 ปี</td>
+                                <td>วันเสาร์ยอดพุ่ง, วันจันทร์ยอดตก, สิ้นเดือนเงินเดือนออก</td>
+                            </tr>
+                            <tr>
+                                <td><strong>การตัดสินใจผู้บริหาร</strong></td>
+                                <td>ขยายสาขา, ซื้อเครื่องจักรใหม่, เพิ่มกำลังผลิต</td>
+                                <td>จัดเวรพนักงานกะสัปดาห์, สต็อกของรายวัน, ยิงแคมเปญสั้น</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="callout-box info" style="padding: 10px 16px;">
+                        <i class="fas fa-lightbulb" style="color: var(--secondary); font-size: 1.3rem;"></i>
+                        <span style="font-size: 0.88rem; color: var(--text-main);">
+                            <strong>Core Formula:</strong> ข้อมูลยอดขายจริง = <strong>Trend</strong> (ทิศทางโต) + <strong>Seasonality</strong> (รอบฤดูกาล) + <strong>Noise</strong> (ความบังเอิญ/ฟ้าฝน) การวิเคราะห์ที่ดีคือการแกะ 3 ส่วนนี้ออกจากกัน
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 19 Notes]:
+                    - สรุปเปรียบเทียบ Trend vs Seasonality
+                    - เชื่อมกับคำถามข้อ 7 ใน Quiz
+                </aside>
+            </section>
+
+            <!-- SLIDE 20: Gemini as Your Pattern & Correlation Detective -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-robot" style="color: var(--primary);"></i> Gemini: นักสืบคลิกเดียวค้นหา Correlation</h2>
+                        <span class="subtitle">ใช้ AI ช่วยสแกนจับ Pattern และความสัมพันธ์ที่ตามนุษย์อาจมองข้ามในตารางข้อมูลขนาดใหญ่</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-microchip"></i> AI Detective</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-3" style="gap: 12px;">
+                        <div class="card" style="padding: 14px; border-top: 3px solid var(--primary);">
+                            <div class="card-header-sm">
+                                <i class="fas fa-magnifying-glass-chart" style="color: var(--primary);"></i>
+                                <h4 style="font-size: 0.95rem;">1. ตรวจจับหลายคู่พร้อมกัน</h4>
+                            </div>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.4;">
+                                ให้ Gemini สแกนตัวแปรทั้ง 8 คอลัมน์พร้อมกัน และจัดอันดับคู่ที่มีความสัมพันธ์สูงสุด 3 อันดับแรกในพริบตา
+                            </p>
+                        </div>
+                        <div class="card" style="padding: 14px; border-top: 3px solid var(--accent-warm);">
+                            <div class="card-header-sm">
+                                <i class="fas fa-calendar-check" style="color: var(--accent-warm);"></i>
+                                <h4 style="font-size: 0.95rem;">2. ดึงรอบเวลา Seasonality</h4>
+                            </div>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.4;">
+                                AI สามารถอ่านวันที่และระบุได้ทันทีว่า วันสุดสัปดาห์หรือช่วงสิ้นเดือนยอดขายพุ่งขึ้นกี่เปอร์เซ็นต์
+                            </p>
+                        </div>
+                        <div class="card" style="padding: 14px; border-top: 3px solid var(--accent);">
+                            <div class="card-header-sm">
+                                <i class="fas fa-shield-virus" style="color: var(--accent);"></i>
+                                <h4 style="font-size: 0.95rem;">3. เตือน Confounder</h4>
+                            </div>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.4;">
+                                สั่งให้ AI ตรวจสอบว่าความสัมพันธ์ที่พบเป็น Spurious หรือมีตัวแปรแอบแฝงอยู่เบื้องหลังหรือไม่
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="callout-box warning" style="margin-top: 8px; padding: 10px 16px;">
+                        <i class="fas fa-triangle-exclamation" style="color: var(--accent-warm); font-size: 1.3rem;"></i>
+                        <span style="font-size: 0.88rem; color: var(--text-main);">
+                            <strong>กฎเหล็กการใช้ AI:</strong> AI อาจให้คำตอบที่ฟังดูฉลาดมาก แต่เรา <strong>ต้องตรวจสอบตัวเลข Pearson r จริงใน Google Sheets เสมอ</strong> เพื่อป้องกัน AI มโนตัวเลข (Hallucination)!
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 20 Notes]:
+                    - แนะนำบทบาท Gemini เป็นผู้ช่วยค้นหาแพทเทิร์น
+                    - ย้ำเรื่อง Fact-checking ตรวจสอบกับ Sheets
+                </aside>
+            </section>
+
+            <!-- SLIDE 21: Master Prompt Template: C-R-O-D-A for Correlation & Trend Analysis -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-terminal" style="color: var(--primary);"></i> แม่แบบ Master Prompt: C-R-O-D-A เจาะลึกความสัมพันธ์</h2>
+                        <span class="subtitle">โครงสร้างคำสั่งมาตรฐานระดับมืออาชีพสำหรับสั่ง Gemini วิเคราะห์ Correlation &amp; Trend</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-keyboard"></i> Prompt Template</span>
+                </div>
+                <div class="slide-body">
+                    <div class="code-box" style="font-size: 0.78rem; line-height: 1.42; margin-bottom: 8px;">
+                        <span style="color: #f43f5e;"># [C - Context &amp; Role]:</span> คุณคือผู้เชี่ยวชาญด้าน Data Science ที่ปรึกษาธุรกิจร้านอาหารและเครื่องดื่ม<br />
+                        <span style="color: #38bdf8;"># [O - Objective]:</span> ช่วยวิเคราะห์ตารางข้อมูล 14 วันล่าสุดของร้าน "ชื่นใจ สมูทตี้บาร์" เพื่อค้นหา:<br />
+                        &nbsp;&nbsp;1) คู่ตัวแปรที่มี Correlation เชิงบวกและเชิงลบสูง พร้อมประเมินค่าความแรง<br />
+                        &nbsp;&nbsp;2) รอบเวลา Seasonality (วันในสัปดาห์ / สิ้นเดือน) และผลกระทบจากสภาพอากาศ<br />
+                        &nbsp;&nbsp;3) ตรวจสอบว่ามีความสัมพันธ์ลวงตา (Spurious) หรือ Confounding Variable หรือไม่<br />
+                        <span style="color: #a78bfa;"># [D - Data]:</span> [แนบตารางข้อมูล 14 วัน: ยอดหน้าร้าน, เดลิเวอรี, งบแอด, อุณหภูมิ, ฝนตก, ค่าไฟ]<br />
+                        <span style="color: #4ade80;"># [A - Action &amp; Output]:</span> สรุปผลเป็นตาราง 3 คู่ตัวแปร พร้อมระบุ Action Plan 3 ข้อสำหรับผู้บริหาร
+                    </div>
+
+                    <div class="callout-box info" style="padding: 8px 14px;">
+                        <i class="fas fa-magic" style="color: var(--secondary); font-size: 1.2rem;"></i>
+                        <span style="font-size: 0.85rem; color: var(--text-main);">
+                            <strong>เทคนิคเสริม:</strong> ระบุให้ AI แยกแยะผลลัพธ์เป็น <em>"ความสัมพันธ์ที่นำไปปฏิบัติได้จริง (Actionable)"</em> กับ <em>"ตัวแปรที่ควรตัดทิ้ง (Prune)"</em> เพื่อประหยัดเวลาอ่านของผู้บริหาร
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 21 Notes]:
+                    - แจก Prompt C-R-O-D-A สำหรับให้นักศึกษาใช้ใน Workshop Mission 1
+                </aside>
+            </section>
+
+            <!-- SLIDE 22: Live AI Analysis Demo: "ชื่นใจ สมูทตี้บาร์" -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-desktop" style="color: var(--primary);"></i> ตัวอย่างผลลัพธ์จาก Gemini Advanced</h2>
+                        <span class="subtitle">การสกัด Insight และ Pattern อัตโนมัติจากตารางข้อมูล 14 วันของร้านชื่นใจ</span>
+                    </div>
+                    <span class="badge-step success"><i class="fas fa-check"></i> AI Output</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2" style="gap: 14px;">
+                        <div class="card" style="padding: 14px;">
+                            <h4 style="font-size: 0.95rem; color: var(--primary); margin-bottom: 6px;">
+                                <i class="fas fa-list-check"></i> สิ่งที่ Gemini ค้นพบใน 5 วินาที
+                            </h4>
+                            <div style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.4;">
+                                <p style="margin-bottom: 6px;">
+                                    <strong>1. High Positive (+):</strong> งบแอด TikTok สัมพันธ์กับยอดเดลิเวอรีสูงมาก ยิงแอดเพิ่มยอดพุ่งชัดเจน
+                                </p>
+                                <p style="margin-bottom: 6px;">
+                                    <strong>2. High Negative (-):</strong> ปริมาณฝนตกสัมพันธ์เชิงลบกับยอดหน้าร้านอย่างรุนแรง
+                                </p>
+                                <p style="margin-bottom: 6px;">
+                                    <strong>3. Seasonality Spike:</strong> สังเกตเห็นยอดพุ่ง 28-29 พ.ค. เป็น Payday Effect ชัดเจน
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="card" style="padding: 14px; background: #faf5ff; border: 1px solid #d8b4fe;">
+                            <h4 style="font-size: 0.95rem; color: var(--purple); margin-bottom: 6px;">
+                                <i class="fas fa-triangle-exclamation" style="color: var(--accent);"></i> จุดเตือนภัยที่ AI ชี้ให้เห็น
+                            </h4>
+                            <div style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.4;">
+                                <p style="margin-bottom: 6px;">
+                                    <strong>เตือนเรื่องค่าไฟ vs ยอดขาย:</strong> AI สังเกตว่าค่าไฟสัมพันธ์กับยอดขายรวม แต่เตือนผู้บริหารว่าอย่าหลงกลเปิดแอร์ทิ้งไว้ เพราะอากาศร้อนจัดคือ Confounder
+                                </p>
+                                <p style="color: var(--success); font-weight: 700;">
+                                    AI ที่ดีไม่ใช่แค่คำนวณตัวเลข แต่ต้องสามารถ "เตือนหลุมพรางทางความคิด" ให้กับมนุษย์ได้ด้วย!
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="callout-box success" style="margin-top: 8px; padding: 10px 16px;">
+                        <i class="fas fa-handshake" style="color: var(--success); font-size: 1.3rem;"></i>
+                        <span style="font-size: 0.88rem; color: var(--text-main);">
+                            <strong>Human + AI Collaboration:</strong> ให้ Gemini ทำหน้าที่เป็น <em>"นักสืบร่างแรก"</em> แล้วให้เราซึ่งเป็นเจ้าของธุรกิจทำหน้าที่ <em>"ตรวจสอบข้อเท็จจริงและตัดสินใจขั้นสุดท้าย"</em>
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 22 Notes]:
+                    - สาธิตผลลัพธ์ที่ได้จากการรัน Prompt
+                </aside>
+            </section>
+
+            <!-- SLIDE 23: Critical AI Fact-Checking: Trap Detection in AI Output -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-shield-halved" style="color: var(--accent);"></i> Fact-Checking: ตรวจสอบความถูกต้องของ AI</h2>
+                        <span class="subtitle">3 ด่านตรวจก่อนนำผลลัพธ์จาก AI ไปใช้ตัดสินใจลงทุนในธุรกิจจริง</span>
+                    </div>
+                    <span class="badge-step accent"><i class="fas fa-clipboard-check"></i> Audit</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-3" style="gap: 12px;">
+                        <div class="card" style="padding: 14px; border-top: 3px solid var(--accent);">
+                            <div class="card-header-sm">
+                                <i class="fas fa-calculator" style="color: var(--accent);"></i>
+                                <h4 style="font-size: 0.95rem;">1. ตรวจสูตรคำนวณ</h4>
+                            </div>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.4;">
+                                AI อาจประเมินค่า r ผิดเพี้ยน ต้องเขียนสูตร =CORREL() ใน Google Sheets เพื่อยืนยันทศนิยมจริงเสมอ
+                            </p>
+                        </div>
+                        <div class="card" style="padding: 14px; border-top: 3px solid var(--accent-warm);">
+                            <div class="card-header-sm">
+                                <i class="fas fa-eye" style="color: var(--accent-warm);"></i>
+                                <h4 style="font-size: 0.95rem;">2. ส่อง Scatter Plot</h4>
+                            </div>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.4;">
+                                พล็อตจุดจริงดูด้วยตาเปล่า ตรวจสอบว่ามี Outlier ผิดปกติที่ดึงค่า r ให้สูงเกินจริงหรือไม่
+                            </p>
+                        </div>
+                        <div class="card" style="padding: 14px; border-top: 3px solid var(--primary);">
+                            <div class="card-header-sm">
+                                <i class="fas fa-brain" style="color: var(--primary);"></i>
+                                <h4 style="font-size: 0.95rem;">3. ตรวจความสมเหตุผล</h4>
+                            </div>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.4;">
+                                ใช้ Common Sense ทางธุรกิจ: ตัวแปรสองตัวนี้มีกลไกความเป็นเหตุผลเชื่อมโยงกันจริงหรือไม่
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="callout-box warning" style="margin-top: 8px; padding: 10px 16px;">
+                        <i class="fas fa-triangle-exclamation" style="color: var(--accent-warm); font-size: 1.3rem;"></i>
+                        <span style="font-size: 0.88rem; color: var(--text-main);">
+                            <strong>คำเตือน:</strong> หากนำตัวเลขที่ AI มโนไปยื่นของบจากคณะกรรมการบริหาร คุณจะเสียความน่าเชื่อถือทันที การตรวจสอบตัวเลขจริงในสเปรดชีตคือเกราะคุ้มกันที่ดีที่สุด
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 23 Notes]:
+                    - 3 ด่านตรวจเช็ก AI
+                    - ป้องกันการหลงเชื่อ AI แบบไม่ลืมหูลืมตา
+                </aside>
+            </section>
+
+            <!-- SLIDE 24: Spreadsheet Lab: The =CORREL() Function -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-file-excel" style="color: var(--success);"></i> Spreadsheet Lab: ฟังก์ชัน =CORREL() ใน Google Sheets</h2>
+                        <span class="subtitle">คำนวณค่าสัมประสิทธิ์สหสัมพันธ์ Pearson ได้แม่นยำในคลิกเดียว</span>
+                    </div>
+                    <span class="badge-step success"><i class="fas fa-calculator"></i> =CORREL()</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2" style="gap: 14px;">
+                        <div class="card" style="padding: 14px;">
+                            <h4 style="font-size: 0.98rem; color: var(--success); margin-bottom: 8px;">
+                                <i class="fas fa-code"></i> ไวยากรณ์มาตรฐาน (Syntax)
+                            </h4>
+                            <div class="code-box" style="margin-bottom: 8px; font-size: 0.85rem;">
+                                =CORREL(data_y, data_x)
+                            </div>
+                            <div style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.4;">
+                                <p style="margin-bottom: 4px;"><strong>ตัวอย่างจริงร้านชื่นใจ:</strong></p>
+                                <p style="margin-bottom: 4px;">• <code>=CORREL(E2:E15, D2:D15)</code> &rarr; ได้ค่า <strong>+0.87</strong> (งบแอด vs ยอดเดลิเวอรี)</p>
+                                <p style="margin-bottom: 4px;">• <code>=CORREL(G2:G15, C2:C15)</code> &rarr; ได้ค่า <strong>-0.76</strong> (น้ำฝน vs ยอดหน้าร้าน)</p>
+                            </div>
+                        </div>
+
+                        <div class="card" style="padding: 14px; background: #fff1f2; border: 1px solid #fecdd3;">
+                            <h4 style="font-size: 0.98rem; color: #9f1239; margin-bottom: 6px;">
+                                <i class="fas fa-triangle-exclamation"></i> 3 กฎเหล็กของสูตร =CORREL()
+                            </h4>
+                            <div style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.4;">
+                                <p style="margin-bottom: 6px;">
+                                    <strong>1. ขนาด Range ต้องเท่ากันเป๊ะ:</strong><br />
+                                    ถ้าเลือก E2:E15 กับ D2:D14 จะขึ้น Error <code>#N/A</code> ทันที!
+                                </p>
+                                <p style="margin-bottom: 6px;">
+                                    <strong>2. ต้องเป็นข้อมูลตัวเลขเท่านั้น:</strong><br />
+                                    ห้ามมีตัวหนังสือหรือข้อความว่างปนในช่องคำนวณ
+                                </p>
+                                <p>
+                                    <strong>3. สลับลำดับคอลัมน์ได้:</strong><br />
+                                    <code>=CORREL(X, Y)</code> มีค่าเท่ากับ <code>=CORREL(Y, X)</code> เสมอ
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="callout-box info" style="margin-top: 8px; padding: 10px 16px;">
+                        <i class="fas fa-check-circle" style="color: var(--secondary); font-size: 1.3rem;"></i>
+                        <span style="font-size: 0.88rem; color: var(--text-main);">
+                            <strong>เทคนิค:</strong> ใช้การพิมพ์ <code>=ROUND(CORREL(...), 2)</code> เพื่อปัดเศษทศนิยมเหลือ 2 ตำแหน่งให้อ่านง่ายสำหรับผู้บริหาร
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 24 Notes]:
+                    - การเขียนสูตร =CORREL()
+                    - กฎเหล็ก Range ต้องเท่ากันเป๊ะ (Quiz ข้อ 8)
+                </aside>
+            </section>
+
+            <!-- SLIDE 25: Spreadsheet Lab: Scatter Plot, Trendline & R² -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-chart-line" style="color: var(--primary);"></i> Spreadsheet Lab: Scatter Plot, Trendline &amp; R&sup2;</h2>
+                        <span class="subtitle">สร้างกราฟกระจาย เปิดเส้นแนวโน้ม และอ่านค่าสัมประสิทธิ์การตัดสินใจ (R-Squared)</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-chart-scatter"></i> R-Squared</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2" style="gap: 14px;">
+                        <div class="card" style="padding: 14px;">
+                            <h4 style="font-size: 0.98rem; color: var(--primary); margin-bottom: 8px;">
+                                <i class="fas fa-sliders"></i> 3 ขั้นตอนเปิด Trendline ใน Sheets
+                            </h4>
+                            <div style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.45;">
+                                <p style="margin-bottom: 6px;">
+                                    1. คลุมข้อมูล 2 คอลัมน์ &rarr; แทรกแผนภูมิ &rarr; เลือก <strong>แผนภูมิแบบกระจาย (Scatter Chart)</strong>
+                                </p>
+                                <p style="margin-bottom: 6px;">
+                                    2. ไปที่แท็บ <strong>ปรับแต่ง (Customize) &rarr; ชุดข้อมูล (Series)</strong>
+                                </p>
+                                <p style="margin-bottom: 6px;">
+                                    3. ติ๊กถูกที่ช่อง <strong>"เส้นแนวโน้ม" (Trendline)</strong> และติ๊กเลือก <strong>"แสดง R&sup2;" (Show R&sup2;)</strong>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="card" style="padding: 14px; background: #f0fdf4; border: 1px solid #bbf7d0;">
+                            <h4 style="font-size: 0.98rem; color: #166534; margin-bottom: 6px;">
+                                <i class="fas fa-percent"></i> ความหมายทางธุรกิจของค่า R&sup2;
+                            </h4>
+                            <div style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.45;">
+                                <div style="font-size: 1.2rem; font-weight: 800; color: #166534; margin-bottom: 4px;">
+                                    R&sup2; = 0.758 (หรือ 75.8%)
+                                </div>
+                                <p style="margin-bottom: 6px;">
+                                    • <strong>ความหมาย:</strong> 75.8% ของความผันผวนของยอดขายเดลิเวอรี สามารถอธิบายได้ด้วยการเปลี่ยนแปลงของงบโฆษณา TikTok
+                                </p>
+                                <p>
+                                    • อีก 24.2% ที่เหลือเกิดจากปัจจัยอื่น (เช่น วันหยุด หรือโปรโมชัน)
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="callout-box success" style="margin-top: 8px; padding: 10px 16px;">
+                        <i class="fas fa-award" style="color: var(--success); font-size: 1.3rem;"></i>
+                        <span style="font-size: 0.88rem; color: var(--text-main);">
+                            <strong>Executive Takeaway:</strong> ค่า $R^2$ ยิ่งเข้าใกล้ 1.00 (หรือ 100%) แปลว่าตัวแปรต้นสามารถอธิบายผลลัพธ์ได้อย่างแม่นยำมาก หาก $R^2 \ge 0.70$ ผู้บริหารมั่นใจได้ในการตัดสินใจลงทุน!
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 25 Notes]:
+                    - การเปิด Trendline และค่า R-squared
+                    - ตีความหมายของ R² (Quiz ข้อ 9)
+                </aside>
+            </section>
+
+            <!-- SLIDE 26: Building a Correlation Matrix in Google Sheets -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-table-cells" style="color: var(--primary);"></i> ตารางเมทริกซ์สหสัมพันธ์ (Correlation Matrix)</h2>
+                        <span class="subtitle">การมองภาพรวมความสัมพันธ์ของทุกตัวแปรในธุรกิจพร้อมกันในตารางเดียว</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-grip"></i> Matrix</span>
+                </div>
+                <div class="slide-body">
+                    <table class="data-table-sm" style="margin-bottom: 8px; font-size: 0.8rem;">
+                        <thead>
+                            <tr>
+                                <th>ตัวแปร</th>
+                                <th>หน้าร้าน</th>
+                                <th>เดลิเวอรี</th>
+                                <th>งบแอด</th>
+                                <th>อุณหภูมิ</th>
+                                <th>น้ำฝน</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>หน้าร้าน</strong></td>
+                                <td style="background: #e2e8f0; font-weight: 700;">1.00</td>
+                                <td>-0.28</td>
+                                <td>-0.12</td>
+                                <td class="stat-pos">+0.68</td>
+                                <td class="stat-neg">-0.76</td>
+                            </tr>
+                            <tr>
+                                <td><strong>เดลิเวอรี</strong></td>
+                                <td>-0.28</td>
+                                <td style="background: #e2e8f0; font-weight: 700;">1.00</td>
+                                <td class="stat-pos">+0.87</td>
+                                <td class="stat-pos">+0.54</td>
+                                <td class="stat-pos">+0.62</td>
+                            </tr>
+                            <tr>
+                                <td><strong>งบแอด</strong></td>
+                                <td>-0.12</td>
+                                <td class="stat-pos">+0.87</td>
+                                <td style="background: #e2e8f0; font-weight: 700;">1.00</td>
+                                <td>+0.41</td>
+                                <td>+0.35</td>
+                            </tr>
+                            <tr>
+                                <td><strong>อุณหภูมิ</strong></td>
+                                <td class="stat-pos">+0.68</td>
+                                <td class="stat-pos">+0.54</td>
+                                <td>+0.41</td>
+                                <td style="background: #e2e8f0; font-weight: 700;">1.00</td>
+                                <td>-0.45</td>
+                            </tr>
+                            <tr>
+                                <td><strong>น้ำฝน</strong></td>
+                                <td class="stat-neg">-0.76</td>
+                                <td class="stat-pos">+0.62</td>
+                                <td>+0.35</td>
+                                <td>-0.45</td>
+                                <td style="background: #e2e8f0; font-weight: 700;">1.00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="callout-box info" style="padding: 10px 16px;">
+                        <i class="fas fa-palette" style="color: var(--secondary); font-size: 1.3rem;"></i>
+                        <span style="font-size: 0.88rem; color: var(--text-main);">
+                            <strong>เทคนิคตกแต่งระดับมืออาชีพ:</strong> ใช้ <strong>Conditional Formatting (แถบสี Color Scale)</strong> สีเขียวสำหรับค่าบวกสูง และสีแดงสำหรับค่าลบสูง ช่วยให้ผู้บริหารกวาดสายตามองเห็นจุดยุทธศาสตร์ของธุรกิจได้ใน 2 วินาที!
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 26 Notes]:
+                    - แนะนำ Correlation Matrix
+                    - การใช้ Conditional Formatting ดู Heatmap
+                </aside>
+            </section>
+
+            <!-- SLIDE 27: Executive Decision Matrix: From Correlation to Business Action -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-cubes-stacked" style="color: var(--primary);"></i> Executive Decision Matrix: แปลงสถิติสู่แอ็กชัน</h2>
+                        <span class="subtitle">กรอบคิด 4 ช่องในการตัดสินใจบริหารงบประมาณและทรัพยากรตามค่า Correlation</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-bullseye"></i> Decision Matrix</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2" style="gap: 12px;">
+                        <div class="card" style="padding: 12px; border-left: 4px solid var(--success); background: #f0fdf4;">
+                            <h4 style="font-size: 0.92rem; color: #166534; margin-bottom: 4px;">
+                                <i class="fas fa-rocket"></i> 1. Strong Positive (r &ge; +0.70) &rarr; "Double Down"
+                            </h4>
+                            <p style="font-size: 0.8rem; color: var(--text-sub); line-height: 1.35;">
+                                <strong>ทุ่มงบไม่อั้น:</strong> เมื่อพิสูจน์แล้วว่างบแอด TikTok ดันยอดเดลิเวอรีได้จริง ให้จัดสรรงบเพิ่มและขยายเพดานแคมเปญ
+                            </p>
+                        </div>
+                        <div class="card" style="padding: 12px; border-left: 4px solid var(--accent); background: #fef2f2;">
+                            <h4 style="font-size: 0.92rem; color: #991b1b; margin-bottom: 4px;">
+                                <i class="fas fa-shield-halved"></i> 2. Strong Negative (r &le; -0.70) &rarr; "Hedge Risk"
+                            </h4>
+                            <p style="font-size: 0.8rem; color: var(--text-sub); line-height: 1.35;">
+                                <strong>สร้างระบบป้องกัน:</strong> เมื่อรู้ว่าฝนตกแล้วหน้าร้านตกฮวบ ให้เตรียมยิงโปรเดลิเวอรีมาชดเชยทันที
+                            </p>
+                        </div>
+                        <div class="card" style="padding: 12px; border-left: 4px solid var(--text-muted); background: #f8fafc;">
+                            <h4 style="font-size: 0.92rem; color: var(--text-sub); margin-bottom: 4px;">
+                                <i class="fas fa-scissors"></i> 3. Near Zero (r &approx; 0) &rarr; "Prune &amp; Stop"
+                            </h4>
+                            <p style="font-size: 0.8rem; color: var(--text-sub); line-height: 1.35;">
+                                <strong>ตัดทิ้งไม่เสียเวลา:</strong> เลิกเถียงกันเรื่องแนวเพลงในร้าน หรือปัจจัยที่ไม่มีความสัมพันธ์กับยอดขาย
+                            </p>
+                        </div>
+                        <div class="card" style="padding: 12px; border-left: 4px solid var(--accent-warm); background: #fffbeb;">
+                            <h4 style="font-size: 0.92rem; color: #92400e; margin-bottom: 4px;">
+                                <i class="fas fa-mask"></i> 4. Suspicious Positive &rarr; "Audit Confounder"
+                            </h4>
+                            <p style="font-size: 0.8rem; color: var(--text-sub); line-height: 1.35;">
+                                <strong>สืบหาตัวแปรแอบแฝง:</strong> อย่าเพิ่งเปิดแอร์ทั้งคืนตามค่าไฟ ให้เช็กอุณหภูมิอากาศก่อนเสมอ
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="callout-box success" style="margin-top: 6px; padding: 8px 14px;">
+                        <i class="fas fa-crown" style="color: var(--success); font-size: 1.2rem;"></i>
+                        <span style="font-size: 0.85rem; color: var(--text-main);">
+                            <strong>สูตรสำเร็จเจ้าของธุรกิจ:</strong> "ลงทุนในตัวที่บวกแรง, ป้องกันความเสี่ยงในตัวที่ลบแรง, ตัดตัวที่ไม่เกี่ยวทิ้ง, และระวังตัวแปรแอบแฝง"
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 27 Notes]:
+                    - สรุป 4 ช่องทางตัดสินใจของผู้บริหาร
+                    - เชื่อมกับ Quiz ข้อ 3 และข้อ 10
+                </aside>
+            </section>
+
+            <!-- SLIDE 28: Summary & Key Takeaways: 5 กฎเหล็กของนักสืบข้อมูล -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-bookmark" style="color: var(--primary);"></i> สรุปบทเรียน: 5 กฎเหล็กของนักสืบข้อมูล</h2>
+                        <span class="subtitle">Key Takeaways ที่ผู้ประกอบการยุค Data-Driven ต้องจำให้ขึ้นใจ</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-star"></i> Summary</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2" style="gap: 12px;">
+                        <div class="card" style="padding: 12px;">
+                            <div style="font-size: 0.85rem; color: var(--text-sub); line-height: 1.45;">
+                                <p style="margin-bottom: 6px;">
+                                    <strong>1. Pearson r อยู่ระหว่าง -1.00 ถึง +1.00 เสมอ:</strong><br />
+                                    บวกคือไปทางเดียวกัน, ลบคือสวนทางกัน, ศูนย์คือไม่เกี่ยวกัน
+                                </p>
+                                <p style="margin-bottom: 6px;">
+                                    <strong>2. Correlation &ne; Causation:</strong><br />
+                                    สัมพันธ์กันไม่ได้แปลว่าเป็นต้นเหตุเสมอไป ต้องระวัง Spurious และ Confounder
+                                </p>
+                                <p>
+                                    <strong>3. ค่าติดลบคือระบบเตือนภัย (Early Warning):</strong><br />
+                                    ใช้คาดการณ์ความเสี่ยงและเตรียมแผนรับมือล่วงหน้า
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="card" style="padding: 12px; background: #faf5ff; border: 1px solid #e9d5ff;">
+                            <div style="font-size: 0.85rem; color: var(--text-sub); line-height: 1.45;">
+                                <p style="margin-bottom: 6px;">
+                                    <strong>4. แยก Trend ออกจาก Seasonality:</strong><br />
+                                    อย่าดีใจกับยอดขายเงินเดือนออก (Payday) จนลืมดูเส้นแนวโน้มระยะยาว
+                                </p>
+                                <p style="margin-bottom: 6px;">
+                                    <strong>5. AI เป็นนักสืบ สเปรดชีตคือศาลตัดสิน:</strong><br />
+                                    ใช้ Gemini ช่วยร่างคำตอบ แล้วพิสูจน์ด้วยสูตร <code>=CORREL()</code> ใน Google Sheets
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="callout-box info" style="margin-top: 8px; padding: 10px 16px;">
+                        <i class="fas fa-forward" style="color: var(--secondary); font-size: 1.3rem;"></i>
+                        <span style="font-size: 0.88rem; color: var(--text-main);">
+                            <strong>ครั้งต่อไป (Session 9):</strong> เราจะนำความเข้าใจเรื่อง Trend และ Seasonality ในวันนี้ ไปต่อยอดสู่ <strong>"การพยากรณ์ยอดขายล่วงหน้า (Forecasting)"</strong> ด้วย Moving Average และ Linear Model!
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 28 Notes]:
+                    - สรุป 5 กฎเหล็กประจำคาบ
+                    - เกริ่นนำ Session 9 เรื่อง Forecasting
+                </aside>
+            </section>
+
+            <!-- SLIDE 29: Quizizz Arena: ประลองความรู้ Correlation & Trend -->
+            <section data-background-gradient="radial-gradient(circle at 50% 50%, #e0e7ff 0%, #f8fafc 100%)">
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-gamepad" style="color: var(--primary);"></i> Quizizz Arena: ประลองความรู้นักสืบข้อมูล</h2>
+                        <span class="subtitle">ทดสอบความเข้าใจ 10 ข้อ 3 ตัวเลือก (60 วินาทีต่อข้อ) ชิงคะแนนสะสมประจำสัปดาห์</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-trophy"></i> 10 Questions</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2" style="gap: 16px; margin: auto 0;">
+                        <div class="card" style="padding: 18px; text-align: center;">
+                            <div style="font-size: 2.2rem; color: var(--primary); margin-bottom: 8px;">
+                                <i class="fas fa-qrcode"></i>
+                            </div>
+                            <h3 style="font-size: 1.2rem; margin-bottom: 6px;">สแกนเพื่อเข้าร่วม Quizizz</h3>
+                            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">
+                                เข้าผ่านเว็บ <strong>joinmyquiz.com</strong> หรือเปิดแอป Quizizz
+                            </p>
+                            <div style="display: inline-block; padding: 6px 16px; background: #eef2ff; border-radius: 8px; font-weight: 700; color: var(--primary);">
+                                รหัสห้องสอบ: [แจ้งบนหน้าจอผู้สอน]
+                            </div>
+                        </div>
+
+                        <div class="card" style="padding: 18px; background: #ffffff;">
+                            <h4 style="font-size: 1.05rem; color: var(--text-main); margin-bottom: 10px;">
+                                <i class="fas fa-circle-info" style="color: var(--secondary);"></i> ขอบเขตข้อสอบ 10 ข้อ:
+                            </h4>
+                            <ul style="font-size: 0.82rem; color: var(--text-sub); padding-left: 20px; line-height: 1.5;">
+                                <li>ช่วงค่า Pearson r และการแปลผลความแรง (+, -, 0)</li>
+                                <li>กฎเหล็ก Correlation &ne; Causation และหลุมพราง Spurious</li>
+                                <li>การระบุตัวแปรแอบแฝง (Confounding Variable) ในเคสธุรกิจ</li>
+                                <li>ความแตกต่างระหว่าง Trend และ Seasonality</li>
+                                <li>การเขียนสูตร <code>=CORREL()</code> และการตีความค่า $R^2$ ใน Google Sheets</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 29 Notes]:
+                    - เริ่มกิจกรรม Quizizz 15 นาที
+                    - 10 ข้อ ข้อละ 60 วินาที
+                </aside>
+            </section>
+
+            <!-- SLIDE 30: Workshop Brief: "Correlation & Trend Detective" -->
+            <section data-background-gradient="radial-gradient(circle at 50% 50%, #f0fdf4 0%, #f8fafc 100%)">
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-magnifying-glass-chart" style="color: var(--success);"></i> Workshop: "Correlation &amp; Trend Detective"</h2>
+                        <span class="subtitle">สวมบทบาทที่ปรึกษาธุรกิจตรวจพิสูจน์ข้อมูล 14 วันของร้านชื่นใจสมูทตี้ (60-65 นาที)</span>
+                    </div>
+                    <span class="badge-step success"><i class="fas fa-laptop-code"></i> Workshop</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-4" style="gap: 10px; margin-bottom: 8px;">
+                        <div class="card" style="padding: 12px; border-top: 3px solid var(--primary);">
+                            <h4 style="font-size: 0.88rem; color: var(--primary); margin-bottom: 4px;">Mission 1</h4>
+                            <p style="font-size: 0.78rem; color: var(--text-sub); line-height: 1.35;">
+                                สั่ง Gemini ด้วย Prompt C-R-O-D-A สแกนหา Correlation &amp; Seasonality
+                            </p>
+                        </div>
+                        <div class="card" style="padding: 12px; border-top: 3px solid var(--success);">
+                            <h4 style="font-size: 0.88rem; color: var(--success); margin-bottom: 4px;">Mission 2</h4>
+                            <p style="font-size: 0.78rem; color: var(--text-sub); line-height: 1.35;">
+                                เขียนสูตร =CORREL() และสร้าง Scatter Plot พร้อม R&sup2; ใน Sheets
+                            </p>
+                        </div>
+                        <div class="card" style="padding: 12px; border-top: 3px solid var(--accent);">
+                            <h4 style="font-size: 0.88rem; color: var(--accent); margin-bottom: 4px;">Mission 3</h4>
+                            <p style="font-size: 0.78rem; color: var(--text-sub); line-height: 1.35;">
+                                จับไต๋ Confounder ค่าไฟ vs ยอดขาย และถอดรหัส Seasonality
+                            </p>
+                        </div>
+                        <div class="card" style="padding: 12px; border-top: 3px solid var(--purple);">
+                            <h4 style="font-size: 0.88rem; color: var(--purple); margin-bottom: 4px;">Mission 4</h4>
+                            <p style="font-size: 0.78rem; color: var(--text-sub); line-height: 1.35;">
+                                เสนอ 3 แผนกลยุทธ์ผู้บริหาร: งบแอด, รับมือฝนตก, และเตรียมพร้อมสิ้นเดือน
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="callout-box info" style="padding: 10px 16px;">
+                        <i class="fas fa-file-signature" style="color: var(--secondary); font-size: 1.3rem;"></i>
+                        <span style="font-size: 0.88rem; color: var(--text-main);">
+                            <strong>การส่งงาน:</strong> บันทึกผลลงในใบงาน <code>session-08-workshop-worksheet.html</code> พร้อมแนบลิงก์ Google Sheets (เปิด Anyone with the link can view) ส่งก่อนเวลา 11.25 น.
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 30 Notes]:
+                    - ชี้แจงโจทย์ Workshop 4 ภารกิจ
+                    - ให้เวลาทำกลุ่ม 40 นาที และสุ่มนำเสนอ 15 นาที
+                </aside>
+            </section>
+
+        </div>
+    </div>
+
+    <!-- Aspect Ratio Toast Notification -->
+    <div id="aspect-ratio-toast"></div>
+
+    <!-- Slide Height Test Report Overlay (Press 't') -->
+    <div id="test-report-overlay" style="display: none; position: fixed; top: 10px; right: 10px; width: 340px; max-height: 90vh; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); color: #fff; border-radius: 12px; padding: 14px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 999999; font-family: 'Outfit', sans-serif; font-size: 12px; overflow-y: auto;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; padding-bottom: 8px; margin-bottom: 10px;">
+            <strong style="color: #38bdf8;"><i class="fas fa-vial"></i> Slide Height Audit (16:10 / 800px)</strong>
+            <button onclick="document.getElementById('test-report-overlay').style.display='none'" style="background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 14px;">&times;</button>
+        </div>
+        <div id="test-report-summary" style="margin-bottom: 8px; font-weight: 700;"></div>
+        <div id="test-report-content"></div>
+    </div>
+
+    <!-- Reveal.js Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/notes/notes.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/highlight/highlight.js"></script>
+    <script>
+        // 1. Reveal.js Configuration (Default 16:10 Aspect Ratio)
+        const deck = new Reveal({
+            width: 1280,
+            height: 800,
+            margin: 0.04,
+            minScale: 0.1,
+            maxScale: 3.0,
+            controls: false,      // ซ่อนปุ่มลูกศรนำทาง
+            progress: true,       // แสดงแถบความคืบหน้า
+            center: false,
+            hash: true,
+            transition: 'slide',
+            transitionSpeed: 'default',
+            mouseWheel: true,     // เลื่อนสไลด์ด้วย Mouse Wheel
+            plugins: [RevealNotes, RevealHighlight]
+        });
+
+        deck.initialize().then(() => {
+            window.deck = deck;
+            window.Reveal = deck;
+
+            // Slide Audit Function
+            window.runSlideHeightAudit = function() {
+                const sections = document.querySelectorAll('.reveal .slides > section');
+                const targetH = deck.getConfig().height;
+                let passed = 0;
+                let failed = 0;
+                const results = [];
+
+                sections.forEach((sec, idx) => {
+                    const scrollH = sec.scrollHeight;
+                    const isPass = scrollH <= targetH + 4;
+                    if (isPass) passed++; else failed++;
+                    results.push({
+                        slide: idx + 1,
+                        scrollH,
+                        targetH,
+                        pass: isPass
+                    });
+                });
+
+                const summary = { total: sections.length, passed, failed, rate: Math.round((passed / sections.length) * 100) };
+                
+                const sumDiv = document.getElementById('test-report-summary');
+                const content = document.getElementById('test-report-content');
+                if (sumDiv && content) {
+                    sumDiv.innerHTML = `Pass: <span style="color: #4ade80;">${passed}</span> / Fail: <span style="color: #f43f5e;">${failed}</span> (${summary.rate}%)`;
+                    let html = '';
+                    results.forEach(r => {
+                        html += `<div style="display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px solid #1e293b; color: ${r.pass ? '#cbd5e1' : '#f87171'};">
+                            <span>Slide ${r.slide}</span>
+                            <span>${r.scrollH}px / ${r.targetH}px [${r.pass ? 'PASS' : 'FAIL'}]</span>
+                        </div>`;
+                    });
+                    content.innerHTML = html;
+                }
+
+                return summary;
+            };
+
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('test') === 'true') {
+                const overlay = document.getElementById('test-report-overlay');
+                if (overlay) overlay.style.display = 'block';
+                setTimeout(() => {
+                    window.runSlideHeightAudit();
+                }, 800);
+            }
+
+            window.addEventListener('keydown', (e) => {
+                if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) return;
+
+                // Key 'A' or 'a': Toggle Aspect Ratio (16:10 <-> 16:9)
+                if (e.key === 'a' || e.key === 'A') {
+                    toggleAspectRatio();
+                }
+
+                // Key 'T' or 't': Toggle Slide Audit Test Overlay
+                if (e.key === 't' || e.key === 'T') {
+                    const overlay = document.getElementById('test-report-overlay');
+                    if (overlay) {
+                        overlay.style.display = overlay.style.display === 'block' ? 'none' : 'block';
+                        if (overlay.style.display === 'block') {
+                            window.runSlideHeightAudit();
+                        }
+                    }
+                }
+            });
+        });
+
+        // Show Temporary Aspect Ratio Toast Notification
+        function showRatioToast(msg) {
+            let toast = document.getElementById('aspect-ratio-toast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'aspect-ratio-toast';
+                toast.style.cssText = `
+                    position: fixed;
+                    bottom: 24px;
+                    right: 24px;
+                    background: rgba(15, 23, 42, 0.90);
+                    backdrop-filter: blur(8px);
+                    color: #ffffff;
+                    padding: 8px 18px;
+                    border-radius: 9999px;
+                    font-family: 'Outfit', 'Noto Sans Thai', sans-serif;
+                    font-size: 0.85rem;
+                    font-weight: 600;
+                    letter-spacing: 0.02em;
+                    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+                    border: 1px solid rgba(255, 255, 255, 0.15);
+                    z-index: 99999;
+                    pointer-events: none;
+                    transition: opacity 0.3s ease, transform 0.3s ease;
+                    transform: translateY(0);
+                    opacity: 0;
+                `;
+                document.body.appendChild(toast);
+            }
+            toast.innerHTML = `<i class="fa-solid fa-display" style="margin-right: 8px; color: #818cf8;"></i> ${msg}`;
+            toast.style.opacity = '1';
+            toast.style.transform = 'translateY(0)';
+            clearTimeout(window._ratioToastTimer);
+            window._ratioToastTimer = setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(6px)';
+            }, 1500);
+        }
+
+        // Toggle Aspect Ratio (Key 'A')
+        function toggleAspectRatio() {
+            if (deck.getConfig().height === 800) {
+                deck.configure({ width: 1280, height: 720 });
+                showRatioToast('สลับอัตราส่วนหน้าจอ: 16:9 (1280 × 720)');
+            } else {
+                deck.configure({ width: 1280, height: 800 });
+                showRatioToast('สลับอัตราส่วนหน้าจอ: 16:10 (1280 × 800)');
+            }
+        }
+        window.toggleAspectRatio = toggleAspectRatio;
+    </script>
+</body>
+
+</html>

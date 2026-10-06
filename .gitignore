@@ -1,0 +1,28 @@
+# Operating System Files
+desktop.ini
+Thumbs.db
+.DS_Store
+
+# Temporary & Backup Files
+*.bak
+*.tmp
+*~
+~$*
+
+# Python Cache & Virtual Environments
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+env/
+
+# IDE & Editor Files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Antigravity & Scratch temporary files
+scratch/__pycache__/

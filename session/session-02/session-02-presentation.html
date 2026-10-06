@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ครั้งที่ 2: ขั้นที่ 1 'ASK' (ตั้งคำถาม) — Data Thinking | Fundamentals of Data Science</title>
+    
+    <!-- Reveal.js & Fonts -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #4f46e5;          /* Indigo 600 */
+            --primary-glow: rgba(79, 70, 229, 0.12);
+            --secondary: #0284c7;        /* Sky 600 */
+            --accent: #e11d48;           /* Rose 600 */
+            --accent-warm: #d97706;      /* Amber 600 */
+            --success: #059669;          /* Emerald 600 */
+            --bg-main: #f8fafc;          /* Slate 50 */
+            --bg-card: #ffffff;
+            --bg-card-hover: #ffffff;
+            --border-card: #e2e8f0;      /* Slate 200 */
+            --border-glass: #e2e8f0;
+            --text-main: #0f172a;        /* Slate 900 */
+            --text-sub: #334155;         /* Slate 700 */
+            --text-muted: #64748b;       /* Slate 500 */
+            --gradient-main: linear-gradient(135deg, #4f46e5 0%, #0284c7 100%);
+            --gradient-accent: linear-gradient(135deg, #e11d48 0%, #d97706 100%);
+            --gradient-green: linear-gradient(135deg, #059669 0%, #0284c7 100%);
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: var(--bg-main);
+        }
+
+        .reveal {
+            font-family: 'Noto Sans Thai', 'Outfit', sans-serif;
+            color: var(--text-main);
+            background: var(--bg-main);
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(79, 70, 229, 0.05) 0%, transparent 45%),
+                radial-gradient(circle at 85% 85%, rgba(2, 132, 199, 0.05) 0%, transparent 45%);
+            font-size: 24px;
+        }
+
+        .reveal .slides {
+            text-align: left;
+        }
+
+        /* Enforce exact slide height and full container usage */
+        .reveal .slides section {
+            height: 100% !important;
+            box-sizing: border-box !important;
+            padding: 22px 36px 26px 36px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: flex-start !important;
+            overflow: hidden !important;
+            background: transparent;
+        }
+
+        @media print {
+            .deck-footer, #aspect-toggle, #test-report-overlay {
+                display: none !important;
+            }
+        }
+
+        /* Slide Content Flow Container */
+        .slide-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+
+        /* Typography */
+        .reveal h1, .reveal h2, .reveal h3, .reveal h4 {
+            font-family: 'Noto Sans Thai', 'Outfit', sans-serif;
+            font-weight: 800;
+            text-transform: none;
+            letter-spacing: -0.02em;
+            line-height: 1.22;
+            color: var(--text-main);
+            margin: 0;
+        }
+
+        .reveal h1 {
+            font-size: 2.1em;
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+        }
+
+        .reveal h2 {
+            font-size: 1.35em;
+            color: var(--text-main);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .reveal h2 i {
+            color: var(--secondary);
+            font-size: 0.85em;
+        }
+
+        .reveal h3 {
+            font-size: 1.05em;
+            color: var(--secondary);
+            margin-bottom: 8px;
+        }
+
+        .reveal p, .reveal li {
+            font-size: 0.82em;
+            line-height: 1.5;
+            color: var(--text-sub);
+            font-weight: 400;
+            margin: 0 0 6px 0;
+        }
+
+        .reveal ul, .reveal ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .reveal li {
+            margin-bottom: 6px;
+        }
+
+        .reveal strong {
+            color: var(--secondary);
+            font-weight: 700;
+        }
+
+        .reveal em {
+            color: var(--accent);
+            font-style: normal;
+            font-weight: 600;
+        }
+
+        /* Badges & Pills */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 0.62em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .badge-primary {
+            background: #eef2ff;
+            color: #4338ca;
+            border: 1px solid #c7d2fe;
+        }
+
+        .badge-accent {
+            background: #fff1f2;
+            color: #be123c;
+            border: 1px solid #fecdd3;
+        }
+
+        .badge-success {
+            background: #ecfdf5;
+            color: #047857;
+            border: 1px solid #a7f3d0;
+        }
+
+        .badge-warm {
+            background: #fffbeb;
+            color: #b45309;
+            border: 1px solid #fde68a;
+        }
+
+        /* Header Navigation Info */
+        .slide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid var(--border-card);
+            font-size: 0.62em;
+            color: var(--text-muted);
+            flex-shrink: 0;
+        }
+
+        /* Cards */
+        .glass-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 12px;
+            padding: 14px 18px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s ease;
+        }
+
+        .glass-card:hover {
+            border-color: #cbd5e1;
+            box-shadow: var(--shadow-md);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        /* Pipeline Step Card */
+        .step-container {
+            display: flex;
+            align-items: stretch;
+            gap: 10px;
+            margin: 8px 0;
+        }
+
+        .step-card {
+            flex: 1;
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 10px;
+            padding: 12px 10px;
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Aspect Ratio Toggle Button */
+        #aspect-toggle {
+            position: fixed;
+            bottom: 18px;
+            left: 18px;
+            z-index: 1000;
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 8px;
+            width: 36px;
+            height: 36px;
+            font-size: 15px;
+            color: var(--text-main);
+            cursor: pointer;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        #aspect-toggle:hover {
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: scale(1.05);
+        }
+        #aspect-toggle:active {
+            transform: scale(0.95);
+        }
+
+        .step-card .step-num {
+            width: 26px;
+            height: 26px;
+            background: var(--gradient-main);
+            color: white;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.78em;
+            margin-bottom: 6px;
+        }
+
+        .step-card h4 {
+            font-size: 0.82em;
+            color: var(--secondary);
+            margin-bottom: 4px;
+        }
+
+        .step-card p {
+            font-size: 0.68em;
+            line-height: 1.35;
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        /* Comparison Table */
+        .comp-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border-card);
+            font-size: 0.76em;
+            margin-top: 4px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .comp-table th {
+            padding: 9px 12px;
+            background: #eef2ff;
+            color: #3730a3;
+            font-weight: 700;
+            border-bottom: 1px solid var(--border-card);
+        }
+
+        .comp-table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #f1f5f9;
+            background: #ffffff;
+            color: var(--text-sub);
+            line-height: 1.45;
+        }
+
+        .comp-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Case study card */
+        .case-card {
+            border: 1px solid #e0f2fe;
+            border-left: 4px solid var(--secondary);
+            padding: 12px 16px;
+            background: #f0f9ff;
+            border-radius: 0 10px 10px 0;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .case-card.pink {
+            border-color: #ffe4e6;
+            border-left-color: var(--accent);
+            background: #fff1f2;
+        }
+
+        .case-card.green {
+            border-color: #dcfce7;
+            border-left-color: var(--success);
+            background: #f0fdf4;
+        }
+
+        .case-card.orange {
+            border-color: #fef3c7;
+            border-left-color: var(--accent-warm);
+            background: #fffbeb;
+        }
+
+        /* Highlight Box */
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.05), rgba(2, 132, 199, 0.05));
+            border: 1px solid rgba(79, 70, 229, 0.18);
+            border-radius: 10px;
+            padding: 10px 16px;
+            margin-top: 8px;
+            font-size: 0.76em;
+            color: var(--text-main);
+        }
+
+        /* Custom Navigation Footer */
+        .deck-footer {
+            position: fixed;
+            bottom: 10px;
+            left: 24px;
+            right: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: var(--text-muted);
+            z-index: 100;
+            pointer-events: none;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        /* Automated Test Overlay */
+        #test-report-overlay {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 380px;
+            max-height: 90vh;
+            background: rgba(255, 255, 255, 0.98);
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            padding: 16px;
+            z-index: 9999;
+            box-shadow: var(--shadow-lg);
+            font-family: 'Outfit', 'Noto Sans Thai', sans-serif;
+            font-size: 12px;
+            color: var(--text-main);
+            overflow-y: auto;
+        }
+        #test-report-overlay h3 {
+            margin: 0 0 10px 0;
+            color: var(--secondary);
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .test-pass { color: #059669; font-weight: 600; }
+        .test-fail { color: #dc2626; font-weight: 700; }
+        .test-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+    </style>
+</head>
+<body>
+
+<div class="reveal">
+    <div class="slides">
+
+        <!-- SLIDE 1: Title Slide -->
+        <section data-background-gradient="radial-gradient(circle at 50% 50%, #e0e7ff 0%, #f8fafc 100%)">
+            <div style="text-align: center; margin: auto 0; padding: 20px 10px;">
+                <div style="margin-bottom: 14px;">
+                    <span class="badge badge-primary"><i class="fas fa-graduation-cap"></i> ภาคเรียนที่ 1/2569</span>
+                    <span class="badge badge-accent" style="margin-left: 6px;"><i class="fas fa-rocket"></i> ครั้งที่ 2 / 14</span>
+                </div>
+                <h1 style="font-size: 2.3em; margin-bottom: 12px; font-weight: 900; line-height: 1.2;">
+                    ขั้นที่ 1 'ASK' (ตั้งคำถาม)<br>Data Thinking ศิลปะการตั้งคำถาม
+                </h1>
+                <p style="font-size: 1.05em; color: var(--secondary); font-weight: 600; margin-bottom: 22px;">
+                    Fundamentals of Data Science (พื้นฐานวิทยาการข้อมูล)
+                </p>
+                <div style="display: inline-block; padding: 10px 24px; background: #ffffff; border-radius: 9999px; border: 1px solid var(--border-card); box-shadow: var(--shadow-sm);">
+                    <p style="font-size: 0.85em; margin: 0; color: var(--text-sub);">
+                        <i class="fas fa-user-tie" style="color: var(--secondary); margin-right: 6px;"></i>
+                        <strong>ผู้สอน:</strong> อาจารย์สุรชัย โกยสันติสุข | คณะการสร้างเจ้าของธุรกิจ มหาวิทยาลัยศรีปทุม
+                    </p>
+                </div>
+            </div>
+            <aside class="notes">
+                [Script เปิดคาบ]:
+                - ทบทวนสั้นๆ จากครั้งที่แล้วเรื่อง Data Science คืออะไร
+                - เข้าสู่เรื่อง Data Thinking ว่าทำไมต้องตั้งคำถามก่อน
+            </aside>
+        </section>
+
+        <!-- SLIDE 2: Session 1 Recap -->
+        <section>
+            <div class="slide-header">
+                <span><i class="fas fa-history"></i> Recap ทบทวนความรู้เดิม</span>
+                <span>Session 1 Recap</span>
+            </div>
+            <h2><i class="fas fa-sync"></i> Data Science คือกระบวนการ 5 ขั้นตอน</h2>
+            
+            <div class="slide-body">
+                <div class="step-container" style="margin-top: 24px;">
+                    <div class="step-card" style="border: 2px solid var(--primary); transform: scale(1.05); background: #eef2ff;">
+                        <div class="step-num">1</div>
+                        <h4 style="font-size: 0.95em; color: var(--primary);">ตั้งคำถาม (ASK)</h4>
+                        <p style="font-size: 0.72em; color: var(--text-sub);">รู้ว่าธุรกิจต้องการแก้ปัญหาอะไร?</p>
+                    </div>
+                    <div class="step-card" style="opacity: 0.75;">
+                        <div class="step-num" style="background: var(--text-muted);">2</div>
+                        <h4 style="color: var(--text-muted);">เก็บข้อมูล (COLLECT)</h4>
+                        <p>หาข้อมูลที่ตอบคำถามได้จากไหน?</p>
+                    </div>
+                    <div class="step-card" style="opacity: 0.75;">
+                        <div class="step-num" style="background: var(--text-muted);">3</div>
+                        <h4 style="color: var(--text-muted);">เตรียมข้อมูล (PREPARE)</h4>
+                        <p>ทำความสะอาดและจัดโครงสร้าง</p>
+                    </div>
+                    <div class="step-card" style="opacity: 0.75;">
+                        <div class="step-num" style="background: var(--text-muted);">4</div>
+                        <h4 style="color: var(--text-muted);">วิเคราะห์ (ANALYZE)</h4>
+                        <p>หา Insight / ความสัมพันธ์ / แนวโน้ม</p>
+                    </div>
+                    <div class="step-card" style="opacity: 0.75;">
+                        <div class="step-num" style="background: var(--text-muted);">5</div>
+                        <h4 style="color: var(--text-muted);">สื่อสาร (ACT)</h4>
+                        <p>เล่าเรื่องและนำเสนอให้เกิด Action</p>
+                    </div>
+                </div>
+
+                <div class="highlight-box" style="text-align: center; margin-top: 24px; font-size: 0.85em;">
+                    💡 วันนี้เราจะมาเจาะลึก <strong>ขั้นตอนที่ 1 (ASK)</strong> ซึ่งสำคัญที่สุด เพราะ <strong>"ถ้าตั้งคำถามผิด ข้อมูลก็ให้คำตอบที่ผิด"</strong>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 3: The Problem (Enlarged Detail Font Size) -->
+        <section>
+            <div class="slide-header">
+                <span><i class="fas fa-question-circle"></i> ปัญหาของเจ้าของธุรกิจ</span>
+                <span>The Problem</span>
+            </div>
+            <h2><i class="fas fa-exclamation-triangle"></i> ข้อมูลเยอะ แต่ไม่รู้จะเอาไปทำอะไร?</h2>
+            
+            <div class="slide-body">
+                <div style="display: grid; grid-template-columns: 1.35fr 0.95fr; gap: 18px; flex: 1; height: 100%; align-items: stretch;">
+                    <div style="display: flex; flex-direction: column; gap: 16px; justify-content: space-between; height: 100%;">
+                        <div class="glass-card" style="border-left: 5px solid var(--accent); padding: 20px 24px; flex: 1; display: flex; flex-direction: column; justify-content: center;">
+                            <h3 style="color: var(--accent); font-size: 1.15em; margin-bottom: 10px;">
+                                <i class="fas fa-comment-slash"></i> ปัญหาที่พบบ่อย (Pain Points)
+                            </h3>
+                            <ul style="font-size: 0.94em; line-height: 1.6; margin: 0; padding-left: 24px;">
+                                <li><strong>มีข้อมูลการขายมากมาย</strong> แต่ยอดขายกลับตกฮวบ</li>
+                                <li><strong>ดูรายงานตัวเลขแล้วไม่รู้เรื่อง</strong> ไม่รู้ว่ามีปัญหาซ่อนอยู่ตรงไหน</li>
+                                <li><strong>มีเครื่องมือ AI (เช่น Gemini)</strong> แต่ไม่รู้จะสั่ง Prompt ให้วิเคราะห์อะไร</li>
+                            </ul>
+                        </div>
+
+                        <div class="glass-card" style="border-left: 5px solid var(--success); padding: 20px 24px; flex: 1; display: flex; flex-direction: column; justify-content: center;">
+                            <h3 style="color: var(--success); font-size: 1.15em; margin-bottom: 10px;">
+                                <i class="fas fa-key"></i> ทางออกคือ Data Thinking
+                            </h3>
+                            <ul style="font-size: 0.94em; line-height: 1.6; margin: 0; padding-left: 24px;">
+                                <li><strong>เริ่มที่ปัญหาธุรกิจเสมอ</strong> ไม่ใช่เริ่มจากการงมในตัวเลข</li>
+                                <li><strong>คิดอย่างเป็นระบบ:</strong> สงสัย &rarr; ตั้งสมมติฐาน &rarr; หาข้อมูลพิสูจน์</li>
+                                <li><strong>เปลี่ยนข้อมูลดิบให้เป็น Action:</strong> รู้วิธีแก้ปัญหาและเพิ่มยอดขายได้ทันที</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div style="border-radius: 14px; overflow: hidden; box-shadow: var(--shadow-md); border: 1px solid var(--border-card); display: flex; align-items: center; justify-content: center; background: white; height: 100%;">
+                        <img src="images/business_problem.jpg" style="width: 100%; height: 100%; object-fit: cover; margin: 0; display: block;" alt="Frustrated Business Owner">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 4: Asking the Right Questions (Enlarged Detail Font Size) -->
+        <section>
+            <div class="slide-header">
+                <span><i class="fas fa-lightbulb"></i> Asking the Right Questions</span>
+                <span>การตั้งคำถามที่ดี</span>
+            </div>
+            <h2><i class="fas fa-bullseye"></i> ศิลปะการตั้งคำถามทางธุรกิจที่ดี</h2>
+
+            <div class="slide-body">
+                <div style="display: grid; grid-template-columns: 1.45fr 1fr; gap: 18px; flex: 1; height: 100%; align-items: stretch;">
+                    <div style="display: flex; flex-direction: column; justify-content: space-between; height: 100%; gap: 14px;">
+                        <div class="glass-card" style="padding: 18px 22px; flex: 1.2; display: flex; flex-direction: column; justify-content: center;">
+                            <h3 style="color: var(--primary); font-size: 1.1em; margin-bottom: 10px;">
+                                <i class="fas fa-check-double"></i> 3 หัวใจสำคัญของคำถามที่ดี
+                            </h3>
+                            <ul style="font-size: 0.9em; line-height: 1.6; margin: 0; padding-left: 24px;">
+                                <li><strong>ชัดเจน เฉพาะเจาะจง:</strong> ระบุตัวแปร เวลา และช่องทางที่ต้องการรู้</li>
+                                <li><strong>วัดผลได้ด้วยข้อมูล:</strong> มีตัวเลขสถิติหรือหลักฐานมาตอบคำถามได้</li>
+                                <li><strong>นำไปสู่การกระทำ (Actionable):</strong> รู้คำตอบแล้วปรับกลยุทธ์ต่อได้ทันที</li>
+                            </ul>
+                        </div>
+
+                        <div class="grid-2" style="flex: 1; gap: 14px;">
+                            <div class="glass-card" style="background: #fff1f2; border: 1px solid #fecdd3; padding: 14px 16px; display: flex; flex-direction: column; justify-content: center;">
+                                <h4 style="color: #be123c; font-size: 0.94em; margin-bottom: 6px;">
+                                    <i class="fas fa-times-circle"></i> คำถามที่ "กว้างเกินไป"
+                                </h4>
+                                <p style="font-size: 0.84em; line-height: 1.45; margin: 0; color: #9f1239;">
+                                    <strong>"ทำไมยอดขายเดือนนี้ไม่ค่อยดี?"</strong><br>
+                                    <span style="font-size: 0.9em; color: #881337;"><em>ปัญหา:</em> กว้างไป ไม่รู้จะเริ่มดึงข้อมูลจากตรงไหน วัดผลและแก้ไขยาก</span>
+                                </p>
+                            </div>
+                            <div class="glass-card" style="background: #ecfdf5; border: 1px solid #a7f3d0; padding: 14px 16px; display: flex; flex-direction: column; justify-content: center;">
+                                <h4 style="color: #047857; font-size: 0.94em; margin-bottom: 6px;">
+                                    <i class="fas fa-check-circle"></i> คำถามที่ "ดีและเจาะจง"
+                                </h4>
+                                <p style="font-size: 0.84em; line-height: 1.45; margin: 0; color: #065f46;">
+                                    <strong>"โปรฯ ลด 20% บน LINE MAN ช่วงเที่ยง ดึงลูกค้าใหม่ได้กี่ % และคุ้ม GP หรือไม่?"</strong><br>
+                                    <span style="font-size: 0.9em; color: #047857;"><em>ข้อดี:</em> เจาะจง วัดผลได้ และตัดสินใจปรับโปรโมชั่นได้ทันที</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="border-radius: 14px; overflow: hidden; box-shadow: var(--shadow-md); border: 1px solid var(--border-card); display: flex; align-items: center; justify-content: center; background: white; height: 100%;">
+                        <img src="images/target_bullseye.jpg" style="width: 100%; height: 100%; object-fit: contain; margin: 0; display: block;" alt="Target Bullseye">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 5: Data Pitfall (Thai Summer Context: Correlation vs Causation) -->
+        <section>
+            <div class="slide-header">
+                <span><i class="fas fa-exclamation-triangle"></i> Data Pitfall</span>
+                <span>ข้อควรระวัง</span>
+            </div>
+            <h2><i class="fas fa-chart-line"></i> กับดัก: Correlation ไม่ใช่ Causation</h2>
+
+            <div class="slide-body">
+                <div style="display: grid; grid-template-columns: 1.15fr 1.05fr; gap: 18px; flex: 1; height: 100%; align-items: stretch;">
+                    <div style="display: flex; flex-direction: column; justify-content: space-between; gap: 12px; height: 100%;">
+                        <div class="glass-card" style="border-left: 5px solid var(--accent); padding: 14px 18px; flex: 1; display: flex; flex-direction: column; justify-content: center;">
+                            <h3 style="color: var(--accent); font-size: 1.05em; margin-bottom: 6px;">
+                                <i class="fas fa-link"></i> ความสัมพันธ์ (Correlation)
+                            </h3>
+                            <p style="font-size: 0.86em; line-height: 1.5; color: var(--text-sub); margin: 0;">
+                                เหตุการณ์สองอย่างมีตัวเลข <strong>เพิ่มขึ้นพร้อมกัน</strong> ในช่วงเวลาเดียวกัน<br>
+                                <span style="color: #9f1239;"><em>เช่น ในเดือน เม.ย. ยอดขาย "ชานม/ไอศกรีม" พุ่งสูงขึ้น พร้อมกับ "บิลค่าไฟฟ้าของร้าน" ที่พุ่งขึ้นเท่าตัว</em></span>
+                            </p>
+                        </div>
+                        <div class="glass-card" style="border-left: 5px solid var(--success); padding: 14px 18px; flex: 1; display: flex; flex-direction: column; justify-content: center;">
+                            <h3 style="color: var(--success); font-size: 1.05em; margin-bottom: 6px;">
+                                <i class="fas fa-arrow-right"></i> ความเป็นเหตุเป็นผล (Causation)
+                            </h3>
+                            <p style="font-size: 0.86em; line-height: 1.5; color: var(--text-sub); margin: 0;">
+                                สิ่งหนึ่งเป็น <strong>"ต้นเหตุที่แท้จริง"</strong> ที่ทำให้อีกสิ่งหนึ่งเกิดขึ้น<br>
+                                <span style="color: #065f46;"><em>การขายชานม <strong>ไม่ได้ทำให้ค่าไฟขึ้น</strong>! แต่สาเหตุที่แท้จริงของทั้งคู่คือ <strong>"สภาพอากาศร้อนจัดช่วงสงกรานต์ (>40°C)"</strong> ทำให้คนอยากกินของเย็น และตู้แช่/แอร์ทำงานหนักขึ้น</em></span>
+                            </p>
+                        </div>
+                        <div class="highlight-box" style="margin-top: 2px; padding: 10px 16px; font-size: 0.82em;">
+                            💡 <strong>บทเรียนสำหรับเจ้าของธุรกิจ:</strong> อย่าด่วนสรุปว่าสิ่งที่เกิดขึ้นพร้อมกันจะเป็นสาเหตุของกันและกัน ให้มองหา "ปัจจัยแท้จริง" เสมอ
+                        </div>
+                    </div>
+                    <div style="border-radius: 14px; overflow: hidden; box-shadow: var(--shadow-md); border: 1px solid var(--border-card); display: flex; align-items: center; background: white; height: 100%;">
+                        <img src="images/correlation_thai_summer.jpg" style="width: 100%; height: 100%; object-fit: contain; margin: 0; display: block;" alt="Correlation vs Causation Thai Summer">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 6: Hypothesis Thinking Concept -->
+        <section>
+            <div class="slide-header">
+                <span><i class="fas fa-flask"></i> Hypothesis Thinking</span>
+                <span>การตั้งสมมติฐาน</span>
+            </div>
+            <h2><i class="fas fa-project-diagram"></i> การตั้งสมมติฐาน (Hypothesis) ก่อนวิเคราะห์</h2>
+
+            <div class="slide-body">
+                <div class="highlight-box" style="margin-top: 4px; margin-bottom: 12px; font-size: 0.88em; text-align: center;">
+                    🎯 <strong>สมมติฐาน คือ "การคาดเดาคำตอบอย่างมีหลักการ"</strong> เพื่อกำหนดทิศทางในการหาข้อมูล ไม่ให้หลงทางในมหาสมุทรตัวเลข
+                </div>
+                
+                <div class="grid-3" style="flex: 1; align-items: stretch; gap: 14px;">
+                    <div class="glass-card" style="border-top: 4px solid var(--accent); display: flex; flex-direction: column; justify-content: space-between; padding: 16px 14px;">
+                        <div>
+                            <span class="badge badge-accent" style="font-size: 0.7em;">ขั้นตอนที่ 1</span>
+                            <h4 style="margin: 10px 0 6px 0; font-size: 1.0em; color: var(--accent);">
+                                <i class="fas fa-exclamation-circle"></i> พบปัญหา (Problem)
+                            </h4>
+                            <p style="font-size: 0.82em; line-height: 1.5; color: var(--text-sub);">
+                                ระบุปัญหาทางธุรกิจที่เกิดขึ้นให้ชัดเจน เจาะจงตัวเลขและช่วงเวลา
+                            </p>
+                        </div>
+                        <div style="background: #fff1f2; padding: 10px; border-radius: 8px; font-size: 0.76em; color: #9f1239; border: 1px dashed #fecdd3;">
+                            <strong>ตัวอย่าง:</strong> "ยอดขายกาแฟช่วงบ่าย (13.00-15.00 น.) ตกลง 30% ในเดือนที่ผ่านมา"
+                        </div>
+                    </div>
+
+                    <div class="glass-card" style="border-top: 4px solid var(--primary); display: flex; flex-direction: column; justify-content: space-between; padding: 16px 14px;">
+                        <div>
+                            <span class="badge badge-primary" style="font-size: 0.7em;">ขั้นตอนที่ 2</span>
+                            <h4 style="margin: 10px 0 6px 0; font-size: 1.0em; color: var(--primary);">
+                                <i class="fas fa-lightbulb"></i> ตั้งสมมติฐาน (Hypothesis)
+                            </h4>
+                            <p style="font-size: 0.82em; line-height: 1.5; color: var(--text-sub);">
+                                คาดเดาสาเหตุที่เป็นไปได้จากประสบการณ์และบริบทแวดล้อม
+                            </p>
+                        </div>
+                        <div style="background: #eef2ff; padding: 10px; border-radius: 8px; font-size: 0.76em; color: #3730a3; border: 1px dashed #c7d2fe;">
+                            <strong>ตัวอย่าง:</strong> "อาจเป็นเพราะอากาศร้อนจัด ลูกค้าไม่อยากเดินตากแดดออกมาซื้อที่หน้าร้าน"
+                        </div>
+                    </div>
+
+                    <div class="glass-card" style="border-top: 4px solid var(--success); display: flex; flex-direction: column; justify-content: space-between; padding: 16px 14px;">
+                        <div>
+                            <span class="badge badge-success" style="font-size: 0.7em;">ขั้นตอนที่ 3</span>
+                            <h4 style="margin: 10px 0 6px 0; font-size: 1.0em; color: var(--success);">
+                                <i class="fas fa-database"></i> หาข้อมูลพิสูจน์ (Data)
+                            </h4>
+                            <p style="font-size: 0.82em; line-height: 1.5; color: var(--text-sub);">
+                                ระบุชุดข้อมูลหรือตัวเลขที่ต้องนำมาตรวจสอบว่าสมมติฐานจริงหรือไม่
+                            </p>
+                        </div>
+                        <div style="background: #ecfdf5; padding: 10px; border-radius: 8px; font-size: 0.76em; color: #065f46; border: 1px dashed #a7f3d0;">
+                            <strong>ตัวอย่าง:</strong> "เปรียบเทียบยอดขายหน้าร้าน vs อุณหภูมิรายชั่วโมง และยอดสั่งผ่าน Delivery"
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 7: Case Study 1 (Hypothesis Thinking: E-Commerce Live Selling) -->
+        <section>
+            <div class="slide-header">
+                <span><i class="fas fa-shopping-bag"></i> Case Study 1: E-Commerce</span>
+                <span>กรณีศึกษาตามหลัก Hypothesis Thinking</span>
+            </div>
+            <h2><i class="fas fa-video"></i> แม่ค้า Live สด: ปัญหา CF แล้วทิ้งออเดอร์</h2>
+
+            <div class="slide-body">
+                <div style="display: grid; grid-template-columns: 1fr 1.35fr; gap: 18px; flex: 1; height: 100%; align-items: stretch;">
+                    <div style="border-radius: 14px; overflow: hidden; box-shadow: var(--shadow-md); border: 1px solid var(--border-card); display: flex; align-items: center; background: white; height: 100%;">
+                        <img src="images/live_selling.jpg" style="width: 100%; height: 100%; object-fit: cover; margin: 0; display: block;" alt="Live Selling Analytics">
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 12px; justify-content: space-between; height: 100%;">
+                        <!-- Step 1: Problem -->
+                        <div class="glass-card" style="border-left: 4px solid var(--accent); padding: 12px 16px; flex: 1; display: flex; flex-direction: column; justify-content: center;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+                                <h4 style="color: var(--accent); font-size: 0.92em; margin: 0;">
+                                    <i class="fas fa-exclamation-circle"></i> 1. พบปัญหา (Problem)
+                                </h4>
+                                <span class="badge badge-accent">Problem</span>
+                            </div>
+                            <p style="font-size: 0.82em; line-height: 1.45; margin: 0;">
+                                ลูกค้าพิมพ์ CF สั่งซื้อหน้าไลฟ์เยอะมาก แต่มีอัตรา <strong>"ทิ้งออเดอร์ (ไม่โอนเงิน)" สูงถึง 40%</strong>
+                            </p>
+                        </div>
+
+                        <!-- Step 2: Hypothesis -->
+                        <div class="glass-card" style="border-left: 4px solid var(--primary); padding: 12px 16px; flex: 1; display: flex; flex-direction: column; justify-content: center;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+                                <h4 style="color: var(--primary); font-size: 0.92em; margin: 0;">
+                                    <i class="fas fa-lightbulb"></i> 2. ตั้งสมมติฐาน (Hypothesis)
+                                </h4>
+                                <span class="badge badge-primary">Hypothesis</span>
+                            </div>
+                            <ul style="font-size: 0.8em; line-height: 1.45; margin: 0; padding-left: 20px;">
+                                <li><strong>สมมติฐาน A:</strong> "แอดมินตอบแชทสรุปยอดช้าเกินไป ทำให้ลูกค้าอารมณ์เย็นลงและเปลี่ยนใจ"</li>
+                                <li><strong>สมมติฐาน B:</strong> "ไม่ได้แจ้งค่าส่งในไลฟ์ ลูกค้าตกใจค่าส่งเมื่อเห็นยอดสรุปในอินบ็อกซ์"</li>
+                            </ul>
+                        </div>
+
+                        <!-- Step 3: Data -->
+                        <div class="glass-card" style="border-left: 4px solid var(--success); padding: 12px 16px; flex: 1; display: flex; flex-direction: column; justify-content: center;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+                                <h4 style="color: var(--success); font-size: 0.92em; margin: 0;">
+                                    <i class="fas fa-database"></i> 3. หาข้อมูลพิสูจน์ (Data)
+                                </h4>
+                                <span class="badge badge-success">Data to Collect</span>
+                            </div>
+                            <p style="font-size: 0.8em; line-height: 1.45; margin: 0;">
+                                • เก็บข้อมูลเวลา (Response Time) ที่แอดมินทักแชท เทียบกับ อัตราการโอนเงินสำเร็จ<br>
+                                • ทำ A/B Test: ไลฟ์แบบแจ้งค่าส่งเหมาๆ ชัดเจนหน้ากล้อง เทียบกับ ไลฟ์แบบไม่แจ้ง
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 8: Case Study 2 (Hypothesis Thinking: Grab & Go Beverage Kiosk) -->
+        <section>
+            <div class="slide-header">
+                <span><i class="fas fa-coffee"></i> Case Study 2: Grab & Go Drink</span>
+                <span>กรณีศึกษาตามหลัก Hypothesis Thinking</span>
+            </div>
+            <h2><i class="fas fa-store"></i> ร้านชานมใต้ออฟฟิศ: คนเดินผ่านเยอะแต่ยอดเช้าตก?</h2>
+
+            <div class="slide-body">
+                <div style="display: grid; grid-template-columns: 1fr 1.35fr; gap: 18px; flex: 1; height: 100%; align-items: stretch;">
+                    <div style="border-radius: 14px; overflow: hidden; box-shadow: var(--shadow-md); border: 1px solid var(--border-card); display: flex; align-items: center; background: white; height: 100%;">
+                        <img src="images/cafe.jpg" style="width: 100%; height: 100%; object-fit: cover; margin: 0; display: block;" alt="Office Beverage Kiosk">
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 12px; justify-content: space-between; height: 100%;">
+                        <!-- Step 1: Problem -->
+                        <div class="glass-card" style="border-left: 4px solid var(--accent); padding: 12px 16px; flex: 1; display: flex; flex-direction: column; justify-content: center;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+                                <h4 style="color: var(--accent); font-size: 0.92em; margin: 0;">
+                                    <i class="fas fa-exclamation-circle"></i> 1. พบปัญหา (Problem)
+                                </h4>
+                                <span class="badge badge-accent">Problem</span>
+                            </div>
+                            <p style="font-size: 0.82em; line-height: 1.45; margin: 0;">
+                                ร้านอยู่ใต้อาคารสำนักงาน คนเดินผ่านหนาแน่นช่วงเช้า (07.30 - 09.00 น.) แต่ <strong>ยอดขายช่วงเช้ามีเพียง 10%</strong> ของทั้งวัน
+                            </p>
+                        </div>
+
+                        <!-- Step 2: Hypothesis -->
+                        <div class="glass-card" style="border-left: 4px solid var(--primary); padding: 12px 16px; flex: 1; display: flex; flex-direction: column; justify-content: center;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+                                <h4 style="color: var(--primary); font-size: 0.92em; margin: 0;">
+                                    <i class="fas fa-lightbulb"></i> 2. ตั้งสมมติฐาน (Hypothesis)
+                                </h4>
+                                <span class="badge badge-primary">Hypothesis</span>
+                            </div>
+                            <ul style="font-size: 0.8em; line-height: 1.45; margin: 0; padding-left: 20px;">
+                                <li><strong>สมมติฐาน A:</strong> "คนทำงานเร่งรีบ กลัวคิวยาวและใช้เวลาชงนานจนเข้างานสาย"</li>
+                                <li><strong>สมมติฐาน B:</strong> "เมนูมีแต่ชานมหวาน คนช่วงเช้าต้องการ 'กาแฟเข้มข้น / แซนด์วิช' เพื่อเริ่มวัน"</li>
+                            </ul>
+                        </div>
+
+                        <!-- Step 3: Data -->
+                        <div class="glass-card" style="border-left: 4px solid var(--success); padding: 12px 16px; flex: 1; display: flex; flex-direction: column; justify-content: center;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+                                <h4 style="color: var(--success); font-size: 0.92em; margin: 0;">
+                                    <i class="fas fa-database"></i> 3. หาข้อมูลพิสูจน์ (Data)
+                                </h4>
+                                <span class="badge badge-success">Data to Collect</span>
+                            </div>
+                            <p style="font-size: 0.8em; line-height: 1.45; margin: 0;">
+                                • จับเวลาเฉลี่ยการสั่งจนได้รับเครื่องดื่ม (Order-to-Handover Time)<br>
+                                • สำรวจประเภทเครื่องดื่ม/อาหารที่พนักงานถือเข้าตึกช่วงเช้า (กาแฟสด vs ชานม)
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 9: Case Study 3 (Hypothesis Thinking: Buffet Restaurant) -->
+        <section>
+            <div class="slide-header">
+                <span><i class="fas fa-utensils"></i> Case Study 3: Buffet Restaurant</span>
+                <span>กรณีศึกษาตามหลัก Hypothesis Thinking</span>
+            </div>
+            <h2><i class="fas fa-drumstick-bite"></i> ร้านหมูกระทะ: ลูกค้าเต็มร้านแต่กำไรหด?</h2>
+
+            <div class="slide-body">
+                <div style="display: grid; grid-template-columns: 1fr 1.35fr; gap: 18px; flex: 1; height: 100%; align-items: stretch;">
+                    <div style="border-radius: 14px; overflow: hidden; box-shadow: var(--shadow-md); border: 1px solid var(--border-card); display: flex; align-items: center; background: white; height: 100%;">
+                        <img src="images/mookrata.jpg" style="width: 100%; height: 100%; object-fit: cover; margin: 0; display: block;" alt="Moo Krata Buffet Analytics">
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 12px; justify-content: space-between; height: 100%;">
+                        <!-- Step 1: Problem -->
+                        <div class="glass-card" style="border-left: 4px solid var(--accent); padding: 12px 16px; flex: 1; display: flex; flex-direction: column; justify-content: center;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+                                <h4 style="color: var(--accent); font-size: 0.92em; margin: 0;">
+                                    <i class="fas fa-exclamation-circle"></i> 1. พบปัญหา (Problem)
+                                </h4>
+                                <span class="badge badge-accent">Problem</span>
+                            </div>
+                            <p style="font-size: 0.82em; line-height: 1.45; margin: 0;">
+                                ลูกค้าแน่นร้านทุกเย็น คิวยาว แต่เมื่อสรุปบัญชีสิ้นเดือนพบว่า <strong>กำไรสุทธิลดลงถึง 25%</strong>
+                            </p>
+                        </div>
+
+                        <!-- Step 2: Hypothesis -->
+                        <div class="glass-card" style="border-left: 4px solid var(--primary); padding: 12px 16px; flex: 1; display: flex; flex-direction: column; justify-content: center;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+                                <h4 style="color: var(--primary); font-size: 0.92em; margin: 0;">
+                                    <i class="fas fa-lightbulb"></i> 2. ตั้งสมมติฐาน (Hypothesis)
+                                </h4>
+                                <span class="badge badge-primary">Hypothesis</span>
+                            </div>
+                            <ul style="font-size: 0.8em; line-height: 1.45; margin: 0; padding-left: 20px;">
+                                <li><strong>สมมติฐาน A:</strong> "ลูกค้าตักอาหารเกินพอดีและมีปริมาณอาหารเหลือทิ้ง (Food Waste) บนโต๊ะสูง"</li>
+                                <li><strong>สมมติฐาน B:</strong> "ราคาต้นทุนเนื้อหมูสดจากซัพพลายเออร์ปรับขึ้นสูงโดยร้านไม่ได้ปรับตัว"</li>
+                            </ul>
+                        </div>
+
+                        <!-- Step 3: Data -->
+                        <div class="glass-card" style="border-left: 4px solid var(--success); padding: 12px 16px; flex: 1; display: flex; flex-direction: column; justify-content: center;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+                                <h4 style="color: var(--success); font-size: 0.92em; margin: 0;">
+                                    <i class="fas fa-database"></i> 3. หาข้อมูลพิสูจน์ (Data)
+                                </h4>
+                                <span class="badge badge-success">Data to Collect</span>
+                            </div>
+                            <p style="font-size: 0.8em; line-height: 1.45; margin: 0;">
+                                • สุ่มชั่งน้ำหนักเศษอาหารที่ลูกค้าทานเหลือทิ้งต่อโต๊ะในแต่ละวัน<br>
+                                • บันทึกและวิเคราะห์แนวโน้มราคาซื้อเนื้อสัตว์ย้อนหลัง 3 เดือน เปรียบเทียบราคาตลาด
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 10: The 4 Levels of Analytics Concept -->
+        <section>
+            <div class="slide-header">
+                <span><i class="fas fa-chart-line"></i> The 4 Levels of Analytics</span>
+                <span>4 ระดับการวิเคราะห์</span>
+            </div>
+            <h2><i class="fas fa-layer-group"></i> 4 ระดับการวิเคราะห์ข้อมูลเพื่อการตัดสินใจ</h2>
+
+            <div class="slide-body">
+                <div class="grid-4" style="flex: 1; align-items: stretch; margin-top: 10px; height: 100%;">
+                    <div class="glass-card" style="text-align: center; display: flex; flex-direction: column; justify-content: space-between; border-top: 4px solid #64748b; padding: 16px 12px;">
+                        <div>
+                            <i class="fas fa-search" style="font-size: 1.8em; color: #64748b; margin: 8px 0;"></i>
+                            <h4 style="color: var(--text-main); font-size: 0.95em;">1. Descriptive</h4>
+                            <span class="badge" style="background: #f1f5f9; color: #475569;">พรรณนา</span>
+                        </div>
+                        <div style="margin: 12px 0;">
+                            <p style="font-size: 0.82em; font-weight: 700; color: var(--primary); margin: 0;">"เกิดอะไรขึ้น?"</p>
+                            <p style="font-size: 0.65em; color: var(--text-muted); margin-top: 2px;">What happened?</p>
+                        </div>
+                        <p style="font-size: 0.72em; color: var(--text-sub); line-height: 1.4; margin: 0;">
+                            สรุปภาพรวมจากข้อมูลอดีต เช่น ยอดขายรายวัน กำไร สต็อก
+                        </p>
+                    </div>
+
+                    <div class="glass-card" style="text-align: center; display: flex; flex-direction: column; justify-content: space-between; border-top: 4px solid var(--secondary); padding: 16px 12px;">
+                        <div>
+                            <i class="fas fa-stethoscope" style="font-size: 1.8em; color: var(--secondary); margin: 8px 0;"></i>
+                            <h4 style="color: var(--secondary); font-size: 0.95em;">2. Diagnostic</h4>
+                            <span class="badge" style="background: #e0f2fe; color: #0369a1;">วินิจฉัย</span>
+                        </div>
+                        <div style="margin: 12px 0;">
+                            <p style="font-size: 0.82em; font-weight: 700; color: var(--primary); margin: 0;">"ทำไมถึงเกิดสิ่งนี้?"</p>
+                            <p style="font-size: 0.65em; color: var(--text-muted); margin-top: 2px;">Why did it happen?</p>
+                        </div>
+                        <p style="font-size: 0.72em; color: var(--text-sub); line-height: 1.4; margin: 0;">
+                            เจาะลึกหาสาเหตุของปัญหา หรือปัจจัยที่ทำให้ยอดขายเพิ่ม/ลด
+                        </p>
+                    </div>
+
+                    <div class="glass-card" style="text-align: center; display: flex; flex-direction: column; justify-content: space-between; border-top: 4px solid var(--accent-warm); padding: 16px 12px;">
+                        <div>
+                            <i class="fas fa-crystal-ball" style="font-size: 1.8em; color: var(--accent-warm); margin: 8px 0;"></i>
+                            <h4 style="color: var(--accent-warm); font-size: 0.95em;">3. Predictive</h4>
+                            <span class="badge badge-warm">พยากรณ์</span>
+                        </div>
+                        <div style="margin: 12px 0;">
+                            <p style="font-size: 0.82em; font-weight: 700; color: var(--primary); margin: 0;">"อะไรจะเกิดขึ้นต่อไป?"</p>
+                            <p style="font-size: 0.65em; color: var(--text-muted); margin-top: 2px;">What will happen?</p>
+                        </div>
+                        <p style="font-size: 0.72em; color: var(--text-sub); line-height: 1.4; margin: 0;">
+                            คาดการณ์แนวโน้มล่วงหน้า เพื่อเตรียมสต็อกและกำลังคน
+                        </p>
+                    </div>
+
+                    <div class="glass-card" style="text-align: center; display: flex; flex-direction: column; justify-content: space-between; border-top: 4px solid var(--success); padding: 16px 12px;">
+                        <div>
+                            <i class="fas fa-route" style="font-size: 1.8em; color: var(--success); margin: 8px 0;"></i>
+                            <h4 style="color: var(--success); font-size: 0.95em;">4. Prescriptive</h4>
+                            <span class="badge badge-success">แนะนำ</span>
+                        </div>
+                        <div style="margin: 12px 0;">
+                            <p style="font-size: 0.82em; font-weight: 700; color: var(--primary); margin: 0;">"เราควรทำอย่างไรดี?"</p>
+                            <p style="font-size: 0.65em; color: var(--text-muted); margin-top: 2px;">What should we do?</p>
+                        </div>
+                        <p style="font-size: 0.72em; color: var(--text-sub); line-height: 1.4; margin: 0;">
+                            เสนอทางเลือกและกลยุทธ์ที่ดีที่สุดในการตัดสินใจแก้ปัญหา
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 11: Case Study 4 Levels (Moo Krata Buffet) -->
+        <section>
+            <div class="slide-header">
+                <span><i class="fas fa-utensils"></i> Case Study: 4 Levels of Analytics</span>
+                <span>กรณีศึกษาที่ 1</span>
+            </div>
+            <h2><i class="fas fa-drumstick-bite"></i> 4 ระดับกับ ร้านหมูกระทะบุฟเฟ่ต์</h2>
+
+            <div class="slide-body">
+                <div style="display: grid; grid-template-columns: 1.55fr 0.95fr; gap: 16px; align-items: stretch; flex: 1; height: 100%;">
+                    <table class="comp-table" style="margin: 0; height: 100%;">
+                        <thead>
+                            <tr>
+                                <th style="width: 36%;">ระดับการวิเคราะห์</th>
+                                <th>คำถาม & การหาคำตอบจากข้อมูล</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <strong style="color: #475569;">1. Descriptive (พรรณนา)</strong><br>
+                                    <span style="font-size: 0.9em; color: var(--primary); font-weight: 700;">"เกิดอะไรขึ้น?"</span>
+                                </td>
+                                <td><strong>ถาม:</strong> ยอดขายและกำไรเดือนนี้เป็นอย่างไร?<br><span style="color: var(--text-muted);">ตอบ: ยอดขายโต 15% แต่กำไรสุทธิกลับลดลง 20% แม้ลูกค้าจะเต็มร้านทุกวัน</span></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong style="color: var(--secondary);">2. Diagnostic (วินิจฉัย)</strong><br>
+                                    <span style="font-size: 0.9em; color: var(--primary); font-weight: 700;">"ทำไมถึงเกิดสิ่งนี้?"</span>
+                                </td>
+                                <td><strong>ถาม:</strong> ทำไมกำไรถึงลดลงทั้งที่ลูกค้าแน่นร้าน?<br><span style="color: var(--text-muted);">ตอบ: ต้นทุนหมูสดแพงขึ้น 18% และลูกค้าตักเหลือทิ้งเฉลี่ยโต๊ะละ 400 กรัม</span></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong style="color: var(--accent-warm);">3. Predictive (พยากรณ์)</strong><br>
+                                    <span style="font-size: 0.9em; color: var(--primary); font-weight: 700;">"อะไรจะเกิดขึ้นต่อไป?"</span>
+                                </td>
+                                <td><strong>ถาม:</strong> ถ้าปล่อยไว้แบบนี้ผลจะเป็นอย่างไร?<br><span style="color: var(--text-muted);">ตอบ: หากราคาหมูยังสูงและลูกค้ากินเหลือเท่าเดิม ร้านจะขาดทุนสะสมใน 2 เดือน</span></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong style="color: var(--success);">4. Prescriptive (แนะนำ)</strong><br>
+                                    <span style="font-size: 0.9em; color: var(--primary); font-weight: 700;">"เราควรทำอย่างไรดี?"</span>
+                                </td>
+                                <td><strong>ถาม:</strong> เราควรปรับกลยุทธ์อย่างไรเพื่อแก้ปัญหา?<br><span style="color: var(--text-muted);">ตอบ: เปลี่ยนถาดตักให้เล็กลง, ติดป้ายปรับอาหารเหลือทิ้งให้ชัดเจน, ทำสัญญาล็อกราคาหมูล่วงหน้า</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div style="border-radius: 14px; overflow: hidden; box-shadow: var(--shadow-md); border: 1px solid var(--border-card); height: 100%;">
+                        <img src="images/mookrata.jpg" style="width: 100%; height: 100%; object-fit: cover; margin: 0; display: block;" alt="Moo Krata Data Analysis">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 12: Case Study 4 Levels (Convenience Store Retail) -->
+        <section>
+            <div class="slide-header">
+                <span><i class="fas fa-shopping-basket"></i> Case Study: 4 Levels of Analytics</span>
+                <span>กรณีศึกษาที่ 2</span>
+            </div>
+            <h2><i class="fas fa-tags"></i> 4 ระดับกับ ร้านสะดวกซื้อ: มาม่าคัพและไส้กรอก</h2>
+
+            <div class="slide-body">
+                <div style="display: grid; grid-template-columns: 1.55fr 0.95fr; gap: 16px; align-items: stretch; flex: 1; height: 100%;">
+                    <table class="comp-table" style="margin: 0; height: 100%;">
+                        <thead>
+                            <tr>
+                                <th style="width: 36%;">ระดับการวิเคราะห์</th>
+                                <th>คำถาม & การหาคำตอบจากข้อมูล</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <strong style="color: #475569;">1. Descriptive (พรรณนา)</strong><br>
+                                    <span style="font-size: 0.9em; color: var(--primary); font-weight: 700;">"เกิดอะไรขึ้น?"</span>
+                                </td>
+                                <td><strong>ข้อมูลบอกว่า:</strong> ช่วงดึก (23.00 - 03.00 น.) "บะหมี่คัพ" มักถูกซื้อพร้อมกับ "ไส้กรอก/ไข่ออนเซ็น" สูงถึง 65%</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong style="color: var(--secondary);">2. Diagnostic (วินิจฉัย)</strong><br>
+                                    <span style="font-size: 0.9em; color: var(--primary); font-weight: 700;">"ทำไมถึงเกิดสิ่งนี้?"</span>
+                                </td>
+                                <td><strong>สาเหตุ:</strong> คนหิวดึกต้องการอาหารร้อนที่อิ่มท้อง ทานง่าย และไส้กรอกช่วยเพิ่มโปรตีนให้อิ่มนานขึ้น</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong style="color: var(--accent-warm);">3. Predictive (พยากรณ์)</strong><br>
+                                    <span style="font-size: 0.9em; color: var(--primary); font-weight: 700;">"อะไรจะเกิดขึ้นต่อไป?"</span>
+                                </td>
+                                <td><strong>แนวโน้ม:</strong> ยอดขายคู่นี้จะพุ่งสูงขึ้น 2 เท่าในคืนวันศุกร์-เสาร์ และช่วงฤดูสอบของนักศึกษา</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong style="color: var(--success);">4. Prescriptive (แนะนำ)</strong><br>
+                                    <span style="font-size: 0.9em; color: var(--primary); font-weight: 700;">"เราควรทำอย่างไรดี?"</span>
+                                </td>
+                                <td><strong>กลยุทธ์ร้าน:</strong> ย้ายตู้แช่ไส้กรอกมาไว้ติดกับจุดกดน้ำร้อน และจัดโปรโมชั่นเซ็ต "คู่หูดึกดื่น" เพิ่มยอดขายต่อบิลทันที</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div style="border-radius: 14px; overflow: hidden; box-shadow: var(--shadow-md); border: 1px solid var(--border-card); height: 100%;">
+                        <img src="images/convenience_store.jpg" style="width: 100%; height: 100%; object-fit: cover; margin: 0; display: block;" alt="Convenience Store Analytics">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 13: Case Study 4 Levels (Food Delivery Rider) -->
+        <section>
+            <div class="slide-header">
+                <span><i class="fas fa-motorcycle"></i> Case Study: 4 Levels of Analytics</span>
+                <span>กรณีศึกษาที่ 3</span>
+            </div>
+            <h2><i class="fas fa-map-marker-alt"></i> 4 ระดับกับ แอปส่งอาหารและพี่ไรเดอร์</h2>
+
+            <div class="slide-body">
+                <div style="display: grid; grid-template-columns: 1.55fr 0.95fr; gap: 16px; align-items: stretch; flex: 1; height: 100%;">
+                    <table class="comp-table" style="margin: 0; height: 100%;">
+                        <thead>
+                            <tr>
+                                <th style="width: 36%;">ระดับการวิเคราะห์</th>
+                                <th>การวิเคราะห์และการตัดสินใจ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <strong style="color: #475569;">1. Descriptive (พรรณนา)</strong><br>
+                                    <span style="font-size: 0.9em; color: var(--primary); font-weight: 700;">"เกิดอะไรขึ้น?"</span>
+                                </td>
+                                <td><strong>ข้อมูลบอกว่า:</strong> ช่วง 11.30 - 13.00 น. ออเดอร์กระจุกตัวในย่านออฟฟิศหนาแน่น แต่ไรเดอร์รับงานไม่ทัน ลูกค้ารอนาน</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong style="color: var(--secondary);">2. Diagnostic (วินิจฉัย)</strong><br>
+                                    <span style="font-size: 0.9em; color: var(--primary); font-weight: 700;">"ทำไมถึงเกิดสิ่งนี้?"</span>
+                                </td>
+                                <td><strong>สาเหตุ:</strong> ไรเดอร์ส่วนใหญ่จอดรอตามชานเมือง/ที่พัก ทำให้ขับฝ่ารถติดเข้ามาไม่ทันเวลาลูกค้าหิว</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong style="color: var(--accent-warm);">3. Predictive (พยากรณ์)</strong><br>
+                                    <span style="font-size: 0.9em; color: var(--primary); font-weight: 700;">"อะไรจะเกิดขึ้นต่อไป?"</span>
+                                </td>
+                                <td><strong>แนวโน้ม:</strong> พรุ่งนี้พยากรณ์อากาศระบุว่าฝนจะตกช่วงเที่ยง ออเดอร์ในย่านออฟฟิศจะพุ่งสูงขึ้นอีก 50%</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong style="color: var(--success);">4. Prescriptive (แนะนำ)</strong><br>
+                                    <span style="font-size: 0.9em; color: var(--primary); font-weight: 700;">"เราควรทำอย่างไรดี?"</span>
+                                </td>
+                                <td><strong>คำแนะนำระบบ:</strong> ส่งแจ้งเตือนและให้โบนัสพิเศษ (Incentive) ดึงไรเดอร์เข้ามาสแตนด์บายแถวออฟฟิศตั้งแต่ 11.00 น. ก่อนฝนตก</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div style="border-radius: 14px; overflow: hidden; box-shadow: var(--shadow-md); border: 1px solid var(--border-card); height: 100%;">
+                        <img src="images/delivery_rider.jpg" style="width: 100%; height: 100%; object-fit: cover; margin: 0; display: block;" alt="Delivery Rider Analytics">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 14: Kahoot! Quiz Game -->
+        <section data-background-color="#46178f">
+            <div style="text-align: center; margin: auto 0; color: white;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Kahoot_Logo.svg" alt="Kahoot" style="height: 110px; margin-bottom: 24px; filter: brightness(0) invert(1);">
+                <h1 style="font-size: 2.8em; color: white; margin-bottom: 16px;">ได้เวลา Quiz Game!</h1>
+                <p style="font-size: 1.15em; opacity: 0.95; line-height: 1.6;">
+                    ทบทวน: การตั้งคำถามธุรกิจ, การตั้งสมมติฐาน และ 4 ระดับการวิเคราะห์<br>
+                    เตรียมสมาร์ตโฟนให้พร้อม แล้วเข้าเว็บ <strong>kahoot.it</strong>
+                </p>
+                <div style="margin-top: 30px;">
+                    <span style="font-size: 1.8em; font-weight: 800; background: white; color: #46178f; padding: 10px 32px; border-radius: 12px; font-family: 'Fira Code', monospace; box-shadow: 0 8px 20px rgba(0,0,0,0.2);">PIN: _ _ _ _ _ _</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 15: Wrap up & Session 3 Preview -->
+        <section data-background-gradient="radial-gradient(circle at 50% 50%, #eff6ff 0%, #f8fafc 100%)">
+            <div class="slide-header">
+                <span><i class="fas fa-check-circle"></i> บทสรุปวันนี้</span>
+                <span>Wrap Up</span>
+            </div>
+            <h2><i class="fas fa-flag-checkered"></i> สรุปประเด็นสำคัญ (Takeaways)</h2>
+
+            <div class="slide-body">
+                <div class="grid-2">
+                    <div class="glass-card" style="border-top: 4px solid var(--primary); padding: 12px 16px;">
+                        <h3 style="color: var(--primary); font-size: 0.95em; margin-bottom: 6px;">
+                            <i class="fas fa-brain"></i> 1. Data Thinking & Right Questions
+                        </h3>
+                        <p style="font-size: 0.78em; line-height: 1.5; color: var(--text-sub); margin: 0;">
+                            เริ่มที่ปัญหาธุรกิจเสมอ ตั้งคำถามที่ <strong>ชัดเจน เจาะจง วัดผลได้ และนำไป Action ต่อได้ทันที</strong> ระวังอย่าตกหลุมพราง Correlation ≠ Causation
+                        </p>
+                    </div>
+                    <div class="glass-card" style="border-top: 4px solid var(--secondary); padding: 12px 16px;">
+                        <h3 style="color: var(--secondary); font-size: 0.95em; margin-bottom: 6px;">
+                            <i class="fas fa-flask"></i> 2. Hypothesis Thinking (3 ขั้นตอน)
+                        </h3>
+                        <p style="font-size: 0.78em; line-height: 1.5; color: var(--text-sub); margin: 0;">
+                            <strong>พบปัญหา &rarr; ตั้งสมมติฐาน &rarr; หาข้อมูลพิสูจน์</strong> ช่วยให้เราหาหลักฐานได้ตรงเป้าหมาย ประหยัดเวลา และไม่ต้องงมในตัวเลข
+                        </p>
+                    </div>
+                </div>
+
+                <div class="glass-card" style="margin-top: 10px; border-top: 4px solid var(--accent-warm); padding: 12px 16px;">
+                    <h3 style="color: var(--accent-warm); font-size: 0.95em; margin-bottom: 6px;">
+                        <i class="fas fa-layer-group"></i> 3. 4 Levels of Analytics
+                    </h3>
+                    <p style="font-size: 0.78em; line-height: 1.5; color: var(--text-sub); margin: 0;">
+                        Descriptive (เกิดอะไรขึ้น) &rarr; Diagnostic (ทำไมถึงเกิด) &rarr; Predictive (อะไรจะเกิดต่อ) &rarr; Prescriptive (ควรทำอย่างไรดี)
+                    </p>
+                </div>
+
+                <div style="margin-top: 12px; display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; background: white; border-radius: 12px; border: 1px solid var(--border-card);">
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 2px;">
+                            <h3 style="font-size: 0.92em; color: var(--accent-warm); margin: 0;"><i class="fas fa-arrow-right"></i> ครั้งที่ 3 สัปดาห์หน้า</h3>
+                            <span class="badge badge-primary">Session 3 Preview</span>
+                        </div>
+                        <p style="font-size: 0.78em; font-weight: 700; color: var(--text-main); margin-bottom: 2px;">
+                            ประเภทข้อมูลและแหล่งข้อมูลสำหรับเจ้าของธุรกิจ (COLLECT)
+                        </p>
+                        <p style="font-size: 0.7em; color: var(--text-muted); margin: 0;">
+                            Structured vs Unstructured · แหล่งข้อมูลภายใน (POS, LINE OA) · แหล่งข้อมูลภายนอก (Google Trends) · PDPA เบื้องต้น
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 16: Workshop Introduction -->
+        <section data-background-gradient="radial-gradient(circle at 50% 50%, #f0fdf4 0%, #f8fafc 100%)">
+            <div class="slide-header">
+                <span><i class="fas fa-laptop-code"></i> Workshop</span>
+                <span>Session 2 Workshop</span>
+            </div>
+            <h2><i class="fas fa-users"></i> กิจกรรม: "ถ้าฉันเป็นเจ้าของธุรกิจ"</h2>
+            
+            <div class="slide-body">
+                <div class="glass-card" style="border: 2px solid var(--success); padding: 20px; flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <h3 style="color: var(--success); font-size: 1.1em; margin-bottom: 12px;">
+                            <i class="fas fa-tasks"></i> สิ่งที่ต้องทำใน Workshop (กลุ่มละ 4-5 คน)
+                        </h3>
+                        <ul style="font-size: 0.88em; line-height: 1.6; margin: 0; padding-left: 22px;">
+                            <li><strong>1. จำลองธุรกิจ:</strong> เลือกธุรกิจ 1 ประเภทที่กลุ่มสนใจ (เช่น คาเฟ่, เสื้อผ้าออนไลน์, บุฟเฟต์)</li>
+                            <li><strong>2. ตั้งคำถาม 5 ข้อ:</strong> คิดคำถามธุรกิจที่อยากรู้คำตอบ พร้อมระบุระดับการวิเคราะห์ (1-4)</li>
+                            <li><strong>3. ตั้งสมมติฐาน 3 ข้อ:</strong> เลือก 3 คำถามมาตั้งสมมติฐาน (คาดเดาสาเหตุอย่างมีหลักการ)</li>
+                            <li><strong>4. วางแผนหาข้อมูล:</strong> ระบุว่าต้องใช้ชุดข้อมูลหรือตัวเลขใดบ้างเพื่อนำมาพิสูจน์สมมติฐาน</li>
+                        </ul>
+                    </div>
+                    <div style="background: #f0fdf4; border: 1px dashed #86efac; border-radius: 8px; padding: 10px 14px;">
+                        <p style="font-size: 0.78em; margin: 0; color: #166534;">
+                            📌 <strong>การส่งงาน:</strong> เปิด Google Docs / Slides ของกลุ่มตนเอง พิมพ์สรุปและแชร์ลิงก์ส่งให้ผู้สอนท้ายคาบ
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<div class="deck-footer">
+    <span>📘 Fundamentals of Data Science | ม.ศรีปทุม</span>
+    <span>อาจารย์สุรชัย โกยสันติสุข</span>
+</div>
+
+<!-- Aspect Ratio Toggle Button -->
+<button id="aspect-toggle" onclick="toggleAspectRatio()" title="สลับอัตราส่วนหน้าจอ 16:10 / 16:9 (ปัจจุบัน: 16:10)" aria-label="Toggle Aspect Ratio">
+    <i class="fas fa-desktop"></i>
+</button>
+
+<!-- Test Report Overlay -->
+<div id="test-report-overlay">
+    <h3>
+        <span>Automated Slide Inspector</span>
+        <button onclick="document.getElementById('test-report-overlay').style.display='none'" style="background:none; border:none; color:var(--text-main); font-size:14px; cursor:pointer;">✕</button>
+    </h3>
+    <div id="test-report-content">Running automated test...</div>
+</div>
+
+<!-- Reveal.js Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/notes/notes.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/highlight/highlight.js"></script>
+<script>
+    const deck = new Reveal({
+        width: 1280,
+        height: 800,
+        margin: 0.04,
+        minScale: 0.1,
+        maxScale: 3.0,
+        controls: true,
+        progress: true,
+        center: false,
+        hash: true,
+        transition: 'slide',
+        transitionSpeed: 'default',
+        plugins: [ RevealNotes, RevealHighlight ]
+    });
+
+    deck.initialize().then(() => {
+        // Expose test function to window for automation
+        window.runSlideHeightAudit = function() {
+            const sections = document.querySelectorAll('.reveal .slides > section');
+            const results = [];
+            let totalPassed = 0;
+            const containerHeight = deck.getConfig().height;
+
+            sections.forEach((sec, idx) => {
+                const scrollH = sec.scrollHeight;
+                const clientH = sec.clientHeight || containerHeight;
+                const isOverflown = scrollH > containerHeight + 2; // allowance 2px
+                
+                if (!isOverflown) totalPassed++;
+
+                results.push({
+                    slideIndex: idx + 1,
+                    title: sec.querySelector('h1, h2')?.innerText?.trim()?.substring(0, 30) || `Slide ${idx+1}`,
+                    scrollHeight: scrollH,
+                    containerHeight: containerHeight,
+                    passed: !isOverflown
+                });
+            });
+
+            const summary = {
+                totalSlides: sections.length,
+                passedCount: totalPassed,
+                failedCount: sections.length - totalPassed,
+                isAllPassed: totalPassed === sections.length,
+                details: results
+            };
+
+            // Render to overlay if visible
+            const overlay = document.getElementById('test-report-overlay');
+            const content = document.getElementById('test-report-content');
+            if (overlay && content) {
+                let html = `<div style="margin-bottom: 8px; font-weight: bold; color: ${summary.isAllPassed ? '#059669' : '#dc2626'}">
+                    Result: ${summary.passedCount}/${summary.totalSlides} slides passed (${summary.isAllPassed ? '100% OK' : 'OVERFLOW DETECTED'})
+                </div>`;
+                results.forEach(r => {
+                    html += `<div class="test-row">
+                        <span>#${r.slideIndex} ${r.title}</span>
+                        <span class="${r.passed ? 'test-pass' : 'test-fail'}">${r.scrollHeight}px / ${containerHeight}px ${r.passed ? '✓' : '✗'}</span>
+                    </div>`;
+                });
+                content.innerHTML = html;
+            }
+
+            return summary;
+        };
+
+        // Check if ?test=true is in URL or press 't' key
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('test') === 'true') {
+            document.getElementById('test-report-overlay').style.display = 'block';
+            setTimeout(() => {
+                const res = window.runSlideHeightAudit();
+                console.log("SLIDE_AUDIT_RESULT:", JSON.stringify(res));
+            }, 800);
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 't' || e.key === 'T') {
+                const overlay = document.getElementById('test-report-overlay');
+                overlay.style.display = overlay.style.display === 'block' ? 'none' : 'block';
+                if (overlay.style.display === 'block') {
+                    window.runSlideHeightAudit();
+                }
+            }
+        });
+    });
+
+    // Toggle Aspect Ratio
+    function toggleAspectRatio() {
+        const btn = document.getElementById('aspect-toggle');
+        if (deck.getConfig().height === 800) {
+            // Switch to 16:9
+            deck.configure({ width: 1280, height: 720 });
+            if (btn) btn.title = 'สลับอัตราส่วนหน้าจอ 16:10 / 16:9 (ปัจจุบัน: 16:9)';
+        } else {
+            // Switch to 16:10
+            deck.configure({ width: 1280, height: 800 });
+            if (btn) btn.title = 'สลับอัตราส่วนหน้าจอ 16:10 / 16:9 (ปัจจุบัน: 16:10)';
+        }
+    }
+</script>
+</body>
+</html>

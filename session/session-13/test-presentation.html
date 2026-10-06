@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automated Layout Test Runner — Session 13 Presentation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Noto+Sans+Thai:wght@400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0b0f19;
+            --surface: #131b2e;
+            --border: #1e293b;
+            --primary: #6366f1;
+            --secondary: #06b6d4;
+            --success: #10b981;
+            --fail: #f43f5e;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Outfit', 'Noto Sans Thai', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            padding: 24px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-run {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-run:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .btn-run.secondary {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        .summary-card {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .metric {
+            background: var(--surface);
+            padding: 16px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .metric .val {
+            font-size: 2rem;
+            font-weight: 700;
+            font-family: 'Fira Code', monospace;
+            margin-bottom: 4px;
+        }
+
+        .metric .lbl {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .table-container {
+            background: var(--surface);
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background: rgba(0,0,0,0.2);
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .badge-status {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            font-family: 'Fira Code', monospace;
+        }
+
+        .badge-pass {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+        }
+
+        .badge-fail {
+            background: rgba(244, 63, 94, 0.2);
+            color: var(--fail);
+            border: 1px solid rgba(244, 63, 94, 0.4);
+        }
+
+        .preview-pane {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 320px;
+            height: 200px;
+            border: 2px solid var(--primary);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            background: #fff;
+            z-index: 1000;
+            opacity: 0.85;
+            transition: opacity 0.2s;
+        }
+
+        .preview-pane:hover {
+            opacity: 1;
+        }
+
+        iframe {
+            width: 1280px;
+            height: 800px;
+            border: none;
+            transform: scale(0.25);
+            transform-origin: 0 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>
+        <span>🧪</span> Automated Layout Test Runner — Session 13
+    </h1>
+    <div class="controls">
+        <button id="run-btn-800" class="btn-run" onclick="runAutomatedTests(800)">▶ Test 16:10 (1280x800 Default)</button>
+        <button id="run-btn-720" class="btn-run secondary" onclick="runAutomatedTests(720)">▶ Test 16:9 (1280x720)</button>
+    </div>
+</div>
+
+<div class="summary-card">
+    <div class="metric">
+        <div class="val" id="metric-total">-</div>
+        <div class="lbl">Total Slides</div>
+    </div>
+    <div class="metric">
+        <div class="val" id="metric-passed" style="color: var(--success);">-</div>
+        <div class="lbl">Passed</div>
+    </div>
+    <div class="metric">
+        <div class="val" id="metric-failed" style="color: var(--fail);">-</div>
+        <div class="lbl">Failed</div>
+    </div>
+    <div class="metric">
+        <div class="val" id="metric-rate">-</div>
+        <div class="lbl">Pass Rate</div>
+    </div>
+</div>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 80px;">Slide</th>
+                <th>Header / Title</th>
+                <th style="width: 140px;">Content Height</th>
+                <th style="width: 120px;">Viewport Limit</th>
+                <th style="width: 120px;">Margin</th>
+                <th style="width: 100px;">Status</th>
+            </tr>
+        </thead>
+        <tbody id="test-results-body">
+            <tr>
+                <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 24px;">
+                    Loading slides and preparing tests...
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="preview-pane">
+    <iframe id="presentation-frame" src="session-13-presentation.html"></iframe>
+</div>
+
+<script>
+    const frame = document.getElementById('presentation-frame');
+
+    async function runAutomatedTests(targetHeight = 800) {
+        frame.style.height = targetHeight + 'px';
+        const btn720 = document.getElementById('run-btn-720');
+        const btn800 = document.getElementById('run-btn-800');
+        
+        btn720.disabled = true;
+        btn800.disabled = true;
+        
+        if (targetHeight === 800) {
+            btn800.innerText = "⏳ Running...";
+        } else {
+            btn720.innerText = "⏳ Running...";
+        }
+
+        // Wait for frame to be fully loaded
+        const win = frame.contentWindow;
+        const doc = frame.contentDocument || win.document;
+
+        if (!win.Reveal || !win.Reveal.isReady()) {
+            await new Promise(resolve => {
+                const checkReady = setInterval(() => {
+                    if (win.Reveal && win.Reveal.isReady && win.Reveal.isReady()) {
+                        clearInterval(checkReady);
+                        resolve();
+                    }
+                }, 100);
+            });
+        }
+
+        const reveal = win.Reveal;
+        reveal.configure({
+            width: 1280,
+            height: targetHeight
+        });
+
+        await new Promise(r => setTimeout(r, 200));
+
+        const sections = doc.querySelectorAll('.reveal .slides > section');
+        const tbody = document.getElementById('test-results-body');
+        tbody.innerHTML = '';
+
+        let passed = 0;
+        let failed = 0;
+        const total = sections.length;
+        const maxHeight = targetHeight;
+
+        for (let i = 0; i < total; i++) {
+            reveal.slide(i);
+            await new Promise(r => setTimeout(r, 80));
+
+            const sec = sections[i];
+            const scrollH = sec.scrollHeight;
+            const title = sec.querySelector('h1, h2')?.innerText?.trim() || `Slide ${i+1}`;
+            
+            // Allow 4px threshold for sub-pixel rendering differences
+            const isPass = scrollH <= maxHeight + 4; 
+            const margin = maxHeight - scrollH;
+
+            if (isPass) {
+                passed++;
+            } else {
+                failed++;
+            }
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td style="font-family: 'Fira Code', monospace; font-weight: 600;">#${i+1}</td>
+                <td><strong>${title.substring(0, 45)}</strong></td>
+                <td style="font-family: 'Fira Code', monospace; color: ${isPass ? 'var(--text)' : 'var(--fail)'};">${scrollH}px</td>
+                <td style="font-family: 'Fira Code', monospace; color: var(--text-muted);">${maxHeight}px</td>
+                <td style="font-family: 'Fira Code', monospace; color: ${margin >= 0 ? 'var(--success)' : 'var(--fail)'};">${margin >= 0 ? '+' + margin : margin}px</td>
+                <td><span class="badge-status ${isPass ? 'badge-pass' : 'badge-fail'}">${isPass ? 'PASS' : 'FAIL'}</span></td>
+            `;
+            tbody.appendChild(tr);
+        }
+
+        // Update metrics
+        document.getElementById('metric-total').innerText = total;
+        document.getElementById('metric-passed').innerText = passed;
+        document.getElementById('metric-failed').innerText = failed;
+        const rate = Math.round((passed / total) * 100);
+        document.getElementById('metric-rate').innerText = rate + '%';
+
+        // Reset buttons
+        btn720.disabled = false;
+        btn800.disabled = false;
+        btn720.innerText = "▶ Test 16:9 (1280x720)";
+        btn800.innerText = "▶ Test 16:10 (1280x800 Default)";
+
+        console.log(`TEST RUNNER COMPLETE: ${passed}/${total} passed (${rate}%) at ${maxHeight}px`);
+        window._testResults = { total, passed, failed, rate };
+        return { total, passed, failed, rate };
+    }
+
+    frame.onload = () => {
+        setTimeout(() => runAutomatedTests(800), 500);
+    };
+</script>
+
+</body>
+</html>

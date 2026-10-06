@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ใบงาน Workshop ครั้งที่ 14 — "Final Evaluation, Peer Scorecard & Future Action Plan"</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #3730a3;
+            --primary-light: #eef2ff;
+            --secondary: #0284c7;
+            --secondary-light: #e0f2fe;
+            --purple: #7c3aed;
+            --purple-light: #f3e8ff;
+            --accent: #e11d48;
+            --accent-warm: #d97706;
+            --success: #059669;
+            --success-light: #ecfdf5;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text-main: #0f172a;
+            --text-sub: #334155;
+            --text-muted: #64748b;
+            --border: #cbd5e1;
+            --border-focus: #4f46e5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Noto Sans Thai', 'Outfit', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 30px 20px;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            background: var(--surface);
+            padding: 40px 45px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.08), 0 8px 10px -6px rgba(0,0,0,0.04);
+            border: 1px solid var(--border);
+        }
+
+        header {
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 24px;
+            margin-bottom: 28px;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .badges {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .badge-indigo { background: var(--primary-light); color: var(--primary-dark); }
+        .badge-gold { background: #fef3c7; color: #92400e; }
+        .badge-emerald { background: var(--success-light); color: var(--success); }
+        .badge-purple { background: var(--purple-light); color: var(--purple); }
+
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--text-main);
+            line-height: 1.3;
+            margin-bottom: 6px;
+        }
+
+        .subtitle {
+            font-size: 0.95rem;
+            color: var(--text-sub);
+        }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            background: var(--bg);
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin-top: 18px;
+            font-size: 0.85rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .meta-item strong {
+            color: var(--text-main);
+        }
+
+        /* Section Styling */
+        section {
+            margin-bottom: 35px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .section-title i {
+            color: var(--primary);
+        }
+
+        .section-desc {
+            font-size: 0.9rem;
+            color: var(--text-sub);
+            margin-bottom: 16px;
+        }
+
+        /* Input Controls */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-sub);
+            margin-bottom: 6px;
+        }
+
+        input[type="text"], input[type="number"], textarea, select {
+            width: 100%;
+            padding: 10px 14px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            color: var(--text-main);
+            background: #ffffff;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        input[type="text"]:focus, input[type="number"]:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+            line-height: 1.5;
+        }
+
+        /* Cards & Grids */
+        .card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .card-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .score-pill {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-weight: 800;
+            font-size: 0.85rem;
+        }
+
+        /* Callout Boxes */
+        .callout {
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            margin: 12px 0;
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+
+        .callout-amber {
+            background: #fffbeb;
+            border-left: 4px solid var(--accent-warm);
+            color: #92400e;
+        }
+
+        .callout-emerald {
+            background: var(--success-light);
+            border-left: 4px solid var(--success);
+            color: #065f46;
+        }
+
+        .callout-indigo {
+            background: var(--primary-light);
+            border-left: 4px solid var(--primary);
+            color: var(--primary-dark);
+        }
+
+        /* Action Buttons */
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 24px;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: var(--text-sub);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        /* Toast */
+        #toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #0f172a;
+            color: #ffffff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        #toast.show {
+            opacity: 1;
+        }
+
+        @media print {
+            body {
+                background: #ffffff;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+                border: none;
+                padding: 0;
+                max-width: 100%;
+            }
+            .btn-group, #toast {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="toast">บันทึกข้อมูลเรียบร้อยแล้ว</div>
+
+    <div class="container">
+        <header>
+            <div class="header-top">
+                <div class="badges">
+                    <span class="badge badge-indigo"><i class="fas fa-graduation-cap"></i> ภาคเรียนที่ 1/2569</span>
+                    <span class="badge badge-gold"><i class="fas fa-trophy"></i> ครั้งที่ 14 / 14 (GRAND FINALE)</span>
+                    <span class="badge badge-emerald"><i class="fas fa-chart-line"></i> Final Scorecard & Reflection</span>
+                    <span class="badge badge-purple"><i class="fas fa-award"></i> 20 คะแนน</span>
+                </div>
+            </div>
+            <h1>ใบงาน Workshop ครั้งที่ 14: "Final Scorecard & Future Action Plan"</h1>
+            <p class="subtitle">ใบคะแนนประเมินเพื่อนร่วมชั้น, ถอดบทเรียนรวบยอด 14 สัปดาห์ และแผนยุทธศาสตร์ข้อมูล 90 วัน</p>
+            
+            <div class="meta-grid">
+                <div class="meta-item"><strong>รายวิชา:</strong> Fundamentals of Data Science</div>
+                <div class="meta-item"><strong>เวลาปฏิบัติการ:</strong> ตลอดคาบเรียน 150 นาที</div>
+                <div class="meta-item"><strong>ผู้ประเมิน:</strong> นักศึกษารายบุคคลและกลุ่ม</div>
+                <div class="meta-item"><strong>ผู้สอน:</strong> อ.สุรชัย โกยสันติสุข (คณะการสร้างเจ้าของธุรกิจ)</div>
+            </div>
+        </header>
+
+        <!-- EVALUATOR INFO -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-user-check"></i> ข้อมูลผู้ประเมิน</h2>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="eval-name">ชื่อ-นามสกุล และ รหัสนักศึกษา:</label>
+                    <input type="text" id="eval-name" placeholder="เช่น นายวริศ สมบูรณ์ รหัส 68123456">
+                </div>
+                <div class="form-group">
+                    <label for="eval-group">กลุ่มของตนเอง / ชื่อธุรกิจ:</label>
+                    <input type="text" id="eval-group" placeholder="เช่น กลุ่มที่ 2 (Smart Shabu)">
+                </div>
+            </div>
+        </section>
+
+        <!-- PART 1: PEER EVALUATION ARENA -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-scale-balanced"></i> ส่วนที่ 1: ตารางใบคะแนนประเมินเพื่อนร่วมชั้น (Peer Scorecard) (10 คะแนน)</h2>
+            <p class="section-desc">ประเมินกลุ่มเพื่อนที่ขึ้นนำเสนออย่างน้อย 3 กลุ่ม ให้คะแนน 3 มิติ (เต็ม 10 คะแนน) พร้อมระบุข้อเสนอแนะ:</p>
+
+            <!-- PEER 1 -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title"><i class="fas fa-users" style="color: var(--primary);"></i> 1.1 ประเมินกลุ่มที่ 1</div>
+                    <span class="score-pill" id="peer1-total-badge">คะแนนรวม: 0 / 10</span>
+                </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>กลุ่มที่ประเมิน / ชื่อธุรกิจ:</label>
+                        <input type="text" id="p1-name" placeholder="เช่น กลุ่มที่ 1 (Craft Coffee POS)">
+                    </div>
+                    <div class="form-group">
+                        <label>มิติที่ 1: โจทย์ & Insight ดาต้า (เต็ม 4):</label>
+                        <input type="number" id="p1-s1" min="0" max="4" placeholder="0–4" oninput="calcPeer1()">
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>มิติที่ 2: Action Plan & ROI ชัดเจน (เต็ม 3):</label>
+                        <input type="number" id="p1-s2" min="0" max="3" placeholder="0–3" oninput="calcPeer1()">
+                    </div>
+                    <div class="form-group">
+                        <label>มิติที่ 3: สไลด์สวยงาม & คุมเวลา 10 นาที (เต็ม 3):</label>
+                        <input type="number" id="p1-s3" min="0" max="3" placeholder="0–3" oninput="calcPeer1()">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label style="color: #166534;"><i class="fas fa-thumbs-up"></i> I Like... (สิ่งที่ประทับใจที่สุด):</label>
+                    <textarea id="p1-like" rows="2" placeholder="เช่น ชอบการค้นพบ Insight ลูกค้าช่วงเช้า และการคิด ROI คมชัดมาก..."></textarea>
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label style="color: #92400e;"><i class="fas fa-wand-magic-sparkles"></i> I Wish... (สิ่งที่อยากเห็นเพิ่มเติม):</label>
+                    <textarea id="p1-wish" rows="2" placeholder="เช่น อยากให้เพิ่มตาราง Appendix ตอบข้อสงสัยช่วง Q&A ให้ละเอียดขึ้น..."></textarea>
+                </div>
+            </div>
+
+            <!-- PEER 2 -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title"><i class="fas fa-users" style="color: var(--secondary);"></i> 1.2 ประเมินกลุ่มที่ 2</div>
+                    <span class="score-pill" id="peer2-total-badge">คะแนนรวม: 0 / 10</span>
+                </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>กลุ่มที่ประเมิน / ชื่อธุรกิจ:</label>
+                        <input type="text" id="p2-name" placeholder="เช่น กลุ่มที่ 4 (Fashion Churn Analysis)">
+                    </div>
+                    <div class="form-group">
+                        <label>มิติที่ 1: โจทย์ & Insight ดาต้า (เต็ม 4):</label>
+                        <input type="number" id="p2-s1" min="0" max="4" placeholder="0–4" oninput="calcPeer2()">
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>มิติที่ 2: Action Plan & ROI ชัดเจน (เต็ม 3):</label>
+                        <input type="number" id="p2-s2" min="0" max="3" placeholder="0–3" oninput="calcPeer2()">
+                    </div>
+                    <div class="form-group">
+                        <label>มิติที่ 3: สไลด์สวยงาม & คุมเวลา 10 นาที (เต็ม 3):</label>
+                        <input type="number" id="p2-s3" min="0" max="3" placeholder="0–3" oninput="calcPeer2()">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label style="color: #166534;"><i class="fas fa-thumbs-up"></i> I Like... (สิ่งที่ประทับใจที่สุด):</label>
+                    <textarea id="p2-like" rows="2" placeholder="ความคิดเห็นเชิงบวก..."></textarea>
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label style="color: #92400e;"><i class="fas fa-wand-magic-sparkles"></i> I Wish... (สิ่งที่อยากเห็นเพิ่มเติม):</label>
+                    <textarea id="p2-wish" rows="2" placeholder="ข้อเสนอแนะเชิงพัฒนา..."></textarea>
+                </div>
+            </div>
+
+            <!-- PEER 3 -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title"><i class="fas fa-users" style="color: var(--purple);"></i> 1.3 ประเมินกลุ่มที่ 3</div>
+                    <span class="score-pill" id="peer3-total-badge">คะแนนรวม: 0 / 10</span>
+                </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>กลุ่มที่ประเมิน / ชื่อธุรกิจ:</label>
+                        <input type="text" id="p3-name" placeholder="เช่น กลุ่มที่ 5 (GreenFresh Organic)">
+                    </div>
+                    <div class="form-group">
+                        <label>มิติที่ 1: โจทย์ & Insight ดาต้า (เต็ม 4):</label>
+                        <input type="number" id="p3-s1" min="0" max="4" placeholder="0–4" oninput="calcPeer3()">
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>มิติที่ 2: Action Plan & ROI ชัดเจน (เต็ม 3):</label>
+                        <input type="number" id="p3-s2" min="0" max="3" placeholder="0–3" oninput="calcPeer3()">
+                    </div>
+                    <div class="form-group">
+                        <label>มิติที่ 3: สไลด์สวยงาม & คุมเวลา 10 นาที (เต็ม 3):</label>
+                        <input type="number" id="p3-s3" min="0" max="3" placeholder="0–3" oninput="calcPeer3()">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label style="color: #166534;"><i class="fas fa-thumbs-up"></i> I Like... (สิ่งที่ประทับใจที่สุด):</label>
+                    <textarea id="p3-like" rows="2" placeholder="ความคิดเห็นเชิงบวก..."></textarea>
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label style="color: #92400e;"><i class="fas fa-wand-magic-sparkles"></i> I Wish... (สิ่งที่อยากเห็นเพิ่มเติม):</label>
+                    <textarea id="p3-wish" rows="2" placeholder="ข้อเสนอแนะเชิงพัฒนา..."></textarea>
+                </div>
+            </div>
+        </section>
+
+        <!-- PART 2: DELIVERABLES CONFIRMATION -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-folder-check"></i> ส่วนที่ 2: ยืนยันการส่งมอบ 4 ชิ้นงานโปรเจกต์กลุ่ม (40% Deliverables)</h2>
+            <div class="card">
+                <div class="form-group">
+                    <label>1. ลิงก์ Google Sheets ข้อมูลคลีน (Tidy Data & Masking PII):</label>
+                    <input type="text" id="final-url-sheets" placeholder="วาง URL Google Sheets">
+                </div>
+                <div class="form-group">
+                    <label>2. ลิงก์ Gemini Prompt Log (ประวัติการแชตเจาะลึกและ Fact-Check):</label>
+                    <input type="text" id="final-url-prompts" placeholder="วาง URL Share Chat หรือ Google Docs">
+                </div>
+                <div class="form-group">
+                    <label>3. ลิงก์ Master Presentation Deck (Google Slides 5–7 หน้า C-I-A):</label>
+                    <input type="text" id="final-url-slides" placeholder="วาง URL Google Slides">
+                </div>
+                <div class="grid-2" style="margin-bottom: 0;">
+                    <div class="form-group">
+                        <label>4. เวลานำเสนอจริงที่ใช้ (นาที:วินาที):</label>
+                        <input type="text" id="final-pitch-time" placeholder="เช่น 09:50 นาที">
+                    </div>
+                    <div class="form-group">
+                        <label>สถานะเวลา:</label>
+                        <select id="final-pitch-status">
+                            <option value="pass">✅ ทันเวลาพอดี (&le; 10:00 นาที)</option>
+                            <option value="over">⚠️ เกินเวลา (> 10:00 นาที)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PART 3: COURSE EXIT REFLECTION -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-lightbulb"></i> ส่วนที่ 3: ถอดบทเรียนการเติบโตส่วนบุคคล (Course Reflection) (5 คะแนน)</h2>
+            <div class="card">
+                <div class="form-group">
+                    <label>1. Before vs After: ความคิดของคุณเกี่ยวกับข้อมูลเปลี่ยนไปอย่างไรเมื่อเทียบกับวันแรก?</label>
+                    <textarea id="ref-before-after" rows="3" placeholder="เช่น จากเดิมที่คิดว่าการทำธุรกิจอาศัยแค่ดวงกับความรู้สึก วันนี้รู้แล้วว่าข้อมูลช่วยลดความเสี่ยงและทำให้เรากล้าลงทุนอย่างมั่นใจ..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>2. ทักษะหรือเครื่องมือที่ภาคภูมิใจที่สุด (Tidy Data, Gemini, C-I-A, ROI) และทำไมจึงมีค่ากับคุณ?</label>
+                    <textarea id="ref-proud-skill" rows="3" placeholder="เช่น ภูมิใจที่สามารถใช้ Gemini วิเคราะห์หาสาเหตุ Churn ได้ลึกซึ้ง และแปลงเป็นสไลด์ 1 สไลด์ 1 ข้อความให้คนอื่นเข้าใจได้ใน 3 วินาที..."></textarea>
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label>3. บทเรียนจากความผิดพลาด (Failure to Success) ที่กลุ่มของคุณก้าวข้ามมาได้?</label>
+                    <textarea id="ref-mistake-lesson" rows="3" placeholder="เช่น เคยเกือบส่งข้อมูลชื่อลูกค้าเข้า AI แต่รู้ทันและทำ Masking ได้ทันเวลา หรือเคยโดน AI มโนตัวเลขแต่ตรวจจับได้ด้วยสูตร SUM..."></textarea>
+                </div>
+            </div>
+        </section>
+
+        <!-- PART 4: 90-DAY ACTION PLAN -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-rocket"></i> ส่วนที่ 4: แผนยุทธศาสตร์ต่อยอดธุรกิจ 90 วัน (90-Day Action Plan) (5 คะแนน)</h2>
+            <p class="section-desc">วางแผนนำทักษะวิทยาการข้อมูลไปขับเคลื่อนธุรกิจของตนเองหรือครอบครัวภายใน 3 เดือนข้างหน้า:</p>
+            <div class="card">
+                <div class="form-group">
+                    <label>เดือนที่ 1 (Days 1–30: ASK & COLLECT) — เริ่มต้นวางระบบเก็บข้อมูล:</label>
+                    <textarea id="plan-m1" rows="2" placeholder="เช่น สร้าง Google Forms รับออเดอร์ร้านอาหาร และจัดโครงสร้าง Tidy Data ลง Sheets..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>เดือนที่ 2 (Days 31–60: PREPARE & ANALYZE) — เริ่มใช้ AI วิเคราะห์หา Insight:</label>
+                    <textarea id="plan-m2" rows="2" placeholder="เช่น คลีนตารางยอดขายทุกสิ้นเดือน และใช้ Gemini ช่วยจัดกลุ่มลูกค้า (RFM) เพื่อออกแบบโปรโมชันเฉพาะกลุ่ม..."></textarea>
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label>เดือนที่ 3 (Days 61–90: ACT & CONTINUOUS LOOP) — สร้างผลตอบแทนและหมุนวงล้อ:</label>
+                    <textarea id="plan-m3" rows="2" placeholder="เช่น สร้าง Looker Studio Dashboard ดูยอดขายสด และวัดผล ROI แคมเปญเพื่อนำมาตั้งคำถามในรอบถัดไป..."></textarea>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button type="button" class="btn btn-secondary" onclick="window.print()"><i class="fas fa-print"></i> พิมพ์ / บันทึก PDF</button>
+                <button type="button" class="btn btn-primary" onclick="saveToLocalStorage()"><i class="fas fa-save"></i> บันทึกข้อมูลใบงาน</button>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        const inputIds = [
+            'eval-name', 'eval-group',
+            'p1-name', 'p1-s1', 'p1-s2', 'p1-s3', 'p1-like', 'p1-wish',
+            'p2-name', 'p2-s1', 'p2-s2', 'p2-s3', 'p2-like', 'p2-wish',
+            'p3-name', 'p3-s1', 'p3-s2', 'p3-s3', 'p3-like', 'p3-wish',
+            'final-url-sheets', 'final-url-prompts', 'final-url-slides', 'final-pitch-time', 'final-pitch-status',
+            'ref-before-after', 'ref-proud-skill', 'ref-mistake-lesson',
+            'plan-m1', 'plan-m2', 'plan-m3'
+        ];
+
+        function calcPeer1() {
+            const s1 = parseFloat(document.getElementById('p1-s1').value) || 0;
+            const s2 = parseFloat(document.getElementById('p1-s2').value) || 0;
+            const s3 = parseFloat(document.getElementById('p1-s3').value) || 0;
+            const total = Math.min(10, s1 + s2 + s3);
+            document.getElementById('peer1-total-badge').innerText = `คะแนนรวม: ${total} / 10`;
+        }
+
+        function calcPeer2() {
+            const s1 = parseFloat(document.getElementById('p2-s1').value) || 0;
+            const s2 = parseFloat(document.getElementById('p2-s2').value) || 0;
+            const s3 = parseFloat(document.getElementById('p2-s3').value) || 0;
+            const total = Math.min(10, s1 + s2 + s3);
+            document.getElementById('peer2-total-badge').innerText = `คะแนนรวม: ${total} / 10`;
+        }
+
+        function calcPeer3() {
+            const s1 = parseFloat(document.getElementById('p3-s1').value) || 0;
+            const s2 = parseFloat(document.getElementById('p3-s2').value) || 0;
+            const s3 = parseFloat(document.getElementById('p3-s3').value) || 0;
+            const total = Math.min(10, s1 + s2 + s3);
+            document.getElementById('peer3-total-badge').innerText = `คะแนนรวม: ${total} / 10`;
+        }
+
+        function saveToLocalStorage() {
+            const data = {};
+            inputIds.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) data[id] = el.value;
+            });
+            localStorage.setItem('fds_session_14_worksheet', JSON.stringify(data));
+            showToast("บันทึกข้อมูลเรียบร้อยแล้ว (Auto-saved)!");
+        }
+
+        function loadFromLocalStorage() {
+            const raw = localStorage.getItem('fds_session_14_worksheet');
+            if (raw) {
+                try {
+                    const data = JSON.parse(raw);
+                    inputIds.forEach(id => {
+                        const el = document.getElementById(id);
+                        if (el && data[id] !== undefined) {
+                            el.value = data[id];
+                        }
+                    });
+                    calcPeer1();
+                    calcPeer2();
+                    calcPeer3();
+                } catch (e) {
+                    console.error("Error loading saved data", e);
+                }
+            }
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadFromLocalStorage();
+            inputIds.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.addEventListener('input', () => {
+                        clearTimeout(window._autosaveTimer);
+                        window._autosaveTimer = setTimeout(saveToLocalStorage, 800);
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

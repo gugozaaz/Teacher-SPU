@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ใบงาน Workshop ครั้งที่ 2 — "ถ้าฉันเป็นเจ้าของธุรกิจ" (Data Thinking)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #3730a3;
+            --primary-light: #eef2ff;
+            --secondary: #0284c7;
+            --accent: #e11d48;
+            --accent-warm: #d97706;
+            --success: #059669;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text-main: #0f172a;
+            --text-sub: #334155;
+            --text-muted: #64748b;
+            --border: #cbd5e1;
+            --border-focus: #4f46e5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Noto Sans Thai', 'Outfit', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 30px 20px;
+        }
+
+        .container {
+            max-width: 920px;
+            margin: 0 auto;
+            background: var(--surface);
+            padding: 40px 45px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.08), 0 8px 10px -6px rgba(0,0,0,0.04);
+            border: 1px solid var(--border);
+        }
+
+        header {
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header-title h1 {
+            font-size: 1.55rem;
+            color: var(--primary-dark);
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-title p {
+            font-size: 0.92rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .badge-info {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            padding: 8px 16px;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-align: right;
+            border: 1px solid #c7d2fe;
+        }
+
+        .section-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 22px;
+            transition: border-color 0.2s;
+        }
+
+        .section-card:hover {
+            border-color: #94a3b8;
+        }
+
+        .section-title {
+            font-size: 1.12rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title span.step-badge {
+            background: var(--primary);
+            color: white;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 800;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        input[type="text"], textarea, select {
+            width: 100%;
+            padding: 9px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.92rem;
+            color: var(--text-main);
+            background: #fdfdfd;
+            transition: all 0.2s;
+        }
+
+        input[type="text"]:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--border-focus);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 65px;
+        }
+
+        /* Business choice pills */
+        .biz-pills {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .biz-pill-item {
+            position: relative;
+        }
+
+        .biz-pill-item input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .biz-pill-label {
+            display: block;
+            padding: 10px 14px;
+            background: #f1f5f9;
+            border: 2px solid transparent;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.88rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .biz-pill-item input[type="radio"]:checked + .biz-pill-label {
+            background: var(--primary-light);
+            border-color: var(--primary);
+            color: var(--primary-dark);
+        }
+
+        /* Level Pills */
+        .level-pills {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 6px;
+        }
+
+        .level-pill-item label {
+            display: inline-block;
+            padding: 4px 10px;
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 9999px;
+            font-size: 0.76rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-sub);
+        }
+
+        .level-pill-item input[type="radio"]:checked + label {
+            background: #e0f2fe;
+            border-color: var(--secondary);
+            color: #0369a1;
+            font-weight: 700;
+        }
+
+        /* Hypothesis Card */
+        .hypo-card {
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid var(--secondary);
+            border-radius: 8px;
+            padding: 14px 16px;
+            margin-bottom: 14px;
+            background: #f8fafc;
+        }
+
+        .hypo-card.accent {
+            border-left-color: var(--accent);
+            background: #fff1f2;
+        }
+
+        .hypo-card.primary {
+            border-left-color: var(--primary);
+            background: #eef2ff;
+        }
+
+        .hypo-card.success {
+            border-left-color: var(--success);
+            background: #ecfdf5;
+        }
+
+        .btn-toolbar {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.92rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: var(--text-main);
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e1;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+                border: none;
+                padding: 0;
+                max-width: 100%;
+            }
+            .btn-toolbar {
+                display: none;
+            }
+            .section-card {
+                page-break-inside: avoid;
+                border: 1px solid #ccc;
+            }
+            input, textarea {
+                border: 1px solid #ccc !important;
+                background: white !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="header-title">
+            <h1>📝 ใบงาน Workshop ครั้งที่ 2</h1>
+            <p><strong>กิจกรรม: "ถ้าฉันเป็นเจ้าของธุรกิจ" (Data Thinking)</strong></p>
+            <p>วิชา: พื้นฐานวิทยาการข้อมูล (Fundamentals of Data Science) — อาจารย์สุรชัย โกยสันติสุข</p>
+        </div>
+        <div class="badge-info">
+            <div>⏱️ เวลาปฏิบัติ: 60 นาที</div>
+            <div>👥 ขนาดกลุ่ม: 4–5 คน</div>
+        </div>
+    </header>
+
+    <!-- ข้อมูลกลุ่ม -->
+    <div class="section-card">
+        <div class="section-title">
+            <span class="step-badge">👥</span>
+            <span>ข้อมูลกลุ่มและบทบาทสมาชิก</span>
+        </div>
+        <div style="margin-bottom: 10px;">
+            <label style="font-weight: 600; font-size: 0.9rem;">กลุ่มที่ / หมายเลขโต๊ะ:</label>
+            <input type="text" placeholder="ระบุกลุ่ม เช่น กลุ่ม 2 (โต๊ะ A)" style="width: 250px; display: inline-block; margin-left: 10px;">
+        </div>
+        <div class="team-grid">
+            <div class="form-group">
+                <label>1. หัวหน้ากลุ่ม (Team Lead):</label>
+                <input type="text" placeholder="ชื่อ-สกุล (รหัสนักศึกษา)">
+            </div>
+            <div class="form-group">
+                <label>2. ผู้บันทึกข้อมูล & AI Prompter:</label>
+                <input type="text" placeholder="ชื่อ-สกุล (รหัสนักศึกษา)">
+            </div>
+            <div class="form-group">
+                <label>3. นักวิเคราะห์ปัญหา (Data Analyst):</label>
+                <input type="text" placeholder="ชื่อ-สกุล (รหัสนักศึกษา)">
+            </div>
+            <div class="form-group">
+                <label>4. ผู้นำเสนอหลัก (Presenter):</label>
+                <input type="text" placeholder="ชื่อ-สกุล (รหัสนักศึกษา)">
+            </div>
+            <div class="form-group">
+                <label>5. ผู้นำเสนอร่วม (Co-Presenter):</label>
+                <input type="text" placeholder="ชื่อ-สกุล (รหัสนักศึกษา)">
+            </div>
+        </div>
+    </div>
+
+    <!-- ตอนที่ 1: เลือกโมเดลธุรกิจและ Pain Point -->
+    <div class="section-card">
+        <div class="section-title">
+            <span class="step-badge">1</span>
+            <span>ตอนที่ 1: ข้อมูลโมเดลธุรกิจและปัญหาที่กำลังเผชิญ (Pain Point)</span>
+        </div>
+        <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 12px;">
+            ให้กลุ่มเลือกธุรกิจที่สมาชิกสนใจ 1 ประเภท เพื่อใช้เป็นกรณีศึกษา:
+        </p>
+
+        <div class="biz-pills">
+            <div class="biz-pill-item">
+                <input type="radio" id="biz1" name="biz_type" checked>
+                <label for="biz1" class="biz-pill-label">🧋 ชานม / เครื่องดื่ม Grab & Go</label>
+            </div>
+            <div class="biz-pill-item">
+                <input type="radio" id="biz2" name="biz_type">
+                <label for="biz2" class="biz-pill-label">🥩 ร้านอาหาร / บุฟเฟต์หมูกระทะ</label>
+            </div>
+            <div class="biz-pill-item">
+                <input type="radio" id="biz3" name="biz_type">
+                <label for="biz3" class="biz-pill-label">👗 แฟชั่น E-Commerce / Live สด</label>
+            </div>
+            <div class="biz-pill-item">
+                <input type="radio" id="biz4" name="biz_type">
+                <label for="biz4" class="biz-pill-label">🛵 ร้านเดลิเวอรี / สตรีทฟู้ด</label>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+            <div class="form-group">
+                <label>ชื่อแบรนด์/ร้านค้าของกลุ่ม:</label>
+                <input type="text" placeholder="เช่น Cha-Time Kiosk, หมูกระทะฟินเวอร์">
+            </div>
+            <div class="form-group">
+                <label>กลุ่มลูกค้าเป้าหมายหลัก:</label>
+                <input type="text" placeholder="เช่น พนักงานออฟฟิศ, นักศึกษา, กลุ่มครอบครัว">
+            </div>
+        </div>
+        <div class="form-group">
+            <label>ปัญหาสำคัญที่ธุรกิจกำลังเผชิญ (Pain Point):</label>
+            <textarea placeholder="ระบุอาการของปัญหา ตัวเลข และช่วงเวลาให้ชัดเจน เช่น 'ยอดขายช่วงเช้าตกฮวบ', 'ลูกค้า CF แล้วทิ้งออเดอร์ถึง 40%', 'ลูกค้าแน่นร้านแต่กำไรหด'"></textarea>
+        </div>
+    </div>
+
+    <!-- ตอนที่ 2: ศิลปะการตั้งคำถาม -->
+    <div class="section-card">
+        <div class="section-title">
+            <span class="step-badge">2</span>
+            <span>ตอนที่ 2: ศิลปะการตั้งคำถามทางธุรกิจ (Asking the Right Questions)</span>
+        </div>
+        <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 12px;">
+            ตั้งคำถามธุรกิจ <strong>5 ข้อ</strong> ที่เจาะจง วัดผลได้ด้วยข้อมูล และนำไปปรับกลยุทธ์ได้จริง พร้อมเลือก 1 ใน 4 ระดับการวิเคราะห์:
+        </p>
+
+        <!-- Q1 -->
+        <div style="margin-bottom: 14px; padding: 10px; background: #f8fafc; border-radius: 8px;">
+            <label style="font-weight: 700; font-size: 0.85rem; color: var(--text-main);">คำถามข้อที่ 1:</label>
+            <input type="text" placeholder="พิมพ์คำถามธุรกิจข้อที่ 1...">
+            <div class="level-pills">
+                <div class="level-pill-item"><input type="radio" id="q1_1" name="q1_level" style="display:none;"><label for="q1_1">1. Descriptive (เกิดอะไรขึ้น?)</label></div>
+                <div class="level-pill-item"><input type="radio" id="q1_2" name="q1_level" style="display:none;"><label for="q1_2">2. Diagnostic (ทำไมถึงเกิด?)</label></div>
+                <div class="level-pill-item"><input type="radio" id="q1_3" name="q1_level" style="display:none;"><label for="q1_3">3. Predictive (อะไรจะเกิดต่อ?)</label></div>
+                <div class="level-pill-item"><input type="radio" id="q1_4" name="q1_level" style="display:none;"><label for="q1_4">4. Prescriptive (ควรทำอย่างไร?)</label></div>
+            </div>
+        </div>
+
+        <!-- Q2 -->
+        <div style="margin-bottom: 14px; padding: 10px; background: #f8fafc; border-radius: 8px;">
+            <label style="font-weight: 700; font-size: 0.85rem; color: var(--text-main);">คำถามข้อที่ 2:</label>
+            <input type="text" placeholder="พิมพ์คำถามธุรกิจข้อที่ 2...">
+            <div class="level-pills">
+                <div class="level-pill-item"><input type="radio" id="q2_1" name="q2_level" style="display:none;"><label for="q2_1">1. Descriptive (เกิดอะไรขึ้น?)</label></div>
+                <div class="level-pill-item"><input type="radio" id="q2_2" name="q2_level" style="display:none;"><label for="q2_2">2. Diagnostic (ทำไมถึงเกิด?)</label></div>
+                <div class="level-pill-item"><input type="radio" id="q2_3" name="q2_level" style="display:none;"><label for="q2_3">3. Predictive (อะไรจะเกิดต่อ?)</label></div>
+                <div class="level-pill-item"><input type="radio" id="q2_4" name="q2_level" style="display:none;"><label for="q2_4">4. Prescriptive (ควรทำอย่างไร?)</label></div>
+            </div>
+        </div>
+
+        <!-- Q3 -->
+        <div style="margin-bottom: 14px; padding: 10px; background: #f8fafc; border-radius: 8px;">
+            <label style="font-weight: 700; font-size: 0.85rem; color: var(--text-main);">คำถามข้อที่ 3:</label>
+            <input type="text" placeholder="พิมพ์คำถามธุรกิจข้อที่ 3...">
+            <div class="level-pills">
+                <div class="level-pill-item"><input type="radio" id="q3_1" name="q3_level" style="display:none;"><label for="q3_1">1. Descriptive (เกิดอะไรขึ้น?)</label></div>
+                <div class="level-pill-item"><input type="radio" id="q3_2" name="q3_level" style="display:none;"><label for="q3_2">2. Diagnostic (ทำไมถึงเกิด?)</label></div>
+                <div class="level-pill-item"><input type="radio" id="q3_3" name="q3_level" style="display:none;"><label for="q3_3">3. Predictive (อะไรจะเกิดต่อ?)</label></div>
+                <div class="level-pill-item"><input type="radio" id="q3_4" name="q3_level" style="display:none;"><label for="q3_4">4. Prescriptive (ควรทำอย่างไร?)</label></div>
+            </div>
+        </div>
+
+        <!-- Q4 -->
+        <div style="margin-bottom: 14px; padding: 10px; background: #f8fafc; border-radius: 8px;">
+            <label style="font-weight: 700; font-size: 0.85rem; color: var(--text-main);">คำถามข้อที่ 4:</label>
+            <input type="text" placeholder="พิมพ์คำถามธุรกิจข้อที่ 4...">
+            <div class="level-pills">
+                <div class="level-pill-item"><input type="radio" id="q4_1" name="q4_level" style="display:none;"><label for="q4_1">1. Descriptive (เกิดอะไรขึ้น?)</label></div>
+                <div class="level-pill-item"><input type="radio" id="q4_2" name="q4_level" style="display:none;"><label for="q4_2">2. Diagnostic (ทำไมถึงเกิด?)</label></div>
+                <div class="level-pill-item"><input type="radio" id="q4_3" name="q4_level" style="display:none;"><label for="q4_3">3. Predictive (อะไรจะเกิดต่อ?)</label></div>
+                <div class="level-pill-item"><input type="radio" id="q4_4" name="q4_level" style="display:none;"><label for="q4_4">4. Prescriptive (ควรทำอย่างไร?)</label></div>
+            </div>
+        </div>
+
+        <!-- Q5 -->
+        <div style="margin-bottom: 6px; padding: 10px; background: #f8fafc; border-radius: 8px;">
+            <label style="font-weight: 700; font-size: 0.85rem; color: var(--text-main);">คำถามข้อที่ 5:</label>
+            <input type="text" placeholder="พิมพ์คำถามธุรกิจข้อที่ 5...">
+            <div class="level-pills">
+                <div class="level-pill-item"><input type="radio" id="q5_1" name="q5_level" style="display:none;"><label for="q5_1">1. Descriptive (เกิดอะไรขึ้น?)</label></div>
+                <div class="level-pill-item"><input type="radio" id="q5_2" name="q5_level" style="display:none;"><label for="q5_2">2. Diagnostic (ทำไมถึงเกิด?)</label></div>
+                <div class="level-pill-item"><input type="radio" id="q5_3" name="q5_level" style="display:none;"><label for="q5_3">3. Predictive (อะไรจะเกิดต่อ?)</label></div>
+                <div class="level-pill-item"><input type="radio" id="q5_4" name="q5_level" style="display:none;"><label for="q5_4">4. Prescriptive (ควรทำอย่างไร?)</label></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ตอนที่ 3: Hypothesis Thinking -->
+    <div class="section-card">
+        <div class="section-title">
+            <span class="step-badge">3</span>
+            <span>ตอนที่ 3: การตั้งสมมติฐานและการหาข้อมูลพิสูจน์ (Hypothesis Thinking)</span>
+        </div>
+        <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 14px;">
+            เลือก 3 คำถามจากตอนที่ 2 มาเข้ากระบวนการ: <strong>พบปัญหา &rarr; ตั้งสมมติฐาน &rarr; หาข้อมูลพิสูจน์</strong>
+        </p>
+
+        <!-- Case A -->
+        <div class="hypo-card accent">
+            <h4 style="color: var(--accent); font-size: 0.95rem; margin-bottom: 8px;">📌 กรณีศึกษา A (เลือกจากคำถามข้อที่...)</h4>
+            <div class="form-group">
+                <label>1. ปัญหา (Problem):</label>
+                <input type="text" placeholder="ระบุปัญหาให้ชัดเจน">
+            </div>
+            <div class="form-group">
+                <label>2. สมมติฐาน (Hypothesis — คาดว่าเกิดจากอะไร):</label>
+                <input type="text" placeholder="คาดเดาสาเหตุอย่างมีหลักการ เช่น แอดมินตอบช้า, คิวยาว, อาหารเหลือทิ้ง">
+            </div>
+            <div class="form-group">
+                <label>3. ข้อมูลพิสูจน์ (Data to Collect — ต้องเก็บตัวเลข/ข้อมูลอะไรมาดู):</label>
+                <input type="text" placeholder="เช่น บันทึกเวลาตอบแชท, จับเวลาทำเครื่องดื่ม, ชั่งน้ำหนักเศษอาหาร">
+            </div>
+        </div>
+
+        <!-- Case B -->
+        <div class="hypo-card primary">
+            <h4 style="color: var(--primary); font-size: 0.95rem; margin-bottom: 8px;">📌 กรณีศึกษา B (เลือกจากคำถามข้อที่...)</h4>
+            <div class="form-group">
+                <label>1. ปัญหา (Problem):</label>
+                <input type="text" placeholder="ระบุปัญหาให้ชัดเจน">
+            </div>
+            <div class="form-group">
+                <label>2. สมมติฐาน (Hypothesis):</label>
+                <input type="text" placeholder="คาดเดาสาเหตุอย่างมีหลักการ">
+            </div>
+            <div class="form-group">
+                <label>3. ข้อมูลพิสูจน์ (Data to Collect):</label>
+                <input type="text" placeholder="ระบุชุดข้อมูลที่ต้องนำมาตรวจสอบ">
+            </div>
+        </div>
+
+        <!-- Case C -->
+        <div class="hypo-card success">
+            <h4 style="color: var(--success); font-size: 0.95rem; margin-bottom: 8px;">📌 กรณีศึกษา C (เลือกจากคำถามข้อที่...)</h4>
+            <div class="form-group">
+                <label>1. ปัญหา (Problem):</label>
+                <input type="text" placeholder="ระบุปัญหาให้ชัดเจน">
+            </div>
+            <div class="form-group">
+                <label>2. สมมติฐาน (Hypothesis):</label>
+                <input type="text" placeholder="คาดเดาสาเหตุอย่างมีหลักการ">
+            </div>
+            <div class="form-group">
+                <label>3. ข้อมูลพิสูจน์ (Data to Collect):</label>
+                <input type="text" placeholder="ระบุชุดข้อมูลที่ต้องนำมาตรวจสอบ">
+            </div>
+        </div>
+    </div>
+
+    <!-- ตอนที่ 4: Prescriptive Action Plan -->
+    <div class="section-card">
+        <div class="section-title">
+            <span class="step-badge">4</span>
+            <span>ตอนที่ 4: ข้อเสนอแนะเชิงกลยุทธ์ (Prescriptive Action Plan)</span>
+        </div>
+        <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 10px;">
+            หากผลการตรวจสอบข้อมูลพบว่า "สมมติฐานเป็นจริง" กลุ่มของท่านจะตัดสินใจลงมือทำ Action ใดเพื่อเพิ่มยอดขายหรือแก้ปัญหา:
+        </p>
+        <div class="form-group">
+            <textarea placeholder="ระบุแผนการดำเนินงาน 1-2 ข้อ เช่น ปรับเมนูอาหารเช้าและเตรียมชงล่วงหน้า, ติดป้ายปรับอาหารเหลือทิ้งและเปลี่ยนขนาดถาด, แจ้งค่าส่งเหมาๆ หน้าไลฟ์ทันที"></textarea>
+        </div>
+    </div>
+
+    <div class="btn-toolbar">
+        <button class="btn btn-secondary" onclick="window.print()"><i class="fas fa-print"></i> พิมพ์ใบงาน (Print PDF)</button>
+    </div>
+</div>
+
+</body>
+</html>

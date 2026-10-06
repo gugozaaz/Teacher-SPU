@@ -1,0 +1,2774 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>ครั้งที่ 7: ขั้นที่ 4 'ANALYZE' (ส่วนที่ 2) — Data Visualization หา Insight ด้วยภาพ | Fundamentals of Data Science</title>
+    <!-- Reveal.js & Fonts -->
+    <link href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/theme/white.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800;900&amp;family=Outfit:wght@400;500;600;700;800&amp;family=Fira+Code:wght@400;500&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #3730a3;
+            --primary-glow: rgba(79, 70, 229, 0.12);
+            --secondary: #0284c7;
+            --accent: #e11d48;
+            --accent-warm: #d97706;
+            --success: #059669;
+            --purple: #7c3aed;
+            --bg-main: #f8fafc;
+            --bg-card: #ffffff;
+            --border-card: #e2e8f0;
+            --text-main: #0f172a;
+            --text-sub: #334155;
+            --text-muted: #64748b;
+            --gradient-main: linear-gradient(135deg, #4f46e5 0%, #0284c7 100%);
+            --gradient-purple: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
+            --gradient-accent: linear-gradient(135deg, #e11d48 0%, #d97706 100%);
+            --gradient-green: linear-gradient(135deg, #059669 0%, #0284c7 100%);
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: var(--bg-main);
+            font-size: 24px;
+        }
+
+        .reveal {
+            font-family: 'Noto Sans Thai', 'Outfit', sans-serif;
+            color: var(--text-main);
+            background: var(--bg-main);
+            background-image:
+                radial-gradient(circle at 12% 15%, rgba(79, 70, 229, 0.05) 0%, transparent 45%),
+                radial-gradient(circle at 88% 85%, rgba(2, 132, 199, 0.05) 0%, transparent 45%);
+            font-size: 26px;
+        }
+
+        .reveal .slides {
+            text-align: left;
+        }
+
+        .reveal .slides section {
+            height: 100% !important;
+            box-sizing: border-box !important;
+            padding: 22px 38px 24px 38px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: flex-start !important;
+            overflow: hidden !important;
+            background: transparent;
+        }
+
+        @media print {
+            #aspect-ratio-toast,
+            #test-report-overlay {
+                display: none !important;
+            }
+        }
+
+        .slide-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+
+        .reveal h1,
+        .reveal h2,
+        .reveal h3,
+        .reveal h4 {
+            font-family: 'Noto Sans Thai', 'Outfit', sans-serif;
+            font-weight: 800;
+            text-transform: none;
+            letter-spacing: -0.02em;
+            margin: 0;
+            line-height: 1.25;
+            color: var(--text-main);
+        }
+
+        .reveal h1 {
+            font-size: 2.35rem;
+        }
+
+        .reveal h2 {
+            font-size: 1.48rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            line-height: 1.25;
+            letter-spacing: -0.015em;
+        }
+
+        .reveal h3 {
+            font-size: 1.25rem;
+            color: var(--primary);
+        }
+
+        .reveal p {
+            margin: 0;
+            line-height: 1.5;
+            color: var(--text-sub);
+            font-size: 1.02rem;
+        }
+
+        .slide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 2px solid rgba(79, 70, 229, 0.12);
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+            gap: 16px;
+        }
+
+        .slide-header .title-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .slide-header .subtitle {
+            font-size: 1.02rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .badge-step {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 9999px;
+            background: rgba(79, 70, 229, 0.08);
+            border: 1px solid rgba(79, 70, 229, 0.2);
+            color: var(--primary);
+            font-size: 0.88rem;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .badge-step.purple {
+            background: rgba(124, 58, 237, 0.08);
+            border-color: rgba(124, 58, 237, 0.2);
+            color: var(--purple);
+        }
+
+        .badge-step.accent {
+            background: rgba(225, 29, 72, 0.08);
+            border-color: rgba(225, 29, 72, 0.2);
+            color: var(--accent);
+        }
+
+        .badge-step.success {
+            background: rgba(5, 150, 105, 0.08);
+            border-color: rgba(5, 150, 105, 0.2);
+            color: var(--success);
+        }
+
+        .badge-step.warm {
+            background: rgba(217, 119, 6, 0.08);
+            border-color: rgba(217, 119, 6, 0.2);
+            color: var(--accent-warm);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+        }
+
+        .badge-primary {
+            background: #e0e7ff;
+            color: #4338ca;
+        }
+
+        .badge-accent {
+            background: #ffe4e6;
+            color: #be123c;
+        }
+
+        .badge-purple {
+            background: #f3e8ff;
+            color: #6b21a8;
+        }
+
+        .badge-warm {
+            background: #fef3c7;
+            color: #b45309;
+        }
+
+        .badge-success {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .badge-gray {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .step-container {
+            display: flex;
+            align-items: stretch;
+            gap: 10px;
+            margin: 6px 0;
+        }
+
+        .step-card {
+            flex: 1;
+            background: #ffffff;
+            border: 1px solid var(--border-card);
+            border-radius: 10px;
+            padding: 10px 8px;
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s ease;
+        }
+
+        .step-card.active {
+            border: 2px solid var(--primary);
+            background: #eef2ff;
+            transform: scale(1.03);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
+        }
+
+        .step-num {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .step-card.active .step-num {
+            color: var(--primary);
+        }
+
+        .step-title {
+            font-size: 1.02rem;
+            font-weight: 800;
+            margin-top: 3px;
+            color: var(--text-main);
+        }
+
+        .step-card.active .step-title {
+            color: var(--primary-dark);
+        }
+
+        .step-desc {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            margin-top: 3px;
+            line-height: 1.3;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .grid-5 {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 14px;
+            padding: 16px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .card-accent {
+            border-top: 4px solid var(--accent);
+        }
+
+        .card-primary {
+            border-top: 4px solid var(--primary);
+        }
+
+        .card-purple {
+            border-top: 4px solid var(--purple);
+        }
+
+        .card-success {
+            border-top: 4px solid var(--success);
+        }
+
+        .card-warm {
+            border-top: 4px solid var(--accent-warm);
+        }
+
+        .card-secondary {
+            border-top: 4px solid var(--secondary);
+        }
+
+        .card-header-sm {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .card-header-sm i {
+            font-size: 1.25rem;
+        }
+
+        .card-header-sm h4 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .data-table,
+        .table-custom {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.90rem;
+            background: #ffffff;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border-card);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .data-table th,
+        .table-custom th {
+            background: #f1f5f9;
+            color: var(--text-main);
+            font-weight: 700;
+            padding: 8px 12px;
+            text-align: left;
+            border-bottom: 2px solid var(--border-card);
+            font-size: 0.88rem;
+        }
+
+        .data-table td,
+        .table-custom td {
+            padding: 7px 12px;
+            border-bottom: 1px solid #f1f5f9;
+            color: var(--text-sub);
+            font-size: 0.88rem;
+        }
+
+        .data-table tr:last-child td,
+        .table-custom tr:last-child td {
+            border-bottom: none;
+        }
+
+        .data-table tr.highlight-bad {
+            background: #fff1f2;
+            color: #be123c;
+        }
+
+        .data-table tr.highlight-good {
+            background: #f0fdf4;
+            color: #15803d;
+        }
+
+        .data-table.dense th,
+        .table-custom.dense th {
+            padding: 5px 8px !important;
+            font-size: 0.80rem !important;
+            line-height: 1.25 !important;
+        }
+
+        .data-table.dense td,
+        .table-custom.dense td {
+            padding: 4px 8px !important;
+            font-size: 0.78rem !important;
+            line-height: 1.25 !important;
+        }
+
+        .compare-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .box-bad {
+            background: #fff1f2;
+            border: 1px solid #fecdd3;
+            border-left: 5px solid var(--accent);
+            border-radius: 12px;
+            padding: 14px 18px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .box-good {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-left: 5px solid var(--success);
+            border-radius: 12px;
+            padding: 14px 18px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .prompt-box {
+            background: #0f172a;
+            color: #e2e8f0;
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.84rem;
+            line-height: 1.45;
+            border-left: 5px solid #38bdf8;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .prompt-tag {
+            display: inline-block;
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-right: 6px;
+            text-transform: uppercase;
+        }
+
+        .tag-role { background: #818cf8; color: #0f172a; }
+        .tag-context { background: #38bdf8; color: #0f172a; }
+        .tag-data { background: #34d399; color: #0f172a; }
+        .tag-task { background: #fbbf24; color: #0f172a; }
+        .tag-format { background: #f472b6; color: #0f172a; }
+
+        .callout-box {
+            background: #eef2ff;
+            border: 1px solid #c7d2fe;
+            border-left: 5px solid var(--primary);
+            border-radius: 12px;
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 6px;
+        }
+
+        .callout-box.info {
+            background: #f0f9ff;
+            border-color: #bae6fd;
+            border-left-color: var(--secondary);
+        }
+
+        .callout-box.warning {
+            background: #fffbeb;
+            border-color: #fde68a;
+            border-left-color: var(--accent-warm);
+        }
+
+        .callout-box.danger {
+            background: #fff1f2;
+            border-color: #fecdd3;
+            border-left-color: var(--accent);
+        }
+
+        .callout-box.success {
+            background: #f0fdf4;
+            border-color: #bbf7d0;
+            border-left-color: var(--success);
+        }
+
+        .callout-box.purple {
+            background: #f3e8ff;
+            border-color: #d8b4fe;
+            border-left-color: var(--purple);
+        }
+
+        .code-pill {
+            display: inline-block;
+            background: #1e293b;
+            color: #38bdf8;
+            font-family: 'Fira Code', monospace;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .footer-summary {
+            background: #ffffff;
+            border: 1px solid var(--border-card);
+            border-radius: 10px;
+            padding: 8px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: auto;
+        }
+
+        .footer-summary strong {
+            color: var(--text-main);
+        }
+
+        .chart-visual-mock {
+            display: flex;
+            align-items: flex-end;
+            gap: 12px;
+            height: 110px;
+            padding: 10px;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 1px dashed var(--border-card);
+            justify-content: center;
+        }
+
+        .bar-col {
+            width: 36px;
+            background: var(--gradient-main);
+            border-radius: 4px 4px 0 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            color: white;
+            font-size: 0.68rem;
+            font-weight: bold;
+            padding-bottom: 4px;
+        }
+
+        #test-report-overlay {
+            display: none;
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            width: 320px;
+            max-height: 90vh;
+            overflow-y: auto;
+            background: rgba(15, 23, 42, 0.95);
+            color: white;
+            padding: 14px;
+            border-radius: 10px;
+            z-index: 10000;
+            font-size: 12px;
+            font-family: 'Fira Code', monospace;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .test-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 3px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .test-pass {
+            color: #34d399;
+        }
+
+        .test-fail {
+            color: #f87171;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Slide Height Test Report Overlay (Press 't') -->
+    <div id="test-report-overlay">
+        <div style="font-weight: bold; margin-bottom: 6px; border-bottom: 1px solid #475569; padding-bottom: 4px;">
+            📊 Slide Height Audit
+        </div>
+        <div id="test-report-content">Running test...</div>
+    </div>
+
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- SLIDE 1: Title Slide -->
+            <section data-background-gradient="radial-gradient(circle at 50% 50%, #e0e7ff 0%, #f8fafc 100%)">
+                <div style="text-align: center; margin: auto 0; padding: 20px 10px;">
+                    <div style="margin-bottom: 14px;">
+                        <span class="badge badge-primary"><i class="fas fa-graduation-cap"></i> ภาคเรียนที่ 1/2569</span>
+                        <span class="badge badge-accent" style="margin-left: 6px;"><i class="fas fa-chart-line"></i> ครั้งที่ 7 / 14</span>
+                    </div>
+                    <h1 style="font-size: 2.25em; margin-bottom: 12px; font-weight: 900; line-height: 1.2;">
+                        ขั้นที่ 4 'ANALYZE' (ส่วนที่ 2)<br />Data Visualization หา Insight ธุรกิจด้วยพลังแห่งภาพ
+                    </h1>
+                    <p style="font-size: 1.05em; color: var(--secondary); font-weight: 600; margin-bottom: 20px;">
+                        Fundamentals of Data Science (พื้นฐานวิทยาการข้อมูลสำหรับผู้ประกอบการ)
+                    </p>
+                    <div style="display: inline-block; padding: 8px 24px; background: #ffffff; border-radius: 9999px; border: 1px solid var(--border-card); box-shadow: var(--shadow-sm);">
+                        <p style="font-size: 0.85em; margin: 0; color: var(--text-sub);">
+                            <i class="fas fa-user-tie" style="color: var(--secondary); margin-right: 6px;"></i>
+                            <strong>ผู้สอน:</strong> อาจารย์สุรชัย โกยสันติสุข | คณะการสร้างเจ้าของธุรกิจ มหาวิทยาลัยศรีปทุม
+                        </p>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Script เปิดคาบ]:
+                    - ยินดีต้อนรับนักศึกษาสู่ครั้งที่ 7 อย่างเป็นทางการ
+                    - สัปดาห์ที่แล้วเราได้ฝึก Prompt Engineering กับ Gemini Advanced สรุปตัวเลข ตาราง และ Insight กันไปแล้ว
+                    - วันนี้เราจะก้าวต่อไป: "แปลงตัวเลขให้กลายเป็นภาพ" เพื่อหาคำตอบและสื่อสารความจริงทางธุรกิจได้อย่างเฉียบคม รวดเร็ว และไม่มีใครปฏิเสธได้!
+                </aside>
+            </section>
+
+            <!-- SLIDE 2: Session Recap - Bridge from Prompting to Visualization -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-route" style="color: var(--primary);"></i> วงจร Data Science: ก้าวสู่มิติแห่งภาพ 'ANALYZE' (Part 2)</h2>
+                        <span class="subtitle">ต่อยอดจากคำสั่ง AI สู่การมองเห็นแบบแผนและจุดบอดทางธุรกิจด้วย Data Visualization</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-compass"></i> Step 4 of 5</span>
+                </div>
+                <div class="slide-body">
+                    <div class="step-container">
+                        <div class="step-card">
+                            <div class="step-num">Step 1</div>
+                            <div class="step-title">ASK</div>
+                            <div class="step-desc">ตั้งคำถาม &amp; สมมติฐาน (Session 1-2)</div>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-num">Step 2</div>
+                            <div class="step-title">COLLECT</div>
+                            <div class="step-desc">Tidy Data &amp; Forms (Session 3-4)</div>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-num">Step 3</div>
+                            <div class="step-title">PREPARE</div>
+                            <div class="step-desc">ล้างตารางสะอาด (Session 5)</div>
+                        </div>
+                        <div class="step-card active">
+                            <div class="step-num">Step 4 (สัปดาห์นี้)</div>
+                            <div class="step-title">ANALYZE</div>
+                            <div class="step-desc">Visualization &amp; Sheets (Session 6-7)</div>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-num">Step 5</div>
+                            <div class="step-title">ACT</div>
+                            <div class="step-desc">สื่อสาร &amp; กลยุทธ์จริง (Session 8-14)</div>
+                        </div>
+                    </div>
+
+                    <div class="compare-container" style="margin-top: 4px;">
+                        <div class="card" style="border-left: 4px solid var(--secondary); padding: 12px 16px;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-robot" style="color: var(--secondary);"></i>
+                                <h4 style="color: var(--secondary); font-size: 1.05rem;">คาบที่แล้ว (Session 6: Prompt Engineering)</h4>
+                            </div>
+                            <p style="font-size: 0.88rem; color: var(--text-sub); line-height: 1.45;">
+                                • ใช้สูตร <strong>C-R-O-D-A</strong> สั่ง Gemini เจาะตารางยอดขาย<br />
+                                • สกัดสรุปผู้บริหาร สินค้า ABC และค้นพบ Hidden Insights<br />
+                                • ยึด <strong>Fact-check 3 จุด</strong> สกัดกั้น AI มโนตัวเลข
+                            </p>
+                        </div>
+                        <div class="card" style="border-left: 4px solid var(--purple); padding: 12px 16px; background: #faf5ff;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-chart-pie" style="color: var(--purple);"></i>
+                                <h4 style="color: var(--purple); font-size: 1.05rem;">คาบนี้ (Session 7: Data Visualization)</h4>
+                            </div>
+                            <p style="font-size: 0.88rem; color: var(--text-sub); line-height: 1.45;">
+                                • ทำไมสมองมนุษย์จับสังเกตภาพได้เร็วกว่าตาราง 60,000 เท่า<br />
+                                • ถอดรหัส <strong>4 กราฟหลัก</strong>: Bar, Line, Pie/Donut, Scatter<br />
+                                • รู้ทัน 4 กับดักกราฟหลอกตา และให้ Gemini ช่วยออกแบบชาร์ต
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="callout-box warning" style="margin-top: 6px; padding: 8px 14px;">
+                        <i class="fas fa-eye" style="color: var(--accent-warm); font-size: 1.2rem;"></i>
+                        <span style="font-size: 0.88rem; color: var(--text-main);">
+                            <strong>กฎทองของภาพ (Visual Insight Law):</strong> "ภาพ 1 ภาพแทนตัวเลขพันแถว แต่ถ้าเลือกประเภทกราฟผิด หรือตัดสเกลเพี้ยน ภาพนั้นจะกลายเป็นเครื่องมือหลอกลวงคนทั้งบริษัททันที!"
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 2 Notes]:
+                    - เน้นย้ำความต่อเนื่อง: คาบที่แล้วเราอ่านผลเป็นตัวหนังสือและตาราง
+                    - วันนี้เราจะทำให้ผู้บริหารมองปราดเดียวแล้วเข้าใจปัญหาและโอกาสทางธุรกิจใน 3 วินาที
+                </aside>
+            </section>
+
+            <!-- SLIDE 3: Session Roadmap -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-map-signs" style="color: var(--primary);"></i> แผนที่การเรียนรู้ประจำคาบ (Session Roadmap)</h2>
+                        <span class="subtitle">4 เสาหลักสู่การเป็นเจ้าของธุรกิจที่ตัดสินใจเฉียบคมด้วยภาพข้อมูล</span>
+                    </div>
+                    <span class="badge badge-primary"><i class="fas fa-clock"></i> 150 นาที</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-4" style="margin-top: 4px;">
+                        <div class="card card-primary" style="padding: 14px;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-brain" style="color: var(--primary);"></i>
+                                <h4 style="color: var(--text-main); font-size: 0.98rem;">1. พลังของภาพ</h4>
+                            </div>
+                            <p style="font-size: 0.82rem; color: var(--text-sub);">
+                                ปลดล็อกความลับสมองมนุษย์, บทเรียน Anscombe's Quartet ที่ตารางลวงตาแต่กราฟเฉลยความจริง
+                            </p>
+                        </div>
+
+                        <div class="card card-purple" style="padding: 14px;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-chart-column" style="color: var(--purple);"></i>
+                                <h4 style="color: var(--text-main); font-size: 0.98rem;">2. 4 กราฟหลักธุรกิจ</h4>
+                            </div>
+                            <p style="font-size: 0.82rem; color: var(--text-sub);">
+                                Chart Choice Framework: Bar (เทียบหมวด), Line (แนวโน้มเวลา), Pie (สัดส่วน 100%), Scatter (ความสัมพันธ์)
+                            </p>
+                        </div>
+
+                        <div class="card card-accent" style="padding: 14px;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-triangle-exclamation" style="color: var(--accent);"></i>
+                                <h4 style="color: var(--text-main); font-size: 0.98rem;">3. กับดักกราฟหลอกตา</h4>
+                            </div>
+                            <p style="font-size: 0.82rem; color: var(--text-sub);">
+                                แกน Y ไม่เริ่มที่ศูนย์, 3D Chart บิดเบือน, พายซอยย่อย 15 ชิ้น และการใช้สีผิดบริบทจนตัดสินใจพลาด
+                            </p>
+                        </div>
+
+                        <div class="card card-success" style="padding: 14px;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-laptop-code" style="color: var(--success);"></i>
+                                <h4 style="color: var(--text-main); font-size: 0.98rem;">4. AI & Sheets Studio</h4>
+                            </div>
+                            <p style="font-size: 0.82rem; color: var(--text-sub);">
+                                สั่ง Gemini แนะนำกราฟ + ลงมือสร้างชาร์ตจริงใน Google Sheets + รู้จัก Dashboard Looker Studio
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="footer-summary" style="margin-top: 8px;">
+                        <span><i class="fas fa-flag-checkered" style="color: var(--secondary); margin-right: 6px;"></i><strong>เป้าหมายปลายทาง:</strong> สร้างกราฟวิเคราะห์ยอดขาย 3 แบบใน Google Sheets ที่มี Action Title และพร้อมพรีเซนต์ผู้บริหาร</span>
+                        <span class="badge badge-purple">Workshop 65 นาที</span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 3 Notes]:
+                    - แนะนำ 4 เสาหลัก ให้นักศึกษาเห็นภาพรวมการจัดสรรเวลา 150 นาที
+                    - วันนี้จะบาลานซ์ระหว่างทฤษฎีการอ่านกราฟ กับการลงมือทำจริง
+                </aside>
+            </section>
+
+            <!-- SLIDE 4: Why Data Visualization? -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-lightbulb" style="color: var(--primary);"></i> ทำไมต้อง Data Visualization? สมองมนุษย์กับพลังแห่งภาพ</h2>
+                        <span class="subtitle">ตัวเลขบนตารางชีตมองเห็นยาก แต่ภาพช่วยจุดประกายการตัดสินใจในเสี้ยววินาที</span>
+                    </div>
+                    <span class="badge-step"><i class="fas fa-eye"></i> Visual Cognition</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-3" style="margin-top: 4px;">
+                        <div class="card card-secondary" style="text-align: center; padding: 14px;">
+                            <div style="font-size: 2.2rem; color: var(--secondary); font-weight: 900; margin-bottom: 2px;">60,000x</div>
+                            <h4 style="font-size: 0.95rem; margin-bottom: 4px;">ประมวลผลเร็วกว่าตัวหนังสือ</h4>
+                            <p style="font-size: 0.82rem; color: var(--text-sub);">
+                                สมองมนุษย์ถูกสร้างมาเพื่อจับภาพ ทิศทาง และลวดลาย Visual cortex ทำงานได้เร็วกว่าการอ่านตัวเลขหลายเท่า
+                            </p>
+                        </div>
+                        <div class="card card-purple" style="text-align: center; padding: 14px;">
+                            <div style="font-size: 2.2rem; color: var(--purple); font-weight: 900; margin-bottom: 2px;">3 วินาที</div>
+                            <h4 style="font-size: 0.95rem; margin-bottom: 4px;">กฎ 3 วินาทีของผู้บริหาร</h4>
+                            <p style="font-size: 0.82rem; color: var(--text-sub);">
+                                ผู้บริหารหรือนักลงทุนไม่มีเวลาอ่านตาราง 50 แถว แต่กราฟที่ดีต้องบอกได้ใน 3 วินาทีว่า "ตอนนี้เกิดอะไรขึ้น?"
+                            </p>
+                        </div>
+                        <div class="card card-success" style="text-align: center; padding: 14px;">
+                            <div style="font-size: 2.2rem; color: var(--success); font-weight: 900; margin-bottom: 2px;">Pre-attentive</div>
+                            <h4 style="font-size: 0.95rem; margin-bottom: 4px;">คุณลักษณะดึงสายตาอัตโนมัติ</h4>
+                            <p style="font-size: 0.82rem; color: var(--text-sub);">
+                                สีที่โดดเด่น ความยาวของแท่งกราฟ หรือจุดที่กระโดดออกจากกลุ่ม จะดึงสายตาก่อนที่สมองจะเริ่มคิดคำนวณ
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="compare-container" style="margin-top: 6px;">
+                        <div class="box-bad" style="padding: 10px 14px;">
+                            <div class="card-header-sm" style="margin-bottom: 2px;">
+                                <i class="fas fa-times-circle" style="color: var(--accent);"></i>
+                                <h4 style="font-size: 0.88rem; color: var(--accent);">แบบตารางดิบ (Data Sheet)</h4>
+                            </div>
+                            <p style="font-size: 0.80rem; color: var(--text-muted); font-family: 'Fira Code', monospace; line-height: 1.4;">
+                                สาขา A: 120,400 | สาขา B: 118,900<br />
+                                สาขา C: 245,600 | สาขา D: 115,200<br />
+                                <em>(ต้องกวาดสายตาทีละตัว เปรียบเทียบในหัว ช้าและเมื่อยล้า)</em>
+                            </p>
+                        </div>
+                        <div class="box-good" style="padding: 10px 14px;">
+                            <div class="card-header-sm" style="margin-bottom: 2px;">
+                                <i class="fas fa-check-circle" style="color: var(--success);"></i>
+                                <h4 style="font-size: 0.88rem; color: var(--success);">แบบกราฟแท่ง (Bar Chart)</h4>
+                            </div>
+                            <div style="display: flex; align-items: flex-end; gap: 8px; height: 38px;">
+                                <div style="width: 25%; height: 50%; background: #94a3b8; border-radius: 2px;"></div>
+                                <div style="width: 25%; height: 48%; background: #94a3b8; border-radius: 2px;"></div>
+                                <div style="width: 25%; height: 100%; background: var(--success); border-radius: 2px;"></div>
+                                <div style="width: 25%; height: 46%; background: #94a3b8; border-radius: 2px;"></div>
+                            </div>
+                            <div style="font-size: 0.78rem; color: var(--text-main); font-weight: 700; margin-top: 3px;">เห็นทันที: สาขา C ยอดขายสูงโดดเด่นเป็น 2 เท่าของสาขาอื่น!</div>
+                        </div>
+                    </div>
+
+                    <div class="footer-summary" style="margin-top: 6px;">
+                        <span><i class="fas fa-brain" style="color: var(--primary); margin-right: 6px;"></i><strong>สรุปหัวใจ:</strong> กราฟที่ดีต้องดึงดูดสายตาด้วย Pre-attentive Attributes และบอกคำตอบได้ใน 3 วินาที</span>
+                        <span class="badge badge-primary">3-Second Rule</span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 4 Notes]:
+                    - ยกตัวอย่างการอ่านตารางตัวเลขเทียบกับการมองกราฟแท่ง
+                    - Pre-attentive attributes คือสิ่งที่ตามนุษย์จับได้ก่อนที่สมองจะประมวลผลเหตุผล
+                </aside>
+            </section>
+
+            <!-- SLIDE 5: The Anscombe's Quartet Revelation -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-magnifying-glass-chart" style="color: var(--primary);"></i> บทเรียนระดับโลก: ตารางลวงตา ภาพเฉลยความจริง</h2>
+                        <span class="subtitle">Anscombe's Quartet: ตัวเลขทางสถิติเท่ากันเป๊ะ แต่พล็อตออกมาได้คนละเรื่อง!</span>
+                    </div>
+                    <span class="badge-step warm"><i class="fas fa-lightbulb"></i> Classical Case</span>
+                </div>
+                <div class="slide-body">
+                    <div class="callout-box info" style="padding: 8px 14px; margin-bottom: 6px;">
+                        <i class="fas fa-info-circle" style="color: var(--secondary); font-size: 1.1rem;"></i>
+                        <span style="font-size: 0.85rem; color: var(--text-main);">
+                            ในปี 1973 นักสถิติ <strong>Francis Anscombe</strong> สร้างชุดข้อมูล 4 ชุด ที่มี <strong>ค่าเฉลี่ย (Mean = 9.0)</strong>, <strong>ความแปรปรวน (Variance = 11.0)</strong>, และ <strong>Correlation (= 0.816)</strong> เท่ากันทุกชุดตัวเลข!
+                        </span>
+                    </div>
+
+                    <div class="grid-4" style="margin-top: 4px;">
+                        <div class="card card-secondary" style="padding: 10px; text-align: center;">
+                            <div style="font-size: 0.82rem; font-weight: 700; color: var(--secondary);">ชุดที่ 1: เส้นตรงปกติ</div>
+                            <div style="height: 65px; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-chart-line" style="font-size: 2.0rem; color: #38bdf8;"></i>
+                            </div>
+                            <p style="font-size: 0.72rem; color: var(--text-sub);">จุดกระจายตัวเป็นเส้นตรงเชิงเส้น คาดเดาได้ง่าย</p>
+                        </div>
+                        <div class="card card-purple" style="padding: 10px; text-align: center;">
+                            <div style="font-size: 0.82rem; font-weight: 700; color: var(--purple);">ชุดที่ 2: เส้นโค้งพาราโบลา</div>
+                            <div style="height: 65px; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-bezier-curve" style="font-size: 2.0rem; color: #a78bfa;"></i>
+                            </div>
+                            <p style="font-size: 0.72rem; color: var(--text-sub);">ความสัมพันธ์แบบโค้ง ไม่ใช่เส้นตรง สถิติทั่วไปบอกไม่ได้</p>
+                        </div>
+                        <div class="card card-warm" style="padding: 10px; text-align: center;">
+                            <div style="font-size: 0.82rem; font-weight: 700; color: var(--accent-warm);">ชุดที่ 3: เส้นตรงมี Outlier</div>
+                            <div style="height: 65px; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-arrows-split-up-and-left" style="font-size: 2.0rem; color: #fbbf24;"></i>
+                            </div>
+                            <p style="font-size: 0.72rem; color: var(--text-sub);">เส้นตรงสวยงามแต่มี 1 จุดกระโดดหลุดโลก ดึงค่าเฉลี่ย</p>
+                        </div>
+                        <div class="card card-accent" style="padding: 10px; text-align: center;">
+                            <div style="font-size: 0.82rem; font-weight: 700; color: var(--accent);">ชุดที่ 4: จุดกระจุกตัว</div>
+                            <div style="height: 65px; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-ellipsis-vertical" style="font-size: 2.0rem; color: #f87171;"></i>
+                            </div>
+                            <p style="font-size: 0.72rem; color: var(--text-sub);">ทุกจุดกองอยู่ที่แกนเดียว ยกเว้นจุดแปลกแยกจุดเดียว</p>
+                        </div>
+                    </div>
+
+                    <div class="footer-summary" style="margin-top: 6px;">
+                        <span><i class="fas fa-bullseye" style="color: var(--accent-warm); margin-right: 6px;"></i><strong>ข้อคิดเจ้าของธุรกิจ:</strong> อย่าพึ่งพาแค่ค่าเฉลี่ยตัวเลขในตาราง พล็อตดูกราฟเสมอเพื่อเห็นพฤติกรรมจริงของข้อมูล</span>
+                        <span class="badge badge-warm">Anscombe Revelation</span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 5 Notes]:
+                    - Anscombe's quartet เป็นหลักการคลาสสิกที่สอนว่าตัวเลขสรุป (Summary statistics) หลอกเราได้
+                    - ถ้าเราดูแต่ค่าเฉลี่ยของทั้ง 4 ชุด เราจะคิดว่ามันเหมือนกัน ทั้งที่จริงพฤติกรรมคนละเรื่อง
+                </aside>
+            </section>
+
+            <!-- SLIDE 6: The Chart Choice Framework -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-compass" style="color: var(--primary);"></i> The Chart Choice Framework: เลือกกราฟให้ตรงคำถาม</h2>
+                        <span class="subtitle">อย่าเปิดโปรแกรมแล้วจิ้มกราฟมั่ว! เริ่มต้นด้วยการถามตัวเองว่า "อยากตอบคำถามอะไร?"</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-sitemap"></i> 4 Core Questions</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-4" style="margin-top: 4px;">
+                        <div class="card card-primary" style="padding: 14px;">
+                            <div class="card-header-sm" style="justify-content: space-between; margin-bottom: 6px;">
+                                <span class="badge badge-primary">Comparison</span>
+                                <i class="fas fa-chart-column" style="color: var(--primary);"></i>
+                            </div>
+                            <h4 style="font-size: 0.95rem; margin-bottom: 4px;">1. เปรียบเทียบใครดีกว่า?</h4>
+                            <p style="font-size: 0.80rem; color: var(--text-sub); margin-bottom: 8px;">
+                                วัดความต่างระหว่างหมวดหมู่ สินค้า หรือสาขา
+                            </p>
+                            <div style="background: #eef2ff; border-radius: 6px; padding: 6px; font-weight: 700; font-size: 0.82rem; color: var(--primary);">
+                                ➔ Bar / Column Chart
+                            </div>
+                        </div>
+
+                        <div class="card card-purple" style="padding: 14px;">
+                            <div class="card-header-sm" style="justify-content: space-between; margin-bottom: 6px;">
+                                <span class="badge badge-purple">Trend</span>
+                                <i class="fas fa-chart-line" style="color: var(--purple);"></i>
+                            </div>
+                            <h4 style="font-size: 0.95rem; margin-bottom: 4px;">2. กำลังโตหรือร่วงลง?</h4>
+                            <p style="font-size: 0.80rem; color: var(--text-sub); margin-bottom: 8px;">
+                                ดูทิศทางและความเปลี่ยนแปลงตามกาลเวลา (Time Series)
+                            </p>
+                            <div style="background: #f3e8ff; border-radius: 6px; padding: 6px; font-weight: 700; font-size: 0.82rem; color: var(--purple);">
+                                ➔ Line / Area Chart
+                            </div>
+                        </div>
+
+                        <div class="card card-warm" style="padding: 14px;">
+                            <div class="card-header-sm" style="justify-content: space-between; margin-bottom: 6px;">
+                                <span class="badge badge-warm">Composition</span>
+                                <i class="fas fa-chart-pie" style="color: var(--accent-warm);"></i>
+                            </div>
+                            <h4 style="font-size: 0.95rem; margin-bottom: 4px;">3. แบ่งเค้กกันกี่เปอร์เซ็นต์?</h4>
+                            <p style="font-size: 0.80rem; color: var(--text-sub); margin-bottom: 8px;">
+                                ดูสัดส่วนชิ้นส่วนเทียบกับยอดรวมทั้งหมด 100%
+                            </p>
+                            <div style="background: #fef3c7; border-radius: 6px; padding: 6px; font-weight: 700; font-size: 0.82rem; color: #b45309;">
+                                ➔ Donut / Pie Chart
+                            </div>
+                        </div>
+
+                        <div class="card card-success" style="padding: 14px;">
+                            <div class="card-header-sm" style="justify-content: space-between; margin-bottom: 6px;">
+                                <span class="badge badge-success">Relationship</span>
+                                <i class="fas fa-braille" style="color: var(--success);"></i>
+                            </div>
+                            <h4 style="font-size: 0.95rem; margin-bottom: 4px;">4. ตัวแปรนี้กระทบตัวนั้นไหม?</h4>
+                            <p style="font-size: 0.80rem; color: var(--text-sub); margin-bottom: 8px;">
+                                สำรวจความสัมพันธ์ระหว่างตัวเลข 2 ด้าน
+                            </p>
+                            <div style="background: #dcfce7; border-radius: 6px; padding: 6px; font-weight: 700; font-size: 0.82rem; color: #15803d;">
+                                ➔ Scatter Plot
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="footer-summary" style="margin-top: 8px;">
+                        <span><i class="fas fa-key" style="color: var(--primary); margin-right: 6px;"></i><strong>จำขึ้นใจ:</strong> คำถามนำทางประเภทกราฟ ไม่ใช่ความชอบส่วนตัว! ถ้าคำถามคือ "โตขึ้นไหม" อย่าใช้กราฟวงกลม</span>
+                        <span class="badge badge-gray">The 4 Questions</span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 6 Notes]:
+                    - แนะนำกรอบคิด 4 ทิศทาง: เปรียบเทียบ (Bar), แนวโน้ม (Line), สัดส่วน (Donut), ความสัมพันธ์ (Scatter)
+                    - ท่องง่ายๆ: เทียบ-แท่ง, แนวโน้ม-เส้น, สัดส่วน-โดนัท, สัมพันธ์-จุด
+                </aside>
+            </section>
+
+            <!-- SLIDE 7: Chart 1: Bar & Column Chart -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-chart-column" style="color: var(--primary);"></i> กราฟแบบที่ 1: Bar &amp; Column Chart — ราชาแห่งการเปรียบเทียบ</h2>
+                        <span class="subtitle">กราฟแท่งแนวตั้ง (Column) และแนวนอน (Bar) ใช้เปรียบเทียบหมวดหมู่ได้อย่างแม่นยำที่สุด</span>
+                    </div>
+                    <span class="badge-step"><i class="fas fa-crown"></i> Chart #1</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2" style="margin-top: 4px;">
+                        <div class="card card-primary" style="padding: 14px;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-check-double" style="color: var(--primary);"></i>
+                                <h4>เมื่อไหร่ที่ควรเลือกกราฟแท่ง?</h4>
+                            </div>
+                            <ul style="font-size: 0.85rem; color: var(--text-sub); line-height: 1.5; padding-left: 20px; margin: 0;">
+                                <li><strong>เปรียบเทียบระหว่างกลุ่ม:</strong> ยอดขายสินค้า A, B, C หรือยอดขายแต่ละสาขา</li>
+                                <li><strong>จัดอันดับ Top 5 / Bottom 5:</strong> เรียงแท่งจากมากไปหาน้อย เพื่อชี้เป้าสินค้าทำเงิน</li>
+                                <li><strong>ชื่อหมวดหมู่ยาว:</strong> สลับมาใช้ <strong>Horizontal Bar (แนวนอน)</strong> เพื่อให้อ่านชื่อสินค้าได้สบายตา ไม่ต้องเอียงคออ่าน!</li>
+                            </ul>
+                            <div class="callout-box danger" style="margin-top: 10px; padding: 6px 10px;">
+                                <i class="fas fa-exclamation-triangle" style="color: var(--accent); font-size: 1rem;"></i>
+                                <span style="font-size: 0.80rem; color: var(--text-main);">
+                                    <strong>กฎเหล็กของกราฟแท่ง:</strong> แกนตัวเลข (Y-Axis) <strong>ต้องเริ่มต้นที่ 0 เสมอ!</strong> ห้ามตัดแกนเด็ดขาด เพราะสายตามนุษย์เปรียบเทียบจาก "ความยาวของแท่ง"
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="card card-secondary" style="padding: 14px; background: #ffffff;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-table" style="color: var(--secondary);"></i>
+                                <h4>โครงสร้างข้อมูลใน Sheets ที่พร้อมทำกราฟแท่ง</h4>
+                            </div>
+                            <table class="data-table dense" style="margin-top: 4px;">
+                                <thead>
+                                    <tr>
+                                        <th>หมวดหมู่ (แกน X - ข้อความ)</th>
+                                        <th>ยอดขายบาท (แกน Y - ตัวเลข)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>อาหารสัตว์เลี้ยงเกรดพรีเมียม</strong></td>
+                                        <td style="color: var(--primary); font-weight: bold;">185,400 ฿</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>บริการกรูมมิ่ง &amp; สปา</strong></td>
+                                        <td style="color: var(--primary); font-weight: bold;">94,200 ฿</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>โรงแรมสัตว์เลี้ยง Pet Hotel</strong></td>
+                                        <td style="color: var(--primary); font-weight: bold;">76,500 ฿</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>ของเล่น &amp; อุปกรณ์สัตว์เลี้ยง</strong></td>
+                                        <td style="color: var(--primary); font-weight: bold;">32,100 ฿</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 6px;">
+                                <em>💡 ทริค: เรียงข้อมูลจากมากไปน้อยก่อนสร้างกราฟ จะทำให้กราฟแท่งดูเป็นระเบียบและอ่านง่ายขึ้น 200%</em>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="footer-summary" style="margin-top: 6px;">
+                        <span><i class="fas fa-lightbulb" style="color: var(--accent-warm); margin-right: 6px;"></i><strong>Best Practice:</strong> ถ้ามีหมวดหมู่มากกว่า 7 หมวด หรือชื่อยาวเกิน 15 ตัวอักษร ให้เปลี่ยนเป็นแนวนอน (Horizontal Bar) ทันที</span>
+                        <span class="badge badge-primary">Bar vs Column</span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 7 Notes]:
+                    - เน้นย้ำกฎเหล็กแกนต้องเริ่มที่ 0 เพราะสมองมนุษย์เปรียบเทียบพื้นที่และความยาวของแท่ง
+                    - ถ้าตัดแกนจะทำให้ความต่าง 5% ดูเหมือนต่างกัน 500% ทันที
+                </aside>
+            </section>
+
+            <!-- SLIDE 8: Bar Chart in Action: "มีสุข เพ็ทสเปซ" -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-store" style="color: var(--primary);"></i> กรณีศึกษา: ยอดขายรายสาขาของ "มีสุข เพ็ทสเปซ &amp; แคร์"</h2>
+                        <span class="subtitle">ส่องกราฟแท่งเปรียบเทียบ 3 สาขาหลัก พร้อมสกัด Insight สำหรับการตัดสินใจ</span>
+                    </div>
+                    <span class="badge-step success"><i class="fas fa-paw"></i> Case Study</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2" style="margin-top: 4px;">
+                        <div class="card card-primary" style="padding: 14px; background: #ffffff;">
+                            <div class="card-header-sm" style="margin-bottom: 2px;">
+                                <i class="fas fa-chart-column" style="color: var(--primary);"></i>
+                                <h4 style="font-size: 0.95rem; color: var(--text-main);">สาขาทองหล่อมียอดขายสูงสุด นำห่างสาขาอื่นเกือบ 2 เท่าตัว</h4>
+                            </div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 10px;">
+                                ยอดขายรวมประจำไตรมาสที่ 1 (หน่วย: บาท) | เริ่มแกน Y ที่ 0
+                            </div>
+
+                            <!-- Visual Mock Chart -->
+                            <div class="chart-visual-mock" style="height: 140px; align-items: flex-end; gap: 24px;">
+                                <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+                                    <span style="font-size: 0.72rem; font-weight: bold; color: var(--primary);">388,200 ฿</span>
+                                    <div class="bar-col" style="height: 100px; width: 50px; background: var(--gradient-main);"></div>
+                                    <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-main);">ทองหล่อ</span>
+                                </div>
+                                <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+                                    <span style="font-size: 0.72rem; font-weight: bold; color: var(--text-muted);">215,600 ฿</span>
+                                    <div class="bar-col" style="height: 55px; width: 50px; background: #94a3b8;"></div>
+                                    <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-main);">อารีย์</span>
+                                </div>
+                                <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+                                    <span style="font-size: 0.72rem; font-weight: bold; color: var(--text-muted);">184,400 ฿</span>
+                                    <div class="bar-col" style="height: 47px; width: 50px; background: #cbd5e1;"></div>
+                                    <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-main);">บางนา</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card card-secondary" style="padding: 14px; display: flex; flex-direction: column; justify-content: space-between;">
+                            <div>
+                                <div class="card-header-sm">
+                                    <i class="fas fa-lightbulb" style="color: var(--secondary);"></i>
+                                    <h4>Business Insights จากกราฟแท่งนี้:</h4>
+                                </div>
+                                <div style="margin-bottom: 8px;">
+                                    <span class="badge badge-primary">Insight 1</span>
+                                    <p style="font-size: 0.82rem; color: var(--text-sub); margin-top: 2px;">
+                                        <strong>ทองหล่อคือ Flagship Store:</strong> สร้างรายได้คิดเป็นเกือบ 50% ของทั้งบริษัท กลุ่มลูกค้ามีกำลังซื้อสูง นิยมแพ็กเกจพรีเมียม
+                                    </p>
+                                </div>
+                                <div style="margin-bottom: 8px;">
+                                    <span class="badge badge-warm">Insight 2</span>
+                                    <p style="font-size: 0.82rem; color: var(--text-sub); margin-top: 2px;">
+                                        <strong>บางนายังโตได้อีก:</strong> แม้ยอดขายรวมจะต่ำสุด แต่เป็นสาขาที่มีพื้นที่ Pet Hotel ใหญ่ที่สุด เหมาะแก่การทำโปรโมชั่นช่วงวันหยุดยาว
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="callout-box success" style="padding: 6px 10px;">
+                                <i class="fas fa-check-circle" style="color: var(--success); font-size: 1rem;"></i>
+                                <span style="font-size: 0.80rem; color: var(--text-main);">
+                                    <strong>การใช้สีแบบไฮไลต์:</strong> ใส่สีเด่น (Primary Gradient) เฉพาะสาขาทองหล่อ ส่วนสาขาอื่นใช้สีเทา เพื่อบังคับสายตาให้โฟกัสพระเอกของเรื่อง!
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="footer-summary" style="margin-top: 6px;">
+                        <span><i class="fas fa-pen-nib" style="color: var(--primary); margin-right: 6px;"></i>สังเกตชื่อหัวกราฟ: เราไม่ได้ตั้งว่า "ยอดขายรายสาขา" แต่ตั้งเป็น <strong>Action Title</strong> ที่บอกผลลัพธ์ทันที!</span>
+                        <span class="badge badge-purple">Action Title Concept</span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 8 Notes]:
+                    - แนะนำเทคนิค Action Title และ Highlight Color: อย่าระบายสีแท่งให้เป็นสายรุ้ง
+                    - ใช้สีเทากับข้อมูลทั่วไป และใช้สีเด่นกับจุดที่เราต้องการให้ผู้บริหารสังเกต
+                </aside>
+            </section>
+
+            <!-- SLIDE 9: Chart 2: Line Chart -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-chart-line" style="color: var(--primary);"></i> กราฟแบบที่ 2: Line Chart — นักสำรวจแนวโน้มตามกาลเวลา</h2>
+                        <span class="subtitle">เส้นเชื่อมต่อระหว่างจุด แสดงการเติบโต ฤดูกาล (Seasonality) และจุดหักเหทางธุรกิจ</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-timeline"></i> Chart #2</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2" style="margin-top: 4px;">
+                        <div class="card card-purple" style="padding: 14px;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-clock" style="color: var(--purple);"></i>
+                                <h4>เมื่อไหร่ที่ต้องใช้กราฟเส้น?</h4>
+                            </div>
+                            <ul style="font-size: 0.85rem; color: var(--text-sub); line-height: 1.5; padding-left: 20px; margin: 0;">
+                                <li><strong>ข้อมูลตามลำดับเวลา (Time-Series):</strong> วัน, สัปดาห์, เดือน, ไตรมาส, ปี</li>
+                                <li><strong>ต้องการเห็นทิศทาง (Trend):</strong> ขาขึ้น (Uptrend), ขาลง (Downtrend), หรือทรงตัว (Flat)</li>
+                                <li><strong>จับจังหวะฤดูกาล (Seasonality):</strong> ยอดขายเด้งทุกสุดสัปดาห์ หรือยอดพุ่งช่วงสิ้นเดือน</li>
+                                <li><strong>เทียบหลายเส้นพร้อมกัน:</strong> เช่น ยอดขายปี 2025 vs ปี 2026 (ไม่ควรเกิน 3-4 เส้น)</li>
+                            </ul>
+                            <div class="callout-box info" style="margin-top: 10px; padding: 6px 10px;">
+                                <i class="fas fa-info-circle" style="color: var(--secondary); font-size: 1rem;"></i>
+                                <span style="font-size: 0.80rem; color: var(--text-main);">
+                                    <strong>ต่างจากกราฟแท่งอย่างไร?</strong> แกน X ของกราฟเส้นต้องเป็น <strong>ลำดับเวลาที่มีความต่อเนื่อง</strong> เสมอ ห้ามเอารายชื่อสาขาหรือประเภทสินค้ามาต่อจุดกันเด็ดขาด!
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="card card-secondary" style="padding: 14px; background: #ffffff;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-table" style="color: var(--secondary);"></i>
+                                <h4>โครงสร้างข้อมูล Time-Series ใน Sheets</h4>
+                            </div>
+                            <table class="data-table dense" style="margin-top: 4px;">
+                                <thead>
+                                    <tr>
+                                        <th>วันที่ / สัปดาห์ (แกน X - เวลา)</th>
+                                        <th>ยอดจอง Grooming (แกน Y)</th>
+                                        <th>ยอดจอง Pet Hotel</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>สัปดาห์ที่ 1 (ม.ค.)</td>
+                                        <td>42 คิว</td>
+                                        <td>18 ห้อง</td>
+                                    </tr>
+                                    <tr>
+                                        <td>สัปดาห์ที่ 2 (ม.ค.)</td>
+                                        <td>48 คิว</td>
+                                        <td>15 ห้อง</td>
+                                    </tr>
+                                    <tr>
+                                        <td>สัปดาห์ที่ 3 (ม.ค.)</td>
+                                        <td>55 คิว</td>
+                                        <td>22 ห้อง</td>
+                                    </tr>
+                                    <tr>
+                                        <td>สัปดาห์ที่ 4 (สิ้นเดือน ม.ค.)</td>
+                                        <td style="color: var(--success); font-weight: bold;">88 คิว 🚀</td>
+                                        <td style="color: var(--success); font-weight: bold;">38 ห้อง 🚀</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 6px;">
+                                <em>💡 สังเกต: กราฟเส้นจะช่วยให้เห็น "การเร่งตัวของยอดจอง" ในสัปดาห์เงินเดือนออกได้ชัดเจนทันที</em>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="footer-summary" style="margin-top: 6px;">
+                        <span><i class="fas fa-triangle-exclamation" style="color: var(--accent); margin-right: 6px;"></i><strong>ข้อควรระวัง:</strong> อย่าพล็อตเส้นเกิน 4 เส้นในกราฟเดียว เพราะเส้นจะพันกันยุ่งเหยิงเหมือน "จานสปาเก็ตตี้" (Spaghetti Chart)</span>
+                        <span class="badge badge-purple">Time-Series Rule</span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 9 Notes]:
+                    - ย้ำเรื่องแกน X ของกราฟเส้น ต้องเป็นมิติของเวลา (Temporal Dimension)
+                    - อธิบายปัญหา Spaghetti Chart เมื่อใส่เส้นเยอะเกินไป
+                </aside>
+            </section>
+
+            <!-- SLIDE 10: Line Chart in Action: "มีสุข เพ็ทสเปซ" -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-chart-line" style="color: var(--primary);"></i> กรณีศึกษา: ยอดจองบริการตลอด 8 สัปดาห์</h2>
+                        <span class="subtitle">วิเคราะห์ทิศทางและจับสังเกตจุดพลิกผัน (Inflection Point) ของธุรกิจบริการ</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-chart-line"></i> Trend Detection</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2" style="margin-top: 4px;">
+                        <div class="card card-purple" style="padding: 14px; background: #ffffff;">
+                            <div class="card-header-sm" style="margin-bottom: 2px;">
+                                <i class="fas fa-chart-line" style="color: var(--purple);"></i>
+                                <h4 style="font-size: 0.95rem; color: var(--text-main);">แคมเปญวาเลนไทน์สัปดาห์ที่ 6 ดันยอดจองกรูมมิ่งพุ่งทำสถิติใหม่</h4>
+                            </div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px;">
+                                ยอดจองบริการกรูมมิ่งรายสัปดาห์ (สัปดาห์ที่ 1 - 8)
+                            </div>
+
+                            <!-- SVG Line Chart Mock -->
+                            <div style="height: 130px; width: 100%; display: flex; align-items: center; justify-content: center; background: #f8fafc; border-radius: 8px; border: 1px dashed var(--border-card);">
+                                <svg viewBox="0 0 400 120" style="width: 90%; height: 85%;">
+                                    <!-- Grid lines -->
+                                    <line x1="30" y1="20" x2="380" y2="20" stroke="#e2e8f0" stroke-dasharray="3" />
+                                    <line x1="30" y1="60" x2="380" y2="60" stroke="#e2e8f0" stroke-dasharray="3" />
+                                    <line x1="30" y1="100" x2="380" y2="100" stroke="#e2e8f0" />
+                                    <!-- Polyline -->
+                                    <polyline fill="none" stroke="#4f46e5" stroke-width="3"
+                                        points="40,85 85,78 130,80 175,65 220,55 265,18 310,35 355,30" />
+                                    <!-- Points -->
+                                    <circle cx="40" cy="85" r="4" fill="#4f46e5" />
+                                    <circle cx="85" cy="78" r="4" fill="#4f46e5" />
+                                    <circle cx="130" cy="80" r="4" fill="#4f46e5" />
+                                    <circle cx="175" cy="65" r="4" fill="#4f46e5" />
+                                    <circle cx="220" cy="55" r="4" fill="#4f46e5" />
+                                    <circle cx="265" cy="18" r="6" fill="#e11d48" />
+                                    <circle cx="310" cy="35" r="4" fill="#4f46e5" />
+                                    <circle cx="355" cy="30" r="4" fill="#4f46e5" />
+                                    <!-- Annotation -->
+                                    <text x="250" y="12" font-size="10" font-family="Noto Sans Thai" fill="#e11d48" font-weight="bold">120 คิว (Campaign)</text>
+                                    <text x="35" y="115" font-size="9" fill="#64748b">W1</text>
+                                    <text x="170" y="115" font-size="9" fill="#64748b">W4</text>
+                                    <text x="260" y="115" font-size="9" fill="#e11d48" font-weight="bold">W6</text>
+                                    <text x="350" y="115" font-size="9" fill="#64748b">W8</text>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <div class="card card-secondary" style="padding: 14px; display: flex; flex-direction: column; justify-content: space-between;">
+                            <div>
+                                <div class="card-header-sm">
+                                    <i class="fas fa-microscope" style="color: var(--secondary);"></i>
+                                    <h4>จุดสังเกตที่เจ้าของธุรกิจต้องอ่านออก:</h4>
+                                </div>
+                                <div style="margin-bottom: 8px;">
+                                    <span class="badge badge-accent">Peak Point</span>
+                                    <p style="font-size: 0.82rem; color: var(--text-sub); margin-top: 2px;">
+                                        <strong>ยอดพุ่งสูงสุดที่ W6 (120 คิว):</strong> ตรงกับแคมเปญ "พาน้องแต่งสวยรับวันวาเลนไทน์" ยืนยันว่าการตลาดตามเทศกาลได้ผลยอดเยี่ยม
+                                    </p>
+                                </div>
+                                <div style="margin-bottom: 8px;">
+                                    <span class="badge badge-success">New Normal</span>
+                                    <p style="font-size: 0.82rem; color: var(--text-sub); margin-top: 2px;">
+                                        <strong>หลังจบแคมเปญ ยอดไม่ตกลงไปเท่าเดิม:</strong> สัปดาห์ที่ 7-8 ยังคงตัวอยู่ที่ 90-95 คิว แสดงว่าลูกค้าใหม่ประทับใจและกลายเป็นลูกค้าประจำ!
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="callout-box info" style="padding: 6px 10px;">
+                                <i class="fas fa-tag" style="color: var(--secondary); font-size: 1rem;"></i>
+                                <span style="font-size: 0.80rem; color: var(--text-main);">
+                                    <strong>ใส่ Annotation (คำกำกับเฉพาะจุด):</strong> กราฟเส้นที่ดีควรมีป้ายกำกับจุดสำคัญ เช่น เหตุการณ์จัดโปรโมชั่น หรือวันที่ระบบล่ม
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="footer-summary" style="margin-top: 6px;">
+                        <span><i class="fas fa-brain" style="color: var(--purple); margin-right: 6px;"></i>กราฟเส้นไม่ได้บอกแค่ว่า "ยอดขายเท่าไหร่" แต่บอก <strong>"ทิศทางอนาคต" (Momentum)</strong> ว่าธุรกิจกำลังเร่งเครื่องหรือชะลอตัว</span>
+                        <span class="badge badge-success">Momentum Insight</span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 10 Notes]:
+                    - ชี้ให้เห็นประโยชน์ของ Annotation: ใส่ป้ายบอกเหตุการณ์ว่าทำไมจุดนั้นถึงพุ่ง
+                    - อธิบายคอนเซปต์ New Baseline หรือ New Normalหลังทำแคมเปญสำเร็จ
+                </aside>
+            </section>
+
+            <!-- SLIDE 11: Chart 3: Pie & Donut Chart -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-chart-pie" style="color: var(--primary);"></i> กราฟแบบที่ 3: Pie &amp; Donut Chart — สัดส่วนจาก 100%</h2>
+                        <span class="subtitle">แสดงส่วนแบ่งตลาดหรือองค์ประกอบรายได้ แต่เป็นกราฟที่ถูกนำมาใช้ผิดมากที่สุดในโลก!</span>
+                    </div>
+                    <span class="badge-step warm"><i class="fas fa-circle-notch"></i> Chart #3</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2" style="margin-top: 4px;">
+                        <div class="card card-warm" style="padding: 14px;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-list-ol" style="color: var(--accent-warm);"></i>
+                                <h4>3 กฎเหล็กของกราฟพายและโดนัท</h4>
+                            </div>
+                            <ul style="font-size: 0.85rem; color: var(--text-sub); line-height: 1.5; padding-left: 20px; margin: 0;">
+                                <li><strong>กฎข้อที่ 1: ผลรวมต้องเท่ากับ 100% เสมอ:</strong> ถ้าข้อมูลเป็นแบบ Checkbox ที่เลือกได้หลายข้อ หรือผลรวมไม่ใช่ 100% ห้ามใช้กราฟวงกลมเด็ดขาด!</li>
+                                <li><strong>กฎข้อที่ 2: ห้ามซอยเกิน 5-7 ชิ้น:</strong> ถ้ามีสินค้า 15 หมวด ชิ้นเค้กจะบางจนอ่านไม่ออก ให้รวมชิ้นเล็กๆ เป็นหมวด "อื่นๆ (Others)"</li>
+                                <li><strong>กฎข้อที่ 3: Donut ดีกว่า Pie:</strong> รูตรงกลางของ Donut Chart มีไว้ใส่ตัวเลขสรุป Grand Total รวมทั้งบริษัทได้สบายตา</li>
+                            </ul>
+                        </div>
+
+                        <div class="card card-primary" style="padding: 14px; background: #ffffff;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-circle-notch" style="color: var(--primary);"></i>
+                                <h4>ทำไม Donut Chart ถึงเป็นที่รักของผู้บริหาร?</h4>
+                            </div>
+                            <div style="display: flex; align-items: center; justify-content: center; gap: 20px; padding: 10px 0;">
+                                <div style="position: relative; width: 100px; height: 100px; border-radius: 50%; background: conic-gradient(#4f46e5 0% 45%, #0284c7 45% 75%, #10b981 75% 90%, #d97706 90% 100%); display: flex; align-items: center; justify-content: center;">
+                                    <div style="width: 55px; height: 55px; border-radius: 50%; background: white; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                                        <span style="font-size: 0.55rem; color: var(--text-muted);">รวมทั้งร้าน</span>
+                                        <span style="font-size: 0.70rem; font-weight: 800; color: var(--primary);">788k</span>
+                                    </div>
+                                </div>
+                                <div style="font-size: 0.80rem; color: var(--text-sub); line-height: 1.4;">
+                                    <div><span style="color: #4f46e5;">■</span> หน้าร้าน: 45% (354k)</div>
+                                    <div><span style="color: #0284c7;">■</span> LINE OA: 30% (236k)</div>
+                                    <div><span style="color: #10b981;">■</span> TikTok Shop: 15% (118k)</div>
+                                    <div><span style="color: #d97706;">■</span> Shopee: 10% (80k)</div>
+                                </div>
+                            </div>
+                            <div class="callout-box success" style="margin-top: 6px; padding: 6px 10px;">
+                                <i class="fas fa-lightbulb" style="color: var(--success); font-size: 0.9rem;"></i>
+                                <span style="font-size: 0.78rem; color: var(--text-main);">
+                                    <strong>มองเห็นทั้ง 2 มิติ:</strong> รู้ทั้งสัดส่วน % แต่ละช่องทาง และเห็นยอดเงินรวมทันทีตรงกลางโดนัท
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="footer-summary" style="margin-top: 6px;">
+                        <span><i class="fas fa-ban" style="color: var(--accent); margin-right: 6px;"></i><strong>เตือนภัย:</strong> ถ้าขนาดของแต่ละชิ้นใกล้เคียงกันมาก (เช่น 26% vs 24% vs 25%) สมองมนุษย์แยกไม่ออก ให้เปลี่ยนเป็น <strong>Bar Chart</strong> จะชัดเจนกว่า</span>
+                        <span class="badge badge-warm">Angle vs Length</span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 11 Notes]:
+                    - ทำไมมนุษย์ถึงอ่าน Pie Chart ได้แย่กว่า Bar Chart? เพราะสายตามนุษย์ประเมินมุมและพื้นที่ (Angle & Area) ได้แย่กว่าการประเมินความยาวของเส้นตรง (Length)
+                    - ถ้าชิ้นเค้กใกล้กันมาก ให้ใช้ Bar Chart เสมอ
+                </aside>
+            </section>
+
+            <!-- SLIDE 12: Pie/Donut Chart in Action: ช่องทางจำหน่าย Omnichannel -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-network-wired" style="color: var(--primary);"></i> กรณีศึกษา: สัดส่วนยอดขายตามช่องทาง (Omnichannel)</h2>
+                        <span class="subtitle">ส่องโครงสร้างรายได้ของ "มีสุข เพ็ทสเปซ" เพื่อวางกลยุทธ์ช่องทางการตลาด</span>
+                    </div>
+                    <span class="badge-step warm"><i class="fas fa-cart-shopping"></i> Channel Strategy</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2" style="margin-top: 4px;">
+                        <div class="card card-warm" style="padding: 14px; background: #ffffff;">
+                            <div class="card-header-sm" style="margin-bottom: 2px;">
+                                <i class="fas fa-network-wired" style="color: var(--accent-warm);"></i>
+                                <h4 style="font-size: 0.92rem; color: var(--text-main);">หน้าร้านและ LINE OA ครองสัดส่วน 75% เป็นช่องทางทำกำไรหลัก</h4>
+                            </div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 10px;">
+                                สัดส่วนยอดขายรวม 788,200 บาท แยกตาม 4 ช่องทางจำหน่าย
+                            </div>
+
+                            <table class="data-table dense">
+                                <thead>
+                                    <tr>
+                                        <th>ช่องทางจำหน่าย</th>
+                                        <th>ยอดขาย (บาท)</th>
+                                        <th>สัดส่วน (%)</th>
+                                        <th>ค่าธรรมเนียม GP</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>หน้าร้าน (Dine-in / Walk-in)</strong></td>
+                                        <td>354,690 ฿</td>
+                                        <td style="color: var(--primary); font-weight: bold;">45.0%</td>
+                                        <td>0% (หน้าร้านเราเอง)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>LINE OA (สั่งตรง &amp; นัดหมาย)</strong></td>
+                                        <td>236,460 ฿</td>
+                                        <td style="color: var(--primary); font-weight: bold;">30.0%</td>
+                                        <td>0% (Direct CRM)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>TikTok Shop (Live ขายของเล่น)</strong></td>
+                                        <td>118,230 ฿</td>
+                                        <td>15.0%</td>
+                                        <td>~8-12%</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Shopee (อาหารสัตว์แพ็คใหญ่)</strong></td>
+                                        <td>78,820 ฿</td>
+                                        <td>10.0%</td>
+                                        <td>~10-15%</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="card card-secondary" style="padding: 14px; display: flex; flex-direction: column; justify-content: space-between;">
+                            <div>
+                                <div class="card-header-sm">
+                                    <i class="fas fa-chess-knight" style="color: var(--secondary);"></i>
+                                    <h4>กลยุทธ์ธุรกิจที่ซ่อนอยู่ในสัดส่วน:</h4>
+                                </div>
+                                <div style="margin-bottom: 8px;">
+                                    <span class="badge badge-success">High Margin</span>
+                                    <p style="font-size: 0.82rem; color: var(--text-sub); margin-top: 2px;">
+                                        <strong>ช่องทางปลอด GP สร้างเม็ดเงิน 75%:</strong> หน้าร้านและ LINE OA ไม่ต้องเสียค่าคอมมิชชั่นให้แพลตฟอร์ม จึงเป็นแหล่งสร้างกำไรสุทธิสูงสุด
+                                    </p>
+                                </div>
+                                <div style="margin-bottom: 8px;">
+                                    <span class="badge badge-primary">Lead Generator</span>
+                                    <p style="font-size: 0.82rem; color: var(--text-sub); margin-top: 2px;">
+                                        <strong>TikTok Shop คือเครื่องมือดูดลูกค้าใหม่:</strong> ใช้ TikTok Live เป็นด่านหน้าหาลูกค้า แล้วแจกคูปองดึงลูกค้าเข้ามาใช้บริการกรูมมิ่งที่หน้าร้าน
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="callout-box info" style="padding: 6px 10px;">
+                                <i class="fas fa-check" style="color: var(--secondary); font-size: 1rem;"></i>
+                                <span style="font-size: 0.80rem; color: var(--text-main);">
+                                    <strong>การตัดสินใจเชิงกลยุทธ์:</strong> Donut Chart ชิ้นนี้บอกชัดเจนว่า ไม่ควรทุ่มงบแอดไปที่ Shopee แต่ควรย้ายงบไปยิงโฆษณาดึงคนเข้า LINE OA และหน้าร้าน
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="footer-summary" style="margin-top: 6px;">
+                        <span><i class="fas fa-bullseye" style="color: var(--secondary); margin-right: 6px;"></i>เห็นภาพสัดส่วนแล้วแปลงเป็นแผนการตลาด: <strong>Donut Chart ➔ Resource Allocation</strong></span>
+                        <span class="badge badge-primary">Omnichannel Strategy</span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 12 Notes]:
+                    - สัดส่วนช่องทาง Omnichannel สะท้อนเรื่อง Margin และ GP
+                    - ชี้ให้เห็นว่าการดูสัดส่วนช่วยให้ผู้บริหารจัดสรรงบประมาณ (Budget allocation) ได้ถูกต้อง
+                </aside>
+            </section>
+
+            <!-- SLIDE 13: Chart 4: Scatter Plot -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-braille" style="color: var(--primary);"></i> กราฟแบบที่ 4: Scatter Plot — ขุดหาความสัมพันธ์ 2 ตัวแปร</h2>
+                        <span class="subtitle">การพล็อตจุดตัวเลข 2 มิติ เพื่อดูว่า "ถ้าเราเพิ่มสิ่งนี้... อีกสิ่งหนึ่งจะเพิ่มตามหรือไม่?"</span>
+                    </div>
+                    <span class="badge-step success"><i class="fas fa-diagram-project"></i> Chart #4</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2" style="margin-top: 4px;">
+                        <div class="card card-success" style="padding: 14px;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-link" style="color: var(--success);"></i>
+                                <h4>เมื่อไหร่ที่ต้องใช้ Scatter Plot?</h4>
+                            </div>
+                            <ul style="font-size: 0.85rem; color: var(--text-sub); line-height: 1.5; padding-left: 20px; margin: 0;">
+                                <li><strong>ต้องการหาความสัมพันธ์ (Correlation):</strong> ระหว่างตัวแปรเชิงตัวเลข 2 ตัว</li>
+                                <li><strong>โจทย์ธุรกิจคลาสสิก:</strong>
+                                    <ul style="margin-top: 4px; padding-left: 16px;">
+                                        <li>งบโฆษณา TikTok vs ยอดสั่งซื้อสินค้า</li>
+                                        <li>ส่วนลดโปรโมชั่น vs จำนวนชิ้นที่ซื้อต่อบิล</li>
+                                        <li>ระยะเวลาที่ลูกค้าอยู่ในร้าน vs ยอดใช้จ่าย</li>
+                                    </ul>
+                                </li>
+                                <li><strong>ตรวจจับ Outliers หลุดกลุ่ม:</strong> เห็นได้ทันทีว่ามีลูกค้าคนไหนที่ใช้จ่ายเยอะผิดปกติ หรือบิลไหนที่ตัวเลขแปลกประหลาด</li>
+                            </ul>
+                        </div>
+
+                        <div class="card card-secondary" style="padding: 14px; background: #ffffff;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-braille" style="color: var(--secondary);"></i>
+                                <h4>3 รูปแบบ Pattern ที่พบบ่อยใน Scatter Plot</h4>
+                            </div>
+                            <div class="grid-3" style="margin-top: 8px; text-align: center; gap: 8px;">
+                                <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 8px;">
+                                    <i class="fas fa-arrow-trend-up" style="color: var(--success); font-size: 1.4rem;"></i>
+                                    <div style="font-size: 0.78rem; font-weight: bold; color: var(--success); margin-top: 4px;">ทิศทางเดียวกัน (+)</div>
+                                    <p style="font-size: 0.68rem; color: var(--text-muted); margin-top: 2px;">งบแอดเพิ่ม ยอดขายเพิ่มตาม</p>
+                                </div>
+                                <div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 8px;">
+                                    <i class="fas fa-arrow-trend-down" style="color: var(--accent); font-size: 1.4rem;"></i>
+                                    <div style="font-size: 0.78rem; font-weight: bold; color: var(--accent); margin-top: 4px;">สวนทางกัน (-)</div>
+                                    <p style="font-size: 0.68rem; color: var(--text-muted); margin-top: 2px;">ขึ้นราคา ยอดขายตกลง</p>
+                                </div>
+                                <div style="background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px;">
+                                    <i class="fas fa-cloud" style="color: #64748b; font-size: 1.4rem;"></i>
+                                    <div style="font-size: 0.78rem; font-weight: bold; color: #475569; margin-top: 4px;">ไม่สัมพันธ์กัน (0)</div>
+                                    <p style="font-size: 0.68rem; color: var(--text-muted); margin-top: 2px;">จุดกระจายมั่ว ไร้ทิศทาง</p>
+                                </div>
+                            </div>
+
+                            <div class="callout-box warning" style="margin-top: 8px; padding: 6px 10px;">
+                                <i class="fas fa-triangle-exclamation" style="color: var(--accent-warm); font-size: 0.95rem;"></i>
+                                <span style="font-size: 0.78rem; color: var(--text-main);">
+                                    <strong>Callback ทบทวน Session 2:</strong> Correlation ≠ Causation! แม้จุดจะเรียงตัวสวยงาม แต่ต้องใช้ตรรกะธุรกิจตรวจสอบเสมอว่าสัมพันธ์จริงหรือแค่บังเอิญ
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="footer-summary" style="margin-top: 6px;">
+                        <span><i class="fas fa-chart-line" style="color: var(--success); margin-right: 6px;"></i>ใน Google Sheets เราสามารถติ๊กเลือก <strong>Trendline</strong> บน Scatter Plot เพื่อลากเส้นค่าเฉลี่ยความสัมพันธ์ได้ในคลิกเดียว</span>
+                        <span class="badge badge-success">Trendline Feature</span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 13 Notes]:
+                    - แนะนำ Scatter Plot ซึ่งเป็นรากฐานของการวิเคราะห์ความสัมพันธ์ (Correlation)
+                    - Callback กลับไป Session 2 เรื่อง Correlation vs Causation
+                </aside>
+            </section>
+
+            <!-- SLIDE 14: Scatter Plot in Action: งบโฆษณา vs ยอดลูกค้าใหม่ -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-bullhorn" style="color: var(--primary);"></i> กรณีศึกษา: งบแอด TikTok กับยอดจองลูกค้าใหม่</h2>
+                        <span class="subtitle">หาจุดคุ้มค่า (Sweet Spot) ของงบการตลาดก่อนที่ผลตอบแทนจะเริ่มลดลง</span>
+                    </div>
+                    <span class="badge-step success"><i class="fas fa-coins"></i> Marketing ROI</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2" style="margin-top: 4px;">
+                        <div class="card card-success" style="padding: 14px; background: #ffffff;">
+                            <div class="card-header-sm" style="margin-bottom: 2px;">
+                                <i class="fas fa-bullhorn" style="color: var(--success);"></i>
+                                <h4 style="font-size: 0.92rem; color: var(--text-main);">งบแอด 1,500 - 2,500 บ./วัน คือจุดคุ้มค่าสูงสุด หากเกินกว่านี้ยอดเริ่มตัน</h4>
+                            </div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 10px;">
+                                แกน X: งบโฆษณาต่อวัน (บาท) | แกน Y: จำนวนลูกค้าใหม่ที่นัดหมาย (คน)
+                            </div>
+
+                            <!-- SVG Scatter Plot Mock -->
+                            <div style="height: 140px; width: 100%; display: flex; align-items: center; justify-content: center; background: #f8fafc; border-radius: 8px; border: 1px dashed var(--border-card);">
+                                <svg viewBox="0 0 380 130" style="width: 90%; height: 90%;">
+                                    <line x1="30" y1="20" x2="360" y2="20" stroke="#e2e8f0" stroke-dasharray="3" />
+                                    <line x1="30" y1="70" x2="360" y2="70" stroke="#e2e8f0" stroke-dasharray="3" />
+                                    <line x1="30" y1="110" x2="360" y2="110" stroke="#cbd5e1" />
+                                    <line x1="30" y1="10" x2="30" y2="110" stroke="#cbd5e1" />
+                                    <!-- Trendline -->
+                                    <path d="M 40 100 Q 180 50 350 35" fill="none" stroke="#10b981" stroke-width="2.5" stroke-dasharray="4" />
+                                    <!-- Points -->
+                                    <circle cx="50" cy="98" r="4.5" fill="#4f46e5" />
+                                    <circle cx="70" cy="92" r="4.5" fill="#4f46e5" />
+                                    <circle cx="100" cy="85" r="4.5" fill="#4f46e5" />
+                                    <circle cx="130" cy="72" r="4.5" fill="#4f46e5" />
+                                    <circle cx="160" cy="58" r="4.5" fill="#4f46e5" />
+                                    <circle cx="190" cy="50" r="4.5" fill="#4f46e5" />
+                                    <circle cx="220" cy="45" r="4.5" fill="#4f46e5" />
+                                    <circle cx="260" cy="42" r="4.5" fill="#4f46e5" />
+                                    <circle cx="300" cy="38" r="4.5" fill="#4f46e5" />
+                                    <circle cx="340" cy="36" r="4.5" fill="#4f46e5" />
+                                    <!-- Labels -->
+                                    <text x="35" y="125" font-size="8" fill="#64748b">฿500</text>
+                                    <text x="175" y="125" font-size="8" fill="#10b981" font-weight="bold">฿2,000 (Sweet Spot)</text>
+                                    <text x="320" y="125" font-size="8" fill="#64748b">฿4,000</text>
+                                    <text x="5" y="25" font-size="8" fill="#64748b">30 คน</text>
+                                    <text x="5" y="105" font-size="8" fill="#64748b">5 คน</text>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <div class="card card-secondary" style="padding: 14px; display: flex; flex-direction: column; justify-content: space-between;">
+                            <div>
+                                <div class="card-header-sm">
+                                    <i class="fas fa-chart-line" style="color: var(--secondary);"></i>
+                                    <h4>ถอดรหัส Insight จากเส้น Trendline:</h4>
+                                </div>
+                                <div style="margin-bottom: 8px;">
+                                    <span class="badge badge-success">Linear Phase</span>
+                                    <p style="font-size: 0.82rem; color: var(--text-sub); margin-top: 2px;">
+                                        <strong>ช่วง 500 - 2,000 บาท:</strong> กราฟพุ่งขึ้นเป็นเส้นตรง ทุกๆ 500 บาทที่เพิ่มขึ้น ได้ลูกค้านัดหมายเพิ่ม 5-6 คน คุ้มค่ามาก
+                                    </p>
+                                </div>
+                                <div style="margin-bottom: 8px;">
+                                    <span class="badge badge-warm">Diminishing Returns</span>
+                                    <p style="font-size: 0.82rem; color: var(--text-sub); margin-top: 2px;">
+                                        <strong>เกิน 2,500 บาทขึ้นไป:</strong> กราฟเริ่มแบนราบ ยิงแอดเพิ่มอีก 1,500 บาท แต่ได้ลูกค้าเพิ่มแค่ 1-2 คน (อาการกลุ่มเป้าหมายอิ่มตัว Ad Fatigue)
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="callout-box info" style="padding: 6px 10px;">
+                                <i class="fas fa-hand-holding-dollar" style="color: var(--secondary); font-size: 1rem;"></i>
+                                <span style="font-size: 0.80rem; color: var(--text-main);">
+                                    <strong>การตัดสินใจเจ้าของร้าน:</strong> ล็อกงบแอดไว้ที่ 2,000 บ./วัน แล้วนำเงินส่วนเกินไปจ้าง Content Creator ทำคลิปใหม่ดีกว่าเผาเงินทิ้งเปล่าๆ!
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="footer-summary" style="margin-top: 6px;">
+                        <span><i class="fas fa-eye" style="color: var(--success); margin-right: 6px;"></i>Scatter Plot ชี้ให้เห็นกฎ <strong>Diminishing Returns</strong> ที่ถ้าดูแค่ตารางตัวเลขจะไม่มีวันมองเห็น!</span>
+                        <span class="badge badge-success">Optimization Power</span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 14 Notes]:
+                    - ยกตัวอย่างกฎผลตอบแทนลดน้อยถอยลง (Diminishing Returns)
+                    - กราฟกระจายตัวช่วยให้เจ้าของธุรกิจรู้เพดานงบประมาณว่ายิงแอดแค่ไหนถึงจะคุ้มที่สุด
+                </aside>
+            </section>
+
+            <!-- SLIDE 15: Chart Selection Cheat Sheet -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-table-list" style="color: var(--primary);"></i> สรุปคัมภีร์เลือกกราฟฉบับเจ้าของธุรกิจ (Cheat Sheet)</h2>
+                        <span class="subtitle">ตารางเทียบ 4 กราฟหลัก ตัวแปรที่ใช้ และข้อห้ามที่ไม่ควรทำเด็ดขาด</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-bookmark"></i> Quick Reference</span>
+                </div>
+                <div class="slide-body">
+                    <table class="data-table" style="margin-top: 4px;">
+                        <thead>
+                            <tr>
+                                <th style="width: 18%;">ประเภทกราฟ</th>
+                                <th style="width: 24%;">คำถามทางธุรกิจ</th>
+                                <th style="width: 28%;">โครงสร้างข้อมูลที่ใช้</th>
+                                <th style="width: 30%;">ข้อห้ามเด็ดขาด ⚠️</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong style="color: var(--primary);"><i class="fas fa-chart-column"></i> Bar / Column</strong></td>
+                                <td>ใครขายดีกว่า? เทียบความต่างระหว่างหมวด</td>
+                                <td>1 หมวดหมู่ (ข้อความ) + 1 ตัวเลข (ยอดขาย/จำนวน)</td>
+                                <td>ห้ามตัดแกน Y (แกนตัวเลขต้องเริ่มที่ 0 เสมอ)</td>
+                            </tr>
+                            <tr>
+                                <td><strong style="color: var(--purple);"><i class="fas fa-chart-line"></i> Line Chart</strong></td>
+                                <td>กำลังโตขึ้นหรือร่วงลง? แนวโน้มตามเวลา</td>
+                                <td>1 ลำดับเวลา (วัน/เดือน) + 1-3 ตัวเลข</td>
+                                <td>ห้ามพล็อตเส้นเกิน 4 เส้น (กลายเป็น Spaghetti Chart)</td>
+                            </tr>
+                            <tr>
+                                <td><strong style="color: var(--accent-warm);"><i class="fas fa-chart-pie"></i> Pie / Donut</strong></td>
+                                <td>ส่วนแบ่งเค้กกี่ % จากยอดรวมทั้งหมด</td>
+                                <td>1 หมวดหมู่ (ไม่เกิน 5-7 ชิ้น) + สัดส่วน 100%</td>
+                                <td>ห้ามใช้ถ้าผลรวมไม่ถึง 100% หรือซอยเกิน 7 ชิ้น</td>
+                            </tr>
+                            <tr>
+                                <td><strong style="color: var(--success);"><i class="fas fa-braille"></i> Scatter Plot</strong></td>
+                                <td>ตัวแปรนี้กระทบตัวนั้นไหม? ค้นหา Pattern</td>
+                                <td>ตัวเลข 2 คอลัมน์ (เช่น งบแอด vs ยอดขาย)</td>
+                                <td>อย่าสับสนระหว่าง Correlation กับ Causation</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="callout-box info" style="margin-top: 8px; padding: 8px 12px;">
+                        <i class="fas fa-robot" style="color: var(--secondary); font-size: 1.1rem;"></i>
+                        <span style="font-size: 0.85rem; color: var(--text-main);">
+                            <strong>ถ้ายังไม่แน่ใจว่าจะเลือกกราฟไหน?</strong> ให้ส่งโครงสร้างตารางไปถาม <strong>Gemini Advanced</strong> พร้อมถามว่า <em>"ช่วยแนะนำกราฟที่ดีที่สุด 2 แบบเพื่อตอบคำถามนี้ให้ผู้บริหารเข้าใจง่ายที่สุด"</em> (เราจะฝึกใน Slide 22!)
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 15 Notes]:
+                    - สรุปเปรียบเทียบทั้ง 4 กราฟ เป็นตารางสรุปที่นักศึกษาสามารถแคปหน้าจอไว้ใช้ในชีวิตจริงได้
+                </aside>
+            </section>
+
+            <!-- SLIDE 16: The Dark Side of Charts: Visual Deceptions -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-mask" style="color: var(--accent);"></i> The Dark Side of Charts: กับดักและกลโกงของกราฟ</h2>
+                        <span class="subtitle">ผู้บริหารที่ฉลาดต้องอ่านกราฟเป็น และรู้ทันกราฟที่จงใจ "บิดเบือนความจริง"</span>
+                    </div>
+                    <span class="badge-step accent"><i class="fas fa-shield-halved"></i> Chart Traps</span>
+                </div>
+                <div class="slide-body">
+                    <p style="font-size: 0.90rem; color: var(--text-sub); margin-bottom: 6px;">
+                        กราฟไม่ได้พูดความจริงเสมอไป! บ่อยครั้งที่ทีมขาย เอเจนซี่โฆษณา หรือคู่แข่งทางธุรกิจ ใช้เทคนิคหลอกตาเพื่อทำให้ตัวเลขดูดีเกินจริง หรือปกปิดความล้มเหลว:
+                    </p>
+
+                    <div class="grid-4" style="margin-top: 4px;">
+                        <div class="card card-accent" style="padding: 12px; text-align: center;">
+                            <div class="card-header-sm" style="justify-content: center; margin-bottom: 4px;">
+                                <i class="fas fa-scissors" style="color: var(--accent);"></i>
+                                <h4 style="font-size: 0.88rem; margin: 0;">1. Truncated Y-Axis</h4>
+                            </div>
+                            <p style="font-size: 0.75rem; color: var(--text-muted);">
+                                ตัดแกน Y ไม่เริ่มที่ศูนย์ ทำให้โต 1% ดูเหมือนโต 10 เท่า
+                            </p>
+                        </div>
+
+                        <div class="card card-warm" style="padding: 12px; text-align: center;">
+                            <div class="card-header-sm" style="justify-content: center; margin-bottom: 4px;">
+                                <i class="fas fa-cube" style="color: var(--accent-warm);"></i>
+                                <h4 style="font-size: 0.88rem; margin: 0;">2. 3D Distortion</h4>
+                            </div>
+                            <p style="font-size: 0.75rem; color: var(--text-muted);">
+                                กราฟสามมิติมุมเอียง ชิ้นหน้าดูใหญ่กว่าชิ้นหลังทั้งที่ตัวเลขน้อยกว่า
+                            </p>
+                        </div>
+
+                        <div class="card card-purple" style="padding: 12px; text-align: center;">
+                            <div class="card-header-sm" style="justify-content: center; margin-bottom: 4px;">
+                                <i class="fas fa-pizza-slice" style="color: var(--purple);"></i>
+                                <h4 style="font-size: 0.88rem; margin: 0;">3. Pie Overload</h4>
+                            </div>
+                            <p style="font-size: 0.75rem; color: var(--text-muted);">
+                                ซอยเค้ก 15 ชิ้นจนดูไม่ออก หรือบวกกันไม่ได้ 100%
+                            </p>
+                        </div>
+
+                        <div class="card card-primary" style="padding: 12px; text-align: center;">
+                            <div class="card-header-sm" style="justify-content: center; margin-bottom: 4px;">
+                                <i class="fas fa-palette" style="color: var(--primary);"></i>
+                                <h4 style="font-size: 0.88rem; margin: 0;">4. Color Chaos</h4>
+                            </div>
+                            <p style="font-size: 0.75rem; color: var(--text-muted);">
+                                สาดสีรุ้งจนตาลาย หรือใช้สีแดงกับยอดโต สีเขียวกับยอดตก
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="callout-box danger" style="margin-top: 8px; padding: 8px 12px;">
+                        <i class="fas fa-gavel" style="color: var(--accent); font-size: 1.1rem;"></i>
+                        <span style="font-size: 0.84rem; color: var(--text-main);">
+                            <strong>คาถานักบริหาร:</strong> "เวลาดูกราฟ อย่ามองแค่ความสูงของแท่ง ให้มองที่ <strong>ตัวเลขกำกับแกน (Axis Scale)</strong> ก่อนเป็นอันดับแรกเสมอ!"
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 16 Notes]:
+                    - แนะนำ 4 กับดักกราฟหลอกตา
+                    - เป็นทักษะ Critical Thinking ที่เจ้าของธุรกิจต้องมีติดตัวเพื่อไม่ให้โดนเอเจนซี่หรือลูกน้องหลอก
+                </aside>
+            </section>
+
+            <!-- SLIDE 17: Trap 1: Truncated Y-Axis -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-scissors" style="color: var(--accent);"></i> กับดักที่ 1: ตัดแกน Y ไม่เริ่มที่ศูนย์ (Truncated Y-Axis)</h2>
+                        <span class="subtitle">กลโกงยอดฮิตระดับโลก! ยอดโตขึ้นแค่ 1.5% แต่ทำให้กราฟดูสูงลิบลิ่วเหมือนโต 300%</span>
+                    </div>
+                    <span class="badge-step accent"><i class="fas fa-triangle-exclamation"></i> Trap #1</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2" style="margin-top: 4px;">
+                        <div class="box-bad" style="padding: 14px;">
+                            <div class="card-header-sm" style="margin-bottom: 6px;">
+                                <i class="fas fa-times-circle" style="color: var(--accent);"></i>
+                                <h4 style="color: var(--accent); font-size: 0.90rem;">❌ กราฟตัดแกน (หลอกลวง)</h4>
+                                <span style="font-size: 0.75rem; color: var(--accent); font-weight: bold; margin-left: auto;">แกน Y เริ่มที่ 98,000</span>
+                            </div>
+
+                            <div style="height: 120px; display: flex; align-items: flex-end; justify-content: center; gap: 30px; border-bottom: 2px solid var(--accent); padding-bottom: 4px;">
+                                <div style="display: flex; flex-direction: column; align-items: center;">
+                                    <span style="font-size: 0.75rem; font-weight: bold;">98,500</span>
+                                    <div style="width: 50px; height: 25px; background: #94a3b8; border-radius: 4px 4px 0 0;"></div>
+                                    <span style="font-size: 0.75rem; margin-top: 4px;">ม.ค.</span>
+                                </div>
+                                <div style="display: flex; flex-direction: column; align-items: center;">
+                                    <span style="font-size: 0.75rem; font-weight: bold; color: var(--accent);">100,000</span>
+                                    <div style="width: 50px; height: 95px; background: var(--accent); border-radius: 4px 4px 0 0;"></div>
+                                    <span style="font-size: 0.75rem; margin-top: 4px; font-weight: bold;">ก.พ.</span>
+                                </div>
+                            </div>
+                            <p style="font-size: 0.78rem; color: var(--accent); text-align: center; margin-top: 8px; font-weight: bold;">
+                                ภาพลวงตา: ก.พ. ดูเหมือนสูงกว่า ม.ค. ถึง 4 เท่าตัว!
+                            </p>
+                        </div>
+
+                        <div class="box-good" style="padding: 14px;">
+                            <div class="card-header-sm" style="margin-bottom: 6px;">
+                                <i class="fas fa-check-circle" style="color: var(--success);"></i>
+                                <h4 style="color: var(--success); font-size: 0.90rem;">✓ กราฟจริง (ซื่อสัตย์)</h4>
+                                <span style="font-size: 0.75rem; color: var(--success); font-weight: bold; margin-left: auto;">แกน Y เริ่มที่ 0</span>
+                            </div>
+
+                            <div style="height: 120px; display: flex; align-items: flex-end; justify-content: center; gap: 30px; border-bottom: 2px solid var(--success); padding-bottom: 4px;">
+                                <div style="display: flex; flex-direction: column; align-items: center;">
+                                    <span style="font-size: 0.75rem; font-weight: bold;">98,500</span>
+                                    <div style="width: 50px; height: 85px; background: #94a3b8; border-radius: 4px 4px 0 0;"></div>
+                                    <span style="font-size: 0.75rem; margin-top: 4px;">ม.ค.</span>
+                                </div>
+                                <div style="display: flex; flex-direction: column; align-items: center;">
+                                    <span style="font-size: 0.75rem; font-weight: bold; color: var(--success);">100,000</span>
+                                    <div style="width: 50px; height: 87px; background: var(--success); border-radius: 4px 4px 0 0;"></div>
+                                    <span style="font-size: 0.75rem; margin-top: 4px; font-weight: bold;">ก.พ.</span>
+                                </div>
+                            </div>
+                            <p style="font-size: 0.78rem; color: var(--success); text-align: center; margin-top: 8px; font-weight: bold;">
+                                ความจริง: ยอดโตขึ้นเพียง 1.5% แทบไม่ต่างกันเลย!
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="footer-summary" style="margin-top: 6px;">
+                        <span><i class="fas fa-check-double" style="color: var(--primary); margin-right: 6px;"></i><strong>กฎข้อบังคับ:</strong> ใน Google Sheets ตรวจสอบให้แน่ใจว่าแท็บ <em>Customize &rarr; Vertical axis &rarr; Min value</em> ตั้งเป็น <strong>0</strong> เสมอสำหรับ Bar/Column Chart</span>
+                        <span class="badge badge-primary">Start at Zero</span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 17 Notes]:
+                    - แสดงตัวเลข 98,500 vs 100,000
+                    - ฝั่งซ้ายแกนเริ่มที่ 98,000 ทำให้ดูเหมือนโต 4 เท่า
+                    - ฝั่งขวาแกนเริ่มที่ 0 ทำให้เห็นความจริงว่าโตแค่ 1.5%
+                </aside>
+            </section>
+
+            <!-- SLIDE 18: Trap 2: Misleading 3D Charts -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-cube" style="color: var(--accent);"></i> กับดักที่ 2: กราฟสามมิติหลอกมุมมอง (3D Distortion)</h2>
+                        <span class="subtitle">มุมเอียงของ 3D ทำให้สัดส่วนบิดเบี้ยว ชิ้นด้านหน้าดูใหญ่โต ชิ้นด้านหลังถูกกลืนหาย</span>
+                    </div>
+                    <span class="badge-step warm"><i class="fas fa-eye-slash"></i> Trap #2</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2" style="margin-top: 4px;">
+                        <div class="card card-warm" style="padding: 14px;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-ban" style="color: var(--accent-warm);"></i>
+                                <h4>ทำไมผู้เชี่ยวชาญข้อมูลทั่วโลกถึงแบนกราฟ 3D?</h4>
+                            </div>
+                            <ul style="font-size: 0.85rem; color: var(--text-sub); line-height: 1.5; padding-left: 20px; margin: 0;">
+                                <li><strong>มุมมองทัศนมิติ (Perspective Distortion):</strong> วัตถุที่อยู่ใกล้ตาจะดูใหญ่กว่าวัตถุที่อยู่ไกลตาเสมอ</li>
+                                <li><strong>ชิ้นพายด้านหน้าโกงพื้นที่:</strong> ชิ้นเค้ก 25% ที่อยู่ข้างหน้า ดูมีพื้นที่กว้างกว่าชิ้นเค้ก 35% ที่อยู่ด้านหลัง!</li>
+                                <li><strong>แท่งกราฟอ่านสเกลยาก:</strong> เมื่อเป็นแท่ง 3 มิติ จะเทียบขอบบนกับแกน Y ลำบากมาก ว่าต้องดูขอบหน้าหรือขอบหลัง</li>
+                            </ul>
+                            <div class="callout-box warning" style="margin-top: 10px; padding: 6px 10px;">
+                                <i class="fas fa-lightbulb" style="color: var(--accent-warm); font-size: 1rem;"></i>
+                                <span style="font-size: 0.80rem; color: var(--text-main);">
+                                    <strong>"3D ทำให้ดูกราฟิกไฮเทค แต่ทำลายความถูกต้องของข้อมูลจนหมดสิ้น"</strong>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="card card-secondary" style="padding: 14px; background: #ffffff; text-align: center;">
+                            <div class="card-header-sm" style="justify-content: center;">
+                                <i class="fas fa-layer-group" style="color: var(--secondary);"></i>
+                                <h4>เปรียบเทียบ 3D vs 2D แบบ Flat Design</h4>
+                            </div>
+                            <div class="grid-2" style="gap: 12px; margin-top: 10px;">
+                                <div style="background: #fff1f2; border: 1px dashed var(--accent); border-radius: 8px; padding: 12px;">
+                                    <div style="font-size: 1.8rem; color: var(--accent);"><i class="fas fa-cube"></i></div>
+                                    <div style="font-size: 0.82rem; font-weight: bold; color: var(--accent); margin-top: 4px;">3D Pie / Column</div>
+                                    <p style="font-size: 0.72rem; color: var(--text-muted); margin-top: 2px;">
+                                        รกสายตา มุมมองเบี้ยว หลอกตานักลงทุน
+                                    </p>
+                                </div>
+                                <div style="background: #f0fdf4; border: 1px solid var(--success); border-radius: 8px; padding: 12px;">
+                                    <div style="font-size: 1.8rem; color: var(--success);"><i class="fas fa-chart-pie"></i></div>
+                                    <div style="font-size: 0.82rem; font-weight: bold; color: var(--success); margin-top: 4px;">2D Flat Donut</div>
+                                    <p style="font-size: 0.72rem; color: var(--text-muted); margin-top: 2px;">
+                                        เรียบหรู สบายตา เห็นสัดส่วนจริง 100%
+                                    </p>
+                                </div>
+                            </div>
+                            <p style="font-size: 0.80rem; color: var(--text-sub); margin-top: 12px;">
+                                💡 <strong>กฎปฏิบัติใน Google Sheets:</strong> ใน Chart Editor ห้ามติ๊กเครื่องหมายถูกที่ช่อง <strong>"3D"</strong> เด็ดขาด!
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="footer-summary" style="margin-top: 6px;">
+                        <span><i class="fas fa-check" style="color: var(--success); margin-right: 6px;"></i>มาตรฐานสากล: ในการนำเสนอผู้บริหารและ Pitching นักลงทุน ใช้ <strong>2D Flat Design</strong> เสมอ</span>
+                        <span class="badge badge-success">Flat is Better</span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 18 Notes]:
+                    - เล่าเรื่อง Steve Jobs เคยใช้ 3D Pie Chart ในงานเปิดตัว iPhone เพื่อทำให้ส่วนแบ่งของ Apple ดูใหญ่กว่าของคนอื่น
+                    - ในมุมนักวิทยาศาสตร์ข้อมูล เราต้องไม่ยอมให้ใครมาหลอกเราด้วยกราฟ 3D
+                </aside>
+            </section>
+
+            <!-- SLIDE 19: Trap 3: Pie Chart Overload & 100% Violations -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-pizza-slice" style="color: var(--accent);"></i> กับดักที่ 3: พายซอยย่อย &amp; ผลรวมไม่ครบ 100%</h2>
+                        <span class="subtitle">เค้กที่หั่นเป็น 15 ชิ้นจนดูไม่ออก และการเอากราฟวงกลมไปใช้กับคำถามที่เลือกได้หลายคำตอบ</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-chart-pie"></i> Trap #3</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2" style="margin-top: 4px;">
+                        <div class="card card-purple" style="padding: 14px;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-times-circle" style="color: var(--accent);"></i>
+                                <h4 style="color: var(--purple);">ข้อผิดพลาด: ซอยเกิน 7 ชิ้น (Pie Overload)</h4>
+                            </div>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); margin-bottom: 8px;">
+                                เมื่อมีสินค้า 12 ชนิด แล้วยัดลงในกราฟวงกลม ชิ้นเค้กแต่ละชิ้นจะบางเฉียบ ป้ายข้อความทับกันจนอ่านไม่ออก และสีจะเริ่มซ้ำกันจนแยกไม่ถูก
+                            </p>
+                            <div style="background: #eef2ff; border-radius: 8px; padding: 8px; font-size: 0.80rem; color: var(--primary);">
+                                <strong>วิธีแก้ระดับมืออาชีพ:</strong> โชว์เฉพาะ Top 4 สินค้าขายดี แล้วรวมสินค้าที่เหลือเป็นชิ้นที่ 5 ชื่อ <strong>"หมวดอื่นๆ (Others)"</strong> หรือเปลี่ยนไปใช้ <strong>Horizontal Bar Chart</strong> ทันที
+                            </div>
+                        </div>
+
+                        <div class="card card-accent" style="padding: 14px;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-percent" style="color: var(--accent);"></i>
+                                <h4 style="color: var(--accent);">ข้อผิดพลาด: ผลรวมไม่ใช่ 100%</h4>
+                            </div>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); margin-bottom: 8px;">
+                                เกิดจากการเอาคำถาม Google Forms แบบ <strong>Checkbox (เลือกได้มากกว่า 1 ข้อ)</strong> มาพล็อตเป็นกราฟวงกลม!
+                            </p>
+                            <div style="background: #fff5f5; border: 1px solid #fecaca; border-radius: 8px; padding: 8px; font-size: 0.80rem; color: var(--accent);">
+                                <strong>ตัวอย่างความพัง:</strong> ถามลูกค้าว่า "ชอบบริการอะไรบ้าง"<br />
+                                กรูมมิ่ง 60% + โรงแรม 50% + คาเฟ่ 45% = <strong>รวม 155%!</strong><br />
+                                ➔ วงกลม 1 วงมีได้แค่ 100% ห้ามเอากราฟวงกลมมาใช้เด็ดขาด ต้องใช้ <strong>Bar Chart</strong> เท่านั้น!
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="footer-summary" style="margin-top: 6px;">
+                        <span><i class="fas fa-circle-check" style="color: var(--success); margin-right: 6px;"></i><strong>จำสูตร 100%:</strong> Pie Chart ใช้ได้เฉพาะคำถาม Multiple Choice (เลือกตอบข้อเดียว) ที่ทุกชิ้นรวมกันได้ 100% เท่านั้น</span>
+                        <span class="badge badge-purple">100% Rule</span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 19 Notes]:
+                    - ความผิดพลาดที่พบบ่อยมากในแบบสอบถาม: เอาคำถาม Checkbox มาทำ Pie Chart ทำให้ผลรวมเกิน 100%
+                    - ถ้านักศึกษาเจอแบบนี้ในงานโปรเจกต์กลุ่ม ให้เปลี่ยนเป็น Bar Chart ทันที
+                </aside>
+            </section>
+
+            <!-- SLIDE 20: Trap 4: Color & Contrast Traps -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-palette" style="color: var(--primary);"></i> กับดักที่ 4: สีมั่วซั่ว &amp; สื่อความหมายผิดบริบท</h2>
+                        <span class="subtitle">การเลือกใช้สีในแดชบอร์ดมีผลต่อการสั่งการทางจิตวิทยา อย่าใช้สีเพียงเพราะ "สวยดี"</span>
+                    </div>
+                    <span class="badge-step"><i class="fas fa-droplet"></i> Trap #4</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-3" style="margin-top: 4px;">
+                        <div class="card card-accent" style="padding: 12px; border-top: 4px solid var(--accent);">
+                            <div class="card-header-sm">
+                                <i class="fas fa-traffic-light" style="color: var(--accent);"></i>
+                                <h4 style="font-size: 0.90rem; margin-bottom: 4px; color: var(--accent);">1. สีขัดกับสัญชาตญาณ</h4>
+                            </div>
+                            <p style="font-size: 0.78rem; color: var(--text-sub); line-height: 1.4;">
+                                ในธุรกิจ: <strong>สีเขียว = กำไร/เติบโต</strong>, <strong>สีแดง = ขาดทุน/ลดลง/เตือนภัย</strong><br />
+                                ห้ามใช้สีแดงกับยอดขายที่โตขึ้น หรือใช้สีเขียวกับต้นทุนที่พุ่งสูงเด็ดขาด เพราะจะทำให้ผู้บริหารตกใจผิดเรื่อง!
+                            </p>
+                        </div>
+
+                        <div class="card card-warm" style="padding: 12px; border-top: 4px solid var(--accent-warm);">
+                            <div class="card-header-sm">
+                                <i class="fas fa-palette" style="color: var(--accent-warm);"></i>
+                                <h4 style="font-size: 0.90rem; margin-bottom: 4px; color: var(--accent-warm);">2. กลุ่มสีสายรุ้ง (Rainbow Chaos)</h4>
+                            </div>
+                            <p style="font-size: 0.78rem; color: var(--text-sub); line-height: 1.4;">
+                                สาดใส่ไป 10 สีในกราฟเดียว (ส้ม แดง เขียว ม่วง ฟ้า ชมพู...)<br />
+                                ส่งผลให้สมองเหนื่อยล้า ไม่รู้ว่าจุดไหนสำคัญ กฎ: ใช้สีโทนเดียว (Monochrome) หรือใช้สีแบรนด์เป็นหลัก
+                            </p>
+                        </div>
+
+                        <div class="card card-success" style="padding: 12px; border-top: 4px solid var(--success);">
+                            <div class="card-header-sm">
+                                <i class="fas fa-highlighter" style="color: var(--success);"></i>
+                                <h4 style="font-size: 0.90rem; margin-bottom: 4px; color: var(--success);">3. พลังของ Highlight Color</h4>
+                            </div>
+                            <p style="font-size: 0.78rem; color: var(--text-sub); line-height: 1.4;">
+                                เทคนิคระดับเทพของที่ปรึกษาธุรกิจ: ระบายแท่งกราฟทั้งหมดเป็น <strong>สีเทาอ่อน (#cbd5e1)</strong> แล้วใส่ <strong>สีเด่น (#4f46e5)</strong> เฉพาะจุดที่เราต้องการเล่าเรื่อง!
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="callout-box info" style="margin-top: 8px; padding: 8px 12px;">
+                        <i class="fas fa-universal-access" style="color: var(--secondary); font-size: 1.1rem;"></i>
+                        <span style="font-size: 0.84rem; color: var(--text-main);">
+                            <strong>Accessibility (ความเข้าถึงได้):</strong> ประชากรชายประมาณ 8% มีภาวะตาบอดสีแดง-เขียว (Red-Green Color Blindness) การใช้คู่สี ฟ้า-ส้ม หรือ น้ำเงิน-แดง จะปลอดภัยและเป็นสากลกว่า
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 20 Notes]:
+                    - เทคนิค Highlight Color เป็นอาวุธลับของนักออกแบบแดชบอร์ด
+                    - ไม่จำเป็นต้องใส่สีสันทุกจุด ยิ่งเรียบง่าย ผู้บริหารยิ่งตัดสินใจได้เร็ว
+                </aside>
+            </section>
+
+            <!-- SLIDE 21: The Power of "Action Title" -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-pen-fancy" style="color: var(--primary);"></i> เทคนิคขั้นเทพ: เปลี่ยนชื่อกราฟธรรมดา สู่ "Action Title"</h2>
+                        <span class="subtitle">อย่าตั้งชื่อกราฟแค่บอกตัวแปร แต่จงตั้งชื่อที่ "บอก Insight และบอกสิ่งที่ต้องทำ" ทันที</span>
+                    </div>
+                    <span class="badge-step success"><i class="fas fa-award"></i> Executive Skill</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2" style="margin-top: 4px;">
+                        <div class="box-bad" style="padding: 14px;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-thumbs-down" style="color: var(--accent);"></i>
+                                <h4 style="color: var(--accent); margin-bottom: 6px; font-size: 0.95rem;">ชื่อกราฟแบบดั้งเดิม (Weak / Lazy Title)</h4>
+                            </div>
+                            <ul style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.6; padding-left: 20px; margin: 0;">
+                                <li><em>"ยอดขายรายเดือนประจำปี 2026"</em></li>
+                                <li><em>"สัดส่วนลูกค้าแยกตามช่องทาง"</em></li>
+                                <li><em>"ความสัมพันธ์ระหว่างค่าแอดกับยอดสั่งซื้อ"</em></li>
+                            </ul>
+                            <div style="margin-top: 10px; font-size: 0.78rem; color: var(--text-muted);">
+                                ⚠️ ปัญหา: คนดูต้องมานั่งเพ่งกราฟเอง แปลความหมายเอง และอาจเข้าใจไปคนละทิศละทางกับเรา!
+                            </div>
+                        </div>
+
+                        <div class="box-good" style="padding: 14px;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-thumbs-up" style="color: var(--success);"></i>
+                                <h4 style="color: var(--success); margin-bottom: 6px; font-size: 0.95rem;">ชื่อกราฟแบบ Action Title (Pro Insight)</h4>
+                            </div>
+                            <ul style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.6; padding-left: 20px; margin: 0;">
+                                <li><strong>"ยอดขาย ก.พ. พุ่ง 45% จากแคมเปญวันวาเลนไทน์"</strong></li>
+                                <li><strong>"LINE OA ครองสัดส่วน 30% สร้างกำไรสูงสุดปลอด GP"</strong></li>
+                                <li><strong>"งบแอดเกิน 2,000 บ./วัน ผลตอบแทนเริ่มตัน ควรล็อกงบ"</strong></li>
+                            </ul>
+                            <div style="margin-top: 10px; font-size: 0.78rem; color: var(--success); font-weight: bold;">
+                                ✓ ข้อดี: ผู้บริหารอ่านหัวข้อจบ เข้าใจ Insight ทันทีใน 2 วินาที ส่วนกราฟทำหน้าที่เป็นหลักฐานสนับสนุน!
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="callout-box info" style="margin-top: 8px; padding: 8px 14px;">
+                        <i class="fas fa-wand-magic-sparkles" style="color: var(--secondary); font-size: 1.1rem;"></i>
+                        <span style="font-size: 0.85rem; color: var(--text-main);">
+                            <strong>สูตรตั้ง Action Title:</strong> [ผลลัพธ์ที่เกิดขึ้น / ตัวเลข %] + [สาเหตุหรือปัจจัยหลัก] + [คำแนะนำหรือข้อสังเกต]
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 21 Notes]:
+                    - Action Title คือสิ่งที่แบ่งแยกระหว่างเด็กฝึกงานกับที่ปรึกษาธุรกิจมืออาชีพ
+                    - สั่งให้นักศึกษาทุกคนต้องใช้ Action Title ใน Workshop วันนี้และในโปรเจกต์กลุ่ม
+                </aside>
+            </section>
+
+            <!-- SLIDE 22: Gemini as Your AI Chart Consultant -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-robot" style="color: var(--primary);"></i> ปลุกพลัง Gemini: เปลี่ยน AI เป็นที่ปรึกษาออกแบบกราฟ</h2>
+                        <span class="subtitle">เชื่อมโยง Session 6 สู่การสั่ง AI ให้เลือกประเภทกราฟ กำหนดแกน และร่าง Action Title</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-sparkles"></i> AI Co-pilot</span>
+                </div>
+                <div class="slide-body">
+                    <p style="font-size: 0.88rem; color: var(--text-sub); margin-bottom: 6px;">
+                        เราไม่จำเป็นต้องนั่งเดาเองว่าตารางนี้ควรทำกราฟอะไร! ใช้สูตร <strong>C-R-O-D-A</strong> สั่ง Gemini Advanced วิเคราะห์และวางแผนชาร์ตให้:
+                    </p>
+
+                    <div class="grid-3" style="margin-top: 4px;">
+                        <div class="card card-primary" style="padding: 12px;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-bullseye" style="color: var(--primary);"></i>
+                                <h4 style="font-size: 0.90rem;">1. ระบุโจทย์ธุรกิจ</h4>
+                            </div>
+                            <p style="font-size: 0.78rem; color: var(--text-sub);">
+                                บอก AI ว่าเราอยากตอบคำถามอะไร เช่น "อยากรู้ว่าช่องทางไหนทำกำไรดีที่สุด"
+                            </p>
+                        </div>
+
+                        <div class="card card-purple" style="padding: 12px;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-sliders" style="color: var(--purple);"></i>
+                                <h4 style="font-size: 0.90rem;">2. ขอโครงสร้างชาร์ต</h4>
+                            </div>
+                            <p style="font-size: 0.78rem; color: var(--text-sub);">
+                                สั่งให้ AI บอกประเภทกราฟ (Bar, Line, Donut, Scatter), คอลัมน์แกน X, และคอลัมน์แกน Y
+                            </p>
+                        </div>
+
+                        <div class="card card-success" style="padding: 12px;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-heading" style="color: var(--success);"></i>
+                                <h4 style="font-size: 0.90rem;">3. ขอ Action Title</h4>
+                            </div>
+                            <p style="font-size: 0.78rem; color: var(--text-sub);">
+                                บังคับให้ AI สรุป Insight ออกมาเป็นพาดหัวทรงพลัง พร้อมข้อเสนอแนะกลยุทธ์ 1 บรรทัด
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="footer-summary" style="margin-top: 8px;">
+                        <span><i class="fas fa-arrow-right" style="color: var(--primary); margin-right: 6px;"></i>ในสไลด์ถัดไป มาดู Master Prompt สำเร็จรูปที่สามารถก็อปปี้ไปวางใน Gemini ได้ทันที!</span>
+                        <span class="badge badge-purple">Next: Master Prompt</span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 22 Notes]:
+                    - เชื่อมโยงกลับไป Session 6 เรื่องการใช้ AI
+                    - วันนี้ AI ไม่ได้แค่ตอบเป็นตาราง แต่ AI จะกลายเป็น Data Visualization Architect ให้เรา
+                </aside>
+            </section>
+
+            <!-- SLIDE 23: Master Prompt Template for Chart Recommendation -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-terminal" style="color: var(--primary);"></i> Master Prompt: สั่ง Gemini วางแผนกราฟระดับมืออาชีพ</h2>
+                        <span class="subtitle">เทมเพลตคำสั่ง C-R-O-D-A สำหรับขอคำแนะนำ Data Visualization ใน Google Sheets</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-code"></i> Prompt Template</span>
+                </div>
+                <div class="slide-body">
+                    <div class="prompt-box" style="margin-top: 2px;">
+<span class="prompt-tag tag-role">บทบาท:</span> คุณเป็น Chief Data Visualization Specialist ประจำธุรกิจค้าปลีกและบริการ SME
+<span class="prompt-tag tag-context">บริบท:</span> ฉันแนบไฟล์ Google Sheets ยอดขายของร้าน 'มีสุข เพ็ทสเปซ' ที่ผ่านการทำความสะอาดแล้ว
+<span class="prompt-tag tag-task">เป้าหมายทางธุรกิจ:</span> ฉันต้องการตอบคำถาม 3 ข้อเพื่อนำเสนอในที่ประชุมผู้บริหาร:
+  1) หมวดหมู่สินค้า/บริการใดสร้างรายได้สูงสุด และหมวดใดควรปรับปรุง?
+  2) แนวโน้มยอดจองบริการกรูมมิ่งตลอด 8 สัปดาห์เป็นอย่างไร มีจุดพีคช่วงไหน?
+  3) สัดส่วนรายได้ตามช่องทางจำหน่าย (Omnichannel) ช่องทางใดปลอด GP มากที่สุด?
+
+<span class="prompt-tag tag-format">รูปแบบผลลัพธ์ที่ต้องการ (Markdown Table):</span>
+สำหรับแต่ละคำถาม ให้ตอบตามโครงสร้างนี้:
+• <strong>Chart Type:</strong> (เช่น Column, Line, Donut) พร้อมเหตุผลสั้นๆ 1 ประโยค
+• <strong>X-Axis (แกน X):</strong> ต้องเลือกคอลัมน์ใดในชีต
+• <strong>Y-Axis (แกน Y) / Values:</strong> ต้องเลือกคอลัมน์ใด และใช้สูตรสรุปอะไร (SUM / COUNT)
+• <strong>Action Title:</strong> พาดหัวกราฟที่สรุป Insight และตัวเลขสำคัญ
+• <strong>Business Recommendation:</strong> คำแนะนำเชิงกลยุทธ์ 1 ข้อที่เจ้าของร้านควรทำทันที
+</div>
+
+                    <div class="footer-summary" style="margin-top: 6px;">
+                        <span><i class="fas fa-copy" style="color: var(--secondary); margin-right: 6px;"></i><strong>Tip:</strong> สามารถปรับเปลี่ยน 3 คำถามตามโจทย์ธุรกิจที่กลุ่มตนเองสนใจได้เลย</span>
+                        <span class="badge badge-success">Ready to Use</span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 23 Notes]:
+                    - อธิบาย Prompt ละเอียดทุกส่วน: Role, Context, Task, Format
+                    - นักศึกษาจะนำคำสั่งนี้ไปใช้จริงใน Workshop ช่วงท้ายคาบ
+                </aside>
+            </section>
+
+            <!-- SLIDE 24: Hands-on Google Sheets Chart Editor -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-sliders" style="color: var(--primary);"></i> ปฏิบัติการใน Google Sheets: ใช้งาน Chart Editor</h2>
+                        <span class="subtitle">สร้างกราฟใน 3 ขั้นตอน: แทรกชาร์ต &rarr; จัด Setup &rarr; ปรับแต่ง Customize ให้โปร</span>
+                    </div>
+                    <span class="badge-step"><i class="fas fa-laptop"></i> Hands-on Sheets</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-3" style="margin-top: 4px;">
+                        <div class="card card-primary" style="padding: 14px;">
+                            <div class="card-header-sm">
+                                <span class="badge badge-primary">Step 1</span>
+                                <h4 style="font-size: 0.95rem; margin: 0;">คลุมข้อมูล &amp; แทรกชาร์ต</h4>
+                            </div>
+                            <p style="font-size: 0.80rem; color: var(--text-sub); line-height: 1.4;">
+                                • คลุมช่วงตารางที่ต้องการ (เช่น A1:B5)<br />
+                                • ไปที่เมนู <strong>Insert &rarr; Chart</strong> (แทรก &rarr; แผนภูมิ)<br />
+                                • หน้าต่าง Chart Editor จะเด้งขึ้นมาทางขวามือ
+                            </p>
+                        </div>
+
+                        <div class="card card-purple" style="padding: 14px;">
+                            <div class="card-header-sm">
+                                <span class="badge badge-purple">Step 2</span>
+                                <h4 style="font-size: 0.95rem; margin: 0;">แท็บ Setup (ตั้งค่าแกน)</h4>
+                            </div>
+                            <p style="font-size: 0.80rem; color: var(--text-sub); line-height: 1.4;">
+                                • <strong>Chart type:</strong> เลือกประเภทกราฟที่ AI แนะนำ<br />
+                                • <strong>X-axis:</strong> ใส่คอลัมน์หมวดหมู่หรือเวลา<br />
+                                • <strong>Series:</strong> ใส่คอลัมน์ตัวเลขยอดขาย (ปรับ SUM/COUNT)
+                            </p>
+                        </div>
+
+                        <div class="card card-success" style="padding: 14px;">
+                            <div class="card-header-sm">
+                                <span class="badge badge-success">Step 3</span>
+                                <h4 style="font-size: 0.95rem; margin: 0;">แท็บ Customize (แต่งหล่อ)</h4>
+                            </div>
+                            <p style="font-size: 0.80rem; color: var(--text-sub); line-height: 1.4;">
+                                • <strong>Chart &amp; axis titles:</strong> ใส่ Action Title<br />
+                                • <strong>Series:</strong> ติ๊กเปิด <em>Data labels</em> โชว์ตัวเลข<br />
+                                • <strong>Vertical axis:</strong> ตรวจสอบว่า Min value = 0
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="callout-box info" style="margin-top: 8px; padding: 8px 12px;">
+                        <i class="fas fa-magic" style="color: var(--secondary); font-size: 1.1rem;"></i>
+                        <span style="font-size: 0.84rem; color: var(--text-main);">
+                            <strong>Shortcut ปรับแต่งด่วน:</strong> สามารถดับเบิลคลิกที่องค์ประกอบบนกราฟโดยตรง (เช่น ดับเบิลคลิกที่ชื่อหัวข้อ หรือแท่งกราฟ) เพื่อเปิดเมนูปรับแต่งเฉพาะจุดได้ทันที
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 24 Notes]:
+                    - อาจารย์สาธิตการคลิกใน Google Sheets: Insert > Chart
+                    - ชี้ให้เห็นแท็บ Setup (โครงสร้าง) กับ Customize (ความสวยงามและตัวหนังสือ)
+                </aside>
+            </section>
+
+            <!-- SLIDE 25: Beyond Sheets: แนะนำ Looker Studio เบื้องต้น -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-gauge-high" style="color: var(--primary);"></i> ก้าวข้ามขีดจำกัด: รู้จัก Looker Studio สำหรับทำ Dashboard</h2>
+                        <span class="subtitle">เมื่อ Google Sheets แผ่นเดียวไม่พอ: สร้างแดชบอร์ดผู้บริหารแบบโต้ตอบได้ (Interactive)</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-chart-line"></i> BI Dashboard</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2" style="margin-top: 4px;">
+                        <div class="card card-secondary" style="padding: 14px;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-file-excel" style="color: var(--secondary);"></i>
+                                <h4>Google Sheets (สเปรดชีตวิเคราะห์)</h4>
+                            </div>
+                            <ul style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.5; padding-left: 20px; margin: 0;">
+                                <li>เหมาะสำหรับ <strong>จัดเก็บ ทำความสะอาด และคำนวณสูตร</strong></li>
+                                <li>กราฟฝังอยู่ในชีต อาจดูแน่นและปะปนกับแถวข้อมูล</li>
+                                <li>ส่งให้ผู้บริหารดู อาจเผลอไปกดลบสูตรหรือแก้ตัวเลขพัง!</li>
+                            </ul>
+                        </div>
+
+                        <div class="card card-purple" style="padding: 14px; background: #faf5ff; border: 1px solid rgba(124, 58, 237, 0.3);">
+                            <div class="card-header-sm">
+                                <i class="fas fa-desktop" style="color: var(--purple);"></i>
+                                <h4>Looker Studio (แดชบอร์ดผู้บริหารฟรี)</h4>
+                            </div>
+                            <ul style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.5; padding-left: 20px; margin: 0;">
+                                <li>ดึงข้อมูลจาก Google Sheets แบบ <strong>Real-time อัตโนมัติ</strong></li>
+                                <li>มี <strong>Interactive Filters (ดรอปดาวน์กรองสาขา/วันที่)</strong> ให้ผู้บริหารกดเล่นเอง</li>
+                                <li>หน้าตาสวยหรูเหมือนแอปพลิเคชันธุรกิจระดับองค์กร ปลอดภัย 100%</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="grid-3" style="margin-top: 8px; gap: 10px;">
+                        <div style="background: #ffffff; border: 1px solid var(--border-card); border-radius: 8px; padding: 8px; text-align: center;">
+                            <div style="font-weight: 700; font-size: 0.80rem; color: var(--primary);">1. เข้าเว็บฟรี</div>
+                            <p style="font-size: 0.72rem; color: var(--text-muted); margin-top: 2px;">lookerstudio.google.com ด้วยบัญชี Gmail เดียวกัน</p>
+                        </div>
+                        <div style="background: #ffffff; border: 1px solid var(--border-card); border-radius: 8px; padding: 8px; text-align: center;">
+                            <div style="font-weight: 700; font-size: 0.80rem; color: var(--purple);">2. เชื่อมต่อ Sheets</div>
+                            <p style="font-size: 0.72rem; color: var(--text-muted); margin-top: 2px;">กด Connect &rarr; เลือกไฟล์ Google Sheets ที่คลีนแล้ว</p>
+                        </div>
+                        <div style="background: #ffffff; border: 1px solid var(--border-card); border-radius: 8px; padding: 8px; text-align: center;">
+                            <div style="font-weight: 700; font-size: 0.80rem; color: var(--success);">3. ลากวางชาร์ต</div>
+                            <p style="font-size: 0.72rem; color: var(--text-muted); margin-top: 2px;">ลาก Scorecard และ Chart วางจัดเลย์เอาต์ตามใจชอบ</p>
+                        </div>
+                    </div>
+
+                    <div class="footer-summary" style="margin-top: 6px;">
+                        <span><i class="fas fa-lightbulb" style="color: var(--accent-warm); margin-right: 6px;"></i>โปรเจกต์กลุ่มท้ายเทอม (ครั้งที่ 13-14) กลุ่มไหนใช้ Looker Studio ทำ Dashboard นำเสนอ จะได้รับคะแนนพิเศษเพิ่ม!</span>
+                        <span class="badge badge-purple">Final Project Preview</span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 25 Notes]:
+                    - แนะนำ Looker Studio เบื้องต้นให้นักศึกษารู้จักเครื่องมือ BI Dashboard ฟรีของ Google
+                    - ใช้เป็นตัวเลือกสำหรับโปรเจกต์กลุ่มคาบ 14
+                </aside>
+            </section>
+
+            <!-- SLIDE 26: 3 Elements of an Executive Dashboard -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-layer-group" style="color: var(--primary);"></i> 3 องค์ประกอบของ Executive Dashboard ที่ดี</h2>
+                        <span class="subtitle">หลักการจัดวางหน้าแดชบอร์ด ให้ผู้บริหารมองเห็นสุขภาพธุรกิจได้ครบในหน้าเดียว</span>
+                    </div>
+                    <span class="badge-step success"><i class="fas fa-table-cells-large"></i> Layout Design</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-3" style="margin-top: 4px;">
+                        <div class="card card-primary" style="padding: 14px;">
+                            <div class="card-header-sm">
+                                <span class="badge badge-primary">แถวบนสุด</span>
+                                <h4 style="font-size: 0.95rem; margin: 0;">1. KPI Scorecards</h4>
+                            </div>
+                            <p style="font-size: 0.80rem; color: var(--text-sub); line-height: 1.4;">
+                                การ์ดตัวเลขใหญ่ 3-4 ตัวที่สำคัญที่สุดในชีวิตเจ้าของร้าน เช่น <strong>ยอดขายรวม (Total Revenue)</strong>, <strong>จำนวนบิล (Orders)</strong>, <strong>ยอดเฉลี่ยต่อบิล (AOV)</strong>
+                            </p>
+                        </div>
+
+                        <div class="card card-purple" style="padding: 14px;">
+                            <div class="card-header-sm">
+                                <span class="badge badge-purple">ตรงกลาง</span>
+                                <h4 style="font-size: 0.95rem; margin: 0;">2. Visual Story Charts</h4>
+                            </div>
+                            <p style="font-size: 0.80rem; color: var(--text-sub); line-height: 1.4;">
+                                กราฟหลัก 2-3 รูปที่ตอบคำถามทางธุรกิจ เช่น <strong>Bar Chart</strong> เทียบสินค้าขายดี, <strong>Line Chart</strong> ดูแนวโน้มเวลา, และ <strong>Donut Chart</strong> ดูสัดส่วนช่องทาง
+                            </p>
+                        </div>
+
+                        <div class="card card-warm" style="padding: 14px;">
+                            <div class="card-header-sm">
+                                <span class="badge badge-warm">มุมขวาบน</span>
+                                <h4 style="font-size: 0.95rem; margin: 0;">3. Interactive Filters</h4>
+                            </div>
+                            <p style="font-size: 0.80rem; color: var(--text-sub); line-height: 1.4;">
+                                ปุ่มดรอปดาวน์ให้ผู้บริหารกดเลือกดูข้อมูลเฉพาะ <strong>สาขา</strong>, <strong>ช่องทางจำหน่าย</strong>, หรือ <strong>ช่วงวันที่</strong> แล้วกราฟทั้งหน้าจะคำนวณใหม่ทันที!
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="callout-box info" style="margin-top: 8px; padding: 8px 12px;">
+                        <i class="fas fa-desktop" style="color: var(--secondary); font-size: 1.1rem;"></i>
+                        <span style="font-size: 0.85rem; color: var(--text-main);">
+                            <strong>กฎหนึ่งหน้าจอ (One-Screen Rule):</strong> แดชบอร์ดที่ดีต้องพอดีหน้าจอคอมพิวเตอร์ ไม่ต้องเลื่อนเมาส์ Scroll ลงข้างล่าง เพราะผู้บริหารต้องการเห็นภาพรวมทั้งหมดพร้อมกัน
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 26 Notes]:
+                    - แนะนำการจัดวางเลย์เอาต์แดชบอร์ด: ด้านบนเป็นตัวเลขสรุป (Scorecards) ตรงกลางเป็นกราฟเล่าเรื่อง และมีตัวกรอง (Filters)
+                </aside>
+            </section>
+
+            <!-- SLIDE 27: Executive Data Visualization Checklist -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-clipboard-check" style="color: var(--primary);"></i> Checklist 6 ข้อ: ตรวจทานกราฟก่อนขึ้นพรีเซนต์</h2>
+                        <span class="subtitle">คู่มือสแกนความพร้อม ป้องกันความหน้าแตกต่อหน้าเจ้านายหรือนักลงทุน</span>
+                    </div>
+                    <span class="badge-step success"><i class="fas fa-shield-check"></i> Quality Audit</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2" style="margin-top: 4px;">
+                        <div class="card card-primary" style="padding: 12px;">
+                            <div style="display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px;">
+                                <i class="fas fa-check-circle" style="color: var(--success); font-size: 1.2rem; margin-top: 2px;"></i>
+                                <div>
+                                    <strong style="font-size: 0.88rem; color: var(--text-main);">1. แกน Y เริ่มต้นที่ 0 หรือไม่?</strong>
+                                    <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 1px;">สำหรับกราฟแท่ง (Bar/Column) ต้องเริ่มที่ศูนย์เสมอ ไม่ตัดแกนหลอกตา</p>
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px;">
+                                <i class="fas fa-check-circle" style="color: var(--success); font-size: 1.2rem; margin-top: 2px;"></i>
+                                <div>
+                                    <strong style="font-size: 0.88rem; color: var(--text-main);">2. ประเภทกราฟตรงกับคำถามธุรกิจ?</strong>
+                                    <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 1px;">เปรียบเทียบใช้แท่ง, เวลาใช้เส้น, สัดส่วนใช้โดนัท, ความสัมพันธ์ใช้จุด</p>
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: flex-start; gap: 10px;">
+                                <i class="fas fa-check-circle" style="color: var(--success); font-size: 1.2rem; margin-top: 2px;"></i>
+                                <div>
+                                    <strong style="font-size: 0.88rem; color: var(--text-main);">3. มี Action Title สรุป Insight แล้วหรือยัง?</strong>
+                                    <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 1px;">หัวกราฟบอกผลลัพธ์และตัวเลขสำคัญชัดเจน ไม่ใช่แค่บอกชื่อตัวแปร</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card card-success" style="padding: 12px;">
+                            <div style="display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px;">
+                                <i class="fas fa-check-circle" style="color: var(--success); font-size: 1.2rem; margin-top: 2px;"></i>
+                                <div>
+                                    <strong style="font-size: 0.88rem; color: var(--text-main);">4. สีมีความหมายและเน้นเฉพาะจุดสำคัญ?</strong>
+                                    <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 1px;">ไม่ใช้สีสายรุ้ง ใช้สีเทากับข้อมูลทั่วไปและไฮไลต์สีเด่นเฉพาะพระเอก</p>
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px;">
+                                <i class="fas fa-check-circle" style="color: var(--success); font-size: 1.2rem; margin-top: 2px;"></i>
+                                <div>
+                                    <strong style="font-size: 0.88rem; color: var(--text-main);">5. ปราศจากมิติ 3D ที่บิดเบือนมุมมอง?</strong>
+                                    <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 1px;">ใช้ 2D Flat Design เรียบง่าย ชัดเจน ไม่เอียงหลอกตา</p>
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: flex-start; gap: 10px;">
+                                <i class="fas fa-check-circle" style="color: var(--success); font-size: 1.2rem; margin-top: 2px;"></i>
+                                <div>
+                                    <strong style="font-size: 0.88rem; color: var(--text-main);">6. มี Data Labels หรือหน่วยนับชัดเจน?</strong>
+                                    <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 1px;">ระบุชัดเจนว่าหน่วยเป็น บาท, ชิ้น, หรือ เปอร์เซ็นต์ (%)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="footer-summary" style="margin-top: 6px;">
+                        <span><i class="fas fa-lock" style="color: var(--primary); margin-right: 6px;"></i>ก่อนคลิกบันทึกกราฟลงในชีต สแกน Checklist 6 ข้อนี้ให้ครบ 100% เสมอ!</span>
+                        <span class="badge badge-success">Audit Complete</span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 27 Notes]:
+                    - สรุปเช็คลิสต์ 6 ข้อ ใช้ทบทวนก่อนเริ่มทำ Workshop และสอบ Quiz
+                </aside>
+            </section>
+
+            <!-- SLIDE 28: Summary & Key Takeaways -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-flag-checkered" style="color: var(--primary);"></i> สรุปบทเรียนประจำคาบ (Summary of Session 7)</h2>
+                        <span class="subtitle">ปิดจบขั้นตอนที่ 4 'ANALYZE' อย่างสมบูรณ์แบบ พร้อมก้าวสู่การวิเคราะห์เชิงลึก</span>
+                    </div>
+                    <span class="badge badge-primary"><i class="fas fa-star"></i> Key Takeaways</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-4" style="margin-top: 4px;">
+                        <div class="card card-primary" style="padding: 12px; border-top: 4px solid var(--primary);">
+                            <div class="card-header-sm">
+                                <i class="fas fa-eye" style="color: var(--primary);"></i>
+                                <h4 style="font-size: 0.90rem; color: var(--primary);">1. พลังของภาพ</h4>
+                            </div>
+                            <p style="font-size: 0.78rem; color: var(--text-sub);">
+                                ตัวเลขเฉลี่ยหลอกตาได้ (Anscombe's Quartet) ภาพเท่านั้นที่เฉลยความจริงใน 3 วินาที
+                            </p>
+                        </div>
+
+                        <div class="card card-purple" style="padding: 12px; border-top: 4px solid var(--purple);">
+                            <div class="card-header-sm">
+                                <i class="fas fa-chart-line" style="color: var(--purple);"></i>
+                                <h4 style="font-size: 0.90rem; color: var(--purple);">2. 4 กราฟหลัก</h4>
+                            </div>
+                            <p style="font-size: 0.78rem; color: var(--text-sub);">
+                                เทียบใช้ Bar, เวลาใช้ Line, สัดส่วนใช้ Donut, สัมพันธ์ใช้ Scatter เลือกตามคำถามธุรกิจ
+                            </p>
+                        </div>
+
+                        <div class="card card-accent" style="padding: 12px; border-top: 4px solid var(--accent);">
+                            <div class="card-header-sm">
+                                <i class="fas fa-shield-halved" style="color: var(--accent);"></i>
+                                <h4 style="font-size: 0.90rem; color: var(--accent);">3. ไม่ตกเป็นเหยื่อ</h4>
+                            </div>
+                            <p style="font-size: 0.78rem; color: var(--text-sub);">
+                                รู้ทันแกนตัดไม่เริ่มที่ศูนย์, เลิกใช้ 3D, คุมพายไม่เกิน 7 ชิ้น, และใช้สีไฮไลต์เฉพาะจุด
+                            </p>
+                        </div>
+
+                        <div class="card card-success" style="padding: 12px; border-top: 4px solid var(--success);">
+                            <div class="card-header-sm">
+                                <i class="fas fa-wand-magic-sparkles" style="color: var(--success);"></i>
+                                <h4 style="font-size: 0.90rem; color: var(--success);">4. Action Title</h4>
+                            </div>
+                            <p style="font-size: 0.78rem; color: var(--text-sub);">
+                                สั่ง Gemini แนะนำกราฟ แล้วเปลี่ยนชื่อกราฟให้บอกผลลัพธ์และกลยุทธ์ทันที
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="callout-box info" style="margin-top: 8px; padding: 8px 14px;">
+                        <i class="fas fa-calendar-arrow-down" style="color: var(--secondary); font-size: 1.1rem;"></i>
+                        <span style="font-size: 0.85rem; color: var(--text-main);">
+                            <strong>สัปดาห์หน้า (ครั้งที่ 8):</strong> เจาะลึก 'ANALYZE' ขั้นสูง — การหาความสัมพันธ์และแนวโน้ม (Correlation &amp; Trend) พร้อมคำนวณสูตรสถิติ `=CORREL()` ใน Google Sheets!
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 28 Notes]:
+                    - สรุป 4 เสาหลัก และเกริ่นนำคาบถัดไปเรื่อง Correlation & Trend
+                    - เตรียมเข้าสู่ช่วง Quiz Game 15 นาที
+                </aside>
+            </section>
+
+            <!-- SLIDE 29: Quizizz Arena: ประลองความรู้ Data Visualization -->
+            <section data-background-gradient="radial-gradient(circle at 50% 50%, #e0e7ff 0%, #f8fafc 100%)">
+                <div style="text-align: center; margin: auto 0; padding: 20px 10px;">
+                    <div style="font-size: 3.5rem; color: var(--primary); margin-bottom: 12px;">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <span class="badge badge-accent" style="font-size: 0.88rem; padding: 6px 16px; margin-bottom: 10px;">
+                        <i class="fas fa-gamepad"></i> Quizizz Arena: 10 ข้อ 3 ตัวเลือก
+                    </span>
+                    <h2 style="font-size: 2.1rem; font-weight: 900; margin: 10px 0 14px 0; justify-content: center;">
+                        ประลองความรู้: Data Visualization Master
+                    </h2>
+                    <p style="font-size: 1.05rem; color: var(--text-sub); max-width: 750px; margin: 0 auto 20px auto;">
+                        หยิบสมาร์ตโฟนของคุณขึ้นมา สแกน QR Code หรือเข้าเว็บ <strong>quizizz.com/join</strong><br />
+                        วัดความคมชัดในการเลือกกราฟ ตรวจจับกับดักกราฟหลอกตา และการตั้งชื่อ Action Title!
+                    </p>
+                    <div style="display: inline-flex; align-items: center; gap: 16px; background: white; padding: 10px 24px; border-radius: 9999px; border: 1px solid var(--border-card); box-shadow: var(--shadow-sm);">
+                        <span style="font-size: 0.88rem; font-weight: bold; color: var(--primary);"><i class="fas fa-clock"></i> 60 วินาที/ข้อ</span>
+                        <span style="color: var(--border-card);">|</span>
+                        <span style="font-size: 0.88rem; font-weight: bold; color: var(--accent);"><i class="fas fa-star"></i> เก็บแต้มสะสม 20%</span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 29 Notes]:
+                    - เปิดไฟล์ session-07-quiz.xlsx ที่อิมพอร์ตเข้า Quizizz ไว้แล้ว
+                    - แจกรหัส PIN ให้นักศึกษาร่วมเล่นเกมพร้อมกัน 10 ข้อ
+                </aside>
+            </section>
+
+            <!-- SLIDE 30: Workshop Brief: "Visual Insight Hunter & Dashboard Creator" -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-laptop-code" style="color: var(--primary);"></i> ภารกิจ Workshop: Visual Insight Hunter &amp; Dashboard Creator</h2>
+                        <span class="subtitle">สวมบทบาทที่ปรึกษาข้อมูล สร้างกราฟวิเคราะห์ยอดขาย "มีสุข เพ็ทสเปซ" ใน Google Sheets</span>
+                    </div>
+                    <span class="badge-step success"><i class="fas fa-users-gear"></i> Workshop 65 Mins</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-4" style="margin-top: 4px;">
+                        <div class="card card-primary" style="padding: 12px;">
+                            <div class="card-header-sm">
+                                <span class="badge badge-primary">Mission 1</span>
+                                <h4 style="font-size: 0.90rem; margin: 0;">สั่ง Gemini แนะนำกราฟ</h4>
+                            </div>
+                            <p style="font-size: 0.78rem; color: var(--text-sub);">
+                                ส่งชุดข้อมูลจำลองให้ Gemini แล้วใช้สูตร C-R-O-D-A ขอคำแนะนำประเภทกราฟ 3 คำถามธุรกิจ
+                            </p>
+                        </div>
+
+                        <div class="card card-purple" style="padding: 12px;">
+                            <div class="card-header-sm">
+                                <span class="badge badge-purple">Mission 2</span>
+                                <h4 style="font-size: 0.90rem; margin: 0;">สร้างกราฟ 3 แบบใน Sheets</h4>
+                            </div>
+                            <p style="font-size: 0.78rem; color: var(--text-sub);">
+                                สร้าง <strong>Column Chart</strong> (ยอดขายหมวด), <strong>Line Chart</strong> (แนวโน้ม 8 สัปดาห์), และ <strong>Donut Chart</strong> (ช่องทางขาย)
+                            </p>
+                        </div>
+
+                        <div class="card card-accent" style="padding: 12px;">
+                            <div class="card-header-sm">
+                                <span class="badge badge-accent">Mission 3</span>
+                                <h4 style="font-size: 0.90rem; margin: 0;">จับผิดกราฟหลอกตา</h4>
+                            </div>
+                            <p style="font-size: 0.78rem; color: var(--text-sub);">
+                                วินิจฉัยตัวอย่างกราฟที่มีข้อผิดพลาด (ตัดแกน Y, ใช้ 3D, ผลรวมเกิน 100%) พร้อมเสนอวิธีแก้
+                            </p>
+                        </div>
+
+                        <div class="card card-success" style="padding: 12px;">
+                            <div class="card-header-sm">
+                                <span class="badge badge-success">Mission 4</span>
+                                <h4 style="font-size: 0.90rem; margin: 0;">แต่งหล่อ &amp; Action Title</h4>
+                            </div>
+                            <p style="font-size: 0.78rem; color: var(--text-sub);">
+                                ใส่ Action Title ทรงพลัง, เปิด Data labels, ปรับสีไฮไลต์ และสรุป 3 แผนกลยุทธ์ผู้บริหาร
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="callout-box info" style="margin-top: 8px; padding: 8px 14px;">
+                        <i class="fas fa-file-pen" style="color: var(--secondary); font-size: 1.1rem;"></i>
+                        <span style="font-size: 0.85rem; color: var(--text-main);">
+                            <strong>การส่งงาน:</strong> ให้นักศึกษาเปิดไฟล์ใบงาน <code>session-07-workshop-worksheet.html</code> บันทึกลิงก์ชีต รูปแคปหน้าจอกราฟ และส่งในระบบ e-Learning ท้ายคาบ!
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Slide 30 Notes]:
+                    - ชี้แจง 4 ภารกิจในใบงาน Workshop
+                    - ให้นักศึกษาเริ่มปฏิบัติการกลุ่มร่วมกัน 4-5 คนเป็นเวลา 65 นาที
+                </aside>
+            </section>
+
+        </div>
+    </div>
+
+    <!-- Reveal.js & Script -->
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+    <script>
+        const deck = new Reveal({
+            width: 1280,
+            height: 800,
+            margin: 0.04,
+            minScale: 0.2,
+            maxScale: 2.0,
+            controls: false,
+            progress: true,
+            history: true,
+            center: false,
+            mouseWheel: true,
+            slideNumber: 'c/t',
+            transition: 'slide'
+        });
+        deck.initialize().then(() => {
+            window.deck = deck;
+            window.Reveal = deck;
+        });
+        window.deck = deck;
+        window.Reveal = deck;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            // Automated Layout Audit Test Runner
+            window.runSlideHeightAudit = function () {
+                const sections = document.querySelectorAll('.reveal .slides > section');
+                let totalPassed = 0;
+                const results = [];
+                const containerHeight = deck.getConfig().height;
+
+                sections.forEach((sec, idx) => {
+                    const scrollH = sec.scrollHeight;
+                    const isOverflown = scrollH > containerHeight + 4; // allowance 4px
+
+                    if (!isOverflown) totalPassed++;
+
+                    results.push({
+                        slideIndex: idx + 1,
+                        title: sec.querySelector('h1, h2')?.innerText?.trim()?.substring(0, 35) || `Slide ${idx + 1}`,
+                        scrollHeight: scrollH,
+                        containerHeight: containerHeight,
+                        passed: !isOverflown
+                    });
+                });
+
+                const summary = {
+                    totalSlides: sections.length,
+                    passedCount: totalPassed,
+                    failedCount: sections.length - totalPassed,
+                    isAllPassed: totalPassed === sections.length,
+                    details: results
+                };
+
+                const overlay = document.getElementById('test-report-overlay');
+                const content = document.getElementById('test-report-content');
+                if (overlay && content) {
+                    let html = `<div style="margin-bottom: 8px; font-weight: bold; color: ${summary.isAllPassed ? '#34d399' : '#f87171'}">
+                        Result: ${summary.passedCount}/${summary.totalSlides} slides passed (${summary.isAllPassed ? '100% OK' : 'OVERFLOW DETECTED'})
+                    </div>`;
+                    results.forEach(r => {
+                        html += `<div class="test-row">
+                            <span>#${r.slideIndex} ${r.title}</span>
+                            <span class="${r.passed ? 'test-pass' : 'test-fail'}">${r.scrollHeight}px / ${containerHeight}px ${r.passed ? '✓' : '✗'}</span>
+                        </div>`;
+                    });
+                    content.innerHTML = html;
+                }
+
+                return summary;
+            };
+
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('test') === 'true') {
+                const overlay = document.getElementById('test-report-overlay');
+                if (overlay) overlay.style.display = 'block';
+                setTimeout(() => {
+                    const res = window.runSlideHeightAudit();
+                    console.log("SLIDE_AUDIT_RESULT:", JSON.stringify(res));
+                }, 800);
+            }
+
+            window.addEventListener('keydown', (e) => {
+                if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) return;
+
+                // Key 'A' or 'a': Toggle Aspect Ratio (16:10 <-> 16:9)
+                if (e.key === 'a' || e.key === 'A') {
+                    toggleAspectRatio();
+                }
+
+                // Key 'T' or 't': Toggle Slide Audit Test Overlay
+                if (e.key === 't' || e.key === 'T') {
+                    const overlay = document.getElementById('test-report-overlay');
+                    if (overlay) {
+                        overlay.style.display = overlay.style.display === 'block' ? 'none' : 'block';
+                        if (overlay.style.display === 'block') {
+                            window.runSlideHeightAudit();
+                        }
+                    }
+                }
+            });
+        });
+
+        // Show Temporary Aspect Ratio Toast Notification
+        function showRatioToast(msg) {
+            let toast = document.getElementById('aspect-ratio-toast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'aspect-ratio-toast';
+                toast.style.cssText = `
+                    position: fixed;
+                    bottom: 24px;
+                    right: 24px;
+                    background: rgba(15, 23, 42, 0.90);
+                    backdrop-filter: blur(8px);
+                    color: #ffffff;
+                    padding: 8px 18px;
+                    border-radius: 9999px;
+                    font-family: 'Outfit', 'Noto Sans Thai', sans-serif;
+                    font-size: 0.85rem;
+                    font-weight: 600;
+                    letter-spacing: 0.02em;
+                    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+                    border: 1px solid rgba(255, 255, 255, 0.15);
+                    z-index: 99999;
+                    pointer-events: none;
+                    transition: opacity 0.3s ease, transform 0.3s ease;
+                    transform: translateY(0);
+                    opacity: 0;
+                `;
+                document.body.appendChild(toast);
+            }
+            toast.innerHTML = `<i class="fa-solid fa-display" style="margin-right: 8px; color: #818cf8;"></i> ${msg}`;
+            toast.style.opacity = '1';
+            toast.style.transform = 'translateY(0)';
+            clearTimeout(window._ratioToastTimer);
+            window._ratioToastTimer = setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(6px)';
+            }, 1500);
+        }
+
+        // Toggle Aspect Ratio (Key 'A')
+        function toggleAspectRatio() {
+            if (deck.getConfig().height === 800) {
+                // Switch to 16:9
+                deck.configure({ width: 1280, height: 720 });
+                showRatioToast('สลับอัตราส่วนหน้าจอ: 16:9 (1280 × 720)');
+            } else {
+                // Switch to 16:10
+                deck.configure({ width: 1280, height: 800 });
+                showRatioToast('สลับอัตราส่วนหน้าจอ: 16:10 (1280 × 800)');
+            }
+        }
+        window.toggleAspectRatio = toggleAspectRatio;
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ใบงาน Workshop ครั้งที่ 10 — "Pulse Studio Strategy Master"</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #3730a3;
+            --primary-light: #eef2ff;
+            --secondary: #0284c7;
+            --secondary-light: #e0f2fe;
+            --purple: #7c3aed;
+            --purple-light: #f3e8ff;
+            --accent: #e11d48;
+            --accent-warm: #d97706;
+            --success: #059669;
+            --success-light: #ecfdf5;
+            --teal: #0d9488;
+            --teal-light: #f0fdfa;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text-main: #0f172a;
+            --text-sub: #334155;
+            --text-muted: #64748b;
+            --border: #cbd5e1;
+            --border-focus: #4f46e5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Noto Sans Thai', 'Outfit', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 30px 20px;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            background: var(--surface);
+            padding: 40px 45px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.08), 0 8px 10px -6px rgba(0,0,0,0.04);
+            border: 1px solid var(--border);
+        }
+
+        header {
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header-title h1 {
+            font-size: 1.55rem;
+            color: var(--primary-dark);
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-title p {
+            font-size: 0.92rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .badge-info {
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 8px 16px;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-align: right;
+            border: 1px solid #c7d2fe;
+        }
+
+        .section-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 22px;
+            transition: border-color 0.2s;
+        }
+
+        .section-card:hover {
+            border-color: #94a3b8;
+        }
+
+        .section-card h2 {
+            font-size: 1.15rem;
+            color: var(--primary-dark);
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid var(--primary-light);
+            padding-bottom: 8px;
+        }
+
+        .section-card h3 {
+            font-size: 0.98rem;
+            color: var(--secondary);
+            font-weight: 600;
+            margin: 14px 0 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 240px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.86rem;
+            font-weight: 600;
+            color: var(--text-sub);
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="url"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 9px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            color: var(--text-main);
+            background: #f8fafc;
+            transition: all 0.2s;
+        }
+
+        input[type="text"]:focus,
+        input[type="url"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--border-focus);
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 90px;
+        }
+
+        table.worksheet-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.86rem;
+            margin: 12px 0;
+            background: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        table.worksheet-table th,
+        table.worksheet-table td {
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            text-align: left;
+        }
+
+        table.worksheet-table th {
+            background-color: var(--primary-light);
+            color: var(--primary-dark);
+            font-weight: 700;
+        }
+
+        .btn-action-group {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        button.btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.92rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        button.btn-primary {
+            background-color: var(--primary);
+            color: #ffffff;
+        }
+
+        button.btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        button.btn-secondary {
+            background-color: #f1f5f9;
+            color: var(--text-sub);
+            border: 1px solid var(--border);
+        }
+
+        button.btn-secondary:hover {
+            background-color: #e2e8f0;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+                border: none;
+                padding: 0;
+                max-width: 100%;
+            }
+            .btn-action-group {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="header-title">
+            <h1><i class="fas fa-heart-pulse" style="color: var(--teal);"></i> ใบงาน Workshop: "Pulse Studio Strategy Master"</h1>
+            <p>วิชา Fundamentals of Data Science • ครั้งที่ 10: Customer Segmentation & What-If Analysis</p>
+        </div>
+        <div class="badge-info">
+            <i class="fas fa-clock"></i> เวลา 65 นาที | กลุ่มละ 4–5 คน
+        </div>
+    </header>
+
+    <!-- SECTION: GROUP INFO -->
+    <div class="section-card">
+        <h2><i class="fas fa-users"></i> ข้อมูลกลุ่มและ 5 บทบาทสมาชิก</h2>
+        <div class="form-row">
+            <div class="form-group" style="flex: 2;">
+                <label>ชื่อกลุ่ม / กลุ่มที่:</label>
+                <input type="text" id="group-name" placeholder="ระบุชื่อกลุ่ม">
+            </div>
+            <div class="form-group" style="flex: 3;">
+                <label>ชื่อธุรกิจของกลุ่ม:</label>
+                <input type="text" id="business-name" placeholder="เช่น Pulse Fitness & Pilates Studio">
+            </div>
+        </div>
+
+        <div style="margin-top: 10px;">
+            <label style="margin-bottom: 8px;">การแบ่งบทบาท 5 หน้าที่ในกลุ่ม:</label>
+            <div class="form-row">
+                <div class="form-group">
+                    <input type="text" placeholder="1. Chief Marketing Officer (CMO & บริหารเวลา 65 น.)">
+                </div>
+                <div class="form-group">
+                    <input type="text" placeholder="2. Data Specialist (เขียนสูตร =IFS & Pivot Table)">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <input type="text" placeholder="3. AI Persona Architect (สั่ง Gemini ด้วย S-E-G-M-E-N-T)">
+                </div>
+                <div class="form-group">
+                    <input type="text" placeholder="4. What-If Modeler (จำลอง 3 เคส & ตรวจ Sanity Check)">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <input type="text" placeholder="5. Executive Presenter (สรุปพิทช์แผน 4 ด้าน 2 นาที)">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION: BUSINESS CASE -->
+    <div class="section-card">
+        <h2><i class="fas fa-store"></i> บริบทสถานการณ์จำลอง: "พัลส์ ฟิตเนส & พิลาทิส" (Pulse Studio)</h2>
+        <p style="font-size: 0.88rem; color: var(--text-sub); line-height: 1.5;">
+            สตูดิโอออกกำลังกายระดับพรีเมียม สมาชิก 500 คน สร้างรายได้รวม 12.75 ล้านบาท แต่รายได้เริ่มนิ่งเนื่องจากเตียงเต็มเฉพาะช่วงค่ำ แต่ช่วงบ่ายเตียงว่างถึง 80% อีกทั้งมีสมาชิกหลับถึง 125 คน (25%) ที่ไม่มาเล่นเกิน 60 วันและใกล้หมดสัญญา สตูดิโอต้องการจำแนกลูกค้าออกเป็น 4 กลุ่มด้วยโมเดล RFM และจำลองสถานการณ์ What-If เพื่อเพิ่มรายได้ 3-4 ล้านบาทต่อปี
+        </p>
+
+        <h3 style="margin-top: 14px;"><i class="fas fa-table"></i> ตัวอย่างชุดข้อมูลสมาชิกจำลอง (Sample Member Data)</h3>
+        <table class="worksheet-table">
+            <thead>
+                <tr>
+                    <th style="width: 12%;">รหัสสมาชิก</th>
+                    <th style="width: 22%;">ชื่อ-สกุล</th>
+                    <th style="width: 20%;">R: มาล่าสุด (วันก่อน)</th>
+                    <th style="width: 20%;">F: จำนวนครั้ง (ครั้ง/ปี)</th>
+                    <th style="width: 26%;">M: ยอดสะสม (บาท/ปี)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>M-001</td><td>คุณแพรวพรรณ</td><td>2 วัน</td><td>115 ครั้ง</td><td>145,000 ฿</td></tr>
+                <tr><td>M-002</td><td>คุณธนินท์</td><td>3 วัน</td><td>98 ครั้ง</td><td>120,000 ฿</td></tr>
+                <tr><td>M-003</td><td>คุณกนกพร</td><td>1 วัน</td><td>84 ครั้ง</td><td>42,000 ฿</td></tr>
+                <tr><td>M-004</td><td>คุณศุภชัย</td><td>4 วัน</td><td>72 ครั้ง</td><td>36,000 ฿</td></tr>
+                <tr><td>M-006</td><td>คุณวรภัทร</td><td>18 วัน</td><td>3 ครั้ง</td><td>2,970 ฿</td></tr>
+                <tr><td>M-009</td><td>คุณอรอนงค์</td><td>75 วัน (หลับ)</td><td>45 ครั้ง</td><td>38,000 ฿</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- MISSION 1: SPREADSHEET LAB -->
+    <div class="section-card">
+        <h2><i class="fas fa-laptop-code" style="color: var(--primary);"></i> Mission 1: จัดเกรดลูกค้าด้วยสูตร =IFS() & Pivot Table</h2>
+        <p style="font-size: 0.86rem; color: var(--text-sub); margin-bottom: 10px;">
+            นำเข้าชุดข้อมูลสมาชิกเข้าสู่ Google Sheets เขียนสูตร <code>=IFS()</code> จำแนก Segment และสร้าง Pivot Table สรุปโครงสร้างรายได้
+        </p>
+
+        <label>สูตร =IFS() ที่เขียนจริงใน Google Sheets (คอลัมน์ Segment):</label>
+        <input type="text" placeholder="=IFS(D2>=80000, &quot;1. VIP Champions&quot;, D2>=25000, &quot;2. Loyal Regulars&quot;, D2>=5000, &quot;3. Trial & Drop-in&quot;, TRUE, &quot;4. Sleeping Members&quot;)">
+
+        <h3 style="margin-top: 14px;"><i class="fas fa-chart-pie"></i> ตาราง Pivot Table สรุปผลลัพธ์จาก Google Sheets</h3>
+        <table class="worksheet-table">
+            <thead>
+                <tr>
+                    <th style="width: 28%;">กลุ่มลูกค้า (Segment)</th>
+                    <th style="width: 20%;">จำนวนคน (Count)</th>
+                    <th style="width: 18%;">สัดส่วนคน (%)</th>
+                    <th style="width: 20%;">ยอดเงินรวม (บาท)</th>
+                    <th>สัดส่วนเงิน (%)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>1. VIP Champions</strong></td>
+                    <td><input type="text" placeholder="50 คน"></td>
+                    <td><input type="text" placeholder="10%"></td>
+                    <td><input type="text" placeholder="6,000,000 ฿"></td>
+                    <td><input type="text" placeholder="47.1%"></td>
+                </tr>
+                <tr>
+                    <td><strong>2. Loyal Regulars</strong></td>
+                    <td><input type="text" placeholder="175 คน"></td>
+                    <td><input type="text" placeholder="35%"></td>
+                    <td><input type="text" placeholder="6,300,000 ฿"></td>
+                    <td><input type="text" placeholder="49.4%"></td>
+                </tr>
+                <tr>
+                    <td><strong>3. Trial & Drop-in</strong></td>
+                    <td><input type="text" placeholder="150 คน"></td>
+                    <td><input type="text" placeholder="30%"></td>
+                    <td><input type="text" placeholder="375,000 ฿"></td>
+                    <td><input type="text" placeholder="2.9%"></td>
+                </tr>
+                <tr>
+                    <td><strong>4. Sleeping Members</strong></td>
+                    <td><input type="text" placeholder="125 คน"></td>
+                    <td><input type="text" placeholder="25%"></td>
+                    <td><input type="text" placeholder="75,000 ฿"></td>
+                    <td><input type="text" placeholder="0.6%"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="margin-top: 12px;">
+            <label>แนบลิงก์ Google Sheets ของกลุ่ม (เปิดแชร์ Anyone with link can view):</label>
+            <input type="url" placeholder="https://docs.google.com/spreadsheets/d/...">
+        </div>
+    </div>
+
+    <!-- MISSION 2: AI PERSONA -->
+    <div class="section-card">
+        <h2><i class="fas fa-robot" style="color: var(--purple);"></i> Mission 2: ใช้ Gemini Advanced วิเคราะห์ Persona</h2>
+        <p style="font-size: 0.86rem; color: var(--text-sub); margin-bottom: 8px;">
+            ส่งตารางข้อมูล RFM ให้ Gemini ช่วยเจาะลึก Pain Point และคิดข้อเสนอเฉพาะกลุ่ม
+        </p>
+
+        <label>Prompt ที่กลุ่มใช้สั่งงาน Gemini:</label>
+        <textarea placeholder="พิมพ์ข้อความ Master Prompt ที่ส่งให้ AI วิเคราะห์..."></textarea>
+
+        <h3 style="margin-top: 14px;"><i class="fas fa-users-viewfinder"></i> สรุปผลการวิเคราะห์ 4 Persona จาก Gemini</h3>
+        <div class="form-row">
+            <div class="form-group">
+                <label>1. VIP Champions (Pain Point & ข้อเสนอ):</label>
+                <input type="text" placeholder="ต้องการความเป็นส่วนตัว & ข้อเสนอจองเตียงล่วงหน้า 30 วัน">
+            </div>
+            <div class="form-group">
+                <label>2. Loyal Regulars (Pain Point & ข้อเสนอ):</label>
+                <input type="text" placeholder="แย่งจองคลาสค่ำไม่ทัน & โปรชวนเพื่อน Bring a Buddy">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>3. Trial & Drop-in (Pain Point & ข้อเสนอ):</label>
+                <input type="text" placeholder="กลัวสัญญายาว & แพ็กเกจ Starter 1 เดือนแรก">
+            </div>
+            <div class="form-group">
+                <label>4. Sleeping Members (Pain Point & ข้อเสนอ):</label>
+                <input type="text" placeholder="หมดไฟ & แคมเปญ We Miss You ชวนเพื่อนมาเล่นฟรี 1 คลาส">
+            </div>
+        </div>
+    </div>
+
+    <!-- MISSION 3: WHAT-IF & SANITY CHECK -->
+    <div class="section-card">
+        <h2><i class="fas fa-sliders" style="color: var(--accent);"></i> Mission 3: What-If Simulation & Sanity Check</h2>
+        <p style="font-size: 0.86rem; color: var(--text-sub); margin-bottom: 8px;">
+            จำลองผลกระทบ 3 สถานการณ์ และตรวจสอบผ่าน 3 ด่านข้อจำกัดจริง
+        </p>
+
+        <table class="worksheet-table">
+            <thead>
+                <tr>
+                    <th style="width: 32%;">สถานการณ์จำลอง (What-If)</th>
+                    <th style="width: 30%;">สมมติฐานการตอบสนอง</th>
+                    <th>ผลลัพธ์กำไร/รายได้ใหม่ที่คำนวณได้</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>เคส 1: ขึ้นราคา VIP 20% (เป็น 1,800 บ./ชม.)</strong></td>
+                    <td><input type="text" placeholder="ชั่วโมงเรียนหายไป 5% (เหลือ 3,800 ชม.)"></td>
+                    <td><input type="text" placeholder="กำไรขั้นต้นเพิ่มขึ้น +960,000 บาท (+26.6%)"></td>
+                </tr>
+                <tr>
+                    <td><strong>เคส 2: คลาสบ่าย Off-Peak ลด 40% (480 บ./ครั้ง)</strong></td>
+                    <td><input type="text" placeholder="ดึงลูกค้าได้ 40 คน (เล่นเดือนละ 8 ครั้ง)"></td>
+                    <td><input type="text" placeholder="รายได้ใหม่เพิ่มขึ้น +1.84 ล้านบาท/ปี"></td>
+                </tr>
+                <tr>
+                    <td><strong>เคส 3: ปลุกสมาชิกหลับ (Win-Back Campaign)</strong></td>
+                    <td><input type="text" placeholder="กู้สมาชิกกลับมาได้ 25% (31 คน)"></td>
+                    <td><input type="text" placeholder="ดึงรายได้กลับคืนมาได้ +930,000 บาท"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3 style="margin-top: 14px;"><i class="fas fa-clipboard-check"></i> ตรวจ Sanity Check 3 ด่าน</h3>
+        <div style="font-size: 0.86rem; display: flex; flex-direction: column; gap: 8px; margin-top: 6px;">
+            <div>
+                <strong>1. ความจุเตียง (Capacity Check):</strong> ช่วงบ่ายมีเตียงว่าง 80% รองรับคนเพิ่มได้หรือไม่?  
+                <input type="text" placeholder="รองรับได้สบาย เตียงว่างช่วงบ่ายเพียงพอ">
+            </div>
+            <div>
+                <strong>2. ต้นทุนจ้างครู (Cost Inflation):</strong> ค่าจ้างเทรนเนอร์คลาสบ่ายคุ้มกับค่าหัว 480 บาทหรือไม่?  
+                <input type="text" placeholder="คุ้มค่า คลาสกลุ่ม 5-8 คน ค่าจ้างครู 600 บ. รายได้คลาสละ 2,400-3,840 บ.">
+            </div>
+            <div>
+                <strong>3. มาตรการป้องกัน Cannibalization:</strong> ป้องกันลูกค้าช่วงค่ำหนีมาซื้อบัตรบ่ายราคาถูกอย่างไร?  
+                <input type="text" placeholder="ล็อกสิทธิ์ในระบบจองคลาสว่าเล่นได้เฉพาะ 10:00 - 15:00 น. เท่านั้น">
+            </div>
+        </div>
+    </div>
+
+    <!-- MISSION 4: EXECUTIVE ACTION PLAN -->
+    <div class="section-card">
+        <h2><i class="fas fa-chess" style="color: var(--success);"></i> Mission 4: แผนกลยุทธ์ 4 ด้าน (Executive Action Plan)</h2>
+        <div class="form-row">
+            <div class="form-group">
+                <label>1. แผนสำหรับ VIP Champions:</label>
+                <textarea placeholder="ระบุการปรับราคาและสิทธิพิเศษ White-Glove Service..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>2. แผนสำหรับ Loyal Regulars:</label>
+                <textarea placeholder="ระบุแคมเปญชวนเพื่อน Bring a Buddy และแพ็กเกจ Hybrid..."></textarea>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>3. แผนสำหรับ Trial & Drop-in:</label>
+                <textarea placeholder="ระบุแพ็กเกจ Happy Afternoon Pass และการ Convert 48 ชม. ..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>4. แผนสำหรับ Sleeping Members:</label>
+                <textarea placeholder="ระบุแคมเปญ We Miss You และเงื่อนไขต่ออายุสัญญา..."></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- PITCH SUMMARY -->
+    <div class="section-card" style="background: #fdf4ff; border-color: #d8b4fe;">
+        <h2><i class="fas fa-microphone" style="color: var(--purple);"></i> สรุปข้อความสำหรับพิทช์ 2 นาที (Executive Pitch)</h2>
+        <textarea style="background: white;" placeholder="เขียนสรุป 3 บรรทัดสำหรับตัวแทนนำเสนอขึ้นพูดบนเวที (Insight จาก Pivot, ผลจำลอง What-If, และ 4 กลยุทธ์เพิ่มรายได้ 3-4 ล้านบาท)..."></textarea>
+    </div>
+
+    <!-- BUTTONS -->
+    <div class="btn-action-group">
+        <button class="btn btn-secondary" onclick="window.print()"><i class="fas fa-print"></i> พิมพ์ / บันทึก PDF</button>
+        <button class="btn btn-primary" onclick="alert('บันทึกข้อมูลใบงานเรียบร้อยแล้ว!')"><i class="fas fa-save"></i> บันทึกข้อมูล</button>
+    </div>
+</div>
+
+<script>
+    // Simple LocalStorage Autosave
+    document.querySelectorAll('input, textarea').forEach(el => {
+        const key = 'ws10_' + (el.id || el.placeholder || Math.random());
+        if (localStorage.getItem(key)) el.value = localStorage.getItem(key);
+        el.addEventListener('input', () => localStorage.setItem(key, el.value));
+    });
+</script>
+
+</body>
+</html>

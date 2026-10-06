@@ -1,0 +1,2270 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>ครั้งที่ 5: ขั้นที่ 3 'PREPARE' (เตรียมข้อมูล) — Data Cleaning ด้วย Google Sheets | Fundamentals of Data Science</title>
+    <!-- Reveal.js & Fonts -->
+    <link href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800;900&amp;family=Outfit:wght@400;500;600;700;800&amp;family=Fira+Code:wght@400;500&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #3730a3;
+            --primary-glow: rgba(79, 70, 229, 0.12);
+            --secondary: #0284c7;
+            --accent: #e11d48;
+            --accent-warm: #d97706;
+            --success: #059669;
+            --bg-main: #f8fafc;
+            --bg-card: #ffffff;
+            --border-card: #e2e8f0;
+            --text-main: #0f172a;
+            --text-sub: #334155;
+            --text-muted: #64748b;
+            --gradient-main: linear-gradient(135deg, #4f46e5 0%, #0284c7 100%);
+            --gradient-accent: linear-gradient(135deg, #e11d48 0%, #d97706 100%);
+            --gradient-green: linear-gradient(135deg, #059669 0%, #0284c7 100%);
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: var(--bg-main);
+            font-size: 24px;
+        }
+
+        .reveal {
+            font-family: 'Noto Sans Thai', 'Outfit', sans-serif;
+            color: var(--text-main);
+            background: var(--bg-main);
+            background-image:
+                radial-gradient(circle at 12% 15%, rgba(79, 70, 229, 0.05) 0%, transparent 45%),
+                radial-gradient(circle at 88% 85%, rgba(2, 132, 199, 0.05) 0%, transparent 45%);
+            font-size: 26px;
+        }
+
+        .reveal .slides {
+            text-align: left;
+        }
+
+        .reveal .slides section {
+            height: 100% !important;
+            box-sizing: border-box !important;
+            padding: 22px 38px 24px 38px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: flex-start !important;
+            overflow: hidden !important;
+            background: transparent;
+        }
+
+        @media print {
+            #aspect-ratio-toast,
+            #test-report-overlay {
+                display: none !important;
+            }
+        }
+
+        .slide-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            margin-top: 6px;
+        }
+
+        .reveal h1,
+        .reveal h2,
+        .reveal h3,
+        .reveal h4 {
+            font-family: 'Noto Sans Thai', 'Outfit', sans-serif;
+            font-weight: 800;
+            text-transform: none;
+            letter-spacing: -0.02em;
+            margin: 0;
+            line-height: 1.25;
+            color: var(--text-main);
+        }
+
+        .reveal h1 {
+            font-size: 2.35rem;
+        }
+
+        .reveal h2 {
+            font-size: 1.48rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            line-height: 1.25;
+            letter-spacing: -0.015em;
+        }
+
+        .reveal h3 {
+            font-size: 1.25rem;
+            color: var(--primary);
+        }
+
+        .reveal p {
+            margin: 0;
+            line-height: 1.5;
+            color: var(--text-sub);
+            font-size: 1.02rem;
+        }
+
+        .slide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 2px solid rgba(79, 70, 229, 0.12);
+            padding-bottom: 10px;
+            margin-bottom: 12px;
+            gap: 16px;
+        }
+
+        .slide-header .title-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .slide-header .subtitle {
+            font-size: 1.02rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .badge-step {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 9999px;
+            background: rgba(79, 70, 229, 0.08);
+            border: 1px solid rgba(79, 70, 229, 0.2);
+            color: var(--primary);
+            font-size: 0.88rem;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .badge-step.accent {
+            background: rgba(225, 29, 72, 0.08);
+            border-color: rgba(225, 29, 72, 0.2);
+            color: var(--accent);
+        }
+
+        .badge-step.success {
+            background: rgba(5, 150, 105, 0.08);
+            border-color: rgba(5, 150, 105, 0.2);
+            color: var(--success);
+        }
+
+        .badge-step.warm {
+            background: rgba(217, 119, 6, 0.08);
+            border-color: rgba(217, 119, 6, 0.2);
+            color: var(--accent-warm);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+        }
+
+        .badge-primary {
+            background: #e0e7ff;
+            color: #4338ca;
+        }
+
+        .badge-accent {
+            background: #ffe4e6;
+            color: #be123c;
+        }
+
+        .badge-warm {
+            background: #fef3c7;
+            color: #b45309;
+        }
+
+        .badge-success {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .badge-gray {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .step-container {
+            display: flex;
+            align-items: stretch;
+            gap: 10px;
+            margin: 8px 0;
+        }
+
+        .step-card {
+            flex: 1;
+            background: #ffffff;
+            border: 1px solid var(--border-card);
+            border-radius: 10px;
+            padding: 12px 10px;
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s ease;
+        }
+
+        .step-card.active {
+            border: 2px solid var(--primary);
+            background: #eef2ff;
+            transform: scale(1.03);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
+        }
+
+        .step-num {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .step-card.active .step-num {
+            color: var(--primary);
+        }
+
+        .step-title {
+            font-size: 1.05rem;
+            font-weight: 800;
+            margin-top: 4px;
+            color: var(--text-main);
+        }
+
+        .step-card.active .step-title {
+            color: var(--primary-dark);
+        }
+
+        .step-desc {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+            line-height: 1.3;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 14px;
+            padding: 18px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .card-accent {
+            border-top: 4px solid var(--accent);
+        }
+
+        .card-primary {
+            border-top: 4px solid var(--primary);
+        }
+
+        .card-success {
+            border-top: 4px solid var(--success);
+        }
+
+        .card-warm {
+            border-top: 4px solid var(--accent-warm);
+        }
+
+        .card-header-sm {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .card-header-sm i {
+            font-size: 1.25rem;
+        }
+
+        .card-header-sm h4 {
+            font-size: 1.12rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.92rem;
+            background: #ffffff;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border-card);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .data-table th {
+            background: #f1f5f9;
+            color: var(--text-main);
+            font-weight: 700;
+            padding: 9px 14px;
+            text-align: left;
+            border-bottom: 2px solid var(--border-card);
+            font-size: 0.92rem;
+        }
+
+        .data-table td {
+            padding: 8px 14px;
+            border-bottom: 1px solid #f1f5f9;
+            color: var(--text-sub);
+            font-size: 0.92rem;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .data-table tr.highlight-bad {
+            background: #fff1f2;
+            color: #be123c;
+        }
+
+        .data-table tr.highlight-good {
+            background: #f0fdf4;
+            color: #15803d;
+        }
+
+        .data-table.dense th {
+            padding: 5px 8px !important;
+            font-size: 0.76rem !important;
+            line-height: 1.25 !important;
+        }
+
+        .data-table.dense td {
+            padding: 4px 8px !important;
+            font-size: 0.74rem !important;
+            line-height: 1.25 !important;
+        }
+
+        .compare-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .box-bad {
+            background: #fff1f2;
+            border: 1px solid #fecdd3;
+            border-left: 5px solid var(--accent);
+            border-radius: 12px;
+            padding: 16px 20px;
+            font-size: 1.0rem;
+            line-height: 1.5;
+        }
+
+        .box-good {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-left: 5px solid var(--success);
+            border-radius: 12px;
+            padding: 16px 20px;
+            font-size: 1.0rem;
+            line-height: 1.5;
+        }
+
+        .callout-box {
+            background: #eef2ff;
+            border: 1px solid #c7d2fe;
+            border-left: 5px solid var(--primary);
+            border-radius: 12px;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-top: 8px;
+        }
+
+        .callout-box.warning {
+            background: #fffbeb;
+            border-color: #fde68a;
+            border-left-color: var(--accent-warm);
+        }
+
+        .callout-box.danger {
+            background: #fff1f2;
+            border-color: #fecdd3;
+            border-left-color: var(--accent);
+        }
+
+        .callout-box.success {
+            background: #f0fdf4;
+            border-color: #bbf7d0;
+            border-left-color: var(--success);
+        }
+
+        .code-pill {
+            display: inline-block;
+            background: #1e293b;
+            color: #38bdf8;
+            font-family: 'Fira Code', monospace;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.88rem;
+            font-weight: 500;
+        }
+
+        .footer-summary {
+            background: #ffffff;
+            border: 1px solid var(--border-card);
+            border-radius: 10px;
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            margin-top: auto;
+        }
+
+        .footer-summary strong {
+            color: var(--text-main);
+        }
+
+        #test-report-overlay {
+            display: none;
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            width: 320px;
+            max-height: 90vh;
+            overflow-y: auto;
+            background: rgba(15, 23, 42, 0.95);
+            color: white;
+            padding: 14px;
+            border-radius: 10px;
+            z-index: 10000;
+            font-size: 12px;
+            font-family: 'Fira Code', monospace;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .test-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 3px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .test-pass {
+            color: #34d399;
+        }
+
+        .test-fail {
+            color: #f87171;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Slide Height Test Report Overlay (Press 't') -->
+    <div id="test-report-overlay">
+        <div style="font-weight: bold; margin-bottom: 6px; border-bottom: 1px solid #475569; padding-bottom: 4px;">
+            📊 Slide Height Audit
+        </div>
+        <div id="test-report-content">Running test...</div>
+    </div>
+
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- SLIDE 1: Title Slide -->
+            <section data-background-gradient="radial-gradient(circle at 50% 50%, #e0e7ff 0%, #f8fafc 100%)">
+                <div style="text-align: center; margin: auto 0; padding: 20px 10px;">
+                    <div style="margin-bottom: 14px;">
+                        <span class="badge badge-primary"><i class="fas fa-graduation-cap"></i> ภาคเรียนที่ 1/2569</span>
+                        <span class="badge badge-accent" style="margin-left: 6px;"><i class="fas fa-broom"></i> ครั้งที่ 5 / 14</span>
+                    </div>
+                    <h1 style="font-size: 2.2em; margin-bottom: 12px; font-weight: 900; line-height: 1.2;">
+                        ขั้นที่ 3 'PREPARE' (เตรียมข้อมูล)<br />Data Cleaning ด้วย Google Sheets
+                    </h1>
+                    <p style="font-size: 1.05em; color: var(--secondary); font-weight: 600; margin-bottom: 20px;">
+                        Fundamentals of Data Science (พื้นฐานวิทยาการข้อมูล)
+                    </p>
+                    <div style="display: inline-block; padding: 8px 24px; background: #ffffff; border-radius: 9999px; border: 1px solid var(--border-card); box-shadow: var(--shadow-sm);">
+                        <p style="font-size: 0.85em; margin: 0; color: var(--text-sub);">
+                            <i class="fas fa-user-tie" style="color: var(--secondary); margin-right: 6px;"></i>
+                            <strong>ผู้สอน:</strong> อาจารย์สุรชัย โกยสันติสุข | คณะการสร้างเจ้าของธุรกิจ มหาวิทยาลัยศรีปทุม
+                        </p>
+                    </div>
+                </div>
+                <aside class="notes">
+                    [Script เปิดคาบ]:
+                    - ต้อนรับนักศึกษาสู่ครั้งที่ 5
+                    - ครั้งก่อนเราเก็บข้อมูลเป็น Tidy Data ผ่านแบบฟอร์มแล้ว แต่วันนี้เราจะมาจัดการกับความเป็นจริง: ข้อมูลในโลกธุรกิจมัก "สกปรก"
+                    - เปลี่ยนข้อมูลเละ ข้อมูลผิด ให้พร้อมวิเคราะห์และป้อน AI อย่างมั่นใจ
+                </aside>
+            </section>
+
+            <!-- SLIDE 2: Session Recap - Bridge from COLLECT to PREPARE -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-route" style="color: var(--primary);"></i> วงจร Data Science: เข้าสู่ขั้นที่ 3 'PREPARE'</h2>
+                        <span class="subtitle">ทบทวนความต่อเนื่องจาก COLLECT สู่ PREPARE เพื่อเตรียมพร้อมสู่ ANALYZE</span>
+                    </div>
+                    <span class="badge-step"><i class="fas fa-compass"></i> Step 3 of 5</span>
+                </div>
+                <div class="slide-body">
+                    <div class="step-container">
+                        <div class="step-card">
+                            <div class="step-num">Step 1</div>
+                            <div class="step-title">ASK</div>
+                            <div class="step-desc">ตั้งคำถาม &amp; สมมติฐาน (Session 1-2)</div>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-num">Step 2</div>
+                            <div class="step-title">COLLECT</div>
+                            <div class="step-desc">ประเภทข้อมูล &amp; Tidy Data (Session 3-4)</div>
+                        </div>
+                        <div class="step-card active">
+                            <div class="step-num">Step 3 (วันนี้)</div>
+                            <div class="step-title">PREPARE</div>
+                            <div class="step-desc">Data Cleaning ล้างข้อมูลให้พร้อม (Session 5)</div>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-num">Step 4</div>
+                            <div class="step-title">ANALYZE</div>
+                            <div class="step-desc">วิเคราะห์ด้วย AI Gemini (Session 6-7)</div>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-num">Step 5</div>
+                            <div class="step-title">ACT</div>
+                            <div class="step-desc">Dashboard &amp; ตัดสินใจธุรกิจ (Session 8-14)</div>
+                        </div>
+                    </div>
+
+                    <div class="compare-container" style="margin-top: 4px;">
+                        <div class="card" style="border-left: 4px solid var(--secondary); padding: 14px 18px;">
+                            <h4 style="color: var(--secondary); margin-bottom: 6px;"><i class="fas fa-check-circle"></i> คาบที่แล้ว (Session 4)</h4>
+                            <p style="font-size: 0.95rem; color: var(--text-sub);">
+                                • กฎเหล็ก 3 ข้อของ <strong>Tidy Data</strong> (Row = Observation, Col = Variable, Cell = Single Value)<br />
+                                • ออกแบบ Google Forms ล็อกประเภทคำถามและทำ Data Dictionary
+                            </p>
+                        </div>
+                        <div class="card" style="border-left: 4px solid var(--primary); padding: 14px 18px;">
+                            <h4 style="color: var(--primary); margin-bottom: 6px;"><i class="fas fa-star"></i> คาบนี้ (Session 5)</h4>
+                            <p style="font-size: 0.95rem; color: var(--text-sub);">
+                                • ข้อมูลจริงมี <strong>Dirty Data</strong> (พิมพ์ผิด ช่องว่างแฝง ข้อมูลซ้ำ ข้อมูลหลุดโลก)<br />
+                                • ใช้เครื่องมือ Google Sheets ทำความสะอาดข้อมูลให้คลีน 100% พร้อมบันทึก Cleaning Log
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="callout-box danger" style="padding: 10px 16px;">
+                        <i class="fas fa-skull-crossbones" style="color: var(--accent); font-size: 1.4rem;"></i>
+                        <p style="font-size: 0.92rem; color: var(--accent); font-weight: 600;">
+                            กฎเหล็ก GIGO (Garbage In, Garbage Out): ข้อมูลสกปรก &rarr; วิเคราะห์เพี้ยน &rarr; AI ตอบมั่ว &rarr; ธุรกิจเจ๊ง!
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 3: AGENDA & LEARNING JOURNEY -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-map-marked-alt" style="color: var(--primary);"></i> 4 เสาหลักการเรียนรู้ประจำคาบเรียน</h2>
+                        <span class="subtitle">เส้นทางการเปลี่ยนข้อมูลดิบให้กลายเป็นทองคำทางธุรกิจที่สะอาดบริสุทธิ์</span>
+                    </div>
+                    <span class="badge-step"><i class="fas fa-list-ol"></i> Agenda</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-4">
+                        <div class="card card-accent" style="padding: 16px;">
+                            <div class="badge badge-accent" style="margin-bottom: 8px;">เสาหลักที่ 1</div>
+                            <div style="font-size: 1.8rem; color: var(--accent); margin: 6px 0;"><i class="fas fa-virus-slash"></i></div>
+                            <h4 style="font-size: 1.05rem; margin-bottom: 6px;">The Reality of Dirty Data</h4>
+                            <p style="font-size: 0.85rem; color: var(--text-sub); line-height: 1.35;">
+                                ทำไมข้อมูลจริงถึงสกปรก? ผลกระทบต่อผลกำไรและกฎ 80/20 ในโลก Data Science
+                            </p>
+                        </div>
+                        <div class="card card-warm" style="padding: 16px;">
+                            <div class="badge badge-warm" style="margin-bottom: 8px;">เสาหลักที่ 2</div>
+                            <div style="font-size: 1.8rem; color: var(--accent-warm); margin: 6px 0;"><i class="fas fa-bug"></i></div>
+                            <h4 style="font-size: 1.05rem; margin-bottom: 6px;">5 Traps of Dirty Data</h4>
+                            <p style="font-size: 0.85rem; color: var(--text-sub); line-height: 1.35;">
+                                ผ่า 5 กับดักตัวร้าย: ค่าซ้ำ ช่องว่างล่องหน ค่าว่าง วันที่สับสน และค่าหลุดโลก
+                            </p>
+                        </div>
+                        <div class="card card-primary" style="padding: 16px;">
+                            <div class="badge badge-primary" style="margin-bottom: 8px;">เสาหลักที่ 3</div>
+                            <div style="font-size: 1.8rem; color: var(--primary); margin: 6px 0;"><i class="fas fa-tools"></i></div>
+                            <h4 style="font-size: 1.05rem; margin-bottom: 6px;">Sheets Cleaning Toolkit</h4>
+                            <p style="font-size: 0.85rem; color: var(--text-sub); line-height: 1.35;">
+                                คลังอาวุธ Google Sheets: Data Cleanup, TRIM, PROPER, Find/Replace, Validation
+                            </p>
+                        </div>
+                        <div class="card card-success" style="padding: 16px;">
+                            <div class="badge badge-success" style="margin-bottom: 8px;">เสาหลักที่ 4</div>
+                            <div style="font-size: 1.8rem; color: var(--success); margin: 6px 0;"><i class="fas fa-clipboard-list"></i></div>
+                            <h4 style="font-size: 1.05rem; margin-bottom: 6px;">Data Cleaning Log</h4>
+                            <p style="font-size: 0.85rem; color: var(--text-sub); line-height: 1.35;">
+                                กฎห้ามแตะ Raw Data และการทำ Audit Trail บันทึกประวัติเพื่อความยั่งยืน
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="callout-box" style="margin-top: 8px; padding: 12px 18px;">
+                        <i class="fas fa-trophy" style="color: var(--primary); font-size: 1.3rem;"></i>
+                        <p style="font-size: 0.95rem; color: var(--text-sub);">
+                            <strong>เป้าหมายวันนี้:</strong> ทุกคนสามารถเปิดตารางยอดขายจริง ตรวจหาจุดผิดพลาด และใช้เครื่องมือคลีนข้อมูลจนสะอาดได้ภายในเวลา 30 นาที
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 4: THE DIRTY DATA REALITY -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-biohazard" style="color: var(--accent);"></i> เสาหลักที่ 1: ความจริงอันโหดร้ายของ Dirty Data</h2>
+                        <span class="subtitle">ทำไมข้อมูลในโลกธุรกิจจริงถึงไม่เคยเรียบร้อยเหมือนในตำรา?</span>
+                    </div>
+                    <span class="badge-step accent"><i class="fas fa-exclamation-triangle"></i> Reality Check</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div class="card card-accent">
+                            <h4 style="color: var(--accent); margin-bottom: 10px;"><i class="fas fa-chart-pie"></i> กฎ 80/20 ของ Data Science</h4>
+                            <div style="text-align: center; padding: 12px 0;">
+                                <div style="font-size: 3rem; font-weight: 900; color: var(--accent); line-height: 1;">80%</div>
+                                <p style="font-size: 0.92rem; color: var(--text-muted); margin-top: 4px;">เวลาของ Data Scientist และนักวิเคราะห์</p>
+                            </div>
+                            <p style="font-size: 0.95rem; color: var(--text-sub); line-height: 1.45;">
+                                หมดไปกับการ <strong>"รวบรวม ตรวจสอบ และทำความสะอาดข้อมูล"</strong> (Cleaning &amp; Wrangling) ส่วนเวลาในการสร้างโมเดลหรือวิเคราะห์จริงมีเพียง <strong>20%</strong> เท่านั้น
+                            </p>
+                        </div>
+
+                        <div class="card card-primary">
+                            <h4 style="color: var(--primary); margin-bottom: 10px;"><i class="fas fa-question-circle"></i> ข้อมูลสกปรกมาจากไหน?</h4>
+                            <ul style="margin: 0; padding-left: 20px; font-size: 0.95rem; color: var(--text-sub); line-height: 1.6;">
+                                <li><strong>Human Error:</strong> พนักงานพิมพ์ตกหล่น, เผลอกด Spacebar ท้ายชื่อ, กรอกเบอร์โทรผิดรูปแบบ</li>
+                                <li><strong>Multiple Channels:</strong> รวมข้อมูลจาก TikTok Shop, Shopee, หน้าร้าน POS แต่ละที่ตั้งชื่อสินค้าไม่เหมือนกัน</li>
+                                <li><strong>Copy-Paste Chaos:</strong> คัดลอกข้อมูลจาก PDF หรือไลน์มาแปะใน Excel แล้วโครงสร้างพัง</li>
+                                <li><strong>System Glitch:</strong> เน็ตหลุดขณะส่งฟอร์มทำให้มีแถวซ้ำ หรือส่งข้อมูลไม่ครบ</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="footer-summary">
+                        <span><i class="fas fa-lightbulb" style="color: var(--accent-warm);"></i> <strong>Key Insight:</strong> ธุรกิจที่สำเร็จไม่ได้มีข้อมูลเยอะที่สุด แต่คือธุรกิจที่ทำให้ข้อมูล <strong>สะอาดและพร้อมใช้</strong> เร็วที่สุด</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 5: BUSINESS IMPACT OF DIRTY DATA -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-fire" style="color: var(--accent);"></i> ผลกระทบของข้อมูลสกปรกต่อกำไรธุรกิจ SME</h2>
+                        <span class="subtitle">ต้นทุนที่มองไม่เห็นเมื่อตัดสินใจบนข้อมูลที่ไม่ได้ทำความสะอาด</span>
+                    </div>
+                    <span class="badge-step accent"><i class="fas fa-coins"></i> Business Impact</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-3">
+                        <div class="card" style="border-top: 4px solid #ef4444;">
+                            <div style="font-size: 2rem; color: #ef4444; margin-bottom: 8px;"><i class="fas fa-boxes-stacked"></i></div>
+                            <h4 style="font-size: 1.1rem; margin-bottom: 6px;">สต็อกล้น / สต็อกขาด</h4>
+                            <p style="font-size: 0.88rem; color: var(--text-sub); line-height: 1.4;">
+                                ชื่อสินค้าสะกดต่างกัน 2 แบบ ระบบคิดว่าเป็นคนละชิ้น ทำให้สั่งของมาดองจนเงินจม หรือสต็อกขาดจนเสียโอกาสขาย
+                            </p>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid #f59e0b;">
+                            <div style="font-size: 2rem; color: #f59e0b; margin-bottom: 8px;"><i class="fas fa-bullhorn"></i></div>
+                            <h4 style="font-size: 1.1rem; margin-bottom: 6px;">ยิงแอดซ้ำ เสียค่าส่งฟรี</h4>
+                            <p style="font-size: 0.88rem; color: var(--text-sub); line-height: 1.4;">
+                                ข้อมูลลูกค้าซ้ำซ้อน ส่ง SMS หรือโปรโมชันซ้ำหาลูกค้ารายเดิม 3 รอบ ทำให้ลูกค้ารำคาญและเปลืองงบการตลาด
+                            </p>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid #6366f1;">
+                            <div style="font-size: 2rem; color: #6366f1; margin-bottom: 8px;"><i class="fas fa-robot"></i></div>
+                            <h4 style="font-size: 1.1rem; margin-bottom: 6px;">AI หลอน วิเคราะห์เพี้ยน</h4>
+                            <p style="font-size: 0.88rem; color: var(--text-sub); line-height: 1.4;">
+                                นำข้อมูลที่มีค่าผิดปกติ (เช่น ราคา -500 หรืออายุ 200 ปี) ป้อนให้ Gemini AI สรุปกลยุทธ์ ผลลัพธ์ที่ได้ย่อมผิดพลาดทันที
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="callout-box warning">
+                        <i class="fas fa-money-bill-wave" style="color: var(--accent-warm); font-size: 1.5rem;"></i>
+                        <div>
+                            <strong style="color: var(--text-main);">The 1-10-100 Rule:</strong>
+                            <span style="font-size: 0.95rem; color: var(--text-sub);">
+                                ป้องกันข้อมูลผิดเสีย <strong>1 บาท</strong> | คลีนข้อมูลก่อนวิเคราะห์เสีย <strong>10 บาท</strong> | แต่ถ้าปล่อยให้ข้อมูลผิดหลุดไปจนถึงมือลูกค้า ธุรกิจต้องจ่ายค่าเสียหาย <strong>100 บาท!</strong>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 6: 5 TRAPS OF DIRTY DATA OVERVIEW -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-shield-virus" style="color: var(--accent-warm);"></i> เสาหลักที่ 2: ผ่า 5 กายวิภาคข้อมูลสกปรก (5 Traps)</h2>
+                        <span class="subtitle">5 ปัญหาคลาสสิกที่พบในตารางยอดขายและฐานข้อมูลของธุรกิจไทย</span>
+                    </div>
+                    <span class="badge-step warm"><i class="fas fa-search"></i> 5 Common Traps</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-3" style="gap: 12px;">
+                        <div class="card" style="padding: 14px; border-left: 4px solid #ef4444;">
+                            <span class="badge badge-accent">Trap 1</span>
+                            <h4 style="font-size: 1.02rem; margin: 6px 0 4px 0;"><i class="fas fa-clone"></i> ข้อมูลซ้ำซ้อน (Duplicates)</h4>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.35;">
+                                ออเดอร์เดียวกันถูกบันทึก 2 ครั้ง ทำให้ยอดขายพอง ยอดสต็อกหาย
+                            </p>
+                        </div>
+
+                        <div class="card" style="padding: 14px; border-left: 4px solid #f97316;">
+                            <span class="badge badge-warm">Trap 2</span>
+                            <h4 style="font-size: 1.02rem; margin: 6px 0 4px 0;"><i class="fas fa-font"></i> ช่องว่างล่องหน &amp; สะกดเพี้ยน</h4>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.35;">
+                                เผลอเคาะ Spacebar หน้า-หลัง หรือสะกดคนละแบบ Pivot รวมกลุ่มไม่ได้
+                            </p>
+                        </div>
+
+                        <div class="card" style="padding: 14px; border-left: 4px solid #eab308;">
+                            <span class="badge badge-warm">Trap 3</span>
+                            <h4 style="font-size: 1.02rem; margin: 6px 0 4px 0;"><i class="fas fa-eraser"></i> ข้อมูลขาดหาย (Missing Values)</h4>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.35;">
+                                ปล่อยเซลล์ว่าง, ค่า NULL, ใส่เครื่องหมายขีด (-) โดยไม่แยกประเภท
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="grid-2" style="gap: 12px; margin-top: 10px;">
+                        <div class="card" style="padding: 14px; border-left: 4px solid #3b82f6;">
+                            <span class="badge badge-primary">Trap 4</span>
+                            <h4 style="font-size: 1.02rem; margin: 6px 0 4px 0;"><i class="fas fa-calendar-times"></i> วันที่และตัวเลขสับสน (Inconsistent Format)</h4>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.35;">
+                                บันทึก ว/ด/ป สลับ ด/ว/ป หรือมีเครื่องหมายลูกน้ำ/ตัวอักษรปนจนสูตร SUM ทำงานไม่ได้
+                            </p>
+                        </div>
+
+                        <div class="card" style="padding: 14px; border-left: 4px solid #8b5cf6;">
+                            <span class="badge badge-gray">Trap 5</span>
+                            <h4 style="font-size: 1.02rem; margin: 6px 0 4px 0;"><i class="fas fa-bolt"></i> ค่าผิดปกติ / ค่าหลุดโลก (Outliers)</h4>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.35;">
+                                ข้อมูลสุดโต่งที่เกิดจากพิมพ์ผิด เช่น อายุ 300 ปี, ราคาสินค้า -100 บาท ดึงค่าเฉลี่ยเพี้ยน
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="footer-summary" style="margin-top: 8px;">
+                        <span><i class="fas fa-arrow-right" style="color: var(--primary);"></i> มาเจาะลึกอาการและวิธีรักษาของแต่ละ Trap ไปพร้อมกันทีละข้อ</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 7: TRAP 1: DUPLICATE RECORDS -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-clone" style="color: var(--accent);"></i> Trap 1: ข้อมูลซ้ำซ้อน (Duplicate Records)</h2>
+                        <span class="subtitle">เมื่อแถวข้อมูลออเดอร์เดียวกันถูกบันทึกเบิ้ลโดยไม่รู้ตัว</span>
+                    </div>
+                    <span class="badge-step accent"><i class="fas fa-copy"></i> Trap 1</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div>
+                            <h4 style="margin-bottom: 8px; font-size: 1rem; color: var(--accent);"><i class="fas fa-times-circle"></i> ตัวอย่างตารางที่มี Duplicate Rows</h4>
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th>ลูกค้า</th>
+                                        <th>สินค้า</th>
+                                        <th>ยอดเงิน</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>ORD-101</td>
+                                        <td>คุณสมศรี</td>
+                                        <td>เสื้อยืด Oversize</td>
+                                        <td>350</td>
+                                    </tr>
+                                    <tr class="highlight-bad">
+                                        <td>ORD-102</td>
+                                        <td>คุณวิชัย</td>
+                                        <td>กางเกงยีนส์ขากระบอก</td>
+                                        <td>890</td>
+                                    </tr>
+                                    <tr class="highlight-bad">
+                                        <td>ORD-102</td>
+                                        <td>คุณวิชัย</td>
+                                        <td>กางเกงยีนส์ขากระบอก</td>
+                                        <td>890</td>
+                                    </tr>
+                                    <tr>
+                                        <td>ORD-103</td>
+                                        <td>คุณกานดา</td>
+                                        <td>กระเป๋าผ้าแคนวาส</td>
+                                        <td>290</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div>
+                            <div class="box-bad" style="margin-bottom: 12px;">
+                                <strong><i class="fas fa-exclamation-circle"></i> สาเหตุและผลกระทบ:</strong>
+                                <ul style="margin: 6px 0 0 0; padding-left: 20px; font-size: 0.92rem;">
+                                    <li>ลูกค้ากดยืนยันออเดอร์ 2 ครั้งตอนเน็ตกระตุก</li>
+                                    <li>แอดมินดึงไฟล์ยอดขายจาก Shopee มาต่อกับ TikTok แล้วมีรายการทับซ้อน</li>
+                                    <li><strong>ผลเสีย:</strong> ยอดขายรวมพองเกินจริง 890 บาท คิดว่าขายดีแต่เงินในบัญชีจริงไม่ตรง!</li>
+                                </ul>
+                            </div>
+
+                            <div class="box-good">
+                                <strong><i class="fas fa-check-circle"></i> วิธีสังเกต:</strong>
+                                <p style="font-size: 0.92rem; margin-top: 4px;">
+                                    ตรวจสอบคอลัมน์ที่เป็น <strong>Primary Key / Unique ID</strong> (เช่น Order ID, รหัสลูกค้า) หากมีค่าซ้ำกันในคอลัมน์นี้ แสดงว่ามี Duplicate เกิดขึ้น
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="footer-summary">
+                        <span><strong>หลักคิด:</strong> ก่อนรวมยอดขายทุกครั้ง ต้องตรวจสอบและลบแถวซ้ำออกเสมอ</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 8: TRAP 1 SOLUTION: REMOVE DUPLICATES TOOL -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-trash-alt" style="color: var(--success);"></i> ทางแก้ Trap 1: เมนู Data Cleanup &rarr; Remove Duplicates</h2>
+                        <span class="subtitle">วิธีลบแถวซ้ำอย่างปลอดภัยด้วยฟังก์ชันสำเร็จรูปใน Google Sheets</span>
+                    </div>
+                    <span class="badge-step success"><i class="fas fa-magic"></i> Tool Guide</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div class="card card-primary">
+                            <h4 style="color: var(--primary); margin-bottom: 8px;"><i class="fas fa-mouse-pointer"></i> 3 สเต็ปง่ายๆ ลบข้อมูลซ้ำ</h4>
+                            <div style="font-size: 0.92rem; color: var(--text-sub); line-height: 1.6;">
+                                1. คลุมแถบข้อมูลทั้งหมด (หรือกด <code>Ctrl + A</code>)<br />
+                                2. ไปที่เมนูบาร์ด้านบน: <br />
+                                &nbsp;&nbsp;&nbsp;&nbsp;<strong>Data (ข้อมูล) &rarr; Data cleanup &rarr; Remove duplicates</strong><br />
+                                3. ติ๊กถูกที่ช่อง <strong>"Data has header row"</strong> (ข้อมูลมีแถวส่วนหัว)<br />
+                                4. เลือกว่าจะเช็คซ้ำทุกคอลัมน์ หรือเช็คเฉพาะคอลัมน์ Order ID แล้วกด <strong>Remove duplicates</strong>
+                            </div>
+                        </div>
+
+                        <div class="card card-success">
+                            <h4 style="color: var(--success); margin-bottom: 8px;"><i class="fas fa-eye"></i> ข้อควรระวังในการเลือกคอลัมน์!</h4>
+                            <p style="font-size: 0.9rem; color: var(--text-sub); line-height: 1.45; margin-bottom: 8px;">
+                                • ถ้าติ๊ก <strong>"Select all columns"</strong>: ระบบจะลบก็ต่อเมื่อ <em>ทุกช่องในแถวนั้นเหมือนกันทุกตัวอักษร</em><br />
+                                • ถ้าติ๊กเฉพาะ <strong>"Order ID"</strong>: หากเจอ Order ID ซ้ำ ระบบจะเก็บแถวแรกไว้ และลบแถวที่สองทันที
+                            </p>
+                            <div class="callout-box warning" style="padding: 8px 12px; margin: 0;">
+                                <i class="fas fa-exclamation-triangle" style="font-size: 1.1rem;"></i>
+                                <span style="font-size: 0.82rem;"><strong>คำเตือน:</strong> หากมี 1 ออเดอร์ซื้อสินค้าหลายชิ้น อย่าติ๊กเฉพาะ Order ID เพราะจะลบสินค้าชิ้นอื่นทิ้ง!</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="callout-box success" style="margin-top: 8px; padding: 10px 16px;">
+                        <i class="fas fa-check-double" style="color: var(--success); font-size: 1.3rem;"></i>
+                        <span style="font-size: 0.92rem;">
+                            <strong>Alternative Formula:</strong> สามารถใช้สูตร <span class="code-pill">=UNIQUE(A2:D100)</span> เพื่อดึงเฉพาะแถวที่ไม่ซ้ำไปวางในชีตใหม่ได้โดยไม่กระทบข้อมูลต้นฉบับ
+                        </span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 9: TRAP 2: WHITESPACE & HIDDEN SPACES -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-ghost" style="color: var(--accent);"></i> Trap 2: ช่องว่างล่องหน (Hidden Whitespace)</h2>
+                        <span class="subtitle">ปัญหาคลาสสิกที่ตามองไม่เห็น แต่ทำให้สูตรคำนวณและ Pivot Table พังทลาย</span>
+                    </div>
+                    <span class="badge-step accent"><i class="fas fa-keyboard"></i> Trap 2</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div>
+                            <h4 style="margin-bottom: 8px; font-size: 1rem; color: var(--accent);"><i class="fas fa-eye-slash"></i> ดูเผินๆ เหมือนกัน แต่ระบบมองว่าต่างกัน!</h4>
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>ข้อความที่พิมพ์</th>
+                                        <th>สิ่งที่สายตามนุษย์เห็น</th>
+                                        <th>สิ่งที่คอมพิวเตอร์เห็น</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>"ชบา"</code></td>
+                                        <td>ชบา</td>
+                                        <td>ความยาว 3 ตัวอักษร</td>
+                                    </tr>
+                                    <tr class="highlight-bad">
+                                        <td><code>" ชบา"</code></td>
+                                        <td>ชบา</td>
+                                        <td>มี Space ข้างหน้า (4 ตัว)</td>
+                                    </tr>
+                                    <tr class="highlight-bad">
+                                        <td><code>"ชบา "</code></td>
+                                        <td>ชบา</td>
+                                        <td>มี Space ข้างหลัง (4 ตัว)</td>
+                                    </tr>
+                                    <tr class="highlight-bad">
+                                        <td><code>"ช&nbsp;&nbsp;บา"</code></td>
+                                        <td>ช บา</td>
+                                        <td>Space ตรงกลาง 2 เคาะ</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div>
+                            <div class="box-bad" style="margin-bottom: 12px;">
+                                <strong><i class="fas fa-bomb"></i> หายนะที่เกิดขึ้นกับธุรกิจ:</strong>
+                                <ul style="margin: 6px 0 0 0; padding-left: 20px; font-size: 0.92rem;">
+                                    <li><strong>Pivot Table แยกแถว:</strong> สรุปยอดขายเสื้อ "ชบา" กลายเป็น 3 บรรทัด ยอดขายกระจายรวมยอดไม่ติด!</li>
+                                    <li><strong>VLOOKUP ขึ้น #N/A:</strong> ค้นหารหัสสินค้าไม่เจอ เพราะรหัสในตารางมีเคาะเว้นวรรคแอบแฝง</li>
+                                    <li><strong>Filter หลุด:</strong> กรองหาสาขา "สยาม" ไม่เจอสาขาที่มีช่องว่างข้างหน้า</li>
+                                </ul>
+                            </div>
+
+                            <div class="callout-box warning" style="padding: 10px 14px; margin: 0;">
+                                <i class="fas fa-lightbulb" style="color: var(--accent-warm);"></i>
+                                <span style="font-size: 0.88rem;"><strong>การตรวจจับ:</strong> ใช้สูตร <code>=LEN(A2)</code> เพื่อดูความยาวตัวอักษรจริงว่าเกินกว่าที่ควรจะเป็นหรือไม่</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="footer-summary">
+                        <span><strong>กฎทอง:</strong> 1 เคาะของมนุษย์ คือ 1 รหัสลับของคอมพิวเตอร์เสมอ</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 10: TRAP 2 SOLUTION: TRIM WHITESPACE & FORMULA -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-cut" style="color: var(--success);"></i> ทางแก้ Trap 2: ฟังก์ชัน TRIM &amp; เครื่องมือ Trim Whitespace</h2>
+                        <span class="subtitle">ตัดช่องว่างส่วนเกินออกอย่างหมดจดใน 1 วินาที</span>
+                    </div>
+                    <span class="badge-step success"><i class="fas fa-wrench"></i> Cleanup Toolkit</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div class="card card-primary">
+                            <h4 style="color: var(--primary); margin-bottom: 8px;"><i class="fas fa-magic"></i> วิธีที่ 1: เมนูอัตโนมัติ (Data Cleanup)</h4>
+                            <p style="font-size: 0.92rem; color: var(--text-sub); line-height: 1.5; margin-bottom: 10px;">
+                                1. คลุมคอลัมน์ที่มีปัญหา (เช่น คอลัมน์ชื่อสินค้า)<br />
+                                2. ไปที่ <strong>Data &rarr; Data cleanup &rarr; Trim whitespace</strong><br />
+                                3. ระบบจะตัดช่องว่างที่อยู่ <strong>ข้างหน้าสุด</strong> และ <strong>ข้างหลังสุด</strong> ของทุกเซลล์ทิ้งทันที
+                            </p>
+                            <span class="badge badge-success"><i class="fas fa-bolt"></i> รวดเร็ว สะดวก ไม่ต้องเขียนสูตร</span>
+                        </div>
+
+                        <div class="card card-success">
+                            <h4 style="color: var(--success); margin-bottom: 8px;"><i class="fas fa-code"></i> วิธีที่ 2: ฟังก์ชัน =TRIM()</h4>
+                            <p style="font-size: 0.92rem; color: var(--text-sub); line-height: 1.5; margin-bottom: 8px;">
+                                ใช้สร้างคอลัมน์ใหม่เพื่อความสะอาดสมบูรณ์แบบ:<br />
+                                <span class="code-pill">=TRIM(A2)</span>
+                            </p>
+                            <div class="box-good" style="padding: 10px 14px;">
+                                <strong style="font-size: 0.88rem;">ความพิเศษของ =TRIM():</strong>
+                                <p style="font-size: 0.82rem; margin-top: 2px;">
+                                    นอกจากตัดช่องว่างหน้า-หลังแล้ว ยัง <strong>ยุบช่องว่างตรงกลางที่เคาะเกิน 1 ครั้ง</strong> ให้เหลือเพียง 1 เคาะมาตรฐานโดยอัตโนมัติ!
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="compare-container" style="margin-top: 10px;">
+                        <div class="box-bad" style="padding: 10px 16px;">
+                            <strong>ก่อน TRIM:</strong> <code>"&nbsp;&nbsp;เสื้อยืด&nbsp;&nbsp;&nbsp;&nbsp;สีขาว&nbsp;&nbsp;"</code> (ความยาว 19 ตัวอักษร)
+                        </div>
+                        <div class="box-good" style="padding: 10px 16px;">
+                            <strong>หลัง TRIM:</strong> <code>"เสื้อยืด สีขาว"</code> (เหลือช่องว่าง 1 เคาะตรงกลาง สะอาด 100%)
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 11: TRAP 2 EXTENSION: TEXT CASE & TYPOS -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-spell-check" style="color: var(--accent);"></i> Trap 2 (ต่อยอด): ตัวสะกดเพี้ยน &amp; ตัวพิมพ์เล็ก/ใหญ่</h2>
+                        <span class="subtitle">ความไม่สม่ำเสมอของข้อความที่ทำให้ฐานข้อมูลแตกกระจาย</span>
+                    </div>
+                    <span class="badge-step accent"><i class="fas fa-text-height"></i> Inconsistent Text</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div>
+                            <h4 style="margin-bottom: 8px; font-size: 1rem; color: var(--accent);"><i class="fas fa-times-circle"></i> ปัญหาที่พบในร้านค้าออนไลน์</h4>
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>หมวดหมู่</th>
+                                        <th>สิ่งที่พนักงานกรอกมา</th>
+                                        <th>ผลกระทบ</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="highlight-bad">
+                                        <td>ไซส์เสื้อ</td>
+                                        <td><code>"XL", "xl", "Xl", " เอ็กแอล"</code></td>
+                                        <td>ระบบนับเป็น 4 ไซส์!</td>
+                                    </tr>
+                                    <tr class="highlight-bad">
+                                        <td>สีสินค้า</td>
+                                        <td><code>"ขาว", "White", "ขาวออฟไวท์"</code></td>
+                                        <td>รวมยอดขายสีขาวไม่ได้</td>
+                                    </tr>
+                                    <tr class="highlight-bad">
+                                        <td>ชื่อสาขา</td>
+                                        <td><code>"สยาม", "Siam", "สาขาสยาม"</code></td>
+                                        <td>เทียบยอดสาขาลำบาก</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div>
+                            <div class="card card-accent" style="margin-bottom: 10px; padding: 14px;">
+                                <h4 style="color: var(--accent); margin-bottom: 6px;"><i class="fas fa-exclamation-triangle"></i> ทำไมถึงเป็นปัญหาใหญ่?</h4>
+                                <p style="font-size: 0.9rem; color: var(--text-sub); line-height: 1.45;">
+                                    คอมพิวเตอร์และระบบฐานข้อมูลไม่ได้มี "Common Sense" เหมือนมนุษย์ เมื่อตัวอักษรต่างกันแม้แต่ตัวเดียว หรือตัวพิมพ์เล็กต่างกับตัวพิมพ์ใหญ่ ระบบจะแยกเป็นคนละประเภททันที
+                                </p>
+                            </div>
+
+                            <div class="callout-box" style="margin: 0; padding: 10px 14px;">
+                                <i class="fas fa-bullseye" style="color: var(--primary);"></i>
+                                <span style="font-size: 0.88rem; color: var(--text-sub);">
+                                    <strong>มาตรฐานสากล:</strong> ต้องเลือกใช้ <strong>คำมาตรฐานคำเดียว (Standard Canonical Term)</strong> สำหรับค่าข้อมูลแต่ละความหมาย
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="footer-summary">
+                        <span><strong>หลักปฏิบัติ:</strong> ข้อมูลประเภทเดียวกัน ต้องสะกดเหมือนกันและใช้รูปแบบเดียวกันทั้งตาราง</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 12: TRAP 2 EXTENSION SOLUTION: PROPER, UPPER & FIND-REPLACE -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-tools" style="color: var(--success);"></i> ทางแก้ Text Formatting: ฟังก์ชันจัดฟอนต์ &amp; Find &amp; Replace</h2>
+                        <span class="subtitle">ปรับตัวพิมพ์ให้เท่ากัน และแก้คำสะกดผิดเป็นหมื่นแถวในคลิกเดียว</span>
+                    </div>
+                    <span class="badge-step success"><i class="fas fa-keyboard"></i> Text Tools</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div class="card card-primary">
+                            <h4 style="color: var(--primary); margin-bottom: 8px;"><i class="fas fa-font"></i> ฟังก์ชันปรับขนาดตัวพิมพ์สากล</h4>
+                            <div style="font-size: 0.9rem; line-height: 1.6; color: var(--text-sub);">
+                                • <span class="code-pill">=UPPER(A2)</span> : เปลี่ยนเป็นตัวพิมพ์ใหญ่ทั้งหมด เช่น <code>xl &rarr; XL</code><br />
+                                • <span class="code-pill">=LOWER(A2)</span> : เปลี่ยนเป็นตัวพิมพ์เล็กทั้งหมด เช่น <code>Gmail.COM &rarr; gmail.com</code><br />
+                                • <span class="code-pill">=PROPER(A2)</span> : ตัวพิมพ์ใหญ่นำหน้าคำ เช่น <code>bangkok &rarr; Bangkok</code>
+                            </div>
+                        </div>
+
+                        <div class="card card-success">
+                            <h4 style="color: var(--success); margin-bottom: 8px;"><i class="fas fa-search-dollar"></i> Find &amp; Replace ขั้นเทพ (Ctrl + H)</h4>
+                            <p style="font-size: 0.88rem; color: var(--text-sub); line-height: 1.45; margin-bottom: 8px;">
+                                ใช้แก้คำสะกดผิดหรือเปลี่ยนชื่อเรียกเป็นกลุ่ม:
+                            </p>
+                            <div style="font-size: 0.88rem; color: var(--text-sub); line-height: 1.5;">
+                                1. กด <code>Ctrl + H</code> (หรือเมนู <strong>Edit &rarr; Find and replace</strong>)<br />
+                                2. ช่อง <strong>Find:</strong> พิมพ์คำที่สะกดผิด (เช่น <code>White</code>)<br />
+                                3. ช่อง <strong>Replace with:</strong> พิมพ์คำมาตรฐาน (เช่น <code>ขาว</code>)<br />
+                                4. ติ๊กถูกที่ <strong>"Match entire cell contents"</strong> เพื่อป้องกันแทนที่ผิดคำ!
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="callout-box warning" style="margin-top: 8px; padding: 10px 16px;">
+                        <i class="fas fa-lightbulb" style="color: var(--accent-warm); font-size: 1.3rem;"></i>
+                        <span style="font-size: 0.9rem;">
+                            <strong>Pro Tip:</strong> ติ๊ก <strong>"Match entire cell contents"</strong> เสมอ! มิฉะนั้นหากค้นหาคำว่า "ขา" เพื่อแก้เป็น "ขาว" คำว่า "กางเกง<u>ขา</u>ยาว" จะกลายเป็น "กางเกง<u>ขาว</u>ยาว" ทันที!
+                        </span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 13: TRAP 3: MISSING VALUES (NULL DATA) -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-eraser" style="color: var(--accent);"></i> Trap 3: ข้อมูลขาดหาย (Missing Values / Null Data)</h2>
+                        <span class="subtitle">หลุมดำของตารางข้อมูล: เซลล์ว่าง, ค่า Null, และการกรอกเครื่องหมายกำกวม</span>
+                    </div>
+                    <span class="badge-step accent"><i class="fas fa-question"></i> Trap 3</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div>
+                            <h4 style="margin-bottom: 8px; font-size: 1rem; color: var(--accent);"><i class="fas fa-times-circle"></i> ลักษณะของ Missing Data</h4>
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>รหัสลูกค้า</th>
+                                        <th>ชื่อลูกค้า</th>
+                                        <th>เบอร์โทร</th>
+                                        <th>ยอดซื้อสะสม</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>CUST-001</td>
+                                        <td>คุณสมศักดิ์</td>
+                                        <td>0812345678</td>
+                                        <td>4,500</td>
+                                    </tr>
+                                    <tr class="highlight-bad">
+                                        <td>CUST-002</td>
+                                        <td>คุณพรทิพย์</td>
+                                        <td><em>(ช่องว่าง)</em></td>
+                                        <td>1,200</td>
+                                    </tr>
+                                    <tr class="highlight-bad">
+                                        <td>CUST-003</td>
+                                        <td>คุณประเสริฐ</td>
+                                        <td>-</td>
+                                        <td><em>NULL</em></td>
+                                    </tr>
+                                    <tr class="highlight-bad">
+                                        <td>CUST-004</td>
+                                        <td>คุณดาริกา</td>
+                                        <td>0899998888</td>
+                                        <td>0</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div>
+                            <div class="box-bad" style="margin-bottom: 10px;">
+                                <strong><i class="fas fa-exclamation-triangle"></i> ความกำกวมของ Missing Data:</strong>
+                                <ul style="margin: 4px 0 0 0; padding-left: 20px; font-size: 0.9rem;">
+                                    <li><strong>ช่องว่าง vs เลข 0:</strong> ยอดซื้อสะสมเป็น "ช่องว่าง" หมายถึงยังไม่เคยซื้อ หรือระบบลืมบันทึก? ไม่เหมือนกับซื้อ "0 บาท"!</li>
+                                    <li><strong>ใส่ขีด (-):</strong> ทำให้คอลัมน์ตัวเลขกลายเป็นข้อความ สูตร <code>AVERAGE</code> หรือ <code>SUM</code> พังทันที</li>
+                                </ul>
+                            </div>
+
+                            <div class="card card-warm" style="padding: 12px 16px;">
+                                <h4 style="color: var(--accent-warm); font-size: 0.98rem; margin-bottom: 4px;"><i class="fas fa-search"></i> สูตรตรวจจับเซลล์ว่าง</h4>
+                                <p style="font-size: 0.88rem; color: var(--text-sub); line-height: 1.4;">
+                                    • <span class="code-pill">=ISBLANK(A2)</span> : ส่งค่า TRUE ถ้าเซลล์นั้นว่างเปล่า<br />
+                                    • <span class="code-pill">=COUNTBLANK(A2:A100)</span> : นับจำนวนเซลล์ว่างทั้งหมดในคอลัมน์
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="footer-summary">
+                        <span><strong>ข้อคิดเตือนใจ:</strong> "ไม่มีข้อมูล" ไม่เท่ากับ "ข้อมูลเป็นศูนย์" ต้องแยกแยะให้ชัดเจน</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 14: TRAP 3 SOLUTION: HOW TO HANDLE MISSING DATA -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-first-aid" style="color: var(--success);"></i> ทางแก้ Trap 3: กลยุทธ์การรับมือ Missing Data สำหรับธุรกิจ</h2>
+                        <span class="subtitle">เมื่อเจอช่องว่าง ควร "ลบทิ้ง" หรือ "เติมค่า" ให้เหมาะสมกับบริบท?</span>
+                    </div>
+                    <span class="badge-step success"><i class="fas fa-stethoscope"></i> Missing Strategies</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div class="card card-accent">
+                            <div class="badge badge-accent" style="margin-bottom: 8px;">ทางเลือกที่ 1</div>
+                            <h4 style="color: var(--accent); margin-bottom: 6px;"><i class="fas fa-trash"></i> ลบแถวทิ้ง (Deletion)</h4>
+                            <p style="font-size: 0.88rem; color: var(--text-sub); line-height: 1.45; margin-bottom: 8px;">
+                                <strong>ใช้เมื่อ:</strong> แถวนั้นขาดคอลัมน์สำคัญมากจนนำไปใช้ประโยชน์ไม่ได้ และมีสัดส่วนน้อย (&lt; 5% ของข้อมูลทั้งหมด)
+                            </p>
+                            <div class="box-bad" style="padding: 8px 12px; font-size: 0.82rem;">
+                                <strong>ตัวอย่าง:</strong> ขาดทั้งชื่อลูกค้า เบอร์โทร และยอดเงิน หรือไม่มียอดขายบันทึกไว้เลย &rarr; <em>ลบแถวทิ้งได้เลย</em>
+                            </div>
+                        </div>
+
+                        <div class="card card-success">
+                            <div class="badge badge-success" style="margin-bottom: 8px;">ทางเลือกที่ 2</div>
+                            <h4 style="color: var(--success); margin-bottom: 6px;"><i class="fas fa-fill-drip"></i> เติมค่าทดแทน (Imputation)</h4>
+                            <p style="font-size: 0.88rem; color: var(--text-sub); line-height: 1.45; margin-bottom: 8px;">
+                                <strong>ใช้เมื่อ:</strong> ไม่ต้องการเสียแถวข้อมูลไป โดยแทนค่าด้วยค่ามาตรฐานที่สมเหตุสมผล
+                            </p>
+                            <div class="box-good" style="padding: 8px 12px; font-size: 0.82rem;">
+                                • ข้อความ: แทนด้วยคำว่า <code>"ไม่ระบุ"</code> หรือ <code>"Unknown"</code><br />
+                                • ตัวเลข: แทนด้วยค่ามัธยฐาน (Median) หรือค่าเฉลี่ย (Mean) ของกลุ่ม
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="callout-box" style="margin-top: 8px; padding: 10px 16px;">
+                        <i class="fas fa-exclamation-circle" style="color: var(--primary); font-size: 1.3rem;"></i>
+                        <span style="font-size: 0.92rem; color: var(--text-sub);">
+                            <strong>กฎเหล็กทางธุรกิจ:</strong> <strong>ห้ามแอบลบหรือเติมค่าตามใจชอบโดยไม่บันทึก!</strong> ทุกการลบแถวหรือแทนค่า ต้องจดลงใน <strong>Data Cleaning Log</strong> เสมอ
+                        </span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 15: TRAP 4: DATE & NUMERIC FORMAT CHAOS -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-calendar-times" style="color: var(--accent);"></i> Trap 4: ความโกลาหลของวันที่และตัวเลข (Format Chaos)</h2>
+                        <span class="subtitle">ปัญหาเรื่องระบบคิดว่าเป็นตัวหนังสือ (Text) ทำให้บวกเลขไม่ได้ เรียงลำดับไม่ไป</span>
+                    </div>
+                    <span class="badge-step accent"><i class="fas fa-hashtag"></i> Trap 4</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div>
+                            <h4 style="margin-bottom: 8px; font-size: 1rem; color: var(--accent);"><i class="fas fa-times-circle"></i> ปัญหาวันที่และตัวเลขที่พบบ่อย</h4>
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>ค่าที่บันทึกมา</th>
+                                        <th>สิ่งที่ระบบตีความ</th>
+                                        <th>ปัญหาที่เกิด</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="highlight-bad">
+                                        <td><code>05/03/2026</code></td>
+                                        <td>5 มี.ค. หรือ 3 พ.ค.?</td>
+                                        <td>ว/ด/ป สลับกับ ด/ว/ป สรุปยอดรายเดือนผิดทันที</td>
+                                    </tr>
+                                    <tr class="highlight-bad">
+                                        <td><code>2569/03/01</code></td>
+                                        <td>ปี พ.ศ. ผสม ค.ศ.</td>
+                                        <td>ระบบจัดเป็นข้อความ เรียงตาม Timeline ไม่ได้</td>
+                                    </tr>
+                                    <tr class="highlight-bad">
+                                        <td><code>"฿ 1,250"</code></td>
+                                        <td>ข้อความ (Text)</td>
+                                        <td>สูตร <code>SUM</code> ข้ามเซลล์นี้ ยอดรวมกลายเป็น 0!</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div>
+                            <div class="box-bad" style="margin-bottom: 10px;">
+                                <strong><i class="fas fa-eye"></i> เทคนิคตรวจสอบด้วยสายตา (Alignment Rule):</strong>
+                                <ul style="margin: 4px 0 0 0; padding-left: 20px; font-size: 0.9rem;">
+                                    <li>ใน Google Sheets: <strong>ตัวเลขและวันที่แท้จริง จะชิดขวา (Align Right)</strong> เสมอโดยธรรมชาติ</li>
+                                    <li>หากเห็นตัวเลขหรือวันที่ <strong>ชิดซ้าย (Align Left)</strong> แสดงว่าระบบมองเป็น "ข้อความ" (Text) ไม่สามารถนำไปคำนวณได้!</li>
+                                </ul>
+                            </div>
+
+                            <div class="card card-primary" style="padding: 12px 16px;">
+                                <h4 style="color: var(--primary); font-size: 0.98rem; margin-bottom: 4px;"><i class="fas fa-magic"></i> สูตรแปลง Text เป็นตัวเลข</h4>
+                                <p style="font-size: 0.88rem; color: var(--text-sub); line-height: 1.4;">
+                                    ใช้ฟังก์ชัน <span class="code-pill">=VALUE(SUBSTITUTE(A2, "฿", ""))</span> เพื่อตัดสัญลักษณ์เงินออกและแปลงเป็นตัวเลขคำนวณได้
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="footer-summary">
+                        <span><strong>ข้อแนะนำ:</strong> ตั้ง Format วันที่ในชีตให้เป็น <strong>YYYY-MM-DD (ISO 8601)</strong> เพื่อความเป็นสากล</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 16: TRAP 4 SOLUTION: STANDARDIZE FORMATS -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-calendar-check" style="color: var(--success);"></i> ทางแก้ Trap 4: ปรับ Format ตัวเลขและวันที่ให้เป็นมาตรฐาน</h2>
+                        <span class="subtitle">เครื่องมือ Format Menu และ Text-to-Columns เพื่อแปลงข้อมูลให้คำนวณได้</span>
+                    </div>
+                    <span class="badge-step success"><i class="fas fa-sliders-h"></i> Formatting Tools</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div class="card card-primary">
+                            <h4 style="color: var(--primary); margin-bottom: 8px;"><i class="fas fa-percentage"></i> การจัด Format ตัวเลขให้ถูกต้อง</h4>
+                            <div style="font-size: 0.9rem; color: var(--text-sub); line-height: 1.5;">
+                                1. เลือกคอลัมน์ราคาสินค้าหรือยอดเงิน<br />
+                                2. ไปที่เมนู <strong>Format &rarr; Number &rarr; Number (1,000.12)</strong> หรือ <strong>Currency</strong><br />
+                                3. <em>ข้อควรระวัง:</em> การใส่ลูกน้ำและสัญลักษณ์เงินควรทำผ่าน Format เมนูเท่านั้น <strong>ห้ามพิมพ์สัญลักษณ์เข้าไปในเซลล์เอง</strong> เพราะจะกลายเป็น Text
+                            </div>
+                        </div>
+
+                        <div class="card card-success">
+                            <h4 style="color: var(--success); margin-bottom: 8px;"><i class="fas fa-calendar-alt"></i> การจัดระเบียบวันที่ (Date Normalization)</h4>
+                            <div style="font-size: 0.9rem; color: var(--text-sub); line-height: 1.5;">
+                                1. เลือกคอลัมน์วันที่ &rarr; <strong>Format &rarr; Number &rarr; Date</strong><br />
+                                2. หากวันที่มาจากต่างประเทศแล้วระบบอ่านสลับ ด/ว/ป ให้ใช้เมนู: <br />
+                                &nbsp;&nbsp;&nbsp;&nbsp;<strong>File &rarr; Settings &rarr; Locale</strong> ตั้งค่าภาษาให้ตรงกับแหล่งที่มา<br />
+                                3. ฟังก์ชันสร้างวันที่มาตรฐาน: <span class="code-pill">=DATE(ปี, เดือน, วัน)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="callout-box success" style="margin-top: 8px; padding: 10px 16px;">
+                        <i class="fas fa-check-circle" style="color: var(--success); font-size: 1.3rem;"></i>
+                        <span style="font-size: 0.92rem;">
+                            <strong>สูตรแปลง Text วันที่เพี้ยน:</strong> หากระบบดึงวันที่มาเป็น <code>20260315</code> สามารถใช้สูตร <code>=DATE(LEFT(A2,4), MID(A2,5,2), RIGHT(A2,2))</code> แปลงเป็นวันที่แท้จริงได้ทันที
+                        </span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 17: TRAP 5: OUTLIERS & ANOMALIES -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-meteor" style="color: var(--accent);"></i> Trap 5: ค่าผิดปกติ / ค่าหลุดโลก (Outliers &amp; Anomalies)</h2>
+                        <span class="subtitle">ตัวเลขสุดโต่งที่เกิดจากพิมพ์ผิดหรือระบบล่ม ซึ่งจะลากค่าเฉลี่ยจนบิดเบือนทั้งธุรกิจ</span>
+                    </div>
+                    <span class="badge-step accent"><i class="fas fa-exclamation-triangle"></i> Trap 5</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div>
+                            <h4 style="margin-bottom: 8px; font-size: 1rem; color: var(--accent);"><i class="fas fa-bomb"></i> ตัวอย่าง Outlier ทำลายค่าเฉลี่ย</h4>
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>ลูกค้า</th>
+                                        <th>สินค้า</th>
+                                        <th>จำนวน (ชิ้น)</th>
+                                        <th>ยอดซื้อ (บาท)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>ลูกค้า A</td>
+                                        <td>สลัดอกไก่</td>
+                                        <td>1</td>
+                                        <td>120</td>
+                                    </tr>
+                                    <tr>
+                                        <td>ลูกค้า B</td>
+                                        <td>ข้าวยำแซลมอน</td>
+                                        <td>2</td>
+                                        <td>380</td>
+                                    </tr>
+                                    <tr class="highlight-bad">
+                                        <td>ลูกค้า C</td>
+                                        <td>น้ำผลไม้สกัด</td>
+                                        <td><strong>999</strong> <em>(เผลอพิมพ์เบิ้ล)</em></td>
+                                        <td><strong>-500</strong> <em>(ราคาติดลบ)</em></td>
+                                    </tr>
+                                    <tr>
+                                        <td>ลูกค้า D</td>
+                                        <td>สเต็กเต้าหู้</td>
+                                        <td>1</td>
+                                        <td>150</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div>
+                            <div class="box-bad" style="margin-bottom: 10px;">
+                                <strong><i class="fas fa-chart-line"></i> อานุภาพทำลายล้างของ Outlier:</strong>
+                                <ul style="margin: 4px 0 0 0; padding-left: 20px; font-size: 0.9rem;">
+                                    <li>ค่าเฉลี่ยยอดซื้อจริงควรอยู่ที่ประมาณ <strong>216 บาท/ออเดอร์</strong></li>
+                                    <li>แต่เมื่อมีออเดอร์หลุดโลกหลุดเข้ามา ค่าเฉลี่ยจะกลายเป็น <strong>37.5 บาท</strong> และยอดชิ้นเฉลี่ยกลายเป็น <strong>250 ชิ้น!</strong></li>
+                                    <li><strong>ผลเสีย:</strong> ฝ่ายจัดซื้อเตรียมสต็อกไก่เพิ่ม 1,000 ชิ้นจนเน่าทิ้งเพราะดูยอดเฉลี่ยที่เพี้ยน!</li>
+                                </ul>
+                            </div>
+
+                            <div class="callout-box warning" style="padding: 10px 14px; margin: 0;">
+                                <i class="fas fa-question-circle" style="color: var(--accent-warm);"></i>
+                                <span style="font-size: 0.88rem;"><strong>สถิติเบื้องต้น:</strong> เมื่อข้อมูลมี Outlier ให้ใช้ <strong>Median (มัธยฐาน)</strong> แทน <strong>Mean (ค่าเฉลี่ย)</strong> เพราะทนทานต่อค่าหลุดโลกมากกว่า</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="footer-summary">
+                        <span><strong>หลักคิด:</strong> ก่อนสรุปตัวเลขรายงานผู้บริหาร ต้องสแกนหาค่า Min และ Max เสมอ</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 18: TRAP 5 SOLUTION: DETECTING & FILTERING OUTLIERS -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-radar" style="color: var(--success);"></i> ทางแก้ Trap 5: การตรวจจับและจัดการ Outliers</h2>
+                        <span class="subtitle">วิธีค้นหาค่าหลุดโลกด้วย Sort, Filter และการตัดสินใจเชิงธุรกิจ</span>
+                    </div>
+                    <span class="badge-step success"><i class="fas fa-search-plus"></i> Detection Methods</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-3">
+                        <div class="card card-primary" style="padding: 16px;">
+                            <div class="badge badge-primary" style="margin-bottom: 8px;">วิธีที่ 1</div>
+                            <h4 style="font-size: 1.05rem; margin-bottom: 6px;"><i class="fas fa-sort-amount-down"></i> Sort เรียงลำดับ Min / Max</h4>
+                            <p style="font-size: 0.85rem; color: var(--text-sub); line-height: 1.4;">
+                                คลิกขวาที่คอลัมน์ตัวเลข &rarr; <strong>Sort A &rarr; Z</strong> (ดูค่าน้อยสุด) และ <strong>Sort Z &rarr; A</strong> (ดูค่ามากสุด) จะเห็นค่าติดลบหรือตัวเลขมหาศาลโผล่ขึ้นมาทันที
+                            </p>
+                        </div>
+
+                        <div class="card card-warm" style="padding: 16px;">
+                            <div class="badge badge-warm" style="margin-bottom: 8px;">วิธีที่ 2</div>
+                            <h4 style="font-size: 1.05rem; margin-bottom: 6px;"><i class="fas fa-filter"></i> สร้าง Filter คัดกรองช่วงตัวเลข</h4>
+                            <p style="font-size: 0.85rem; color: var(--text-sub); line-height: 1.4;">
+                                เปิด Filter (<code>Ctrl + Shift + L</code>) &rarr; Filter by condition &rarr; <strong>Less than 0</strong> (หายอดติดลบ) หรือ <strong>Greater than 10,000</strong> เพื่อตรวจความผิดปกติ
+                            </p>
+                        </div>
+
+                        <div class="card card-success" style="padding: 16px;">
+                            <div class="badge badge-success" style="margin-bottom: 8px;">วิธีที่ 3</div>
+                            <h4 style="font-size: 1.05rem; margin-bottom: 6px;"><i class="fas fa-hand-holding-usd"></i> การตัดสินใจเชิงธุรกิจ</h4>
+                            <p style="font-size: 0.85rem; color: var(--text-sub); line-height: 1.4;">
+                                ถ้าเป็นข้อผิดพลาดชัดเจน (เช่น อายุ 300 ปี) ให้แก้หรือลบทิ้ง แต่ถ้าเป็นลูกค้ารายใหญ่ซื้อจริง (VIP) ให้ <strong>แยกวิเคราะห์ต่างหาก</strong> ไม่รวมกับลูกค้ารายย่อย
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="callout-box" style="margin-top: 10px; padding: 10px 16px;">
+                        <i class="fas fa-balance-scale" style="color: var(--primary); font-size: 1.3rem;"></i>
+                        <span style="font-size: 0.92rem; color: var(--text-sub);">
+                            <strong>จำไว้ว่า:</strong> Outlier บางตัวไม่ใช่ข้อผิดพลาด แต่เป็น <strong>สัญญาณทางธุรกิจ (Business Insight)</strong> เช่น พฤติกรรมการโกง (Fraud) หรือลูกค้าองค์กรสั่งซื้อล็อตใหญ่
+                        </span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 19: VISUAL DETECTION: CONDITIONAL FORMATTING -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-palette" style="color: var(--secondary);"></i> เทคนิคส่องข้อมูลผิดด้วยสี: Conditional Formatting</h2>
+                        <span class="subtitle">เปลี่ยนเซลล์ที่มีปัญหาให้เรืองแสงอัตโนมัติ เพื่อตรวจสอบได้ด้วยสายตาใน 3 วินาที</span>
+                    </div>
+                    <span class="badge-step"><i class="fas fa-eye"></i> Visual Audit</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div class="card card-primary">
+                            <h4 style="color: var(--primary); margin-bottom: 8px;"><i class="fas fa-sliders-h"></i> วิธีเปิดใช้งาน Conditional Formatting</h4>
+                            <div style="font-size: 0.9rem; color: var(--text-sub); line-height: 1.55;">
+                                1. เลือกพื้นที่ข้อมูลที่ต้องการส่อง (เช่น คอลัมน์ยอดขายหรือเบอร์โทร)<br />
+                                2. ไปที่เมนู <strong>Format &rarr; Conditional formatting</strong><br />
+                                3. หน้าต่างขวามือจะปรากฏกฎให้เลือก (Format rules)<br />
+                                4. เลือกเงื่อนไขและเลือกสีไฮไลต์ (แนะนำสีแดงอ่อนสำหรับจุดผิดปกติ)
+                            </div>
+                        </div>
+
+                        <div class="card card-accent">
+                            <h4 style="color: var(--accent); margin-bottom: 8px;"><i class="fas fa-bullseye"></i> 3 กฎคลาสสิกที่เจ้าของธุรกิจต้องตั้งไว้เสมอ</h4>
+                            <div style="font-size: 0.88rem; color: var(--text-sub); line-height: 1.5;">
+                                • <strong>จับเซลล์ว่าง:</strong> เลือก <em>"Is empty"</em> &rarr; สั่งให้ถมสีแดงอ่อน (เตือนว่ามี Missing Data)<br />
+                                • <strong>จับยอดติดลบ/ผิดปกติ:</strong> เลือก <em>"Less than 0"</em> &rarr; สั่งให้ตัวหนังสือสีแดงหนา<br />
+                                • <strong>จับรหัสซ้ำ (Duplicates):</strong> ใช้สูตรเฉพาะ (Custom formula is):<br />
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-pill">=COUNTIF(A:A, A1) &gt; 1</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="callout-box success" style="margin-top: 8px; padding: 10px 16px;">
+                        <i class="fas fa-check-double" style="color: var(--success); font-size: 1.3rem;"></i>
+                        <span style="font-size: 0.92rem;">
+                            <strong>ประโยชน์สูงสุด:</strong> เมื่อมีข้อมูลใหม่อัปเดตเข้ามา เซลล์ไหนมีปัญหาจะติดไฟแดงทันที ไม่ต้องมานั่งเพ่งทีละบรรทัด!
+                        </span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 20: PREVENTIVE DEFENSE: DATA VALIDATION -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-shield-alt" style="color: var(--success);"></i> เกราะป้องกันก่อนข้อมูลพัง: Data Validation ใน Sheets</h2>
+                        <span class="subtitle">ป้องกันข้อมูลสกปรกตั้งแต่ต้นทาง "Quality at the Source" ล็อกไม่ให้พนักงานกรอกมั่ว</span>
+                    </div>
+                    <span class="badge-step success"><i class="fas fa-lock"></i> Preventive Defense</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-3">
+                        <div class="card card-primary" style="padding: 16px;">
+                            <div class="badge badge-primary" style="margin-bottom: 8px;">ประเภทที่ 1</div>
+                            <h4 style="font-size: 1.02rem; margin-bottom: 6px;"><i class="fas fa-caret-square-down"></i> ดรอปดาวน์ลิสต์ (Dropdown)</h4>
+                            <p style="font-size: 0.85rem; color: var(--text-sub); line-height: 1.4;">
+                                บังคับให้เลือกจากรายการ เช่น ไซส์ <code>S, M, L, XL</code> หรือสถานะ <code>รอชำระ, ส่งแล้ว, ยกเลิก</code> ป้องกันปัญหาพิมพ์ตกและเคาะวรรค 100%
+                            </p>
+                        </div>
+
+                        <div class="card card-warm" style="padding: 16px;">
+                            <div class="badge badge-warm" style="margin-bottom: 8px;">ประเภทที่ 2</div>
+                            <h4 style="font-size: 1.02rem; margin-bottom: 6px;"><i class="fas fa-calculator"></i> ล็อกช่วงตัวเลข (Number Range)</h4>
+                            <p style="font-size: 0.85rem; color: var(--text-sub); line-height: 1.4;">
+                                กำหนดว่าจำนวนสินค้าต้อง <code>greater than 0</code> และราคาสินค้าต้อง <code>between 10 and 50000</code> ป้องกันการใส่ราคาติดลบหรือพิมพ์ 99999
+                            </p>
+                        </div>
+
+                        <div class="card card-success" style="padding: 16px;">
+                            <div class="badge badge-success" style="margin-bottom: 8px;">ประเภทที่ 3</div>
+                            <h4 style="font-size: 1.02rem; margin-bottom: 6px;"><i class="fas fa-calendar-check"></i> บังคับรูปแบบวันที่ (Valid Date)</h4>
+                            <p style="font-size: 0.85rem; color: var(--text-sub); line-height: 1.4;">
+                                เลือกเงื่อนไข <code>is valid date</code> ทำให้ผู้กรอกสามารถดับเบิลคลิกเลือกวันจากปฏิทิน (Date Picker) ได้ทันที ปัญหาวันที่ผิดรูปแบบจะหมดไป
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="callout-box warning" style="margin-top: 10px; padding: 10px 16px;">
+                        <i class="fas fa-hand-paper" style="color: var(--accent-warm); font-size: 1.3rem;"></i>
+                        <span style="font-size: 0.92rem; color: var(--text-sub);">
+                            <strong>ข้อแนะนำการตั้งค่า:</strong> ในส่วน <em>"If the data is invalid"</em> ให้เลือกติ๊กที่ <strong>"Reject input" (ปฏิเสธข้อมูล)</strong> เพื่อไม่ให้บันทึกค่าผิดพลาดลงชีตได้เด็ดขาด!
+                        </span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 21: THE GOLDEN RULE: NEVER TOUCH RAW DATA -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-user-shield" style="color: var(--accent);"></i> เสาหลักที่ 4: กฎเหล็ก "ห้ามแตะต้อง Raw Data เด็ดขาด!"</h2>
+                        <span class="subtitle">กฎแห่งความอยู่รอดของคนทำงานกับข้อมูล: Don't Touch the Raw Data!</span>
+                    </div>
+                    <span class="badge-step accent"><i class="fas fa-ban"></i> Golden Rule</span>
+                </div>
+                <div class="slide-body">
+                    <div class="compare-container">
+                        <div class="box-bad">
+                            <h4 style="color: var(--accent); margin-bottom: 6px;"><i class="fas fa-times-circle"></i> สิ่งที่มือสมัครเล่นชอบทำ (ห้ามทำเด็ดขาด!)</h4>
+                            <p style="font-size: 0.9rem; line-height: 1.5;">
+                                • เปิดไฟล์ยอดขายดิบที่โหลดมาจากระบบ แล้วกดลบแถว ลบช่อง แก้ตัวเลขทับลงไปทันที<br />
+                                • เมื่อเวลาผ่านไป สรุปตัวเลขผิดพลาด หรือเกิดข้อสงสัย <strong>ไม่สามารถตรวจสอบย้อนกลับได้เลยว่าข้อมูลเดิมคืออะไร</strong> เพราะไฟล์เดิมถูกทำลายไปแล้ว!
+                            </p>
+                        </div>
+
+                        <div class="box-good">
+                            <h4 style="color: var(--success); margin-bottom: 6px;"><i class="fas fa-check-circle"></i> สิ่งที่มืออาชีพทำเสมอ (Best Practice)</h4>
+                            <p style="font-size: 0.9rem; line-height: 1.5;">
+                                • <strong>ขั้นตอนที่ 1:</strong> ล็อกชีตต้นฉบับ ตั้งชื่อว่า <code>raw_data_backup</code> และตั้งสิทธิ์เป็น View Only<br />
+                                • <strong>ขั้นตอนที่ 2:</strong> Duplicate (ทำสำเนา) ออกมาเป็นชีตใหม่ชื่อ <code>cleaned_data</code> แล้วลงมือคลีนในชีตนี้เท่านั้น<br />
+                                • <strong>ขั้นตอนที่ 3:</strong> บันทึกทุกขั้นตอนลงใน <strong>Data Cleaning Log</strong>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="callout-box danger" style="margin-top: 10px; padding: 12px 18px;">
+                        <i class="fas fa-exclamation-triangle" style="color: var(--accent); font-size: 1.4rem;"></i>
+                        <span style="font-size: 0.95rem; color: var(--accent); font-weight: 700;">
+                            หากทำข้อมูลดิบเสียหาย คุณจะไม่มีหลักฐานยืนยันยอดขายย้อนหลัง และไม่สามารถรันข้อมูลใหม่ได้อีกตลอดกาล!
+                        </span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 22: DATA CLEANING LOG: AUDIT TRAIL FOR BUSINESS -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-history" style="color: var(--primary);"></i> Data Cleaning Log: สมุดบันทึกประวัติการชำระข้อมูล</h2>
+                        <span class="subtitle">ทำไมธุรกิจเจ้าของกิจการต้องมี Audit Trail ทุกครั้งที่ทำความสะอาดข้อมูล?</span>
+                    </div>
+                    <span class="badge-step"><i class="fas fa-book"></i> Audit Trail</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-3">
+                        <div class="card card-primary" style="padding: 16px;">
+                            <div style="font-size: 2rem; color: var(--primary); margin-bottom: 8px;"><i class="fas fa-sync-alt"></i></div>
+                            <h4 style="font-size: 1.05rem; margin-bottom: 6px;">ทำซ้ำได้ (Reproducibility)</h4>
+                            <p style="font-size: 0.85rem; color: var(--text-sub); line-height: 1.4;">
+                                เมื่อสิ้นเดือนมีไฟล์ยอดขายเดือนใหม่เข้ามา เราสามารถดู Log แล้วทำตามขั้นตอนเดิมได้ทันที ไม่ต้องมานั่งคิดใหม่แต่ต้น
+                            </p>
+                        </div>
+
+                        <div class="card card-success" style="padding: 16px;">
+                            <div style="font-size: 2rem; color: var(--success); margin-bottom: 8px;"><i class="fas fa-users-cog"></i></div>
+                            <h4 style="font-size: 1.05rem; margin-bottom: 6px;">ส่งต่องานในทีมได้</h4>
+                            <p style="font-size: 0.85rem; color: var(--text-sub); line-height: 1.4;">
+                                เมื่อเจ้าของธุรกิจส่งต่อให้แอดมินหรือจ้าง Data Analyst มาช่วยงาน ทุกคนจะรู้ทันทีว่าข้อมูลผ่านการปรับแต่งอะไรมาบ้าง
+                            </p>
+                        </div>
+
+                        <div class="card card-warm" style="padding: 16px;">
+                            <div style="font-size: 2rem; color: var(--accent-warm); margin-bottom: 8px;"><i class="fas fa-balance-scale"></i></div>
+                            <h4 style="font-size: 1.05rem; margin-bottom: 6px;">ตรวจสอบย้อนหลังได้ (Audit)</h4>
+                            <p style="font-size: 0.85rem; color: var(--text-sub); line-height: 1.4;">
+                                หากตัวเลขทางบัญชีไม่ตรง สามารถเปิดดูได้ทันทีว่าทำไมถึงลบ 3 แถวนั้นทิ้ง ลบเมื่อไหร่ และใครเป็นคนตัดสินใจ
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="callout-box" style="margin-top: 10px; padding: 10px 16px;">
+                        <i class="fas fa-quote-left" style="color: var(--primary); font-size: 1.3rem;"></i>
+                        <span style="font-size: 0.92rem; color: var(--text-sub);">
+                            <em>"If you didn't log it, it didn't happen — and if it broke, you won't know why."</em> (ถ้าไม่จด Log ถือว่าไม่ได้ทำ และถ้าข้อมูลพัง คุณจะไม่มีวันรู้เลยว่าพังเพราะอะไร)
+                        </span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 23: 6 ELEMENTS OF DATA CLEANING LOG -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-clipboard-check" style="color: var(--primary);"></i> 6 องค์ประกอบมาตรฐานของ Data Cleaning Log</h2>
+                        <span class="subtitle">โครงสร้างตารางบันทึกการทำความสะอาดข้อมูลที่นักศึกษาต้องทำใน Workshop</span>
+                    </div>
+                    <span class="badge-step"><i class="fas fa-list-check"></i> Standard Format</span>
+                </div>
+                <div class="slide-body">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 15%;">องค์ประกอบ</th>
+                                <th style="width: 40%;">ความหมาย &amp; รายละเอียด</th>
+                                <th style="width: 45%;">ตัวอย่างการบันทึกจริง</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>1. Timestamp</strong></td>
+                                <td>วันและเวลาที่ดำเนินการ</td>
+                                <td><code>2026-09-23 10:15 น.</code></td>
+                            </tr>
+                            <tr>
+                                <td><strong>2. Column Name</strong></td>
+                                <td>คอลัมน์ที่มีปัญหาและทำการแก้ไข</td>
+                                <td><code>Column C (ชื่อสินค้า), Column E (ราคา)</code></td>
+                            </tr>
+                            <tr>
+                                <td><strong>3. Issue Found</strong></td>
+                                <td>ปัญหาที่ตรวจพบ (ระบุให้ชัดเจน)</td>
+                                <td><code>มีช่องว่างแฝงหน้า-หลัง และชื่อสะกด "XL" ปน "xl"</code></td>
+                            </tr>
+                            <tr>
+                                <td><strong>4. Action / Tool</strong></td>
+                                <td>วิธีแก้ไข หรือสูตร/เครื่องมือที่ใช้</td>
+                                <td><code>ใช้ฟังก์ชัน TRIM() และเปลี่ยนเป็น =UPPER()</code></td>
+                            </tr>
+                            <tr>
+                                <td><strong>5. Rows Affected</strong></td>
+                                <td>จำนวนแถวที่ได้รับผลกระทบจากการแก้</td>
+                                <td><code>18 แถว (จากทั้งหมด 120 แถว)</code></td>
+                            </tr>
+                            <tr>
+                                <td><strong>6. Operator</strong></td>
+                                <td>ชื่อผู้ดำเนินการและเหตุผล</td>
+                                <td><code>สมชาย (แอดมินร้าน) — ปรับให้เป็นมาตรฐานเดียวกัน</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="footer-summary" style="margin-top: 8px;">
+                        <span><i class="fas fa-info-circle" style="color: var(--secondary);"></i> Data Cleaning Log มักถูกสร้างไว้เป็น Sheet แผ่นที่ 2 ถัดจากตารางข้อมูลหลักใน Google Sheets</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 24: REAL LOG TEMPLATE & EXAMPLE -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-table" style="color: var(--success);"></i> ตัวอย่างจริง: หน้าตาตาราง Data Cleaning Log</h2>
+                        <span class="subtitle">เทมเพลตมาตรฐานสำหรับนำไปประยุกต์ใช้กับธุรกิจจริงได้ทันที</span>
+                    </div>
+                    <span class="badge-step success"><i class="fas fa-file-excel"></i> Template Example</span>
+                </div>
+                <div class="slide-body">
+                    <table class="data-table dense">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Timestamp</th>
+                                <th>คอลัมน์</th>
+                                <th>ปัญหาที่พบ</th>
+                                <th>เครื่องมือ / วิธีแก้ไข</th>
+                                <th>จำนวนแถว</th>
+                                <th>ผู้ดำเนินการ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>23/09/2026 10:00</td>
+                                <td>ทุกคอลัมน์</td>
+                                <td>มีออเดอร์ซ้ำจากระบบ TikTok</td>
+                                <td>Data &rarr; Remove Duplicates (เช็ค Order ID)</td>
+                                <td>ลบ 4 แถว</td>
+                                <td>สมชาย</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>23/09/2026 10:05</td>
+                                <td>ชื่อสินค้า</td>
+                                <td>มีช่องว่างแฝงท้ายชื่อเมนู</td>
+                                <td>Data &rarr; Trim whitespace</td>
+                                <td>แก้ 12 แถว</td>
+                                <td>สมชาย</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>23/09/2026 10:12</td>
+                                <td>สีสินค้า</td>
+                                <td>พิมพ์ "White" ปนกับ "ขาว"</td>
+                                <td>Ctrl + H แทนที่ "White" ด้วย "ขาว"</td>
+                                <td>แก้ 7 แถว</td>
+                                <td>กานดา</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>23/09/2026 10:20</td>
+                                <td>ราคาสินค้า</td>
+                                <td>เซลล์ว่าง (Missing Value)</td>
+                                <td>เติมราคามาตรฐานตามแคตตาล็อกสินค้า</td>
+                                <td>แก้ 2 แถว</td>
+                                <td>กานดา</td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>23/09/2026 10:28</td>
+                                <td>จำนวนชิ้น</td>
+                                <td>พิมพ์ 999 ชิ้น (Outlier เกินจริง)</td>
+                                <td>เช็กสลิปจริง แก้เป็น 1 ชิ้น</td>
+                                <td>แก้ 1 แถว</td>
+                                <td>สมชาย</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="callout-box success" style="margin-top: 8px; padding: 10px 16px;">
+                        <i class="fas fa-check-circle" style="color: var(--success); font-size: 1.3rem;"></i>
+                        <span style="font-size: 0.92rem;">
+                            <strong>สังเกตได้ว่า:</strong> เมื่อมี Log ชัดเจนแบบนี้ หากผู้บริหารหรืออาจารย์มาตรวจงาน จะทราบทันทีว่าข้อมูลมีความน่าเชื่อถือและผ่านกระบวนการตรวจสอบที่รัดกุม 100%
+                        </span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 25: THAI CASE 1: CHABA CLOTHING (FASHION) -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-tshirt" style="color: var(--secondary);"></i> กรณีศึกษา 1: ชบา โคลทติ้ง (Chaba Clothing)</h2>
+                        <span class="subtitle">ร้านเสื้อผ้าแฟชั่น Multi-channel ที่ยอดสต็อกไม่ตรงเพราะปัญหา Text และ Duplicate</span>
+                    </div>
+                    <span class="badge-step"><i class="fas fa-store"></i> Fashion Case</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div class="card card-accent">
+                            <h4 style="color: var(--accent); margin-bottom: 8px;"><i class="fas fa-exclamation-triangle"></i> ปัญหาที่ร้านชบาเจอ</h4>
+                            <p style="font-size: 0.88rem; color: var(--text-sub); line-height: 1.45; margin-bottom: 8px;">
+                                ดึงออเดอร์จาก TikTok Shop และ LINE OA มารวมกันใน Sheets:
+                            </p>
+                            <ul style="margin: 0; padding-left: 20px; font-size: 0.86rem; color: var(--text-sub); line-height: 1.45;">
+                                <li>ไซส์เสื้อบันทึกปนกันมั่ว: <code>"s", "S", "small", "เอส"</code></li>
+                                <li>สีเสื้อมีทั้ง <code>"ขาว", "White", " ขาว "</code></li>
+                                <li>ลูกค้ากดยืนยันออเดอร์ใน TikTok 2 ครั้งตอนเน็ตค้าง ทำให้ออเดอร์เบิ้ล</li>
+                                <li><strong>ผลกระทบ:</strong> สรุปยอดขายเสื้อไซส์ S ได้ไม่ครบ สต็อกจริงล้นโกดังแต่ในระบบขึ้นว่าหมด!</li>
+                            </ul>
+                        </div>
+
+                        <div class="card card-success">
+                            <h4 style="color: var(--success); margin-bottom: 8px;"><i class="fas fa-check-circle"></i> ปฏิบัติการคลีนข้อมูลของร้านชบา</h4>
+                            <div style="font-size: 0.86rem; color: var(--text-sub); line-height: 1.5;">
+                                1. <strong>Remove Duplicates:</strong> กรอง Order ID ซ้ำ ตัดออเดอร์เบิ้ลออก 6 ออเดอร์<br />
+                                2. <strong>Trim Whitespace:</strong> ตัดช่องว่างหน้า-หลังคอลัมน์สีและไซส์<br />
+                                3. <strong>Standardize Text:</strong> ใช้สูตร <code>=UPPER(TRIM(A2))</code> ปรับไซส์เป็น <code>S, M, L, XL</code> ทั้งหมด<br />
+                                4. <strong>Find &amp; Replace:</strong> เปลี่ยนคำว่า "White" เป็น "ขาว"<br />
+                                5. <strong>Data Validation:</strong> สร้างดรอปดาวน์ให้แอดมินเลือกไซส์ ห้ามพิมพ์มือเอง
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="footer-summary" style="margin-top: 8px;">
+                        <span><i class="fas fa-chart-line" style="color: var(--success);"></i> <strong>ผลลัพธ์:</strong> สต็อกตรงกับของจริง 100% สรุปยอดขายต่อสัปดาห์ได้ใน 1 คลิก ไม่เสียโอกาสขายอีกต่อไป</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 26: THAI CASE 2: HEALTHYBITES (CLEAN FOOD) -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-utensils" style="color: var(--success);"></i> กรณีศึกษา 2: เฮลท์ตี้ไบท์ส (HealthyBites Delivery)</h2>
+                        <span class="subtitle">ธุรกิจอาหารเพื่อสุขภาพเดลิเวอรี ที่ Pivot Table พังเพราะช่องว่างแฝงท้ายชื่อเมนู</span>
+                    </div>
+                    <span class="badge-step success"><i class="fas fa-leaf"></i> Food Delivery Case</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div class="card card-accent">
+                            <h4 style="color: var(--accent); margin-bottom: 8px;"><i class="fas fa-times-circle"></i> ปัญหาที่เฮลท์ตี้ไบท์สเจอ</h4>
+                            <p style="font-size: 0.88rem; color: var(--text-sub); line-height: 1.45; margin-bottom: 8px;">
+                                เจ้าของร้านต้องการสรุป <strong>"เมนูขายดีประจำสัปดาห์"</strong> ด้วย Pivot Table:
+                            </p>
+                            <ul style="margin: 0; padding-left: 20px; font-size: 0.86rem; color: var(--text-sub); line-height: 1.45;">
+                                <li>เมนู <em>"ข้าวยำอกไก่ย่าง"</em> มีพนักงานเผลอกด Spacebar แฝงไว้ข้างหลัง <code>"ข้าวยำอกไก่ย่าง "</code></li>
+                                <li>Pivot Table จึงแยกเป็น 2 บรรทัด คนละเมนู ยอดขายตกไปอยู่อันดับ 5</li>
+                                <li>ราคาสินค้าบางรายการปล่อยว่างไว้ เพราะเป็นเมนูใหม่แอดมินยังไม่ได้ใส่ราคา</li>
+                                <li><strong>ผลกระทบ:</strong> เจ้าของร้านเข้าใจผิดว่าข้าวยำอกไก่ขายไม่ดี เกือบตัดสินใจตัดเมนูนี้ออกจากร้าน!</li>
+                            </ul>
+                        </div>
+
+                        <div class="card card-success">
+                            <h4 style="color: var(--success); margin-bottom: 8px;"><i class="fas fa-wrench"></i> ปฏิบัติการคลีนข้อมูลกู้ชีพเมนูเด็ด</h4>
+                            <div style="font-size: 0.86rem; color: var(--text-sub); line-height: 1.5;">
+                                1. <strong>Trim Whitespace:</strong> สั่งตัดช่องว่างคอลัมน์ชื่อเมนูทั้งหมดทันที<br />
+                                2. <strong>Conditional Formatting:</strong> ไฮไลต์เซลล์ว่างในคอลัมน์ราคา พบราคาว่าง 3 จุด<br />
+                                3. <strong>Missing Imputation:</strong> นำราคาจาก Master Menu มาเติมให้ครบ<br />
+                                4. <strong>Refresh Pivot Table:</strong> รวมยอดขายเมนูข้าวยำอกไก่ได้ถูกต้อง กลับขึ้นมาเป็นอันดับ 1 ของร้านทันที!
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="footer-summary" style="margin-top: 8px;">
+                        <span><i class="fas fa-lightbulb" style="color: var(--accent-warm);"></i> <strong>บทเรียน:</strong> แค่ช่องว่าง 1 เคาะ เกือบทำให้ร้านอาหารสูญเสียเมนู Signature ที่สร้างกำไรสูงสุด</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 27: THAI CASE 3: GYMFIT EXPRESS (FITNESS) -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-dumbbell" style="color: var(--primary);"></i> กรณีศึกษา 3: ยิมฟิต เอ็กซ์เพรส (GymFit Express)</h2>
+                        <span class="subtitle">ฟิตเนสรายเดือนและ PT สตูดิโอ กับปัญหาวันที่สับสนและค่าผิดปกติอายุ 300 ปี</span>
+                    </div>
+                    <span class="badge-step"><i class="fas fa-heartbeat"></i> Fitness Case</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div class="card card-accent">
+                            <h4 style="color: var(--accent); margin-bottom: 8px;"><i class="fas fa-calendar-times"></i> ปัญหาระบบสมาชิกของ GymFit</h4>
+                            <ul style="margin: 0; padding-left: 20px; font-size: 0.86rem; color: var(--text-sub); line-height: 1.45;">
+                                <li>พนักงานกรอกวันเริ่มสมาชิกสลับกัน: บางคนกรอก ว/ด/ป (<code>12/05/2026</code>) บางคนกรอก ด/ว/ป (<code>05/12/2026</code>)</li>
+                                <li>ระบบส่งแจ้งเตือนต่ออายุสมาชิกมั่ว ลูกค้าเพิ่งสมัครเมื่อวานแต่ได้รับ SMS ว่าหมดอายุแล้ว!</li>
+                                <li>ช่องอายุกรอกเลข <code>300</code> ปี เพราะแป้นพิมพ์ค้าง ทำให้ค่าเฉลี่ยอายุสมาชิกของฟิตเนสกลายเป็น 68 ปี ทั้งที่เป็นกลุ่มวัยรุ่น</li>
+                            </ul>
+                        </div>
+
+                        <div class="card card-success">
+                            <h4 style="color: var(--success); margin-bottom: 8px;"><i class="fas fa-shield-alt"></i> การแก้ไขและวางระบบมาตรฐาน</h4>
+                            <div style="font-size: 0.86rem; color: var(--text-sub); line-height: 1.5;">
+                                1. <strong>Date Parsing:</strong> ใช้ Text-to-Columns และสูตร <code>DATE()</code> จัดรูปแบบวันหมดอายุเป็น <code>YYYY-MM-DD</code> ทั้งระบบ<br />
+                                2. <strong>Outlier Filter:</strong> กรองคอลัมน์อายุ พบค่า 300 ปี แก้ไขเป็น 30 ปีตามบัตรประชาชน<br />
+                                3. <strong>Data Validation:</strong> ล็อกช่วงอายุต้องอยู่ระหว่าง <code>15 ถึง 85 ปี</code> และบังคับให้เลือกวันที่ผ่าน Date Picker เท่านั้น
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="footer-summary" style="margin-top: 8px;">
+                        <span><i class="fas fa-smile" style="color: var(--success);"></i> <strong>ผลลัพธ์:</strong> ระบบแจ้งเตือนต่ออายุสมาชิกทำงานแม่นยำ อัตราการต่อสัญญาสมาชิกเพิ่มขึ้น 25%</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 28: CLEANING WORKFLOW SUMMARY -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-stream" style="color: var(--primary);"></i> สรุป 5 สเต็ปปฏิบัติการ Data Cleaning มืออาชีพ</h2>
+                        <span class="subtitle">Workflow ที่นักศึกษาทุกคนต้องทำตามตั้งแต่ต้นจนจบก่อนนำข้อมูลไปวิเคราะห์</span>
+                    </div>
+                    <span class="badge-step"><i class="fas fa-check-circle"></i> Standard SOP</span>
+                </div>
+                <div class="slide-body">
+                    <div class="step-container" style="gap: 8px;">
+                        <div class="step-card" style="padding: 10px;">
+                            <div class="step-num">Step 1</div>
+                            <div class="step-title" style="font-size: 0.95rem;">Backup Raw Data</div>
+                            <div class="step-desc">Duplicate ชีตต้นฉบับ ห้ามแตะต้องไฟล์ดิบ</div>
+                        </div>
+                        <div class="step-card" style="padding: 10px;">
+                            <div class="step-num">Step 2</div>
+                            <div class="step-title" style="font-size: 0.95rem;">Audit &amp; Detect</div>
+                            <div class="step-desc">ใช้ Conditional Format และ Filter ส่องจุดผิด</div>
+                        </div>
+                        <div class="step-card" style="padding: 10px;">
+                            <div class="step-num">Step 3</div>
+                            <div class="step-title" style="font-size: 0.95rem;">Clean Structure</div>
+                            <div class="step-desc">ลบ Duplicate, Trim Whitespace, ปรับตัวพิมพ์</div>
+                        </div>
+                        <div class="step-card" style="padding: 10px;">
+                            <div class="step-num">Step 4</div>
+                            <div class="step-title" style="font-size: 0.95rem;">Handle Values</div>
+                            <div class="step-desc">จัดการ Missing Data และตัด/แก้ Outliers</div>
+                        </div>
+                        <div class="step-card active" style="padding: 10px;">
+                            <div class="step-num">Step 5</div>
+                            <div class="step-title" style="font-size: 0.95rem;">Document Log</div>
+                            <div class="step-desc">บันทึกทุกขั้นตอนลง Data Cleaning Log</div>
+                        </div>
+                    </div>
+
+                    <div class="card card-success" style="margin-top: 10px; padding: 14px 18px;">
+                        <h4 style="color: var(--success); font-size: 1.05rem; margin-bottom: 6px;"><i class="fas fa-rocket"></i> พร้อมแล้วสำหรับขั้นต่อไป: ANALYZE With AI!</h4>
+                        <p style="font-size: 0.92rem; color: var(--text-sub); line-height: 1.5;">
+                            เมื่อข้อมูลผ่านกระบวนการครบทั้ง 5 ขั้นตอนนี้ ตารางข้อมูลของคุณจะมีความสะอาด แม่นยำ และมีโครงสร้างที่สมบูรณ์แบบ 100% พร้อมสำหรับการนำไปเขียน Prompt สั่งการ AI (Gemini) ให้ช่วยวิเคราะห์กลยุทธ์ธุรกิจในสัปดาห์หน้า
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 29: QUIZ GAME ARENA -->
+            <section data-background-gradient="radial-gradient(circle at 50% 50%, #e0e7ff 0%, #f8fafc 100%)">
+                <div class="slide-header" style="border-bottom-color: rgba(79, 70, 229, 0.2);">
+                    <div class="title-group">
+                        <h2><i class="fas fa-gamepad" style="color: var(--primary);"></i> Quizizz Arena: ประลองความรู้ Data Cleaning Master</h2>
+                        <span class="subtitle">ทดสอบความเข้าใจ 10 ข้อ ก่อนลงมือปฏิบัติการจริงใน Workshop</span>
+                    </div>
+                    <span class="badge-step"><i class="fas fa-trophy"></i> 10 Questions</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2" style="align-items: center;">
+                        <div class="card card-primary" style="text-align: center; padding: 24px;">
+                            <div style="font-size: 3.5rem; color: var(--primary); margin-bottom: 12px;"><i class="fas fa-qrcode"></i></div>
+                            <h3 style="font-size: 1.3rem; margin-bottom: 8px;">สแกน QR Code หรือเข้าเว็บ</h3>
+                            <p style="font-size: 1.1rem; font-weight: 700; color: var(--secondary); margin-bottom: 10px;">joinmyquiz.com</p>
+                            <div style="display: inline-block; padding: 8px 20px; background: #e0e7ff; border-radius: 9999px;">
+                                <span style="font-size: 1.2rem; font-weight: 900; color: var(--primary-dark); letter-spacing: 0.1em;">รหัสห้อง: แจ้งหน้าจอ</span>
+                            </div>
+                        </div>
+
+                        <div class="card card-success" style="padding: 20px;">
+                            <h4 style="color: var(--success); margin-bottom: 12px;"><i class="fas fa-award"></i> กติกาการแข่งขัน</h4>
+                            <ul style="margin: 0; padding-left: 20px; font-size: 0.95rem; color: var(--text-sub); line-height: 1.7;">
+                                <li>คำถามทั้งหมด <strong>10 ข้อ</strong> (แบบ 3 ตัวเลือก A, B, C)</li>
+                                <li>เวลาตอบข้อละ <strong>60 วินาที</strong> ยิ่งตอบเร็วและถูก คะแนนยิ่งสูง</li>
+                                <li>คะแนนสะสม <strong>20% ของวิชา</strong></li>
+                                <li><strong>Top 3 ของห้อง</strong> รับ Badge พิเศษ "Data Cleaning Champion"</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="callout-box" style="margin-top: 10px; padding: 10px 16px;">
+                        <i class="fas fa-stopwatch" style="color: var(--primary); font-size: 1.3rem;"></i>
+                        <span style="font-size: 0.92rem; color: var(--text-sub);">
+                            ให้อาจารย์กดเปิดเกมในระบบ Quizizz และจับเวลาพร้อมกันทั้งห้องเรียน (ใช้เวลาประมาณ 15 นาที)
+                        </span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 30: WRAP UP & PREVIEW SESSION 6 -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-flag-checkered" style="color: var(--success);"></i> สรุปบทเรียนประจำคาบ &amp; Preview คาบหน้า</h2>
+                        <span class="subtitle">ทบทวน 4 เสาหลัก และก้าวต่อไปสู่วงจรขั้นที่ 4 'ANALYZE' ด้วย AI</span>
+                    </div>
+                    <span class="badge-step success"><i class="fas fa-forward"></i> Next Step</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div class="card card-primary">
+                            <h4 style="color: var(--primary); margin-bottom: 8px;"><i class="fas fa-bookmark"></i> สรุป 4 เสาหลักที่เราเรียนรู้วันนี้</h4>
+                            <ul style="margin: 0; padding-left: 20px; font-size: 0.88rem; color: var(--text-sub); line-height: 1.55;">
+                                <li><strong>1. Reality of Dirty Data:</strong> ข้อมูลจริงมีมลพิษเสมอ กฎ 80/20 ในการเตรียมข้อมูล</li>
+                                <li><strong>2. 5 Traps:</strong> จับทาง Duplicate, Whitespace, Missing, Format, และ Outliers</li>
+                                <li><strong>3. Google Sheets Toolkit:</strong> TRIM, Remove Duplicates, Find/Replace, Validation</li>
+                                <li><strong>4. Audit Trail:</strong> กฎ Don't Touch Raw Data และการเขียน Data Cleaning Log</li>
+                            </ul>
+                        </div>
+
+                        <div class="card card-accent">
+                            <h4 style="color: var(--accent); margin-bottom: 8px;"><i class="fas fa-robot"></i> สัปดาห์หน้า: Session 6 — ขั้นที่ 4 'ANALYZE'</h4>
+                            <p style="font-size: 0.88rem; color: var(--text-sub); line-height: 1.5; margin-bottom: 8px;">
+                                ก้าวเข้าสู่ <strong>ขั้นที่ 4 'ANALYZE' (ส่วนที่ 1)</strong>:
+                            </p>
+                            <div class="callout-box" style="margin: 0; padding: 10px 14px;">
+                                <i class="fas fa-sparkles" style="color: var(--primary);"></i>
+                                <span style="font-size: 0.85rem; color: var(--text-sub);">
+                                    <strong>Prompt Engineering สำหรับวิเคราะห์ข้อมูลธุรกิจด้วย Gemini:</strong> นำข้อมูลสะอาดที่คลีนเสร็จในวันนี้ ไปอัปโหลดให้ AI ค้นหา Insight ยอดขายและคิดโปรโมชันอัตโนมัติ!
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="footer-summary" style="margin-top: 8px;">
+                        <span><i class="fas fa-bell" style="color: var(--accent-warm);"></i> เตรียมตัวเข้าสู่ช่วงปฏิบัติการ Workshop: ลงมือคลีนชุดข้อมูลจริงพร้อมกัน</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 31: WORKSHOP INTRODUCTION -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-laptop-code" style="color: var(--primary);"></i> Workshop: "Data Cleaning Master ปฏิบัติการกู้วิกฤตข้อมูล SME"</h2>
+                        <span class="subtitle">สวมบทบาท Data Consultant ประจำร้าน Chaba Clothing ทำความสะอาดข้อมูลจริง 5 ภารกิจ</span>
+                    </div>
+                    <span class="badge-step"><i class="fas fa-users"></i> Workshop 65 Mins</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div class="card card-primary">
+                            <h4 style="color: var(--primary); margin-bottom: 8px;"><i class="fas fa-tasks"></i> 5 ภารกิจกู้วิกฤตข้อมูล (40 นาที)</h4>
+                            <div style="font-size: 0.86rem; color: var(--text-sub); line-height: 1.5;">
+                                • <strong>Mission 1:</strong> Duplicate Raw Data &rarr; สร้างชีต <code>cleaned_data</code> สำรองข้อมูลดิบ<br />
+                                • <strong>Mission 2:</strong> ลบแถวซ้ำ (Remove Duplicates) เช็คตาม Order ID<br />
+                                • <strong>Mission 3:</strong> ล้างช่องว่างแฝงด้วย Trim Whitespace และฟังก์ชัน <code>TRIM()</code><br />
+                                • <strong>Mission 4:</strong> จัดระเบียบตัวสะกดสี/ไซส์ด้วย Find &amp; Replace และ <code>UPPER()</code><br />
+                                • <strong>Mission 5:</strong> จัดการ Missing Values, ตรวจจับ Outlier และเขียน Data Cleaning Log
+                            </div>
+                        </div>
+
+                        <div class="card card-success">
+                            <h4 style="color: var(--success); margin-bottom: 8px;"><i class="fas fa-id-badge"></i> 5 บทบาทสมาชิกในกลุ่ม</h4>
+                            <div style="font-size: 0.86rem; color: var(--text-sub); line-height: 1.45;">
+                                1. <strong>Project Lead:</strong> คุมเวลาและตรวจสอบความถูกต้องภาพรวม<br />
+                                2. <strong>Sheet Master:</strong> เป็นคนลงมือใช้เครื่องมือและคีย์สูตรใน Google Sheets<br />
+                                3. <strong>Data Auditor:</strong> ตรวจจับช่องว่าง ข้อมูลซ้ำ และ Outlier<br />
+                                4. <strong>Log Keeper:</strong> บันทึกทุกขั้นตอนลงใน Data Cleaning Log<br />
+                                5. <strong>Presenter:</strong> นำเสนอผลการคลีนและ Insight หน้าห้อง (3 นาที)
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="callout-box success" style="margin-top: 8px; padding: 10px 16px;">
+                        <i class="fas fa-cloud-download-alt" style="color: var(--success); font-size: 1.3rem;"></i>
+                        <span style="font-size: 0.92rem;">
+                            <strong>เปิดใบงาน:</strong> ให้นักศึกษาเปิดไฟล์ <a href="session-05-workshop-worksheet.html" target="_blank" style="color: var(--primary); font-weight: 700; text-decoration: underline;">session-05-workshop-worksheet.html</a> เพื่อรับลิงก์ไฟล์ Google Sheets และเริ่มลงมือทำได้เลย!
+                        </span>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <!-- Reveal.js Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/notes/notes.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/highlight/highlight.js"></script>
+    <script>
+        const deck = new Reveal({
+            width: 1280,
+            height: 800,
+            margin: 0.04,
+            minScale: 0.1,
+            maxScale: 3.0,
+            controls: false,
+            progress: true,
+            center: false,
+            hash: true,
+            transition: 'slide',
+            transitionSpeed: 'default',
+            mouseWheel: true,
+            plugins: [RevealNotes, RevealHighlight]
+        });
+
+        deck.initialize().then(() => {
+            window.deck = deck;
+            window.Reveal = deck;
+
+            // Automated slide height audit
+            window.runSlideHeightAudit = function () {
+                const sections = document.querySelectorAll('.reveal .slides > section');
+                const results = [];
+                let totalPassed = 0;
+                const containerHeight = deck.getConfig().height;
+
+                sections.forEach((sec, idx) => {
+                    const scrollH = sec.scrollHeight;
+                    const clientH = sec.clientHeight || containerHeight;
+                    const isOverflown = scrollH > containerHeight + 4; // allowance 4px
+
+                    if (!isOverflown) totalPassed++;
+
+                    results.push({
+                        slideIndex: idx + 1,
+                        title: sec.querySelector('h1, h2')?.innerText?.trim()?.substring(0, 35) || `Slide ${idx + 1}`,
+                        scrollHeight: scrollH,
+                        containerHeight: containerHeight,
+                        passed: !isOverflown
+                    });
+                });
+
+                const summary = {
+                    totalSlides: sections.length,
+                    passedCount: totalPassed,
+                    failedCount: sections.length - totalPassed,
+                    isAllPassed: totalPassed === sections.length,
+                    details: results
+                };
+
+                const overlay = document.getElementById('test-report-overlay');
+                const content = document.getElementById('test-report-content');
+                if (overlay && content) {
+                    let html = `<div style="margin-bottom: 8px; font-weight: bold; color: ${summary.isAllPassed ? '#34d399' : '#f87171'}">
+                        Result: ${summary.passedCount}/${summary.totalSlides} slides passed (${summary.isAllPassed ? '100% OK' : 'OVERFLOW DETECTED'})
+                    </div>`;
+                    results.forEach(r => {
+                        html += `<div class="test-row">
+                            <span>#${r.slideIndex} ${r.title}</span>
+                            <span class="${r.passed ? 'test-pass' : 'test-fail'}">${r.scrollHeight}px / ${containerHeight}px ${r.passed ? '✓' : '✗'}</span>
+                        </div>`;
+                    });
+                    content.innerHTML = html;
+                }
+
+                return summary;
+            };
+
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('test') === 'true') {
+                const overlay = document.getElementById('test-report-overlay');
+                if (overlay) overlay.style.display = 'block';
+                setTimeout(() => {
+                    const res = window.runSlideHeightAudit();
+                    console.log("SLIDE_AUDIT_RESULT:", JSON.stringify(res));
+                }, 800);
+            }
+
+            window.addEventListener('keydown', (e) => {
+                if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) return;
+
+                // Key 'A' or 'a': Toggle Aspect Ratio (16:10 <-> 16:9)
+                if (e.key === 'a' || e.key === 'A') {
+                    toggleAspectRatio();
+                }
+
+                // Key 'T' or 't': Toggle Slide Audit Test Overlay
+                if (e.key === 't' || e.key === 'T') {
+                    const overlay = document.getElementById('test-report-overlay');
+                    if (overlay) {
+                        overlay.style.display = overlay.style.display === 'block' ? 'none' : 'block';
+                        if (overlay.style.display === 'block') {
+                            window.runSlideHeightAudit();
+                        }
+                    }
+                }
+            });
+        });
+
+        // Show Temporary Aspect Ratio Toast Notification
+        function showRatioToast(msg) {
+            let toast = document.getElementById('aspect-ratio-toast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'aspect-ratio-toast';
+                toast.style.cssText = `
+                    position: fixed;
+                    bottom: 24px;
+                    right: 24px;
+                    background: rgba(15, 23, 42, 0.90);
+                    backdrop-filter: blur(8px);
+                    color: #ffffff;
+                    padding: 8px 18px;
+                    border-radius: 9999px;
+                    font-family: 'Outfit', 'Noto Sans Thai', sans-serif;
+                    font-size: 0.85rem;
+                    font-weight: 600;
+                    letter-spacing: 0.02em;
+                    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+                    border: 1px solid rgba(255, 255, 255, 0.15);
+                    z-index: 99999;
+                    pointer-events: none;
+                    transition: opacity 0.3s ease, transform 0.3s ease;
+                    transform: translateY(0);
+                    opacity: 0;
+                `;
+                document.body.appendChild(toast);
+            }
+            toast.innerHTML = `<i class="fa-solid fa-display" style="margin-right: 8px; color: #818cf8;"></i> ${msg}`;
+            toast.style.opacity = '1';
+            toast.style.transform = 'translateY(0)';
+            clearTimeout(window._ratioToastTimer);
+            window._ratioToastTimer = setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(6px)';
+            }, 1500);
+        }
+
+        // Toggle Aspect Ratio (Key 'A')
+        function toggleAspectRatio() {
+            if (deck.getConfig().height === 800) {
+                // Switch to 16:9
+                deck.configure({ width: 1280, height: 720 });
+                showRatioToast('สลับอัตราส่วนหน้าจอ: 16:9 (1280 × 720)');
+            } else {
+                // Switch to 16:10
+                deck.configure({ width: 1280, height: 800 });
+                showRatioToast('สลับอัตราส่วนหน้าจอ: 16:10 (1280 × 800)');
+            }
+        }
+        window.toggleAspectRatio = toggleAspectRatio;
+    </script>
+</body>
+
+</html>

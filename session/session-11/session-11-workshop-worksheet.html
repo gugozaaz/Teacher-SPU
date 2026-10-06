@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ใบงาน Workshop ครั้งที่ 11 — "AuraSkin Lab Pitch Deck & 3-Min Executive Presentation"</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #3730a3;
+            --primary-light: #eef2ff;
+            --secondary: #0284c7;
+            --secondary-light: #e0f2fe;
+            --purple: #7c3aed;
+            --purple-light: #f3e8ff;
+            --accent: #e11d48;
+            --accent-warm: #d97706;
+            --success: #059669;
+            --success-light: #ecfdf5;
+            --teal: #0d9488;
+            --teal-light: #f0fdfa;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text-main: #0f172a;
+            --text-sub: #334155;
+            --text-muted: #64748b;
+            --border: #cbd5e1;
+            --border-focus: #4f46e5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Noto Sans Thai', 'Outfit', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 30px 20px;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            background: var(--surface);
+            padding: 40px 45px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.08), 0 8px 10px -6px rgba(0,0,0,0.04);
+            border: 1px solid var(--border);
+        }
+
+        header {
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header-title h1 {
+            font-size: 1.55rem;
+            color: var(--primary-dark);
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-title p {
+            font-size: 0.92rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .badge-info {
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 8px 16px;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-align: right;
+            border: 1px solid #c7d2fe;
+        }
+
+        .section-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 22px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        .section-card h2 {
+            font-size: 1.25rem;
+            color: var(--text-main);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 8px;
+        }
+
+        .section-card h3 {
+            font-size: 1.05rem;
+            color: var(--primary);
+            margin: 14px 0 8px;
+        }
+
+        .scenario-box {
+            background: #fffbeb;
+            border-left: 4px solid var(--accent-warm);
+            padding: 14px 18px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 16px;
+            font-size: 0.88rem;
+            color: #92400e;
+            line-height: 1.55;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 14px;
+            margin-bottom: 14px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .form-group label {
+            font-size: 0.84rem;
+            font-weight: 700;
+            color: var(--text-sub);
+        }
+
+        input[type="text"], textarea {
+            font-family: inherit;
+            font-size: 0.88rem;
+            padding: 9px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-main);
+            background: #f8fafc;
+            transition: all 0.2s;
+            width: 100%;
+        }
+
+        input[type="text"]:focus, textarea:focus {
+            outline: none;
+            border-color: var(--border-focus);
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 75px;
+        }
+
+        .worksheet-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            margin-top: 8px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .worksheet-table th {
+            background: #f1f5f9;
+            color: var(--text-main);
+            padding: 8px 12px;
+            font-weight: 700;
+            text-align: left;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .worksheet-table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-sub);
+        }
+
+        .worksheet-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .worksheet-table tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        .worksheet-table input[type="text"] {
+            padding: 6px 10px;
+            font-size: 0.82rem;
+            background: white;
+        }
+
+        .prompt-preview {
+            background: #0f172a;
+            color: #f8fafc;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.8rem;
+            line-height: 1.45;
+            margin: 8px 0;
+            overflow-x: auto;
+        }
+
+        .btn-action-group {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 25px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.92rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        .btn-primary:hover { background: var(--primary-dark); }
+
+        .btn-secondary {
+            background: var(--surface);
+            color: var(--text-sub);
+            border: 1px solid var(--border);
+        }
+        .btn-secondary:hover { background: #f1f5f9; }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; border: none; padding: 0; max-width: 100%; }
+            .btn-action-group { display: none; }
+            input[type="text"], textarea { border-bottom: 1px solid #94a3b8; border-top: none; border-left: none; border-right: none; background: transparent; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="header-title">
+            <h1><i class="fas fa-bullhorn" style="color: var(--primary);"></i> ใบงาน Workshop: AuraSkin Lab Pitch Deck &amp; 3-Min Pitch</h1>
+            <p>รายวิชา Fundamentals of Data Science | ครั้งที่ 11 (ขั้นที่ 5 'ACT' — Data Storytelling)</p>
+        </div>
+        <div class="badge-info">
+            <i class="fas fa-clock"></i> เวลาปฏิบัติ: 60–65 นาที<br>
+            <i class="fas fa-award"></i> คะแนนเต็ม: 20 คะแนน
+        </div>
+    </header>
+
+    <!-- GROUP INFO -->
+    <div class="section-card">
+        <h2><i class="fas fa-users" style="color: var(--secondary);"></i> ข้อมูลกลุ่มและ 4 บทบาทรับผิดชอบ</h2>
+        <div class="form-row">
+            <div class="form-group" style="grid-column: span 2;">
+                <label>ชื่อกลุ่ม / กลุ่มที่:</label>
+                <input type="text" id="group_name" placeholder="เช่น Data Alchemists (กลุ่มที่ 3)">
+            </div>
+            <div class="form-group" style="grid-column: span 2;">
+                <label>ชื่อแบรนด์ที่เลือก (หรือ AuraSkin Lab):</label>
+                <input type="text" id="business_name" value="AuraSkin Lab (แบรนด์เวชสำอาง D2C สำหรับวัยรุ่นเป็นสิว)">
+            </div>
+        </div>
+
+        <h3 style="font-size: 0.95rem; margin-top: 8px;">สมาชิกและ 4 บทบาทหน้าที่:</h3>
+        <div class="form-row">
+            <div class="form-group">
+                <label>1. Story Architect (คุมโครงเรื่อง C-I-A &amp; Hook):</label>
+                <input type="text" placeholder="ชื่อ-สกุล (รหัสนักศึกษา)">
+            </div>
+            <div class="form-group">
+                <label>2. Data &amp; Prompt Master (คุม AI &amp; One-Liner):</label>
+                <input type="text" placeholder="ชื่อ-สกุล (รหัสนักศึกษา)">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>3. Slide Designer (ตรวจสไลด์ &amp; สีนำสายตา):</label>
+                <input type="text" placeholder="ชื่อ-สกุล (รหัสนักศึกษา)">
+            </div>
+            <div class="form-group">
+                <label>4. Executive Pitcher (ร่างบทพูด BLUF &amp; พิทช์ 3 นาที):</label>
+                <input type="text" placeholder="ชื่อ-สกุล (รหัสนักศึกษา)">
+            </div>
+        </div>
+    </div>
+
+    <!-- SCENARIO BRIEF -->
+    <div class="scenario-box">
+        <strong><i class="fas fa-exclamation-circle"></i> สถานการณ์จำลอง:</strong> แบรนด์ <strong>AuraSkin Lab</strong> ยอดขายรวม 9.24 ล้านบาทใน 6 เดือน แต่ผู้บริหารกำลังจะทุ่มงบ 1,000,000 บาท ยิงแอด Facebook เพิ่มเพราะคิดว่าแก้ปัญหายอดขายนิ่ง ทั้งที่ค่าแอด Facebook พุ่ง 3 เท่า (CAC 540 บาท, ROAS เหลือ 1.2x ขาดทุนหนัก!) ทีมของคุณเพิ่งค้นพบว่า <strong>72% กำไรมาจาก "เซรั่มสิวใบบัวบก" บน TikTok Shop ซึ่งมี ROAS 4.8x</strong> จากคลิป Micro-KOL... ภารกิจคือสร้างสไลด์ 7 หน้า และสคริปต์พิทช์ 3 นาทีเพื่อหยุดยั้งการผลาญงบ และขอย้ายงบ 400,000 บาทไปคว้ากำไร +2.4 ล้านบาท!
+    </div>
+
+    <!-- MISSION 1: CONTEXT & STAKES HOOK -->
+    <div class="section-card">
+        <h2><i class="fas fa-bullseye" style="color: #0284c7;"></i> Mission 1: บริบท ปัญหา และการเขียนประโยคเปิด Hook (10 นาที)</h2>
+        <p style="font-size: 0.86rem; color: var(--text-sub); margin-bottom: 8px;">
+            วิเคราะห์ความสูญเสียหากทำตามผู้บริหาร และเขียนประโยคเปิด Hook ด้วย Hook Formula
+        </p>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>1.1 คำนวณความเสียหายหากยิงแอด Facebook เพิ่ม 1 ล้านบาท (ที่ ROAS 1.2x):</label>
+                <input type="text" placeholder="ยอดขาย 1.2M ลบต้นทุนแอด 1M และสินค้า คาดว่าจะขาดทุนทันทีกว่า 450,000 บาท">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>1.2 ประโยคเปิด Hook (Hook Formula: Baseline ➔ Disruption ➔ Stakes ➔ ทางรอด):</label>
+            <textarea placeholder="เช่น 'เป้าหมายเราคือกำไร 3 ล้านใน Q3 แต่ค่าแอด Facebook พุ่ง 3 เท่าจน ROAS ดิ่งเหลือ 1.2x หากเรายังดึงดันยิงแอด 1 ล้านแบบเดิม เราจะขาดทุนทันที 450,000 บาท ข้อมูลต่อไปนี้จะชี้ทางรอดที่จะสร้างกำไร 2.4 ล้านให้แบรนด์เราครับ...'"></textarea>
+        </div>
+    </div>
+
+    <!-- MISSION 2: GEMINI MASTER DECK OUTLINE -->
+    <div class="section-card">
+        <h2><i class="fas fa-layer-group" style="color: var(--primary);"></i> Mission 2: สั่ง Gemini ร่าง 7-Slide Master Deck Outline (15 นาที)</h2>
+        <p style="font-size: 0.86rem; color: var(--text-sub); margin-bottom: 8px;">
+            ป้อนตัวเลขยอดขาย 4 สินค้าและ 3 ช่องทางเข้าสู่ Gemini แล้วบันทึก Action Title 1 ประโยคสำหรับแต่ละสไลด์
+        </p>
+
+        <div class="prompt-preview">
+            [Prompt ต้นแบบ]: คุณคือ Chief Strategy Officer ช่วยออกแบบโครงสร้างสไลด์ 7 หน้าตามโครงสร้าง Context (1-3) ➔ Insight (4-5) ➔ Action (6-7) โดยทุกสไลด์ต้องมี Action Title 1 ประโยคที่บอกข้อสรุป...
+        </div>
+
+        <table class="worksheet-table">
+            <thead>
+                <tr>
+                    <th style="width: 14%;">สไลด์ที่</th>
+                    <th style="width: 16%;">โครงสร้าง</th>
+                    <th style="width: 45%;">Action Title (หัวข้อสรุปผล 1 ประโยค)</th>
+                    <th>องค์ประกอบเด่นในสไลด์</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Slide 1</strong></td>
+                    <td>Context</td>
+                    <td><input type="text" placeholder="AuraSkin Lab: ย้ายงบ 4 แสนสู่ TikTok ชิงกำไร +2.4M"></td>
+                    <td>ชื่อเรื่อง, ทีมงาน, วันที่</td>
+                </tr>
+                <tr>
+                    <td><strong>Slide 2</strong></td>
+                    <td>Context (BLUF)</td>
+                    <td><input type="text" placeholder="หยุดงบ Facebook 6 แสน และย้ายไป TikTok Creator ทันที"></td>
+                    <td>Executive Summary 3 ข้อ</td>
+                </tr>
+                <tr>
+                    <td><strong>Slide 3</strong></td>
+                    <td>Context</td>
+                    <td><input type="text" placeholder="CAC พุ่ง 3 เท่า: ยิงแอดแบบเดิมขาดทุน 450,000 แน่นอน"></td>
+                    <td>กราฟแนวโน้ม CAC</td>
+                </tr>
+                <tr>
+                    <td><strong>Slide 4</strong></td>
+                    <td>Insight</td>
+                    <td><input type="text" placeholder="เซรั่มสิวคือ Hero SKU ที่แบกกำไร 72% และซื้อซ้ำ 42%"></td>
+                    <td>กราฟแท่งกำไร Hero SKU</td>
+                </tr>
+                <tr>
+                    <td><strong>Slide 5</strong></td>
+                    <td>Insight</td>
+                    <td><input type="text" placeholder="TikTok Shop สร้าง ROAS 4.8x สูงสุดจากพลัง Micro-KOL"></td>
+                    <td>กราฟเปรียบเทียบ ROAS 3 ช่อง</td>
+                </tr>
+                <tr>
+                    <td><strong>Slide 6</strong></td>
+                    <td>Action</td>
+                    <td><input type="text" placeholder="แผน 90 วัน: ทุ่ม 50 Micro-KOL พร้อมโปรเซรั่มคู่คลีนเซอร์"></td>
+                    <td>Timeline & ประมาณการ ROI</td>
+                </tr>
+                <tr>
+                    <td><strong>Slide 7</strong></td>
+                    <td>Action</td>
+                    <td><input type="text" placeholder="ขออนุมัติงบ 400,000 บาทเพื่อเริ่มดีลแรกใน 24 ชั่วโมง"></td>
+                    <td>The Clear Ask 3 ข้อ</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- MISSION 3: DESIGN AUDIT & COLOR STRATEGY -->
+    <div class="section-card">
+        <h2><i class="fas fa-palette" style="color: var(--purple);"></i> Mission 3: Design Audit &amp; กลยุทธ์สีนำสายตา (15 นาที)</h2>
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label>3.1 ระบุ 2 สิ่งที่ต้องตัดทิ้ง (Visual Noise) จากสไลด์ข้อมูลเพื่อเพิ่ม Signal-to-Noise Ratio:</label>
+                <input type="text" placeholder="1) ตารางตัวเลข 50 ช่องที่ลายตา 2) กรอบและเส้นตารางหนาเตอะ">
+            </div>
+            <div class="form-group">
+                <label>3.2 การใช้สีนำสายตาในกราฟ ROAS 3 ช่องทาง:</label>
+                <input type="text" placeholder="Shopee/FB ใช้สีเทา #cbd5e1 ส่วน TikTok ไฮไลต์สีม่วงสดใส #7c3aed">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>3.3 The Pivot Formula (เปลี่ยนการรายงานอดีตเป็น Action Plan):</label>
+            <textarea placeholder="เช่น 'ข้อมูลแสดงว่า Facebook แอดถึงจุดอิ่มตัวและกินกำไร... ดังนั้น ทางเลือกที่ดีที่สุดคือตัดงบ Facebook 400,000 บาท แล้วย้ายไปจ้าง Micro-KOL 50 คนบน TikTok เพื่อดันยอดขายเพิ่ม +2.4 ล้านบาท'"></textarea>
+        </div>
+    </div>
+
+    <!-- MISSION 4: 3-MIN PITCH SCRIPT & TOUGH Q&A -->
+    <div class="section-card">
+        <h2><i class="fas fa-microphone-alt" style="color: var(--success);"></i> Mission 4: สคริปต์ 3-Minute Live Pitch &amp; ซ้อม Tough Q&amp;A (20 นาที)</h2>
+        
+        <div class="form-group" style="margin-bottom: 12px;">
+            <label><i class="fas fa-stopwatch" style="color: #0284c7;"></i> นาทีที่ 1 (0:00 - 1:00) | Context &amp; Hook (เปิดประเด็น ชี้เดิมพัน และสรุป BLUF):</label>
+            <textarea placeholder="เขียนบทพูดนาทีแรก ชี้ให้เห็นเงินที่จะเสีย และบอกว่ามาเพื่อขอย้ายงบ 4 แสน..."></textarea>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 12px;">
+            <label><i class="fas fa-stopwatch" style="color: var(--purple);"></i> นาทีที่ 2 (1:00 - 2:00) | The Core Insight (เจาะลึก Hero SKU &amp; ขุมทรัพย์ TikTok):</label>
+            <textarea placeholder="เขียนบทพูดนาทีที่สอง อธิบายกราฟเซรั่มสิว 72% กำไร และพลังคลิปรีวิว Micro-KOL ที่ได้ ROAS 4.8x..."></textarea>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 12px;">
+            <label><i class="fas fa-stopwatch" style="color: var(--success);"></i> นาทีที่ 3 (2:00 - 3:00) | Action &amp; The Ask (แผนงาน คาดการณ์กำไร +2.4M และขออนุมัติ):</label>
+            <textarea placeholder="เขียนบทพูดนาทีสุดท้าย สรุปแผน 90 วัน ตัวเลขกำไร +35% และจบด้วย The Clear Ask ขออนุมัติงบ 4 แสนวันนี้..."></textarea>
+        </div>
+
+        <h3 style="font-size: 0.95rem; margin-top: 14px;"><i class="fas fa-user-ninja" style="color: var(--accent);"></i> การซ้อมรับมือ Tough Q&amp;A กับ AI:</h3>
+        <div class="form-row">
+            <div class="form-group">
+                <label>คำถามยากที่ AI นักลงทุนจับผิด:</label>
+                <input type="text" placeholder="เช่น 'ถ้าจ้าง KOL 50 คนแล้วคลิปไม่ไวรัลเหมือนเดิม งบ 4 แสนจะไม่จมเหรอ?'">
+            </div>
+            <div class="form-group">
+                <label>แนวทางคำตอบของทีม:</label>
+                <input type="text" placeholder="เช่น 'เรากระจายความเสี่ยงด้วยการเลือกเฉพาะ Micro-KOL สายความรู้ 50 คน เฉลี่ยคนละ 8,000 บ. และทดสอบล็อตแรก 10 คนก่อนใน 14 วันแรกครับ'">
+            </div>
+        </div>
+    </div>
+
+    <!-- BUTTONS -->
+    <div class="btn-action-group">
+        <button class="btn btn-secondary" onclick="window.print()"><i class="fas fa-print"></i> พิมพ์ / บันทึก PDF</button>
+        <button class="btn btn-primary" onclick="alert('บันทึกข้อมูลใบงาน Session 11 เรียบร้อยแล้ว!')"><i class="fas fa-save"></i> บันทึกข้อมูล</button>
+    </div>
+</div>
+
+<script>
+    // Simple LocalStorage Autosave for Session 11
+    document.querySelectorAll('input, textarea').forEach(el => {
+        const key = 'ws11_' + (el.id || el.placeholder || Math.random());
+        if (localStorage.getItem(key)) el.value = localStorage.getItem(key);
+        el.addEventListener('input', () => localStorage.setItem(key, el.value));
+    });
+</script>
+
+</body>
+</html>

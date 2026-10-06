@@ -1,0 +1,2259 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Session 13: คลินิกขัดเกลาโปรเจกต์กลุ่ม 5 ขั้นตอน & ซ้อมใหญ่ (Coaching & Dry Run) — Fundamentals of Data Science</title>
+    
+    <!-- Reveal.js & Fonts -->
+    <link href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800;900&amp;family=Outfit:wght@400;500;600;700;800&amp;family=Fira+Code:wght@400;500&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
+
+        <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #3730a3;
+            --primary-glow: rgba(79, 70, 229, 0.12);
+            --primary-light: #e0e7ff;
+            --secondary: #0284c7;
+            --secondary-dark: #0369a1;
+            --secondary-light: #e0f2fe;
+            --accent: #e11d48;
+            --accent-warm: #d97706;
+            --accent-light: #fef3c7;
+            --success: #059669;
+            --success-light: #dcfce7;
+            --danger: #ef4444;
+            --danger-light: #fee2e2;
+            --purple: #7c3aed;
+            --purple-light: #f3e8ff;
+            --teal: #0d9488;
+            --dark: #0f172a;
+            --bg-main: #f8fafc;
+            --bg-card: #ffffff;
+            --border-card: #e2e8f0;
+            --card-bg: #ffffff;
+            --bg-alt: #f8fafc;
+            --border: #e2e8f0;
+            --text-main: #0f172a;
+            --text-sub: #334155;
+            --text-muted: #64748b;
+            --gradient-main: linear-gradient(135deg, #4f46e5 0%, #0284c7 100%);
+            --gradient-purple: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
+            --gradient-accent: linear-gradient(135deg, #e11d48 0%, #d97706 100%);
+            --gradient-teal: linear-gradient(135deg, #0d9488 0%, #0284c7 100%);
+            --gradient-warm: linear-gradient(135deg, #d97706 0%, #ea580c 100%);
+            --gradient-green: linear-gradient(135deg, #059669 0%, #0284c7 100%);
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: var(--bg-main);
+            font-size: 24px;
+        }
+
+        .reveal {
+            font-family: 'Noto Sans Thai', 'Outfit', sans-serif;
+            color: var(--text-main);
+            background: var(--bg-main);
+            background-image:
+                radial-gradient(circle at 12% 15%, rgba(79, 70, 229, 0.05) 0%, transparent 45%),
+                radial-gradient(circle at 88% 85%, rgba(2, 132, 199, 0.05) 0%, transparent 45%);
+            font-size: 26px;
+        }
+
+        .reveal .slides {
+            text-align: left;
+        }
+
+        .reveal .slides section {
+            height: 100% !important;
+            box-sizing: border-box !important;
+            padding: 22px 38px 24px 38px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: flex-start !important;
+            overflow: hidden !important;
+            background: transparent;
+        }
+
+        @media print {
+            #aspect-ratio-toast,
+            #test-report-overlay {
+                display: none !important;
+            }
+        }
+
+        .slide-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            gap: 10px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+
+        .reveal h1,
+        .reveal h2,
+        .reveal h3,
+        .reveal h4 {
+            font-family: 'Noto Sans Thai', 'Outfit', sans-serif;
+            font-weight: 800;
+            text-transform: none;
+            letter-spacing: -0.02em;
+            margin: 0;
+            line-height: 1.25;
+            color: var(--text-main);
+        }
+
+        .reveal h1 {
+            font-size: 2.35rem;
+        }
+
+        .reveal h2 {
+            font-size: 1.48rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            line-height: 1.25;
+            letter-spacing: -0.015em;
+        }
+
+        .reveal h3 {
+            font-size: 1.25rem;
+            color: var(--primary);
+        }
+
+        .reveal p {
+            margin: 0;
+            line-height: 1.5;
+            color: var(--text-sub);
+            font-size: 1.02rem;
+        }
+
+        .slide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 2px solid rgba(79, 70, 229, 0.12);
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+            gap: 16px;
+        }
+
+        .slide-header .title-group,
+        .slide-header .slide-title-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .slide-header .subtitle,
+        .slide-header .slide-subtitle {
+            font-size: 1.02rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            margin: 0;
+        }
+
+        .badge-step,
+        .slide-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #eef2ff;
+            color: var(--primary);
+            padding: 6px 14px;
+            border-radius: 9999px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+            border: 1px solid rgba(79, 70, 229, 0.2);
+            box-shadow: var(--shadow-sm);
+            text-transform: none;
+        }
+
+        .badge-step.purple {
+            background: #f5f3ff;
+            color: var(--purple);
+            border-color: rgba(124, 58, 237, 0.2);
+        }
+
+        .badge-step.warm {
+            background: #fffbeb;
+            color: var(--accent-warm);
+            border-color: rgba(217, 119, 6, 0.2);
+        }
+
+        .badge-step.teal {
+            background: #f0fdfa;
+            color: var(--teal);
+            border-color: rgba(13, 148, 136, 0.2);
+        }
+
+        .badge-step.primary {
+            background: #eef2ff;
+            color: var(--primary);
+            border-color: rgba(79, 70, 229, 0.2);
+        }
+
+        .badge-step.accent {
+            background: #fff1f2;
+            color: var(--accent);
+            border-color: rgba(225, 29, 72, 0.2);
+        }
+
+        .badge-step.success {
+            background: #f0fdf4;
+            color: var(--success);
+            border-color: rgba(5, 150, 105, 0.2);
+        }
+
+        .badge-step.danger {
+            background: #fff1f2;
+            color: var(--accent);
+            border-color: rgba(225, 29, 72, 0.2);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .badge-primary {
+            background: #e0e7ff;
+            color: var(--primary-dark);
+        }
+
+        .badge-accent {
+            background: #ffe4e6;
+            color: var(--accent);
+        }
+
+        .badge-warm {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-success {
+            background: #dcfce7;
+            color: var(--success);
+        }
+
+        .badge-purple {
+            background: #f3e8ff;
+            color: var(--purple);
+        }
+
+        .badge-gray {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        /* Card System */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 12px;
+            padding: 14px 16px;
+            box-shadow: var(--shadow-sm);
+            position: relative;
+        }
+
+        .card-header,
+        .card-header-sm {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .card-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            background: var(--primary-light);
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+
+        .card-title,
+        .card-header-sm h4,
+        .card-header h3,
+        .card-header h4 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin: 0;
+        }
+
+        .card p, .card ul {
+            font-size: 0.86rem;
+            color: var(--text-sub);
+            margin: 4px 0;
+            line-height: 1.45;
+        }
+
+        .card ul {
+            padding-left: 18px;
+        }
+
+        .card li {
+            margin-bottom: 4px;
+        }
+
+        /* Colored Card Variants */
+        .card-primary { border-top: 4px solid var(--primary); }
+        .card-primary .card-icon { background: var(--primary-light); color: var(--primary); }
+
+        .card-secondary { border-top: 4px solid var(--secondary); }
+        .card-secondary .card-icon { background: var(--secondary-light); color: var(--secondary); }
+
+        .card-accent { border-top: 4px solid var(--accent); }
+        .card-accent .card-icon { background: var(--accent-light); color: var(--accent); }
+
+        .card-danger { border-top: 4px solid var(--danger); }
+        .card-danger .card-icon { background: var(--danger-light); color: var(--danger); }
+
+        .card-success { border-top: 4px solid var(--success); }
+        .card-success .card-icon { background: var(--success-light); color: var(--success); }
+
+        .card-purple { border-top: 4px solid var(--purple); }
+        .card-purple .card-icon { background: var(--purple-light); color: var(--purple); }
+
+        .card-gold { border-top: 4px solid var(--accent-warm); }
+        .card-gold .card-icon { background: var(--accent-light); color: var(--accent-warm); }
+
+        /* Grids */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .grid-5 {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+        }
+
+        /* Highlight Boxes */
+        .highlight-box {
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            line-height: 1.45;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            background: #f8fafc;
+            border: 1px solid var(--border-card);
+            border-left: 4px solid var(--primary);
+        }
+
+        .highlight-box.primary {
+            background: #f0f9ff;
+            border-color: #bae6fd;
+            border-left-color: var(--primary);
+            color: #0369a1;
+        }
+
+        .highlight-box.danger {
+            background: #fff1f2;
+            border-color: #fecdd3;
+            border-left-color: var(--danger);
+            color: #991b1b;
+        }
+
+        .highlight-box.success {
+            background: #f0fdf4;
+            border-color: #bbf7d0;
+            border-left-color: var(--success);
+            color: #065f46;
+        }
+
+        .highlight-box.accent {
+            background: #fffbeb;
+            border-color: #fde68a;
+            border-left-color: var(--accent-warm);
+            color: #92400e;
+        }
+
+        /* Comparison Box */
+        .compare-box {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .compare-side {
+            border-radius: 12px;
+            padding: 14px 16px;
+            background: #fff;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .compare-side.bad {
+            border: 2px solid #fca5a5;
+            background: #fff5f5;
+        }
+
+        .compare-side.good {
+            border: 2px solid #86efac;
+            background: #f0fdf4;
+        }
+
+        .compare-title {
+            font-size: 1rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .compare-side.bad .compare-title { color: #dc2626; }
+        .compare-side.good .compare-title { color: #16a34a; }
+
+        /* Tables */
+        .custom-table,
+        .data-table,
+        .table-custom {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.84rem;
+            margin-top: 4px;
+            background: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-card);
+        }
+
+        .custom-table th,
+        .data-table th,
+        .table-custom th {
+            background: #f1f5f9;
+            color: var(--dark);
+            font-weight: 700;
+            padding: 8px 12px;
+            text-align: left;
+            border-bottom: 2px solid var(--border-card);
+        }
+
+        .custom-table td,
+        .data-table td,
+        .table-custom td {
+            padding: 7px 12px;
+            border-bottom: 1px solid var(--border-card);
+            color: var(--text-main);
+        }
+
+        .custom-table tr:last-child td,
+        .data-table tr:last-child td,
+        .table-custom tr:last-child td {
+            border-bottom: none;
+        }
+
+        .custom-table tr:hover,
+        .data-table tr:hover td {
+            background: #f8fafc;
+        }
+
+        /* Step Process Flow */
+        .step-container {
+            display: flex;
+            align-items: stretch;
+            gap: 8px;
+            margin: 6px 0;
+        }
+
+        .step-item,
+        .step-card {
+            flex: 1;
+            background: #ffffff;
+            border: 1px solid var(--border-card);
+            border-radius: 8px;
+            padding: 8px 10px;
+            text-align: center;
+            position: relative;
+        }
+
+        .step-item.active,
+        .step-card.active {
+            border: 2px solid var(--primary);
+            background: #eef2ff;
+            transform: scale(1.02);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .step-num {
+            font-size: 0.72rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--primary);
+            margin-bottom: 2px;
+        }
+
+        .step-name,
+        .step-title {
+            font-size: 0.88rem;
+            font-weight: 800;
+            color: var(--dark);
+        }
+
+        .step-desc {
+            font-size: 0.75rem;
+            color: var(--text-sub);
+            margin-top: 2px;
+        }
+
+        /* Code/Prompt blocks */
+        .prompt-preview,
+        .prompt-box,
+        .code-box {
+            background: #0f172a;
+            color: #e2e8f0;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.78rem;
+            line-height: 1.45;
+            margin-top: 6px;
+            border-left: 4px solid var(--secondary);
+            overflow-x: auto;
+        }
+
+        /* HUD Toast */
+        #hud-toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(15, 23, 42, 0.9);
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #hud-toast.show {
+            opacity: 1;
+        }
+
+        /* Test overlay */
+        #test-report-overlay {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            color: #f8fafc;
+            padding: 16px;
+            border-radius: 12px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.8rem;
+            z-index: 100000;
+            width: 320px;
+            max-height: 85vh;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+            display: none;
+        }
+
+        .test-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 3px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .test-pass { color: #34d399; }
+        .test-fail { color: #f87171; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div id="test-report-overlay">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; padding-bottom: 8px; margin-bottom: 8px;">
+            <strong style="color: #38bdf8;">SLIDE AUDIT REPORT</strong>
+            <span id="test-report-summary" style="font-size: 0.75rem;">Running...</span>
+        </div>
+        <div id="test-report-content"></div>
+    </div>
+
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- SLIDE 1: Title Slide -->
+            <section data-background-gradient="radial-gradient(circle at 50% 50%, #e0e7ff 0%, #f8fafc 100%)">
+                <div style="text-align: center; margin: auto 0; padding: 20px 10px;">
+                    <div style="margin-bottom: 14px;">
+                        <span class="badge badge-primary"><i class="fas fa-graduation-cap"></i> ภาคเรียนที่ 1/2569</span>
+                        <span class="badge badge-accent" style="margin-left: 6px;"><i class="fas fa-calendar-alt"></i> ครั้งที่ 13 / 14</span>
+                    </div>
+                    <h1 style="font-size: 2.2em; margin-bottom: 12px; font-weight: 900; line-height: 1.2;">
+                        คลินิกขัดเกลาโปรเจกต์กลุ่ม 5 ขั้นตอน &amp; ซ้อมใหญ่<br />
+                        <span style="color: var(--primary);">(Coaching &amp; Dry Run Clinic)</span>
+                    </h1>
+                    <p style="font-size: 1.05em; color: var(--secondary); font-weight: 600; margin-bottom: 20px;">
+                        Fundamentals of Data Science (พื้นฐานวิทยาการข้อมูล)
+                    </p>
+                    <div style="display: inline-block; padding: 8px 24px; background: #ffffff; border-radius: 9999px; border: 1px solid var(--border); box-shadow: var(--shadow-sm);">
+                        <p style="font-size: 0.85em; margin: 0; color: var(--text-sub);">
+                            <i class="fas fa-user-tie" style="color: var(--secondary); margin-right: 6px;"></i>
+                            <strong>ผู้สอน:</strong> อาจารย์สุรชัย โกยสันติสุข | คณะการสร้างเจ้าของธุรกิจ มหาวิทยาลัยศรีปทุม
+                        </p>
+                    </div>
+                </div>
+                <aside class="notes">
+                    - ยินดีต้อนรับสู่ Session 13: คลินิกและห้องปฏิบัติการซ้อมใหญ่โปรเจกต์กลุ่ม
+                    - วันนี้ไม่มีการบรรยายทฤษฎีใหม่ แต่เป็นเวทีขัดเกลา เจาะลึก และยกระดับผลงานกลุ่ม 40% ให้พร้อมที่สุด
+                </aside>
+            </section>
+
+            <!-- SLIDE 2: Session Recap - Bridge to Final Project Coaching -->
+            <section>
+                <div class="slide-header">
+                    <div class="slide-title-group">
+                        <h2><i class="fas fa-sync-alt" style="color: var(--primary);"></i> วงจร Data Science 5 ขั้นตอน: จากทฤษฎีสู่ความจริง</h2>
+                        <p class="slide-subtitle">การทดสอบความพร้อมรอบด้าน (End-to-End Stress Test) ก่อนขึ้นเวที Final Pitch Session 14</p>
+                    </div>
+                    
+                <span class="slide-badge"><i class="fas fa-stream"></i> PIPELINE READINESS</span>
+                </div>
+                <div class="slide-body">
+
+                <div class="step-container">
+                    <div class="step-item active">
+                        <div class="step-num">STEP 1</div>
+                        <div class="step-name">ASK</div>
+                        <div class="step-desc">โจทย์คม ชัด เจาะลึก</div>
+                    </div>
+                    <div class="step-item active">
+                        <div class="step-num">STEP 2</div>
+                        <div class="step-name">COLLECT</div>
+                        <div class="step-desc">Tidy & PDPA Consent</div>
+                    </div>
+                    <div class="step-item active">
+                        <div class="step-num">STEP 3</div>
+                        <div class="step-name">PREPARE</div>
+                        <div class="step-desc">Clean & Data Masking</div>
+                    </div>
+                    <div class="step-item active">
+                        <div class="step-num">STEP 4</div>
+                        <div class="step-name">ANALYZE</div>
+                        <div class="step-desc">Gemini + Fact-Check</div>
+                    </div>
+                    <div class="step-item active">
+                        <div class="step-num">STEP 5</div>
+                        <div class="step-name">ACT</div>
+                        <div class="step-desc">C-I-A Story & ROI</div>
+                    </div>
+                </div>
+
+                <div class="grid-2" style="margin-top: 10px;">
+                    <div class="card card-secondary">
+                        <div class="card-header">
+                            <div class="card-icon"><i class="fas fa-history"></i></div>
+                            <h3 class="card-title">12 คาบที่ผ่านมา (Component Mastery)</h3>
+                        </div>
+                        <ul>
+                            <li>เรียนรู้ทฤษฎีและฝึกเครื่องมือทีละชิ้น (Sheets, Forms, Gemini, Looker)</li>
+                            <li>เข้าใจจริยธรรม AI, ปัญหา Bias, และการป้องกันข้อมูลหลุด (PDPA)</li>
+                            <li>เห็นโมเดลโปรเจกต์ต้นแบบและได้รับมอบหมายโจทย์กลุ่มแล้ว</li>
+                        </ul>
+                    </div>
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <div class="card-icon"><i class="fas fa-flag-checkered"></i></div>
+                            <h3 class="card-title">คาบนี้ (Coaching & Dry Run Clinic)</h3>
+                        </div>
+                        <ul>
+                            <li><strong>ตรวจสุขภาพโปรเจกต์:</strong> รื้อดูจุดอ่อน ชี้จุดผิดพลาด และปิดช่องโหว่</li>
+                            <li><strong>กรณีศึกษาจริง:</strong> ผ่าตัดโปรเจกต์ "GreenFresh" จากเกรด C สู่เกรด A+</li>
+                            <li><strong>ซ้อมใหญ่ (Dry Run):</strong> จับเวลาจริง 10+5 นาที พร้อมรับ Peer Feedback</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="highlight-box accent">
+                    <i class="fas fa-bullhorn" style="font-size: 1.1rem;"></i>
+                    <div><strong>เป้าหมายสูงสุดของวันนี้:</strong> ทุกกลุ่มต้องออกจากห้องนี้ด้วยความมั่นใจ 100% ชิ้นงานส่งมอบ 4 รายการต้องพร้อมส่ง และบทพิทช์ต้องกระชับทรงพลัง!</div>
+                </div>
+                </div>
+                <aside class="notes">
+                    - ทบทวนการเชื่อมโยง: เราเรียนรู้ทักษะครบทั้ง 5 ขั้นตอนแล้ว วันนี้คือช่วงประกอบร่างจริง
+                    - เน้นย้ำว่าคาบนี้คือ "Safety Net" หรือตาข่ายนิรภัย มีข้อผิดพลาดอะไรให้รีบเจอวันนี้ ดีกว่าไปพังใน Session 14
+                </aside>
+            
+            </section>
+
+            <!-- SLIDE 3: ROADMAP -->
+            <section>
+                <div class="slide-header">
+                    <div class="slide-title-group">
+                        <h2><i class="fas fa-map-marked-alt" style="color: var(--primary);"></i> แผนที่ปฏิบัติการประจำคาบ (Session Roadmap)</h2>
+                        <p class="slide-subtitle">4 ภารกิจหลักของการปรับจูนโปรเจกต์และการซ้อมใหญ่ก่อนเวทีจริง</p>
+                    </div>
+                    
+                <span class="slide-badge"><i class="fas fa-compass"></i> ROADMAP</span>
+                </div>
+                <div class="slide-body">
+
+                <div class="grid-4" style="margin-top: 14px;">
+                    <div class="card card-danger">
+                        <div class="card-header">
+                            <div class="card-icon"><i class="fas fa-skull-crossbones"></i></div>
+                            <h3 class="card-title" style="font-size: 0.95rem;">1. The 4 Fatal Traps</h3>
+                        </div>
+                        <ul>
+                            <li>เจาะลึก 4 กับดักมรณะ</li>
+                            <li>จุดตัดคะแนนที่พบบ่อย</li>
+                            <li>ข้อผิดพลาดที่ทำตกม้าตาย</li>
+                        </ul>
+                    </div>
+
+                    <div class="card card-success">
+                        <div class="card-header">
+                            <div class="card-icon"><i class="fas fa-wand-magic-sparkles"></i></div>
+                            <h3 class="card-title" style="font-size: 0.95rem;">2. Project Makeover</h3>
+                        </div>
+                        <ul>
+                            <li>เคส "GreenFresh"</li>
+                            <li>ผ่าร่างงานเดิมที่เละ</li>
+                            <li>เปลี่ยนสู่งานระดับ A+</li>
+                        </ul>
+                    </div>
+
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <div class="card-icon"><i class="fas fa-stethoscope"></i></div>
+                            <h3 class="card-title" style="font-size: 0.95rem;">3. 5-Station Clinic</h3>
+                        </div>
+                        <ul>
+                            <li>คลินิกตรวจ 5 ขั้นตอน</li>
+                            <li>Sheets & Prompt Audit</li>
+                            <li>Slide Architecture & ROI</li>
+                        </ul>
+                    </div>
+
+                    <div class="card card-purple">
+                        <div class="card-header">
+                            <div class="card-icon"><i class="fas fa-microphone-lines"></i></div>
+                            <h3 class="card-title" style="font-size: 0.95rem;">4. Dry Run & Pitch</h3>
+                        </div>
+                        <ul>
+                            <li>ซ้อมจับเวลา 15 นาที</li>
+                            <li>เทคนิคตอบ Q&A</li>
+                            <li>Peer Feedback กติกา</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="highlight-box primary" style="margin-top: 18px;">
+                    <i class="fas fa-clock" style="font-size: 1.1rem;"></i>
+                    <div><strong>การจัดสรรเวลา 150 นาที:</strong> บรีฟเข็มทิศและถอดบทเรียนเคสตัวอย่าง (35 นาที) ➔ คลินิก Coaching รายกลุ่ม & ปรับปรุงงาน (60 นาที) ➔ ซ้อม Dry Run ข้ามกลุ่ม (40 นาที) ➔ สรุปเช็กลิสต์ความพร้อม (15 นาที)</div>
+                </div>
+                </div>
+                <aside class="notes">
+                    - อธิบายแผนที่การเรียนรู้ทั้ง 4 ส่วน
+                    - สร้างบรรยากาศที่ผ่อนคลายแต่มีพลัง ให้นักศึกษากล้าเปิดเผยข้อติดขัด
+                </aside>
+            
+            </section>
+
+            <!-- SLIDE 4: COUNTDOWN TO FINAL PITCH -->
+            <section>
+                <div class="slide-header">
+                    <div class="slide-title-group">
+                        <h2><i class="fas fa-stopwatch-20" style="color: var(--danger);"></i> Countdown สู่สัปดาห์หน้า: ความสำคัญของ Final Project</h2>
+                        <p class="slide-subtitle">40% ของคะแนนทั้งวิชา ที่พิสูจน์ความเป็น "ผู้ประกอบการที่ขับเคลื่อนด้วยข้อมูลจริง"</p>
+                    </div>
+                    
+                <span class="slide-badge" style="background: var(--danger-light); color: var(--danger);"><i class="fas fa-fire"></i> 40% FINAL ARENA</span>
+                </div>
+                <div class="slide-body">
+
+                <div class="grid-3" style="margin-top: 10px;">
+                    <div class="card card-primary" style="text-align: center;">
+                        <div style="font-size: 2.2rem; font-weight: 900; color: var(--primary); margin: 6px 0;">40%</div>
+                        <h4 style="margin: 0; font-size: 1rem; color: var(--dark);">สัดส่วนคะแนนสูงสุด</h4>
+                        <p style="font-size: 0.82rem; color: var(--text-sub); margin-top: 4px;">มากกว่ามิดเทอมและควิซทั้งเทอมรวมกัน เปลี่ยนเกรดจาก C เป็น A ได้ในเวทีนี้</p>
+                    </div>
+                    <div class="card card-secondary" style="text-align: center;">
+                        <div style="font-size: 2.2rem; font-weight: 900; color: var(--secondary-dark); margin: 6px 0;">15 นาที</div>
+                        <h4 style="margin: 0; font-size: 1rem; color: var(--dark);">เวลาทองคำต่อกลุ่ม</h4>
+                        <p style="font-size: 0.82rem; color: var(--text-sub); margin-top: 4px;">พิทช์นำเสนอ 10 นาที + ถามตอบเชิงลึกกับกรรมการ 5 นาที ตรงเวลาเป๊ะ</p>
+                    </div>
+                    <div class="card card-accent" style="text-align: center;">
+                        <div style="font-size: 2.2rem; font-weight: 900; color: var(--accent); margin: 6px 0;">4 ชิ้นงาน</div>
+                        <h4 style="margin: 0; font-size: 1rem; color: var(--dark);">หลักฐานส่งมอบครบวงจร</h4>
+                        <p style="font-size: 0.82rem; color: var(--text-sub); margin-top: 4px;">Sheets ข้อมูลคลีน + Prompt Log + Master Deck + Live Pitching</p>
+                    </div>
+                </div>
+
+                <div class="highlight-box danger" style="margin-top: 12px;">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 1.1rem;"></i>
+                    <div>
+                        <strong>คำเตือนจากใจผู้สอน:</strong> สัปดาห์หน้าไม่มีการแก้ไขหรือส่งงานล่าช้า การขึ้นพิทช์สดต่อหน้าเพื่อนและกรรมการจะไม่มีโอกาสแก้ตัวรอบสอง สิ่งที่ทำวันนี้คือเครื่องการันตีความสำเร็จ 100%!
+                    </div>
+                </div>
+                </div>
+                <aside class="notes">
+                    - ปลุกเร้าและเน้นย้ำความสำคัญของ 40%
+                    - ไม่ใช่แค่การทำข้อสอบ แต่คือทักษะที่นำไปใช้หาเงินจริงหรือพิทช์ของบในธุรกิจจริง
+                </aside>
+            
+            </section>
+
+            <!-- SLIDE 5: 4 FATAL TRAPS -->
+            <section>
+                <div class="slide-header">
+                    <div class="slide-title-group">
+                        <h2><i class="fas fa-radiation" style="color: var(--danger);"></i> 4 กับดักมรณะที่พบบ่อย (The 4 Fatal Traps)</h2>
+                        <p class="slide-subtitle">ข้อผิดพลาดที่มักทำให้นักศึกษาตกม้าตาย และถูกหักคะแนนอย่างน่าเสียดาย</p>
+                    </div>
+                    
+                <span class="slide-badge" style="background: var(--danger-light); color: var(--danger);"><i class="fas fa-ban"></i> AVOID AT ALL COSTS</span>
+                </div>
+                <div class="slide-body">
+
+                <div class="grid-2" style="margin-top: 10px;">
+                    <div class="card card-danger">
+                        <div class="card-header">
+                            <div class="card-icon"><i class="fas fa-question-circle"></i></div>
+                            <h3 class="card-title">Trap 1: คำถามกว้างเป็นมหาสมุทร (Vague ASK)</h3>
+                        </div>
+                        <p><strong>อาการ:</strong> ตั้งโจทย์ว่า "อยากเพิ่มยอดขายร้านอาหาร" หรือ "อยากรู้ว่าลูกค้าชอบอะไร" ขาดเป้าหมายตัวเลข ขาดขอบเขตเวลา และไม่รู้ว่าจะนำไปสู่ Action อะไร</p>
+                    </div>
+
+                    <div class="card card-danger">
+                        <div class="card-header">
+                            <div class="card-icon"><i class="fas fa-user-secret"></i></div>
+                            <h3 class="card-title">Trap 2: ข้อมูลสกปรก & เสี่ยง PDPA (Dirty & Leaky Data)</h3>
+                        </div>
+                        <p><strong>อาการ:</strong> ตารางเบี้ยวหัวตาราง 2 แถว, มีค่าว่าง NULL เพียบ, และที่อันตรายที่สุดคือ <em>อัปโหลดชื่อลูกค้า เบอร์โทร เลขบัตรประชาชนจริง</em> เข้าสู่ Gemini โดยไม่ทำ Masking</p>
+                    </div>
+
+                    <div class="card card-danger">
+                        <div class="card-header">
+                            <div class="card-icon"><i class="fas fa-robot"></i></div>
+                            <h3 class="card-title">Trap 3: เชื่อผล AI ตาบอด (AI Hallucination Trust)</h3>
+                        </div>
+                        <p><strong>อาการ:</strong> ก๊อปปี้ตัวเลขสถิติหรือเปอร์เซ็นต์ที่ AI มโนขึ้นมาใส่ในสไลด์ โดยไม่เคยเปิด Google Sheets ผูกสูตร <code>SUM / AVERAGE / COUNTIF</code> ตรวจทานเทียบเลยสักครั้ง</p>
+                    </div>
+
+                    <div class="card card-danger">
+                        <div class="card-header">
+                            <div class="card-icon"><i class="fas fa-file-alt"></i></div>
+                            <h3 class="card-title">Trap 4: สไลด์อภิมหากำแพงตัวหนังสือ (Data Puke & No Action)</h3>
+                        </div>
+                        <p><strong>อาการ:</strong> ก๊อปปี้คำตอบ 10 พารากราฟของ Gemini แปะลงสไลด์ ตัวหนังสือเล็กจิ๋ว อ่านไม่เห็น ไม่มีข้อความหลัก 1 สไลด์ 1 ข้อความ และไม่มีข้อเสนอแนะเชิงกลยุทธ์ (ขาด ACT)</p>
+                    </div>
+                </div>
+                </div>
+                <aside class="notes">
+                    - อธิบายทีละกับดัก ให้ผู้เรียนสำรวจตัวเองว่ากลุ่มตนมีข้อใดใน 4 ข้อนี้หรือไม่
+                    - ถ้ามี ไม่ต้องตกใจ วันนี้เรามีเวลาแก้ไข
+                </aside>
+            
+            </section>
+
+            <!-- SLIDE 6: CASE STUDY GREENFRESH MAKEOVER -->
+            <section>
+                <div class="slide-header">
+                    <div class="slide-title-group">
+                        <h2><i class="fas fa-seedling" style="color: var(--success);"></i> กรณีศึกษา: ผ่าร่างโปรเจกต์ "GreenFresh Subscription"</h2>
+                        <p class="slide-subtitle">สตาร์ทอัพไทยส่งผักออร์แกนิกและ Meal-kit รายเดือน จากร่างงานพังๆ สู่ผลงานระดับ A+</p>
+                    </div>
+                    
+                <span class="slide-badge" style="background: var(--success-light); color: var(--success);"><i class="fas fa-check-double"></i> REAL MAKEOVER</span>
+                </div>
+                <div class="slide-body">
+
+                <div class="compare-box" style="margin-top: 8px;">
+                    <div class="compare-side bad">
+                        <div class="compare-title"><i class="fas fa-times-circle"></i> ร่างเดิมก่อนเข้าคลินิก (เกรด C / เสี่ยงตก)</div>
+                        <ul style="font-size: 0.82rem; line-height: 1.4; color: #7f1d1d; padding-left: 16px;">
+                            <li><strong>ASK:</strong> "วิเคราะห์ยอดขายผักสลัดและหาวิธีทำให้ร้านรวยขึ้น"</li>
+                            <li><strong>COLLECT & PREPARE:</strong> ตารางลูกค้ามีชื่อ-นามสกุล, เบอร์โทร, ที่อยู่จัดส่งจริง, แถวว่าง 35 แถว, คอลัมน์ปนกัน</li>
+                            <li><strong>ANALYZE:</strong> ป้อนคำสั่งสั้นๆ "ช่วยวิเคราะห์ตารางนี้ให้หน่อย" AI สรุปยอดขายผันผวน แต่ไม่ได้คำนวณสูตรยืนยัน</li>
+                            <li><strong>ACT:</strong> สไลด์ 18 แผ่น ตัวหนังสือแน่น กราฟ 3D Pie บิดเบือน และบอกแค่ว่า "ต้องยิงแอด Facebook เพิ่ม"</li>
+                        </ul>
+                    </div>
+
+                    <div class="compare-side good">
+                        <div class="compare-title"><i class="fas fa-check-circle"></i> แปลงโฉมหลังผ่านคลินิก (เกรด A+ ชนะเลิศ)</div>
+                        <ul style="font-size: 0.82rem; line-height: 1.4; color: #14532d; padding-left: 16px;">
+                            <li><strong>ASK:</strong> "ทำไมสมาชิกระดับ Regular ยกเลิก Subscription ในเดือนที่ 3 (Churn 28%) และปรับแผนอย่างไรเพื่อลด Churn เหลือ 12%?"</li>
+                            <li><strong>COLLECT & PREPARE:</strong> ทำ Masking ปลอมเป็น <code>SUB-001</code> ลบ PII หมดเกลี้ยง, คลีนตาราง Tidy Data 100%</li>
+                            <li><strong>ANALYZE:</strong> Master Prompt เจาะลึก + Fact-Check พบว่าผักเน่าเสียง่ายในสัปดาห์ 3 และลูกค้าทำกินไม่ทัน</li>
+                            <li><strong>ACT:</strong> สไลด์ 6 แผ่น C-I-A ชัดเจน เสนอระบบ Flexible Swap & Recipe Pack คาดการณ์กำไรเพิ่ม 450,000 บ./ปี</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="highlight-box success" style="margin-top: 8px;">
+                    <i class="fas fa-lightbulb" style="font-size: 1.1rem;"></i>
+                    <div><strong>จุดเปลี่ยนสำคัญ:</strong> ข้อแตกต่างระหว่างงานระดับ C กับ A+ ไม่ใช่ปริมาณหน้าสไลด์ แต่คือ <em>"ความคมของโจทย์ ความสะอาดของข้อมูล และ Action Plan ที่สร้างผลตอบแทนทางธุรกิจได้จริง"</em></div>
+                </div>
+                </div>
+                <aside class="notes">
+                    - เปรียบเทียบให้เห็นชัดเจนว่า การเปลี่ยนมุมคิดเพียงเล็กน้อยยกระดับงานได้มหาศาล
+                    - ทุกคนสามารถทำแบบฝั่งขวาได้ ถ้าทำตามเช็กลิสต์ในคลินิกวันนี้
+                </aside>
+            
+            </section>
+
+            <!-- SLIDE 7: STATION 1 ASK CLINIC -->
+            <section>
+                <div class="slide-header">
+                    <div class="slide-title-group">
+                        <h2><i class="fas fa-crosshairs" style="color: var(--primary);"></i> สถานีที่ 1: ASK CLINIC — ขัดเกลาคำถามและสมมติฐาน</h2>
+                        <p class="slide-subtitle">เปลี่ยนคำถามธุรกิจกว้างๆ ลอยๆ ให้กลายเป็นโจทย์วิเคราะห์ที่ทดสอบได้ด้วยข้อมูล</p>
+                    </div>
+                    
+                <span class="slide-badge"><i class="fas fa-stethoscope"></i> STATION 1: ASK</span>
+                </div>
+                <div class="slide-body">
+
+                <div class="grid-2" style="margin-top: 10px;">
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <div class="card-icon"><i class="fas fa-filter"></i></div>
+                            <h3 class="card-title">3 ตัวกรองคำถามธุรกิจชั้นยอด</h3>
+                        </div>
+                        <ul>
+                            <li><strong>1. Specific (เจาะจง ไม่กว้าง):</strong> ระบุกลุ่มเป้าหมาย สินค้า หรือช่องทางที่ชัดเจน (เช่น ลูกค้า Subscription เดือนที่ 3)</li>
+                            <li><strong>2. Measurable (วัดผลได้ด้วยตัวเลข):</strong> มีตัวแปรหรือ KPI อ้างอิงชัดเจน เช่น Churn Rate %, Repeat Rate %, หรือ Basket Size</li>
+                            <li><strong>3. Actionable (นำไปสู่การกระทำ):</strong> เมื่อได้คำตอบแล้ว สามารถนำไปปรับกลยุทธ์ ปรับราคา หรือออกฟีเจอร์ใหม่ได้ทันที</li>
+                        </ul>
+                    </div>
+
+                    <div class="card card-secondary">
+                        <div class="card-header">
+                            <div class="card-icon"><i class="fas fa-vial"></i></div>
+                            <h3 class="card-title">สูตรการตั้งสมมติฐาน (Hypothesis Formula)</h3>
+                        </div>
+                        <p style="font-size: 0.85rem; color: var(--text-sub);">
+                            สมมติฐานที่ดีต้องไม่ใช่แค่ความรู้สึก แต่ต้องวางโครงสร้างแบบ <strong>If-Then-Because</strong>:
+                        </p>
+                        <div class="prompt-preview" style="background: #1e1b4b; border-left: 4px solid var(--primary); color: #e0e7ff; margin-top: 8px;">
+"ถ้าเราปรับแพ็กเกจให้สลับชนิดผักได้ (IF) ...<br>
+แล้วอัตราการกดยกเลิกในเดือนที่ 3 จะลดลงต่ำกว่า 15% (THEN) ...<br>
+เพราะข้อมูลชี้ว่าลูกค้า 65% ทิ้งผักที่กินไม่ทันและเกิดความเสียดาย (BECAUSE)"
+                        </div>
+                    </div>
+                </div>
+
+                <div class="highlight-box primary" style="margin-top: 10px;">
+                    <i class="fas fa-check-circle" style="font-size: 1.1rem;"></i>
+                    <div><strong>เช็กลิสต์ประจำสถานี ASK:</strong> กลุ่มของคุณตอบได้หรือยังว่า "ปัญหาทางธุรกิจ (Pain Point) ที่สำคัญที่สุดคืออะไร? และถ้าแก้ได้ ธุรกิจจะได้เงินเพิ่มหรือประหยัดต้นทุนเท่าไร?"</div>
+                </div>
+                </div>
+                <aside class="notes">
+                    - แนะนำให้นักศึกษารีบทบทวนสไลด์หน้าแรกๆ ของตนเอง
+                    - ถ้าคำถามยังกว้าง ให้ตัดแต่งให้แคบลงทันที
+                </aside>
+            
+            </section>
+
+            <!-- SLIDE 8: GREENFRESH ASK DEEP DIVE -->
+            <section>
+                <div class="slide-header">
+                    <div class="slide-title-group">
+                        <h2><i class="fas fa-search-dollar" style="color: var(--success);"></i> เจาะลึกโจทย์ ASK ของ GreenFresh: จาก Pain สู่ Data</h2>
+                        <p class="slide-subtitle">ตัวอย่างจริงของการแปลงปัญหาธุรกิจสตาร์ทอัพให้กลายเป็นแผนที่ข้อมูล</p>
+                    </div>
+                    
+                <span class="slide-badge" style="background: var(--success-light); color: var(--success);"><i class="fas fa-chart-line"></i> CASE EXAMPLE</span>
+                </div>
+                <div class="slide-body">
+
+                <table class="custom-table" style="margin-top: 10px;">
+                    <thead>
+                        <tr>
+                            <th style="width: 25%;">องค์ประกอบ</th>
+                            <th style="width: 35%;">ร่างเดิม (ไม่ผ่าน)</th>
+                            <th style="width: 40%;">ร่างแก้ไข (ผ่านเกณฑ์ดีเยี่ยม)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>คำถามหลัก (Core ASK)</strong></td>
+                            <td style="color: var(--danger);">ลูกค้าคิดยังไงกับร้านผักของเรา?</td>
+                            <td style="color: var(--success); font-weight: 600;">ทำไมสมาชิกระดับ Regular ยกเลิกหลังเดือนที่ 3 (Churn 28%)?</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ตัวชี้วัด (Primary KPI)</strong></td>
+                            <td style="color: var(--danger);">ความพึงพอใจโดยรวม (ดูจากรีวิว)</td>
+                            <td style="color: var(--success); font-weight: 600;">Churn Rate %, Repeat Order Rate %, Customer Lifetime Value</td>
+                        </tr>
+                        <tr>
+                            <td><strong>สมมติฐาน 1</strong></td>
+                            <td style="color: var(--danger);">ผักเราแพงเกินไป ลูกค้าเลยไม่ซื้อ</td>
+                            <td style="color: var(--success); font-weight: 600;">ปริมาณผักต่อกล่องเยอะเกินไป ทำให้กินไม่ทันและเน่าเสีย</td>
+                        </tr>
+                        <tr>
+                            <td><strong>สมมติฐาน 2</strong></td>
+                            <td style="color: var(--danger);">คนไม่อยากกินผักเพื่อสุขภาพแล้ว</td>
+                            <td style="color: var(--success); font-weight: 600;">ลูกค้าขาดความหลากหลายของเมนู ขอกล่องที่ Customize ได้</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="highlight-box success" style="margin-top: 12px;">
+                    <i class="fas fa-thumbs-up" style="font-size: 1.1rem;"></i>
+                    <div>
+                        <strong>ผลลัพธ์:</strong> เมื่อคำถามชัด การเก็บข้อมูลและการวิเคราะห์จะพุ่งตรงเป้า ไม่หลงทางไปวิเคราะห์สิ่งที่ไม่ก่อให้เกิดการเปลี่ยนแปลง
+                    </div>
+                </div>
+                </div>
+                <aside class="notes">
+                    - ชี้ให้เห็นว่าร่างเดิมถามแบบความรู้สึก แต่ร่างใหม่ถามแบบมีตัวเลขและสมมติฐานรองรับ
+                </aside>
+            
+            </section>
+
+            <!-- SLIDE 9: STATION 2 PREPARE & PRIVACY -->
+            <section>
+                <div class="slide-header">
+                    <div class="slide-title-group">
+                        <h2><i class="fas fa-broom" style="color: var(--accent);"></i> สถานีที่ 2: PREPARE & PRIVACY — คลีนตารางและปิดจุดเสี่ยง PDPA</h2>
+                        <p class="slide-subtitle">ตรวจสอบความสะอาดของชุดข้อมูลใน Google Sheets และมาตรการปกป้องข้อมูลลูกค้า</p>
+                    </div>
+                    
+                <span class="slide-badge" style="background: var(--accent-light); color: var(--accent);"><i class="fas fa-shield-alt"></i> STATION 2: PREPARE</span>
+                </div>
+                <div class="slide-body">
+
+                <div class="grid-3" style="margin-top: 10px;">
+                    <div class="card card-accent">
+                        <div class="card-header">
+                            <div class="card-icon"><i class="fas fa-table"></i></div>
+                            <h3 class="card-title" style="font-size: 0.95rem;">1. Tidy Data Audit</h3>
+                        </div>
+                        <ul>
+                            <li>หัวตารางแถวเดียว (Row 1 เท่านั้น)</li>
+                            <li>1 แถว = 1 ลูกค้าหรือ 1 รายการสั่งซื้อ</li>
+                            <li>1 คอลัมน์ = 1 ตัวแปรเดี่ยว ไม่ซ้อนกัน</li>
+                            <li>ไม่มีคอลัมน์ Total ปนในตารางดิบ</li>
+                        </ul>
+                    </div>
+
+                    <div class="card card-danger">
+                        <div class="card-header">
+                            <div class="card-icon"><i class="fas fa-user-lock"></i></div>
+                            <h3 class="card-title" style="font-size: 0.95rem;">2. PII Masking Audit</h3>
+                        </div>
+                        <ul>
+                            <li>ลบชื่อ-สกุลจริง แปลงเป็น <code>CUST-001</code></li>
+                            <li>ลบเบอร์โทรศัพท์และเลขบัตรประชาชน</li>
+                            <li>ที่อยู่แปลงเป็นระดับเขต/จังหวัด</li>
+                            <li><strong>ห้ามป้อน PII เข้า Gemini เด็ดขาด!</strong></li>
+                        </ul>
+                    </div>
+
+                    <div class="card card-success">
+                        <div class="card-header">
+                            <div class="card-icon"><i class="fas fa-check-circle"></i></div>
+                            <h3 class="card-title" style="font-size: 0.95rem;">3. Quality & Formulas</h3>
+                        </div>
+                        <ul>
+                            <li>ใช้ <code>TRIM()</code> ตัดช่องว่างหัวท้าย</li>
+                            <li>จัดการค่าว่าง (Missing Value) ให้เรียบร้อย</li>
+                            <li>ตรวจสอบค่าแปลกปลอม (Outliers)</li>
+                            <li>มีชีต Summary หรือ Pivot Table คำนวณกำกับ</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="highlight-box danger" style="margin-top: 12px;">
+                    <i class="fas fa-exclamation-circle" style="font-size: 1.1rem;"></i>
+                    <div>
+                        <strong>เกณฑ์ปรับตกทันที (Disqualification Warning):</strong> กลุ่มใดที่มีสไลด์หรือไฟล์ Prompt Log ปรากฏข้อมูลส่วนบุคคลของลูกค้าจริง (ชื่อ นามสกุล เบอร์โทร) จะถูกหักคะแนนส่วน COLLECT & PREPARE เป็น 0 ทันทีตามมาตรฐานกฎหมาย PDPA!
+                    </div>
+                </div>
+                </div>
+                <aside class="notes">
+                    - เน้นย้ำเรื่อง PDPA อีกครั้ง เป็นจริยธรรมที่ผู้ประกอบการยุคดิจิทัลต้องรับผิดชอบ
+                </aside>
+            
+            </section>
+
+            <!-- SLIDE 10: GREENFRESH PREPARE COMPARISON -->
+            <section>
+                <div class="slide-header">
+                    <div class="slide-title-group">
+                        <h2><i class="fas fa-table-cells" style="color: var(--success);"></i> ตัวอย่างจริง: การ Masking ข้อมูลของ GreenFresh</h2>
+                        <p class="slide-subtitle">เปลี่ยนตารางข้อมูลลูกค้าจริงให้กลายเป็น Anonymous Dataset พร้อมส่งให้ AI วิเคราะห์</p>
+                    </div>
+                    
+                <span class="slide-badge" style="background: var(--success-light); color: var(--success);"><i class="fas fa-mask"></i> MASKING LAB</span>
+                </div>
+                <div class="slide-body">
+
+                <table class="custom-table" style="margin-top: 10px;">
+                    <thead>
+                        <tr>
+                            <th>ฟิลด์ข้อมูลเดิม (เสี่ยงคุก/ปรับ)</th>
+                            <th>ปัญหาที่พบ</th>
+                            <th>ฟิลด์หลัง Masking (ปลอดภัย 100%)</th>
+                            <th>สถานะการนำเข้า AI</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>น.ส. กัญญาภัทร มณีโชติ</strong></td>
+                            <td style="color: var(--danger);">ชื่อ-สกุลจริง (Direct PII)</td>
+                            <td style="color: var(--success); font-weight: 700;"><code>SUB-1042</code></td>
+                            <td><span class="slide-badge" style="background: #dcfce7; color: #15803d;">ปลอดภัย</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>089-765-4321</strong></td>
+                            <td style="color: var(--danger);">เบอร์โทรศัพท์ส่วนตัว (PII)</td>
+                            <td style="color: var(--success); font-weight: 700;"><code>089-XXX-4321</code> หรือลบทิ้ง</td>
+                            <td><span class="slide-badge" style="background: #dcfce7; color: #15803d;">ปลอดภัย</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>142/58 ซ.ทองหล่อ 10 กทม.</strong></td>
+                            <td style="color: var(--danger);">ที่อยู่ละเอียดระบุตัวตนได้</td>
+                            <td style="color: var(--success); font-weight: 700;"><code>กทม. (โซนสุขุมวิท)</code></td>
+                            <td><span class="slide-badge" style="background: #dcfce7; color: #15803d;">ปลอดภัย</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Regular Box (สัปดาห์ละกล่อง)</strong></td>
+                            <td style="color: var(--text-sub);">ข้อมูลพฤติกรรมธุรกิจ</td>
+                            <td style="color: var(--text-main); font-weight: 700;"><code>Plan_Type: Regular</code></td>
+                            <td><span class="slide-badge" style="background: #dcfce7; color: #15803d;">วิเคราะห์ได้</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>ยกเลิกในเดือนที่ 3</strong></td>
+                            <td style="color: var(--text-sub);">ข้อมูลผลลัพธ์ (Outcome)</td>
+                            <td style="color: var(--text-main); font-weight: 700;"><code>Churn_Month: 3</code></td>
+                            <td><span class="slide-badge" style="background: #dcfce7; color: #15803d;">วิเคราะห์ได้</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="highlight-box success" style="margin-top: 10px;">
+                    <i class="fas fa-lock" style="font-size: 1.1rem;"></i>
+                    <div>
+                        <strong>ผลดี:</strong> AI ยังคงสามารถวิเคราะห์พฤติกรรมและหาสาเหตุ Churn ได้ครบถ้วนทุกมิติ โดยที่ธุรกิจไม่ต้องเสี่ยงกับข้อหากฎหมายข้อมูลรั่วไหลเลยแม้แต่น้อย
+                    </div>
+                </div>
+                </div>
+                <aside class="notes">
+                    - แสดงตัวอย่างการแปลงฟิลด์ให้เห็นชัดๆ
+                </aside>
+            
+            </section>
+
+            <!-- SLIDE 11: STATION 3 ANALYZE & GEMINI -->
+            <section>
+                <div class="slide-header">
+                    <div class="slide-title-group">
+                        <h2><i class="fas fa-brain" style="color: var(--secondary);"></i> สถานีที่ 3: ANALYZE & GEMINI — คำสั่งทรงพลัง & การคานอำนาจ AI</h2>
+                        <p class="slide-subtitle">ยกระดับ Prompt สู่ระดับมืออาชีพ พร้อมระบบตรวจสอบความจริง (Fact-Checking)</p>
+                    </div>
+                    
+                <span class="slide-badge" style="background: var(--secondary-light); color: var(--secondary-dark);"><i class="fas fa-microchip"></i> STATION 3: ANALYZE</span>
+                </div>
+                <div class="slide-body">
+
+                <div class="grid-2" style="margin-top: 10px;">
+                    <div class="card card-secondary">
+                        <div class="card-header">
+                            <div class="card-icon"><i class="fas fa-terminal"></i></div>
+                            <h3 class="card-title">โครงสร้าง Master Prompt 5 องค์ประกอบ</h3>
+                        </div>
+                        <ul style="font-size: 0.83rem;">
+                            <li><strong>1. Role (บทบาท):</strong> กำหนดให้เป็น Chief Data Officer หรือ Growth Strategist</li>
+                            <li><strong>2. Context (บริบทธุรกิจ):</strong> อธิบายโมเดลธุรกิจ ขนาดรายได้ และกลุ่มลูกค้า</li>
+                            <li><strong>3. Data Reference:</strong> แนบตารางข้อมูลที่ Masking แล้ว พร้อมนิยามฟิลด์</li>
+                            <li><strong>4. Specific Tasks:</strong> ให้วิเคราะห์หาสาเหตุ Churn, จัด Segment, หรือคำนวณ What-If</li>
+                            <li><strong>5. Output Format:</strong> บังคับสรุปเป็นตาราง ระบุตัวเลขชัดเจน และให้เหตุผล XAI</li>
+                        </ul>
+                    </div>
+
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <div class="card-icon"><i class="fas fa-balance-scale"></i></div>
+                            <h3 class="card-title">การคานอำนาจ AI (Double-Check Rule)</h3>
+                        </div>
+                        <p style="font-size: 0.84rem; color: var(--text-sub);">
+                            ก่อนนำตัวเลขใดๆ จากคำตอบของ Gemini ไปใส่ในสไลด์ ต้องผ่านการตรวจสอบ 3 ชั้น:
+                        </p>
+                        <div class="prompt-preview" style="background: #0f172a; font-size: 0.76rem; margin-top: 6px;">
+ชั้น 1: สั่ง AI ระบุ Row Number ที่ใช้อ้างอิงตัวเลขนั้น<br>
+ชั้น 2: เปิด Google Sheets ตรวจสอบด้วย SUM/AVERAGE/COUNTIF<br>
+ชั้น 3: หากตัวเลขขัดแย้งกัน ยึดสูตรใน Google Sheets เป็นหลักเสมอ!
+                        </div>
+                    </div>
+                </div>
+
+                <div class="highlight-box primary" style="margin-top: 10px;">
+                    <i class="fas fa-link" style="font-size: 1.1rem;"></i>
+                    <div><strong>สิ่งที่ต้องส่งมอบในชิ้นที่ 2 (Prompt Log):</strong> บันทึกประวัติการแชต (Share Chat Link หรือ Google Docs) ที่แสดงให้เห็นว่ามีการถามเจาะลึก (Multi-turn Prompting) ไม่ใช่แค่สั่งคำถามเดียวจบ</div>
+                </div>
+                </div>
+                <aside class="notes">
+                    - ย้ำเรื่อง Multi-turn Prompting: การถามไล่ระดับทีละคำถามจะทำให้ได้ Insight ที่ลึกกว่าการสั่งรวดเดียว
+                </aside>
+            
+            </section>
+
+            <!-- SLIDE 12: GREENFRESH MASTER PROMPT EXAMPLE -->
+            <section>
+                <div class="slide-header">
+                    <div class="slide-title-group">
+                        <h2><i class="fas fa-code" style="color: var(--secondary);"></i> เจาะลึก Master Prompt ของ GreenFresh</h2>
+                        <p class="slide-subtitle">ตัวอย่างคำสั่งจริงที่สั่งงาน Gemini ให้หา Insight ลึกซึ้งโดยไม่มโนตัวเลข</p>
+                    </div>
+                    
+                <span class="slide-badge" style="background: var(--secondary-light); color: var(--secondary-dark);"><i class="fas fa-robot"></i> PROMPT IN ACTION</span>
+                </div>
+                <div class="slide-body">
+
+                <div class="prompt-preview" style="font-size: 0.77rem; line-height: 1.45; background: #090d16; border-left: 4px solid var(--secondary);">
+<span style="color: #38bdf8;">[ROLE]</span> คุณคือที่ปรึกษาอาวุโสด้าน Subscription Commerce และวิทยาการข้อมูลธุรกิจ<br>
+<span style="color: #38bdf8;">[CONTEXT]</span> ฉันทำสตาร์ทอัพ "GreenFresh" บริการส่งผักออร์แกนิกแบบสมาชิกรายเดือน 1,490 - 2,990 บ./เดือน ปัจจุบันมีสมาชิก 1,200 ราย พบปัญหาว่าในเดือนที่ 3 มีสมาชิกยกเลิก (Churn) สูงถึง 28%<br>
+<span style="color: #38bdf8;">[DATASET]</span> ฉันได้แนบชุดข้อมูลที่ผ่านการ Masking ข้อมูลส่วนบุคคลแล้ว (SUB-001 ถึง SUB-1200) มีฟิลด์: Plan_Type, Veggie_Type, Delivery_Day, Feedbacks, Churn_Status, Renewal_Month<br>
+<span style="color: #38bdf8;">[TASKS]</span><br>
+1. วิเคราะห์หาสาเหตุหลักที่ทำให้กลุ่ม Regular Plan ตัดสินใจยกเลิกในเดือนที่ 3 เปรียบเทียบกับกลุ่ม Family Plan<br>
+2. ตรวจสอบว่าประเภทของผัก (เช่น ผักสลัดใบ vs ผักหัว) มีผลต่อความพึงพอใจและอัตราการทิ้งขยะหรือไม่<br>
+3. แนะนำกลยุทธ์ Retention เชิงรูปธรรม 2 ข้อ พร้อมคำนวณ What-If Simulation หาก Churn ลดลงเหลือ 12%<br>
+<span style="color: #38bdf8;">[CONSTRAINT]</span> อ้างอิงสถิติจากแถวข้อมูลจริงเท่านั้น ห้ามแต่งตัวเลขขึ้นมาเองเด็ดขาด หากตัวเลขใดคำนวณไม่ได้ให้แจ้งชัดเจน
+                </div>
+
+                <div class="highlight-box success" style="margin-top: 8px;">
+                    <i class="fas fa-check-double" style="font-size: 1.1rem;"></i>
+                    <div>
+                        <strong>ผลลัพธ์ที่ได้:</strong> Gemini ชี้ให้เห็นว่ากลุ่มที่ยกเลิก 74% สั่ง "ผักใบสลัดล้วน" ซึ่งเน่าเสียใน 4-5 วัน ทำให้กินไม่ทัน กลายเป็น Insight ทองคำที่นำไปสู่นวัตกรรม "Smart Swap Packaging"
+                    </div>
+                </div>
+                </div>
+                <aside class="notes">
+                    - ตัวอย่างคำสั่งนี้สามารถนำไปปรับใช้กับโปรเจกต์ของทุกกลุ่มได้ทันที
+                </aside>
+            
+            </section>
+
+            <!-- SLIDE 13: STATION 4 ACT & STORYTELLING -->
+            <section>
+                <div class="slide-header">
+                    <div class="slide-title-group">
+                        <h2><i class="fas fa-theater-masks" style="color: var(--primary);"></i> สถานีที่ 4: ACT & STORYTELLING — ร้อยเรียง C-I-A Deck</h2>
+                        <p class="slide-subtitle">สถาปัตยกรรมสไลด์ 5–7 หน้า ที่เปลี่ยนตัวเลขในตารางให้กลายเป็นการตัดสินใจเชิงธุรกิจ</p>
+                    </div>
+                    
+                <span class="slide-badge"><i class="fas fa-chart-pie"></i> STATION 4: ACT</span>
+                </div>
+                <div class="slide-body">
+
+                <div class="grid-3" style="margin-top: 10px;">
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <div class="card-icon"><i class="fas fa-map-marker-alt"></i></div>
+                            <h3 class="card-title">1. Context (บริบท)</h3>
+                        </div>
+                        <p><strong>1–2 สไลด์แรก:</strong></p>
+                        <ul>
+                            <li>ธุรกิจคืออะไร ใครคือกลุ่มเป้าหมาย</li>
+                            <li><strong>Pain Point & ปัญหาหลัก:</strong> ตัวเลขใดที่กำลังทำให้ธุรกิจเจ็บปวด (เช่น Churn 28%)</li>
+                            <li>สมมติฐานที่เราตั้งไว้ในขั้นแรก</li>
+                        </ul>
+                    </div>
+
+                    <div class="card card-secondary">
+                        <div class="card-header">
+                            <div class="card-icon"><i class="fas fa-search"></i></div>
+                            <h3 class="card-title">2. Insight (สิ่งที่ค้นพบ)</h3>
+                        </div>
+                        <p><strong>2–3 สไลด์กลาง:</strong></p>
+                        <ul>
+                            <li>ความจริงที่ข้อมูลเปิดเผย (ไม่ใช่แค่สิ่งที่เห็นทั่วไป)</li>
+                            <li>กราฟหลักที่สนับสนุนข้อเท็จจริง (Bar/Scatter ที่คลีน)</li>
+                            <li>ผลวิเคราะห์จาก Gemini ที่ผ่านการตรวจสอบสูตรแล้ว</li>
+                        </ul>
+                    </div>
+
+                    <div class="card card-success">
+                        <div class="card-header">
+                            <div class="card-icon"><i class="fas fa-rocket"></i></div>
+                            <h3 class="card-title">3. Action (ข้อเสนอแนะ)</h3>
+                        </div>
+                        <p><strong>2 สไลด์สุดท้าย:</strong></p>
+                        <ul>
+                            <li>แผนปฏิบัติการทางธุรกิจ (Action Plan)</li>
+                            <li>สิ่งที่ต้องทำ ใครทำ เมื่อไร ทำอย่างไร</li>
+                            <li><strong>คาดการณ์ผลตอบแทน (Expected ROI / Payoff):</strong> จะได้เงินคืนหรือโตเท่าไร</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="highlight-box primary" style="margin-top: 10px;">
+                    <i class="fas fa-lightbulb" style="font-size: 1.1rem;"></i>
+                    <div><strong>กฎเหล็กของสไลด์ระดับผู้บริหาร:</strong> <em>"1 สไลด์ = 1 ข้อความหลัก (Action Title)"</em> เปลี่ยนหัวข้อสไลด์จาก "ยอดขายประจำปี" เป็น "ยอดขายตกต่ำในเดือนที่ 3 เนื่องจากผักใบเน่าเสียง่าย"</div>
+                </div>
+                </div>
+                <aside class="notes">
+                    - เน้นย้ำโครงสร้าง Context ➔ Insight ➔ Action
+                    - สไลด์ที่ดีต้องเล่าเรื่องได้แม้คนดูไม่อ่านเนื้อหาข้างใน แค่อ่านพาดหัวต้องเข้าใจ
+                </aside>
+            
+            </section>
+
+            <!-- SLIDE 14: GREENFRESH 6-SLIDE DECK BLUEPRINT -->
+            <section>
+                <div class="slide-header">
+                    <div class="slide-title-group">
+                        <h2><i class="fas fa-layer-group" style="color: var(--success);"></i> พิมพ์เขียวสไลด์ 6 หน้าของ GreenFresh (Master Deck)</h2>
+                        <p class="slide-subtitle">ตัวอย่างโครงสร้าง 6 สไลด์ที่กระชับ สมบูรณ์ และสะกดสายตานักลงทุน</p>
+                    </div>
+                    
+                <span class="slide-badge" style="background: var(--success-light); color: var(--success);"><i class="fas fa-file-powerpoint"></i> DECK ARCHITECTURE</span>
+                </div>
+                <div class="slide-body">
+
+                <table class="custom-table" style="margin-top: 8px;">
+                    <thead>
+                        <tr>
+                            <th style="width: 12%;">สไลด์</th>
+                            <th style="width: 20%;">ส่วน C-I-A</th>
+                            <th style="width: 38%;">พาดหัวนำ (Action Title)</th>
+                            <th style="width: 30%;">องค์ประกอบสำคัญบนหน้าสไลด์</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Slide 1</strong></td>
+                            <td><span class="slide-badge" style="background: #e0e7ff; color: #3730a3;">Context</span></td>
+                            <td><strong>GreenFresh: โมเดลผักสดสมาชิกรายเดือน</strong></td>
+                            <td>ภาพรวมธุรกิจ, ขนาดตลาด, สมาชิกปัจจุบัน 1,200 ราย</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Slide 2</strong></td>
+                            <td><span class="slide-badge" style="background: #fee2e2; color: #991b1b;">Context (Pain)</span></td>
+                            <td><strong>วิกฤต Churn 28% ในเดือนที่ 3 ฉุดการเติบโต</strong></td>
+                            <td>กราฟ Churn by Month ชี้ให้เห็นการดิ่งลงชัดเจน</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Slide 3</strong></td>
+                            <td><span class="slide-badge" style="background: #e0f2fe; color: #0369a1;">Insight 1</span></td>
+                            <td><strong>ผักใบเน่าเสียง่ายคือต้นเหตุหลักที่ลูกค้าทิ้งขยะ</strong></td>
+                            <td>Bar Chart เปรียบเทียบ Churn ระหว่างชนิดผัก</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Slide 4</strong></td>
+                            <td><span class="slide-badge" style="background: #e0f2fe; color: #0369a1;">Insight 2</span></td>
+                            <td><strong>กลุ่ม Regular อยากได้ความยืดหยุ่นในการสลับเมนู</strong></td>
+                            <td>Customer Quotes จาก Feedback & Cluster Analysis</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Slide 5</strong></td>
+                            <td><span class="slide-badge" style="background: #dcfce7; color: #166534;">Action Plan</span></td>
+                            <td><strong>เปิดตัว 2 โซลูชัน: Smart Swap & Recipe Kit</strong></td>
+                            <td>ระบบให้ลูกค้าสลับผักก่อนส่ง + กล่องวัตถุดิบพร้อมสูตร</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Slide 6</strong></td>
+                            <td><span class="slide-badge" style="background: #fef3c7; color: #92400e;">ROI & Next Step</span></td>
+                            <td><strong>ลด Churn สู่ 12% สร้างรายได้เพิ่ม 450,000 บ./ปี</strong></td>
+                            <td>ตาราง What-If Financial Payoff + แผนงาน 90 วัน</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="highlight-box success" style="margin-top: 10px;">
+                    <i class="fas fa-check" style="font-size: 1.1rem;"></i>
+                    <div><strong>เคล็ดลับ:</strong> ไม่ต้องใส่ข้อมูลทุกอย่างที่รู้ลงในสไลด์ เลือกเฉพาะ "ข้อมูลที่นำไปสู่การตัดสินใจ" ข้อมูลอื่นเก็บไว้ในชีตหรือ Appendix ตอบช่วง Q&A!</div>
+                </div>
+                </div>
+                <aside class="notes">
+                    - โครงสร้าง 6 สไลด์นี้เป็นมาตรฐานสากลของการพิทช์ธุรกิจที่ขับเคลื่อนด้วยข้อมูล
+                </aside>
+            
+            </section>
+
+            <!-- SLIDE 15: VISUAL HIERARCHY & DESIGN TIPS -->
+            <section>
+                <div class="slide-header">
+                    <div class="slide-title-group">
+                        <h2><i class="fas fa-palette" style="color: var(--primary);"></i> เทคนิคการออกแบบสไลด์ข้อมูลให้อ่านง่ายใน 3 วินาที</h2>
+                        <p class="slide-subtitle">หลัก Visual Hierarchy ที่ทำให้ผู้บริหารและนักลงทุนเข้าใจประเด็นทันที</p>
+                    </div>
+                    
+                <span class="slide-badge"><i class="fas fa-eye"></i> VISUAL DESIGN</span>
+                </div>
+                <div class="slide-body">
+
+                <div class="grid-3" style="margin-top: 10px;">
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <div class="card-icon"><i class="fas fa-font"></i></div>
+                            <h3 class="card-title" style="font-size: 0.95rem;">1. Typography & Size</h3>
+                        </div>
+                        <ul>
+                            <li><strong>Action Title:</strong> 28–36pt ตัวหนา เด่นชัดที่สุด</li>
+                            <li><strong>Stat / Big Number:</strong> 48–60pt เน้นตัวเลขสำคัญ (เช่น 28%)</li>
+                            <li><strong>Body Text:</strong> 18–22pt สั้นกระชับ หลีกเลี่ยงพารากราฟยาว</li>
+                            <li>ห้ามใช้ตัวหนังสือเล็กกว่า 16pt เด็ดขาด</li>
+                        </ul>
+                    </div>
+
+                    <div class="card card-secondary">
+                        <div class="card-header">
+                            <div class="card-icon"><i class="fas fa-fill-drip"></i></div>
+                            <h3 class="card-title" style="font-size: 0.95rem;">2. The 3-Color Rule</h3>
+                        </div>
+                        <ul>
+                            <li><strong>สีพื้นฐาน (60%):</strong> ขาว เทาอ่อน สำหรับพื้นหลังและตาราง</li>
+                            <li><strong>สีแบรนด์ (30%):</strong> น้ำเงิน หรือ เขียว สำหรับโครงสร้างทั่วไป</li>
+                            <li><strong>สีจุดโฟกัส (10%):</strong> สีส้ม แดง หรือทอง สำหรับจุดที่ต้องการให้สังเกต</li>
+                            <li>ห้ามใช้สีกระจัดกระจายเหมือนสายรุ้ง</li>
+                        </ul>
+                    </div>
+
+                    <div class="card card-accent">
+                        <div class="card-header">
+                            <div class="card-icon"><i class="fas fa-chart-simple"></i></div>
+                            <h3 class="card-title" style="font-size: 0.95rem;">3. Chart Cleanliness</h3>
+                        </div>
+                        <ul>
+                            <li>ตัดเส้น Gridline ที่ไม่จำเป็นออก</li>
+                            <li>ใส่ Data Label ตรงจุดสำคัญ ไม่ต้องใส่ทุกแท่ง</li>
+                            <li>แกน Y ต้องเริ่มที่เลข 0 เสมอ (ป้องกันการบิดเบือน)</li>
+                            <li>ใส่สรุป Insight ใต้กราฟ 1 ประโยคเสมอ</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="highlight-box accent" style="margin-top: 12px;">
+                    <i class="fas fa-magic" style="font-size: 1.1rem;"></i>
+                    <div><strong>แบบทดสอบ 3 วินาที (The 3-Second Test):</strong> ให้เพื่อนที่ไม่ได้อยู่ในกลุ่มมองสไลด์หน้าใดหน้าหนึ่งเป็นเวลา 3 วินาที แล้วปิดสไลด์ ถ้าเพื่อนบอกได้ว่าหน้านั้นจะบอกอะไร แปลว่าสไลด์นั้นผ่านเกณฑ์!</div>
+                </div>
+                </div>
+                <aside class="notes">
+                    - ทักษะการจัดสไลด์เป็น Soft Skill ที่สำคัญมากสำหรับเจ้าของธุรกิจ
+                </aside>
+            
+            </section>
+
+            <!-- SLIDE 16: ROI & BUSINESS PAYOFF -->
+            <section>
+                <div class="slide-header">
+                    <div class="slide-title-group">
+                        <h2><i class="fas fa-coins" style="color: var(--accent);"></i> การคำนวณ Business Payoff & Expected ROI</h2>
+                        <p class="slide-subtitle">สิ่งที่ผู้บริหารและนักลงทุนรอฟังที่สุด: ข้อมูลนี้จะทำให้ธุรกิจได้เงินคืนเท่าไร?</p>
+                    </div>
+                    
+                <span class="slide-badge" style="background: var(--accent-light); color: var(--accent);"><i class="fas fa-calculator"></i> ACTION ROI</span>
+                </div>
+                <div class="slide-body">
+
+                <div class="grid-2" style="margin-top: 10px;">
+                    <div class="card card-accent">
+                        <div class="card-header">
+                            <div class="card-icon"><i class="fas fa-chart-line"></i></div>
+                            <h3 class="card-title">สูตรประเมินความคุ้มค่าอย่างง่าย</h3>
+                        </div>
+                        <ul style="font-size: 0.84rem;">
+                            <li><strong>รายได้ที่กู้คืน (Revenue Recovered):</strong><br>
+                                จำนวนลูกค้าที่รักษาไว้ได้ × รายได้เฉลี่ยต่อเดือน × อายุสัญญาที่เพิ่มขึ้น
+                            </li>
+                            <li><strong>ต้นทุนการดำเนินการ (Execution Cost):</strong><br>
+                                ค่าพัฒนาระบบ Swap + บรรจุภัณฑ์ใหม่ออร์แกนิก
+                            </li>
+                            <li><strong>กำไรสุทธิส่วนเพิ่ม (Net Impact):</strong><br>
+                                รายได้ที่เพิ่มขึ้น - ต้นทุนดำเนินการ
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="card card-success">
+                        <div class="card-header">
+                            <div class="card-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+                            <h3 class="card-title">กรณีจริงของ GreenFresh</h3>
+                        </div>
+                        <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 10px; font-size: 0.82rem; color: #166534;">
+                            • สมาชิกปัจจุบัน: 1,200 ราย Churn เดือนที่ 3 เท่ากับ 336 ราย<br>
+                            • แผน Smart Swap ลด Churn เหลือ 12% (รักษาลูกค้าได้เพิ่ม 192 ราย)<br>
+                            • ยอดจ่ายเฉลี่ย: 1,990 บ./เดือน อยู่ต่ออีก 6 เดือน = <strong>2,292,480 บาท</strong><br>
+                            • หักต้นทุนปรับแพ็กเกจและระบบ: 450,000 บาท<br>
+                            • <strong>ผลตอบแทนสุทธิ: กำไรเพิ่มขึ้นกว่า 1.84 ล้านบาท!</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="highlight-box success" style="margin-top: 12px;">
+                    <i class="fas fa-trophy" style="font-size: 1.1rem;"></i>
+                    <div><strong>อาวุธลับของเกรด A+:</strong> สไลด์ปิดท้ายที่มีตัวเลขประมาณการทางการเงิน (Financial Justification) จะสร้างความประทับใจให้คณะกรรมการได้มากกว่าการบอกแค่ "จะตั้งใจทำให้ดีที่สุด" หลายสิบเท่า!</div>
+                </div>
+                </div>
+                <aside class="notes">
+                    - กระตุ้นให้นักศึกษาทุกคนมีสไลด์ ROI หรือ Business Impact
+                </aside>
+            
+            </section>
+
+            <!-- SLIDE 17: STATION 5 PITCHING & STAGE CLINIC -->
+            <section>
+                <div class="slide-header">
+                    <div class="slide-title-group">
+                        <h2><i class="fas fa-microphone" style="color: var(--purple);"></i> สถานีที่ 5: PITCHING CLINIC — จัดสรร 15 นาทีทองคำ</h2>
+                        <p class="slide-subtitle">การคุมเวลา การจัดลำดับผู้พูด และความราบรื่นในการนำเสนอสดหน้าชั้นเรียน</p>
+                    </div>
+                    
+                <span class="slide-badge" style="background: var(--purple-light); color: var(--purple);"><i class="fas fa-stopwatch"></i> STATION 5: PITCHING</span>
+                </div>
+                <div class="slide-body">
+
+                <div class="grid-2" style="margin-top: 10px;">
+                    <div class="card card-purple">
+                        <div class="card-header">
+                            <div class="card-icon"><i class="fas fa-hourglass-half"></i></div>
+                            <h3 class="card-title">แผนแบ่งเวลา 10 นาทีนำเสนอ</h3>
+                        </div>
+                        <ul style="font-size: 0.83rem;">
+                            <li><strong>นาทีที่ 0:00 – 2:00 (Context):</strong> แนะนำธุรกิจ + เล่า Pain Point ด้วยพลัง ดึงความสนใจคนฟังทันที</li>
+                            <li><strong>นาทีที่ 2:00 – 4:00 (Pipeline & Data):</strong> อธิบายที่มาของข้อมูล Tidy Data และการทำ Masking PDPA</li>
+                            <li><strong>นาทีที่ 4:00 – 7:30 (Insights & AI):</strong> จุดไคลแมกซ์! เล่า Insight ที่ค้นพบผ่านกราฟและผลวิเคราะห์ Gemini</li>
+                            <li><strong>นาทีที่ 7:30 – 10:00 (Action & ROI):</strong> ปิดฉากด้วยข้อเสนอแนะเชิงกลยุทธ์ ตาราง ROI และ Next Steps</li>
+                        </ul>
+                    </div>
+
+                    <div class="card card-accent">
+                        <div class="card-header">
+                            <div class="card-icon"><i class="fas fa-comments"></i></div>
+                            <h3 class="card-title">แผนรับมือ 5 นาทีช่วง Q&A</h3>
+                        </div>
+                        <ul style="font-size: 0.83rem;">
+                            <li><strong>นาทีที่ 10:00 – 15:00:</strong> ตอบข้อซักถามจากอาจารย์และเพื่อนร่วมชั้น</li>
+                            <li>แบ่งหน้าที่ความเชี่ยวชาญ (คนดูแล Sheets, คนดูแล AI, คนดูแลกลยุทธ์)</li>
+                            <li>เทคนิคตอบ: <em>"ฟังให้จบ ➔ ทวนคำถาม ➔ อ้างอิงตัวเลข ➔ ไม่แถ"</em></li>
+                            <li>หากเป็นจุดที่ไม่ได้ศึกษา ให้ตอบว่า: "เป็นมุมมองที่ยอดเยี่ยมมากครับ เราจะนำไปเป็นสมมติฐานศึกษาในเฟสถัดไป"</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="highlight-box danger" style="margin-top: 10px;">
+                    <i class="fas fa-bell" style="font-size: 1.1rem;"></i>
+                    <div><strong>กติกาเวลาเข้มงวด:</strong> นาทีที่ 9:00 จะมีสัญญาณเตือน 1 ครั้ง และเมื่อครบ 10:00 นาที ไมโครโฟนจะถูกตัดทันที หากยังพูดไม่จบจะเสียคะแนนส่วน Action ไปฟรีๆ!</div>
+                </div>
+                </div>
+                <aside class="notes">
+                    - การบริหารเวลาเป็นตัวสะท้อนความเป็นมืออาชีพ
+                    - ซ้อมพูดและตัดทอนเนื้อหาที่ไม่จำเป็นออก
+                </aside>
+            
+            </section>
+
+            <!-- SLIDE 18: TEAM ROLES ON STAGE -->
+            <section>
+                <div class="slide-header">
+                    <div class="slide-title-group">
+                        <h2><i class="fas fa-users-cog" style="color: var(--purple);"></i> การแบ่งบทบาทบนเวที: สมาชิกทุกคนคือผู้ขับเคลื่อน</h2>
+                        <p class="slide-subtitle">ป้องกันปัญหา "คนหนึ่งแบกทั้งทีม อีกสามคนยืนเก้ๆ กังๆ"</p>
+                    </div>
+                    
+                <span class="slide-badge" style="background: var(--purple-light); color: var(--purple);"><i class="fas fa-user-friends"></i> TEAMWORK</span>
+                </div>
+                <div class="slide-body">
+
+                <div class="grid-4" style="margin-top: 12px;">
+                    <div class="card card-primary" style="text-align: center;">
+                        <div class="card-icon" style="margin: 0 auto 8px auto;"><i class="fas fa-bullhorn"></i></div>
+                        <h4 style="font-size: 0.95rem; margin: 0; color: var(--dark);">1. The Opener</h4>
+                        <p style="font-size: 0.78rem; color: var(--text-sub); margin-top: 4px;">
+                            • สไลด์ 1–2 (Context)<br>
+                            • ดึงดูดความสนใจ เล่า Pain Point ปลุกเร้าอารมณ์ และตั้งโจทย์ธุรกิจ
+                        </p>
+                    </div>
+
+                    <div class="card card-secondary" style="text-align: center;">
+                        <div class="card-icon" style="margin: 0 auto 8px auto;"><i class="fas fa-database"></i></div>
+                        <h4 style="font-size: 0.95rem; margin: 0; color: var(--dark);">2. Data Master</h4>
+                        <p style="font-size: 0.78rem; color: var(--text-sub); margin-top: 4px;">
+                            • สไลด์ 2–3 (Data & Prep)<br>
+                            • อธิบายโครงสร้างข้อมูล การคลีน การทำ Masking PDPA และความน่าเชื่อถือ
+                        </p>
+                    </div>
+
+                    <div class="card card-accent" style="text-align: center;">
+                        <div class="card-icon" style="margin: 0 auto 8px auto;"><i class="fas fa-brain"></i></div>
+                        <h4 style="font-size: 0.95rem; margin: 0; color: var(--dark);">3. AI & Insights</h4>
+                        <p style="font-size: 0.78rem; color: var(--text-sub); margin-top: 4px;">
+                            • สไลด์ 3–4 (Analyze)<br>
+                            • ถ่ายทอดผลการวิเคราะห์ Gemini และ Insight แฝงที่ค้นพบ
+                        </p>
+                    </div>
+
+                    <div class="card card-success" style="text-align: center;">
+                        <div class="card-icon" style="margin: 0 auto 8px auto;"><i class="fas fa-chess"></i></div>
+                        <h4 style="font-size: 0.95rem; margin: 0; color: var(--dark);">4. The Closer</h4>
+                        <p style="font-size: 0.78rem; color: var(--text-sub); margin-top: 4px;">
+                            • สไลด์ 5–6 (Action & ROI)<br>
+                            • เสนอ Action Plan ตัวเลข ROI ปิดการขาย และสรุปภาพรวม
+                        </p>
+                    </div>
+                </div>
+
+                <div class="highlight-box primary" style="margin-top: 14px;">
+                    <i class="fas fa-handshake" style="font-size: 1.1rem;"></i>
+                    <div>
+                        <strong>คะแนนการมีส่วนร่วมของสมาชิก:</strong> กรรมการจะสังเกตความคล่องตัวในการส่งต่อไมค์และการตอบคำถาม ทุกคนในกลุ่มต้องมีช่วงเวลาพูดและเข้าใจเนื้อหาภาพรวมของงาน
+                    </div>
+                </div>
+                </div>
+                <aside class="notes">
+                    - การซ้อมส่งต่อไมค์สำคัญมาก ช่วยลดเวลา Dead Air บนเวที
+                </aside>
+            
+            </section>
+
+            <!-- SLIDE 19: MASTER RUBRIC DEEP-DIVE -->
+            <section>
+                <div class="slide-header">
+                    <div class="slide-title-group">
+                        <h2><i class="fas fa-clipboard-check" style="color: var(--primary);"></i> เจาะลึกเกณฑ์ประเมิน 40% (Assessment Rubric)</h2>
+                        <p class="slide-subtitle">สิ่งที่กรรมการมองหาในแต่ละมิติ และความแตกต่างระหว่างเกรด A vs เกรด C</p>
+                    </div>
+                    
+                <span class="slide-badge"><i class="fas fa-star"></i> RUBRIC AUDIT</span>
+                </div>
+                <div class="slide-body">
+
+                <table class="custom-table" style="margin-top: 8px;">
+                    <thead>
+                        <tr>
+                            <th style="width: 25%;">มิติการประเมิน (น้ำหนัก)</th>
+                            <th style="width: 35%;">ผลงานระดับทั่วไป (เกรด C / 60–69%)</th>
+                            <th style="width: 40%;">ผลงานระดับยอดเยี่ยม (เกรด A / 85–100%)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>1. ASK (20%)</strong></td>
+                            <td>คำถามกว้าง อยากขายดี ขาดสมมติฐาน</td>
+                            <td style="color: var(--success); font-weight: 600;">โจทย์ธุรกิจคมชัด เจาะจง มีสมมติฐานที่ทดสอบได้จริง</td>
+                        </tr>
+                        <tr>
+                            <td><strong>2. COLLECT & PREPARE (15%)</strong></td>
+                            <td>ตารางสกปรก ไม่ได้คลีน หรือมีชื่อลูกค้าจริง</td>
+                            <td style="color: var(--success); font-weight: 600;">Tidy Data สมบูรณ์ Masking PII เกลี้ยง ผูกสูตรตรวจทาน</td>
+                        </tr>
+                        <tr>
+                            <td><strong>3. ANALYZE (25%)</strong></td>
+                            <td>สั่ง AI ผิวเผิน ลอกคำตอบมาดื้อๆ มีเลขมโน</td>
+                            <td style="color: var(--success); font-weight: 600;">Master Prompt ลึก ค้นพบ Insight แฝง ผ่าน Fact-Check 100%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>4. ACT (25%)</strong></td>
+                            <td>ไม่มี Action สไลด์ตัวหนังสือยาว ไม่บอก ROI</td>
+                            <td style="color: var(--success); font-weight: 600;">โครงสร้าง C-I-A คมกริบ 1 สไลด์ 1 ข้อความ แผนทำได้จริง มี ROI</td>
+                        </tr>
+                        <tr>
+                            <td><strong>5. Pitching & Q&A (15%)</strong></td>
+                            <td>เวลาเกิน/ขาด พูดอ่านสไลด์ ตอบคำถามไม่ได้</td>
+                            <td style="color: var(--success); font-weight: 600;">คุมเวลา 10 นาทีเป๊ะ สื่อสารมั่นใจ ตอบ Q&A ตรงประเด็นด้วยดาต้า</td>
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+                <aside class="notes">
+                    - อธิบายให้เห็นเกณฑ์การให้คะแนนอย่างโปร่งใส
+                </aside>
+            
+            </section>
+
+            <!-- SLIDE 20: DRY RUN PROTOCOL -->
+            <section>
+                <div class="slide-header">
+                    <div class="slide-title-group">
+                        <h2><i class="fas fa-play-circle" style="color: var(--purple);"></i> กติกาการซ้อมใหญ่ DRY RUN วันนี้</h2>
+                        <p class="slide-subtitle">การจับคู่ซ้อมข้ามกลุ่มและการจำลองบรรยากาศเสมือนจริง 100%</p>
+                    </div>
+                    
+                <span class="slide-badge" style="background: var(--purple-light); color: var(--purple);"><i class="fas fa-tasks"></i> DRY RUN RULES</span>
+                </div>
+                <div class="slide-body">
+
+                <div class="grid-3" style="margin-top: 10px;">
+                    <div class="card card-purple">
+                        <div class="card-header">
+                            <div class="card-icon"><i class="fas fa-users-arrows"></i></div>
+                            <h3 class="card-title" style="font-size: 0.95rem;">1. จับคู่ข้ามกลุ่ม (Peer Pair)</h3>
+                        </div>
+                        <ul>
+                            <li>กลุ่ม A พิทช์ ➔ กลุ่ม B เป็นกรรมการ</li>
+                            <li>สลับบทบาท: กลุ่ม B พิทช์ ➔ กลุ่ม A เป็นกรรมการ</li>
+                            <li>เปิดสไลด์บนหน้าจอจริง ซ้อมเปิดเสียงและส่งต่อไมค์</li>
+                        </ul>
+                    </div>
+
+                    <div class="card card-danger">
+                        <div class="card-header">
+                            <div class="card-icon"><i class="fas fa-stopwatch"></i></div>
+                            <h3 class="card-title" style="font-size: 0.95rem;">2. จับเวลาจริง 10 + 5</h3>
+                        </div>
+                        <ul>
+                            <li>ใช้สมาร์ตโฟนจับเวลาถอยหลัง 10:00 นาที</li>
+                            <li>เตือนเมื่อเหลือ 2 นาที และสั่งหยุดเมื่อครบ 10 นาที</li>
+                            <li>ซ้อมถามตอบ Q&A เจาะลึกอีก 5 นาทีเต็ม</li>
+                        </ul>
+                    </div>
+
+                    <div class="card card-success">
+                        <div class="card-header">
+                            <div class="card-icon"><i class="fas fa-comment-dots"></i></div>
+                            <h3 class="card-title" style="font-size: 0.95rem;">3. กรอก Peer Feedback</h3>
+                        </div>
+                        <ul>
+                            <li>ให้ฟีดแบ็กทันทีหลังซ้อมจบ</li>
+                            <li>ใช้หลักการ <em>I Like / I Wish / What If</em></li>
+                            <li>บันทึกจุดที่ต้องแก้ลงในใบงาน Workshop</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="highlight-box purple" style="margin-top: 12px; background: #faf5ff; border-left: 4px solid var(--purple); color: #581c87;">
+                    <i class="fas fa-heart" style="font-size: 1.1rem;"></i>
+                    <div><strong>หัวใจของการซ้อม:</strong> ไม่ต้องกลัวความผิดพลาด ยิ่งเจอปัญหาเยอะในวันนี้ ยิ่งปลอดภัยในวันจริง ยินดีต้อนรับทุกข้อผิดพลาดเพื่อนำไปปรับปรุงให้สมบูรณ์แบบ!</div>
+                </div>
+                </div>
+                <aside class="notes">
+                    - กระตุ้นให้นักศึกษาซ้อมอย่างจริงจัง ไม่ขวยเขิน
+                </aside>
+            
+            </section>
+
+            <!-- SLIDE 21: PEER FEEDBACK PROTOCOL -->
+            <section>
+                <div class="slide-header">
+                    <div class="slide-title-group">
+                        <h2><i class="fas fa-comments-dollar" style="color: var(--secondary);"></i> ศิลปะการให้ฟีดแบ็ก: "I Like / I Wish / What If"</h2>
+                        <p class="slide-subtitle">กรอบมาตรฐานการให้ข้อเสนอแนะเชิงสร้างสรรค์แบบคนในวงการสตาร์ทอัพ</p>
+                    </div>
+                    
+                <span class="slide-badge" style="background: var(--secondary-light); color: var(--secondary-dark);"><i class="fas fa-exchange-alt"></i> FEEDBACK PROTOCOL</span>
+                </div>
+                <div class="slide-body">
+
+                <div class="grid-3" style="margin-top: 10px;">
+                    <div class="card card-success">
+                        <div class="card-header">
+                            <div class="card-icon"><i class="fas fa-thumbs-up"></i></div>
+                            <h3 class="card-title" style="color: #166534;">I Like... (สิ่งที่ชอบ)</h3>
+                        </div>
+                        <p><strong>ชื่นชมจุดเด่นที่ทำได้ดี:</strong></p>
+                        <p style="font-size: 0.82rem; color: var(--text-sub);">
+                            "ฉันชอบที่กลุ่มเธอตั้งคำถามเรื่อง Churn ได้เจาะจงมาก และกราฟ Bar Chart ในสไลด์ 3 อ่านง่าย สื่อสารชัดเจน"
+                        </p>
+                    </div>
+
+                    <div class="card card-accent">
+                        <div class="card-header">
+                            <div class="card-icon"><i class="fas fa-wand-magic"></i></div>
+                            <h3 class="card-title" style="color: #92400e;">I Wish... (สิ่งที่อยากเห็นเพิ่ม)</h3>
+                        </div>
+                        <p><strong>ชี้จุดที่สามารถพัฒนาต่อได้:</strong></p>
+                        <p style="font-size: 0.82rem; color: var(--text-sub);">
+                            "ฉันอยากเห็นการคำนวณตัวเลข ROI ที่ชัดกว่านี้อีกนิด ในสไลด์สุดท้ายยังไม่เห็นว่าร้านจะได้กำไรเพิ่มเท่าไร"
+                        </p>
+                    </div>
+
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <div class="card-icon"><i class="fas fa-lightbulb"></i></div>
+                            <h3 class="card-title" style="color: var(--primary-dark);">What If... (ไอเดียต่อยอด)</h3>
+                        </div>
+                        <p><strong>เปิดมุมมองใหม่ที่เป็นไปได้:</strong></p>
+                        <p style="font-size: 0.82rem; color: var(--text-sub);">
+                            "จะเป็นไปได้ไหมถ้าลองแบ่งกลุ่มลูกค้าเป็นครอบครัวเดี่ยวกับคอนโด ดูว่าพฤติกรรมการทิ้งผักต่างกันอย่างไร?"
+                        </p>
+                    </div>
+                </div>
+
+                <div class="highlight-box primary" style="margin-top: 14px;">
+                    <i class="fas fa-user-check" style="font-size: 1.1rem;"></i>
+                    <div><strong>จรรยาบรรณผู้ฟัง:</strong> คอมเมนต์ด้วยความหวังดี หลีกเลี่ยงคำวิจารณ์เชิงลบที่ไม่มีทางออก (Destructive) แต่ให้ข้อเสนอแนะที่เพื่อนนำไปแก้ต่อได้ทันที (Constructive)!</div>
+                </div>
+                </div>
+                <aside class="notes">
+                    - การให้ฟีดแบ็กเป็นทักษะผู้นำที่สำคัญมาก
+                </aside>
+            
+            </section>
+
+            <!-- SLIDE 22: TIMEBOXING SCHEDULE -->
+            <section>
+                <div class="slide-header">
+                    <div class="slide-title-group">
+                        <h2><i class="fas fa-clock" style="color: var(--primary);"></i> ตารางเวลาปฏิบัติการ 150 นาทีของ Session 13</h2>
+                        <p class="slide-subtitle">การจัดสรรเวลาอย่างมีประสิทธิภาพสูงสุดเพื่อความพร้อมของทุกกลุ่ม</p>
+                    </div>
+                    
+                <span class="slide-badge"><i class="fas fa-calendar-day"></i> TIMETABLE</span>
+                </div>
+                <div class="slide-body">
+
+                <table class="custom-table" style="margin-top: 10px;">
+                    <thead>
+                        <tr>
+                            <th style="width: 20%;">ช่วงเวลา</th>
+                            <th style="width: 15%;">ระยะเวลา</th>
+                            <th style="width: 45%;">กิจกรรมการเรียนรู้</th>
+                            <th style="width: 20%;">เป้าหมายสำคัญ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>09.00 - 09.35 น.</strong></td>
+                            <td>35 นาที</td>
+                            <td>บรีฟเข็มทิศคลินิก, ผ่าเคส GreenFresh, และชี้แจง 4 กับดักมรณะ</td>
+                            <td>เข้าใจจุดบกพร่องและเกณฑ์คะแนน</td>
+                        </tr>
+                        <tr>
+                            <td><strong>09.35 - 10.35 น.</strong></td>
+                            <td>60 นาที</td>
+                            <td><strong>Coaching & Clinic Station:</strong> อาจารย์เข้าตรวจรายกลุ่ม + ปรับปรุงไฟล์งาน 4 ชิ้น</td>
+                            <td>แก้จุดอ่อนและปิดช่องโหว่ข้อมูล</td>
+                        </tr>
+                        <tr>
+                            <td><strong>10.35 - 10.45 น.</strong></td>
+                            <td>10 นาที</td>
+                            <td>พักเบรกตามอัธยาศัย (Coffee & Mind Clearing)</td>
+                            <td>ผ่อนคลายและเตรียมพลัง</td>
+                        </tr>
+                        <tr>
+                            <td><strong>10.45 - 11.20 น.</strong></td>
+                            <td>35 นาที</td>
+                            <td><strong>Dry Run Arena:</strong> จับคู่ซ้อมพิทช์สดข้ามกลุ่ม จับเวลา 10+5 นาที และให้ฟีดแบ็ก</td>
+                            <td>ทดสอบความลื่นไหลและคุมเวลา</td>
+                        </tr>
+                        <tr>
+                            <td><strong>11.20 - 11.30 น.</strong></td>
+                            <td>10 นาที</td>
+                            <td>สรุปภาพรวมและตรวจสอบ Exit Ticket ก่อนออกจากห้อง</td>
+                            <td>มั่นใจความพร้อม 90%+</td>
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+                <aside class="notes">
+                    - เน้นย้ำให้นักศึกษาบริหารเวลาตามตารางนี้อย่างเคร่งครัด
+                </aside>
+            
+            </section>
+
+            <!-- SLIDE 23: EXIT TICKET CHECKLIST -->
+            <section>
+                <div class="slide-header">
+                    <div class="slide-title-group">
+                        <h2><i class="fas fa-clipboard-list" style="color: var(--success);"></i> เช็กลิสต์ความพร้อมก่อนออกจากห้อง (Exit Ticket)</h2>
+                        <p class="slide-subtitle">ตรวจสอบความสมบูรณ์ของชิ้นงานส่งมอบทั้ง 4 รายการ</p>
+                    </div>
+                    
+                <span class="slide-badge" style="background: var(--success-light); color: var(--success);"><i class="fas fa-check-circle"></i> EXIT TICKET</span>
+                </div>
+                <div class="slide-body">
+
+                <div class="grid-2" style="margin-top: 10px;">
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <div class="card-icon"><i class="fas fa-file-excel"></i></div>
+                            <h3 class="card-title">1. Deliverable 1 & 2 (หลังบ้าน)</h3>
+                        </div>
+                        <ul>
+                            <li>[ ] <strong>Google Sheets:</strong> เป็น Tidy Data 100%, ไม่มีแถวว่าง, ไม่มีสูตร Error, และทำ Data Masking ลบชื่อลูกค้าจริงออกเรียบร้อย</li>
+                            <li>[ ] <strong>Prompt Log:</strong> มีลิงก์ Share Chat หรือเอกสารบันทึกบทสนทนา Gemini ขั้นต่ำ 3-5 รอบ แสดงการถามเจาะลึกและตรวจสอบสูตร</li>
+                        </ul>
+                    </div>
+
+                    <div class="card card-secondary">
+                        <div class="card-header">
+                            <div class="card-icon"><i class="fas fa-presentation"></i></div>
+                            <h3 class="card-title">2. Deliverable 3 & 4 (หน้าบ้าน)</h3>
+                        </div>
+                        <ul>
+                            <li>[ ] <strong>Master Presentation Deck:</strong> ความยาว 5–7 สไลด์ โครงสร้าง C-I-A ครบถ้วน หัวสไลด์เป็น Action Title และมีตัวเลขประมาณการ ROI</li>
+                            <li>[ ] <strong>Live Pitch Readiness:</strong> แบ่งบทบาทผู้พูดครบทุกคน ทดลองซ้อม Dry Run ผ่านเวลา 10:00 นาทีเรียบร้อย</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="highlight-box success" style="margin-top: 12px;">
+                    <i class="fas fa-cloud-upload-alt" style="font-size: 1.1rem;"></i>
+                    <div><strong>การอัปโหลดไฟล์ล่วงหน้า:</strong> ขอให้ทุกกลุ่มนำลิงก์ไฟล์ทั้ง 4 ชิ้นมาวางรวมไว้ในแบบฟอร์มส่งงาน e-Learning ก่อนวันจันทร์ 18.00 น. เพื่อให้อาจารย์โหลดสไลด์เตรียมไว้บนเครื่องฉายหลัก</div>
+                </div>
+                </div>
+                <aside class="notes">
+                    - ทุกกลุ่มต้องติ๊กถูกให้ครบทุกข้อก่อนเลิกคาบ
+                </aside>
+            
+            </section>
+
+            <!-- SLIDE 24: SUMMARY TAKEAWAYS -->
+            <section>
+                <div class="slide-header">
+                    <div class="slide-title-group">
+                        <h2><i class="fas fa-bookmark" style="color: var(--primary);"></i> สรุปบทเรียน: 5 หัวใจสู่ความสำเร็จบนเวที Final Pitch</h2>
+                        <p class="slide-subtitle">ทบทวนหลักคิดสำคัญเพื่อการคว้าชัยชนะในสัปดาห์หน้า</p>
+                    </div>
+                    
+                <span class="slide-badge"><i class="fas fa-check-double"></i> KEY TAKEAWAYS</span>
+                </div>
+                <div class="slide-body">
+
+                <div class="grid-2" style="gap: 12px; margin-top: 8px;">
+                    <div class="card card-primary" style="padding: 10px 14px;">
+                        <div style="font-weight: 800; color: var(--primary); font-size: 0.95rem; margin-bottom: 4px;">1. Data Tells, Story Sells</div>
+                        <p style="font-size: 0.82rem; margin: 0; color: var(--text-sub);">ตัวเลขในตารางมีไว้บอกข้อเท็จจริง แต่การเล่าเรื่อง (Storytelling) จะเป็นสิ่งที่ตรึงใจกรรมการและทำให้นักลงทุนอนุมัติแผน</p>
+                    </div>
+                    <div class="card card-danger" style="padding: 10px 14px;">
+                        <div style="font-weight: 800; color: var(--danger); font-size: 0.95rem; margin-bottom: 4px;">2. เคารพความจริงและความปลอดภัย</div>
+                        <p style="font-size: 0.82rem; margin: 0; color: var(--text-sub);">ไม่มโนตัวเลข (No Hallucination) ตรวจสอบกับ Sheets เสมอ และไม่นำข้อมูลส่วนบุคคลลูกค้าเข้า AI สาธารณะ (PDPA 100%)</p>
+                    </div>
+                    <div class="card card-secondary" style="padding: 10px 14px;">
+                        <div style="font-weight: 800; color: var(--secondary-dark); font-size: 0.95rem; margin-bottom: 4px;">3. 1 สไลด์ = 1 ข้อความหลัก</div>
+                        <p style="font-size: 0.82rem; margin: 0; color: var(--text-sub);">อย่าท่วมท้นสายตาผู้ฟังด้วยกำแพงตัวหนังสือ ใช้ Action Title 28-36pt สรุปข้อความสำคัญให้อ่านเข้าใจใน 3 วินาที</p>
+                    </div>
+                    <div class="card card-accent" style="padding: 10px 14px;">
+                        <div style="font-weight: 800; color: var(--accent); font-size: 0.95rem; margin-bottom: 4px;">4. มีตัวเลข ROI ที่จับต้องได้</div>
+                        <p style="font-size: 0.82rem; margin: 0; color: var(--text-sub);">ผู้บริหารต้องการทราบว่าแผนนี้จะช่วยกู้คืนรายได้หรือสร้างกำไรส่วนเพิ่มเท่าไร จงมีตัวเลข Business Payoff เสมอ</p>
+                    </div>
+                </div>
+                <div class="card card-purple" style="padding: 10px 14px; margin-top: 10px;">
+                    <div style="font-weight: 800; color: var(--purple); font-size: 0.95rem; margin-bottom: 2px;">5. ซ้อม คุมเวลา 10 นาทีเป๊ะ และเป็นหนึ่งเดียว</div>
+                    <p style="font-size: 0.82rem; margin: 0; color: var(--text-sub);">การฝึกซ้อม Dry Run บนเวทีจริงคือยาวิเศษแก้ตื่นเต้น กระจายบทบาททั้ง 4 คนให้คล่องตัวและซัพพอร์ตกันในทีม</p>
+                </div>
+                </div>
+                <aside class="notes">
+                    - ทบทวน 5 ประเด็นสำคัญ เป็นกำลังใจให้นักศึกษาทุกคน
+                </aside>
+            
+            </section>
+
+            <!-- SLIDE 25: QUIZ TIME -->
+            <section>
+                <div class="slide-header">
+                    <div class="slide-title-group">
+                        <h2><i class="fas fa-gamepad" style="color: var(--accent);"></i> Quizizz Arena: ประลองความพร้อม Final Project Readiness</h2>
+                        <p class="slide-subtitle">ทดสอบความเข้าใจ 10 ข้อ 3 ตัวเลือก (A, B, C) — สแกน QR Code เพื่อตรวจสอบความแม่นยำ</p>
+                    </div>
+                    
+                <span class="slide-badge" style="background: var(--accent-light); color: var(--accent);"><i class="fas fa-trophy"></i> QUIZ TIME</span>
+                </div>
+                <div class="slide-body">
+
+                <div class="grid-2" style="margin-top: 10px;">
+                    <div class="card card-accent" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px;">
+                        <div style="font-size: 3rem; color: var(--accent); margin-bottom: 8px;">
+                            <i class="fas fa-qrcode"></i>
+                        </div>
+                        <h3 style="margin: 0 0 6px 0; font-size: 1.1rem; color: var(--dark);">เข้าเล่นผ่าน Quizizz</h3>
+                        <p style="font-size: 0.85rem; color: var(--text-sub); margin: 0 0 12px 0;">
+                            สแกน QR Code หรือเข้าเว็บไซต์ <strong>joinmyquiz.com</strong>
+                        </p>
+                        <div style="background: var(--primary-light); color: var(--primary-dark); padding: 8px 16px; border-radius: 8px; font-weight: 800; font-size: 1rem;">
+                            GAME PIN: [รอรหัสจากอาจารย์]
+                        </div>
+                    </div>
+
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <div class="card-icon"><i class="fas fa-bullseye"></i></div>
+                            <h3 class="card-title">ประเด็นสำคัญในแบบทดสอบ:</h3>
+                        </div>
+                        <ul style="font-size: 0.84rem;">
+                            <li>การแยกแยะคำถามธุรกิจที่ดี vs คำถามกว้าง</li>
+                            <li>กฎเหล็กการ Masking ข้อมูล PII ตาม PDPA</li>
+                            <li>การตรวจจับ AI Hallucination ด้วยสูตร Google Sheets</li>
+                            <li>โครงสร้างสไลด์ C-I-A และกฎ 1 สไลด์ 1 ข้อความ</li>
+                            <li>การบริหารเวลา 10 นาทีนำเสนอ และการให้ Peer Feedback</li>
+                        </ul>
+                        <div class="highlight-box accent" style="margin-top: 10px;">
+                            <i class="fas fa-clock"></i>
+                            <div><strong>เวลา:</strong> 60 วินาทีต่อข้อ วิเคราะห์จากเคสและสถานการณ์จริง!</div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+                <aside class="notes">
+                    - กิจกรรมทดสอบความพร้อมสั้นๆ เพื่อให้มั่นใจว่าทุกคนเข้าใจกติกาเดียวกัน
+                </aside>
+            
+            </section>
+
+            <!-- SLIDE 26: WORKSHOP BRIEF -->
+            <section>
+                <div class="slide-header">
+                    <div class="slide-title-group">
+                        <h2><i class="fas fa-laptop-code" style="color: var(--success);"></i> Workshop Brief: "Final Project Coaching & Dry Run Clinic"</h2>
+                        <p class="slide-subtitle">ปฏิบัติการขัดเกลาชิ้นงาน 4 รายการ และการซ้อมพิทช์จริงในห้องปฏิบัติการ</p>
+                    </div>
+                    
+                <span class="slide-badge" style="background: var(--success-light); color: var(--success);"><i class="fas fa-vial"></i> HANDS-ON LAB</span>
+                </div>
+                <div class="slide-body">
+
+                <div class="grid-4" style="margin-top: 10px;">
+                    <div class="card card-primary">
+                        <div style="font-size: 0.78rem; font-weight: 800; color: var(--primary);">Mission 1</div>
+                        <h4 style="font-size: 0.95rem; margin: 4px 0; color: var(--dark);">Pipeline Audit</h4>
+                        <p style="font-size: 0.78rem; color: var(--text-sub);">
+                            ตรวจสอบ 5 สถานี: คำถาม ASK, ความสะอาด Sheets, PII Masking, และ Prompt Log
+                        </p>
+                    </div>
+
+                    <div class="card card-secondary">
+                        <div style="font-size: 0.78rem; font-weight: 800; color: var(--secondary-dark);">Mission 2</div>
+                        <h4 style="font-size: 0.95rem; margin: 4px 0; color: var(--dark);">Slide Polish</h4>
+                        <p style="font-size: 0.78rem; color: var(--text-sub);">
+                            ขัดเกลาสไลด์ 5–7 หน้าแบบ C-I-A ปรับเป็น Action Title และใส่ตัวเลข ROI
+                        </p>
+                    </div>
+
+                    <div class="card card-purple">
+                        <div style="font-size: 0.78rem; font-weight: 800; color: var(--purple);">Mission 3</div>
+                        <h4 style="font-size: 0.95rem; margin: 4px 0; color: var(--dark);">Dry Run Arena</h4>
+                        <p style="font-size: 0.78rem; color: var(--text-sub);">
+                            จับคู่ข้ามกลุ่ม ซ้อมพิทช์สดจับเวลา 10+5 นาที สลับบทบาทเป็นกรรมการ
+                        </p>
+                    </div>
+
+                    <div class="card card-success">
+                        <div style="font-size: 0.78rem; font-weight: 800; color: var(--success);">Mission 4</div>
+                        <h4 style="font-size: 0.95rem; margin: 4px 0; color: var(--dark);">Exit Ticket</h4>
+                        <p style="font-size: 0.78rem; color: var(--text-sub);">
+                            บันทึก Peer Feedback และส่งเช็กลิสต์ความพร้อมก่อนจบคาบ
+                        </p>
+                    </div>
+                </div>
+
+                <div class="card card-accent" style="margin-top: 12px; padding: 10px 14px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 0.85rem; font-weight: 700; color: var(--dark);">
+                            <i class="fas fa-inbox" style="color: var(--accent); margin-right: 6px;"></i> ชิ้นงานส่งท้ายคาบ:
+                            <span style="font-weight: 400; color: var(--text-sub);">บันทึกผลการตรวจ 5 สถานี และตาราง Peer Feedback ในใบงาน HTML</span>
+                        </span>
+                        <span class="slide-badge" style="background: var(--accent-light); color: var(--accent);">เวลาปฏิบัติการ: 75 นาที (คะแนนเต็ม 20)</span>
+                    </div>
+                </div>
+
+                <div class="highlight-box success" style="margin-top: 8px; text-align: center; font-size: 0.88rem;">
+                    <i class="fas fa-play" style="margin-right: 6px;"></i>
+                    <strong>เปิดไฟล์ใบงาน:</strong> <code>session-13-workshop-worksheet.html</code> และเริ่มปฏิบัติการได้เลยครับ!
+                </div>
+                </div>
+                <aside class="notes">
+                    - ชี้แจงภารกิจ Workshop และเปิดโอกาสให้นักศึกษาลงมือปฏิบัติการกลุ่ม
+                </aside>
+            
+            </section>
+
+        </div>
+    </div>
+
+    <!-- Reveal.js Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/notes/notes.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/highlight/highlight.js"></script>
+    <script>
+        const deck = new Reveal({
+            width: 1280,
+            height: 800,
+            margin: 0.04,
+            minScale: 0.1,
+            maxScale: 3.0,
+            controls: false,
+            progress: true,
+            center: false,
+            hash: true,
+            transition: 'slide',
+            transitionSpeed: 'default',
+            mouseWheel: true,
+            plugins: [RevealNotes, RevealHighlight]
+        });
+
+        deck.initialize().then(() => {
+            window.deck = deck;
+            window.Reveal = deck;
+
+                        // Automated slide height audit (identical to Session 10)
+            window.runSlideHeightAudit = function () {
+                const targetH = deck.getConfig().height || 800;
+                const sections = document.querySelectorAll('.reveal .slides > section');
+                let passed = 0;
+                let failed = 0;
+                const results = [];
+
+                sections.forEach((sec, idx) => {
+                    const scrollH = sec.scrollHeight;
+                    const isPass = scrollH <= targetH + 4;
+                    if (isPass) passed++; else failed++;
+                    results.push({
+                        slide: idx + 1,
+                        scrollH,
+                        targetH,
+                        pass: isPass
+                    });
+                });
+
+                const summary = { total: sections.length, passed, failed, rate: Math.round((passed / sections.length) * 100) };
+
+                const sumDiv = document.getElementById('test-report-summary');
+                const content = document.getElementById('test-report-content');
+                if (sumDiv && content) {
+                    sumDiv.innerHTML = `Pass: <span style="color: #4ade80;">${passed}</span> / Fail: <span style="color: #f43f5e;">${failed}</span> (${summary.rate}%)`;
+                    let html = '';
+                    results.forEach(r => {
+                        html += `<div style="display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px solid #1e293b; color: ${r.pass ? '#cbd5e1' : '#f87171'};">
+                            <span>Slide ${r.slide}</span>
+                            <span>${r.scrollH}px / ${r.targetH}px [${r.pass ? 'PASS' : 'FAIL'}]</span>
+                        </div>`;
+                    });
+                    content.innerHTML = html;
+                }
+
+                return summary;
+            };
+
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('test') === 'true') {
+                const overlay = document.getElementById('test-report-overlay');
+                if (overlay) overlay.style.display = 'block';
+                setTimeout(() => {
+                    window.runSlideHeightAudit();
+                }, 800);
+            }
+
+            window.addEventListener('keydown', (e) => {
+                if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) return;
+
+                // Key 'A' or 'a': Toggle Aspect Ratio (16:10 <-> 16:9)
+                if (e.key === 'a' || e.key === 'A') {
+                    toggleAspectRatio();
+                }
+
+                // Key 'T' or 't': Toggle Slide Audit Test Overlay
+                if (e.key === 't' || e.key === 'T') {
+                    const overlay = document.getElementById('test-report-overlay');
+                    if (overlay) {
+                        overlay.style.display = overlay.style.display === 'block' ? 'none' : 'block';
+                        if (overlay.style.display === 'block') {
+                            window.runSlideHeightAudit();
+                        }
+                    }
+                }
+            });
+        });
+
+        // Show Temporary Aspect Ratio Toast Notification
+        function showRatioToast(msg) {
+            let toast = document.getElementById('aspect-ratio-toast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'aspect-ratio-toast';
+                toast.style.cssText = `
+                    position: fixed;
+                    bottom: 24px;
+                    right: 24px;
+                    background: rgba(15, 23, 42, 0.90);
+                    backdrop-filter: blur(8px);
+                    color: #ffffff;
+                    padding: 8px 18px;
+                    border-radius: 9999px;
+                    font-family: 'Outfit', 'Noto Sans Thai', sans-serif;
+                    font-size: 0.85rem;
+                    font-weight: 600;
+                    letter-spacing: 0.02em;
+                    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+                    border: 1px solid rgba(255, 255, 255, 0.15);
+                    z-index: 99999;
+                    pointer-events: none;
+                    transition: opacity 0.3s ease, transform 0.3s ease;
+                    transform: translateY(0);
+                    opacity: 0;
+                `;
+                document.body.appendChild(toast);
+            }
+            toast.innerHTML = `<i class="fa-solid fa-display" style="margin-right: 8px; color: #818cf8;"></i> ${msg}`;
+            toast.style.opacity = '1';
+            toast.style.transform = 'translateY(0)';
+            clearTimeout(window._ratioToastTimer);
+            window._ratioToastTimer = setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(6px)';
+            }, 1500);
+        }
+
+        // Toggle Aspect Ratio (Key 'A')
+        function toggleAspectRatio() {
+            if (deck.getConfig().height === 800) {
+                deck.configure({ width: 1280, height: 720 });
+                showRatioToast('สลับอัตราส่วนหน้าจอ: 16:9 (1280 × 720)');
+            } else {
+                deck.configure({ width: 1280, height: 800 });
+                showRatioToast('สลับอัตราส่วนหน้าจอ: 16:10 (1280 × 800)');
+            }
+        }
+        window.toggleAspectRatio = toggleAspectRatio;
+    </script>
+</body>
+</html>

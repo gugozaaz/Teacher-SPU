@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ใบงาน Workshop ครั้งที่ 1 — Data ในชีวิตประจำวันของธุรกิจ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #3730a3;
+            --primary-light: #e0e7ff;
+            --secondary: #0ea5e9;
+            --accent: #ec4899;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --border: #cbd5e1;
+            --border-focus: #6366f1;
+            --success: #10b981;
+            --warning: #f59e0b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Noto Sans Thai', 'Outfit', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 30px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--surface);
+            padding: 45px 50px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.08), 0 8px 10px -6px rgba(0,0,0,0.04);
+            border: 1px solid var(--border);
+        }
+
+        header {
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header-title h1 {
+            font-size: 1.6rem;
+            color: var(--primary-dark);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-title p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .badge-info {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            padding: 8px 16px;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .section-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 25px;
+            transition: border-color 0.2s;
+        }
+
+        .section-card:hover {
+            border-color: #94a3b8;
+        }
+
+        .section-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title span.step-badge {
+            background: var(--primary);
+            color: white;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        input[type="text"], textarea, select {
+            width: 100%;
+            padding: 9px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            color: var(--text-main);
+            background: #fdfdfd;
+            transition: all 0.2s;
+        }
+
+        input[type="text"]:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--border-focus);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 70px;
+        }
+
+        /* Business choice pills */
+        .biz-pills {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .biz-pill-item {
+            position: relative;
+        }
+
+        .biz-pill-item input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .biz-pill-label {
+            display: block;
+            padding: 10px 14px;
+            background: #f1f5f9;
+            border: 2px solid transparent;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .biz-pill-item input[type="radio"]:checked + .biz-pill-label {
+            background: var(--primary-light);
+            border-color: var(--primary);
+            color: var(--primary-dark);
+            font-weight: 600;
+        }
+
+        /* Table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 0.9rem;
+        }
+
+        .data-table th, .data-table td {
+            border: 1px solid var(--border);
+            padding: 10px 12px;
+            text-align: left;
+        }
+
+        .data-table th {
+            background: #f1f5f9;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .data-table td input {
+            border: none;
+            background: transparent;
+            width: 100%;
+            padding: 4px;
+        }
+
+        .data-table td input:focus {
+            background: #f8fafc;
+            border-radius: 4px;
+        }
+
+        /* Prompt Box */
+        .prompt-box {
+            background: #0f172a;
+            color: #e2e8f0;
+            border-radius: 10px;
+            padding: 16px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            margin: 15px 0;
+            border-left: 4px solid var(--secondary);
+            position: relative;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255,255,255,0.15);
+            color: white;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-family: 'Noto Sans Thai', sans-serif;
+            transition: background 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .btn-toolbar {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: var(--text-main);
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e1;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+                border: none;
+                padding: 0;
+                max-width: 100%;
+            }
+            .btn-toolbar, .copy-btn {
+                display: none;
+            }
+            .section-card {
+                page-break-inside: avoid;
+                border: 1px solid #ccc;
+            }
+            input, textarea {
+                border: 1px solid #ccc !important;
+                background: white !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="header-title">
+            <h1>📝 ใบงาน Workshop ครั้งที่ 1</h1>
+            <p><strong>กิจกรรม: "Data ในชีวิตประจำวันของธุรกิจ" (Data in Daily Business Life)</strong></p>
+            <p>วิชา: พื้นฐานวิทยาการข้อมูล (Fundamentals of Data Science) — อาจารย์สุรชัย โกยสันติสุข</p>
+        </div>
+        <div class="badge-info">
+            <div>⏱️ เวลาปฏิบัติ: 70 นาที</div>
+            <div>👥 ขนาดกลุ่ม: 4–5 คน</div>
+        </div>
+    </header>
+
+    <!-- ข้อมูลกลุ่ม -->
+    <div class="section-card">
+        <div class="section-title">
+            <span class="step-badge">👥</span>
+            <span>ข้อมูลกลุ่มและบทบาทสมาชิก</span>
+        </div>
+        <div style="margin-bottom: 10px;">
+            <label style="font-weight: 600; font-size: 0.9rem;">กลุ่มที่ / หมายเลขโต๊ะ:</label>
+            <input type="text" placeholder="ระบุกลุ่มที่ เช่น กลุ่ม 3 (โต๊ะ B)" style="width: 250px; display: inline-block; margin-left: 10px;">
+        </div>
+        <div class="team-grid">
+            <div class="form-group">
+                <label>1. หัวหน้ากลุ่ม (Team Lead):</label>
+                <input type="text" placeholder="ชื่อ-สกุล (รหัสนักศึกษา)">
+            </div>
+            <div class="form-group">
+                <label>2. AI Prompter & บันทึกข้อมูล:</label>
+                <input type="text" placeholder="ชื่อ-สกุล (รหัสนักศึกษา)">
+            </div>
+            <div class="form-group">
+                <label>3. นักวิเคราะห์ & ผู้ประสานงาน:</label>
+                <input type="text" placeholder="ชื่อ-สกุล (รหัสนักศึกษา)">
+            </div>
+            <div class="form-group">
+                <label>4. ผู้นำเสนอหลัก (Presenter):</label>
+                <input type="text" placeholder="ชื่อ-สกุล (รหัสนักศึกษา)">
+            </div>
+            <div class="form-group">
+                <label>5. ผู้นำเสนอร่วม (Co-Presenter):</label>
+                <input type="text" placeholder="ชื่อ-สกุล (รหัสนักศึกษา)">
+            </div>
+        </div>
+    </div>
+
+    <!-- ตอนที่ 1: เลือกโมเดลธุรกิจ -->
+    <div class="section-card">
+        <div class="section-title">
+            <span class="step-badge">1</span>
+            <span>ตอนที่ 1: เลือกและกำหนดโมเดลธุรกิจของกลุ่ม (10 นาที)</span>
+        </div>
+        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 12px;">
+            ให้กลุ่มเลือกธุรกิจที่สมาชิกสนใจ 1 ประเภท เพื่อใช้เป็นกรณีศึกษาตลอดกิจกรรมนี้:
+        </p>
+
+        <div class="biz-pills">
+            <div class="biz-pill-item">
+                <input type="radio" id="biz1" name="biz_type" checked>
+                <label for="biz1" class="biz-pill-label">☕ Specialty Coffee & Cafe</label>
+            </div>
+            <div class="biz-pill-item">
+                <input type="radio" id="biz2" name="biz_type">
+                <label for="biz2" class="biz-pill-label">👗 Fast-Fashion E-Commerce</label>
+            </div>
+            <div class="biz-pill-item">
+                <input type="radio" id="biz3" name="biz_type">
+                <label for="biz3" class="biz-pill-label">🚗 Car Detailing & Garage</label>
+            </div>
+            <div class="biz-pill-item">
+                <input type="radio" id="biz4" name="biz_type">
+                <label for="biz4" class="biz-pill-label">🧋 Bubble Tea & Dessert</label>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div class="form-group">
+                <label>ชื่อแบรนด์/ร้านค้าของกลุ่ม:</label>
+                <input type="text" placeholder="เช่น Beans & Brew Co.">
+            </div>
+            <div class="form-group">
+                <label>กลุ่มลูกค้าเป้าหมายหลัก:</label>
+                <input type="text" placeholder="เช่น คนทำงาน Gen Y, นักศึกษา, ลูกค้า Takeaway">
+            </div>
+        </div>
+        <div class="form-group">
+            <label>จุดเด่น / คุณค่าที่ส่งมอบ (USP):</label>
+            <input type="text" placeholder="เช่น เมล็ดกาแฟ Single Origin ราคาจับต้องได้ บรรยากาศเงียบสงบเหมาะทำงาน">
+        </div>
+    </div>
+
+    <!-- ตอนที่ 2: สำรวจ Data Touchpoints -->
+    <div class="section-card">
+        <div class="section-title">
+            <span class="step-badge">2</span>
+            <span>ตอนที่ 2: สำรวจแผนที่ข้อมูล 1 วัน (Data Touchpoints) (20 นาที)</span>
+        </div>
+        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 12px;">
+            จินตนาการตลอด 1 วันทำการของร้าน มีกิจกรรมใดที่ทำให้เกิดข้อมูล และจัดเก็บไว้ที่ใด:
+        </p>
+
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th style="width: 25%;">ช่วงเวลา / กิจกรรม</th>
+                    <th style="width: 45%;">ข้อมูลที่เกิดขึ้น (Data Footprint)</th>
+                    <th style="width: 30%;">จัดเก็บไว้ที่ใด / เครื่องมือ</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="background: #f8fafc; font-style: italic; color: #64748b;">
+                    <td>(ตัวอย่าง) 07.30 น. ลูกค้าสั่งกาแฟ</td>
+                    <td>เมนู, ขนาด, ราคา, วิธีจ่ายเงิน, เวลา, รหัสสมาชิก</td>
+                    <td>ระบบ POS แคชเชียร์</td>
+                </tr>
+                <tr>
+                    <td><strong>1. ก่อนเปิดร้าน / เตรียมสต็อก</strong></td>
+                    <td><input type="text" placeholder="เช่น ปริมาณวัตถุดิบรับเข้า, วันหมดอายุ, ผู้ส่งมอบ"></td>
+                    <td><input type="text" placeholder="เช่น Excel สต็อก, สมุดบันทึก"></td>
+                </tr>
+                <tr>
+                    <td><strong>2. ช่วงเช้า (Peak 1 หน้าร้าน)</strong></td>
+                    <td><input type="text" placeholder="เช่น เมนูยอดฮิต, ยอดบิลเฉลี่ย, เวลาเฉลี่ยที่รอคอย"></td>
+                    <td><input type="text" placeholder="เช่น POS, กล้องตรวจนับคน"></td>
+                </tr>
+                <tr>
+                    <td><strong>3. ช่วงบ่าย (Delivery / Online)</strong></td>
+                    <td><input type="text" placeholder="เช่น ออเดอร์ Grab/LINE MAN, พิกัดส่ง, เวลาจัดส่ง"></td>
+                    <td><input type="text" placeholder="เช่น Merchant App, LINE OA"></td>
+                </tr>
+                <tr>
+                    <td><strong>4. การตลาด / Social Media</strong></td>
+                    <td><input type="text" placeholder="เช่น ยอด Like/Share, ข้อความ Inbox, คูปองส่วนลดที่ถูกใช้"></td>
+                    <td><input type="text" placeholder="เช่น Meta Business, TikTok Ads"></td>
+                </tr>
+                <tr>
+                    <td><strong>5. ปิดร้าน / สรุปยอดวัน</strong></td>
+                    <td><input type="text" placeholder="เช่น ยอดขายรวม, เศษเงินสด, ของเหลือทิ้ง (Waste)"></td>
+                    <td><input type="text" placeholder="เช่น POS Summary Report, Excel บัญชี"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ตอนที่ 3: 5 คำถามทองคำทางธุรกิจ -->
+    <div class="section-card">
+        <div class="section-title">
+            <span class="step-badge">3</span>
+            <span>ตอนที่ 3: ตั้ง "5 คำถามทองคำทางธุรกิจ" ที่ข้อมูลช่วยตอบได้ (20 นาที)</span>
+        </div>
+        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px;">
+            ถ้าคุณเป็นเจ้าของร้าน คุณอยากถามอะไรที่รู้แล้วจะ <strong>เพิ่มยอดขาย ลดต้นทุน หรือทำให้ลูกค้าติดใจ</strong>:
+        </p>
+
+        <!-- Q1 -->
+        <div style="background: #f8fafc; padding: 14px; border-radius: 8px; margin-bottom: 12px; border-left: 3px solid var(--primary);">
+            <label style="font-weight: 700; font-size: 0.95rem; color: var(--primary);">คำถามที่ 1: ด้านยอดขายและสินค้า</label>
+            <input type="text" placeholder="คำถาม: สินค้าตัวไหนทำกำไรสูงสุด และมักถูกสั่งคู่กับอะไร?" style="margin: 6px 0;">
+            <input type="text" placeholder="ข้อมูลที่ต้องใช้: ข้อมูลรายการสั่งซื้อใน POS, ต้นทุนต่อหน่วย" style="margin-bottom: 6px;">
+            <input type="text" placeholder="การตัดสินใจทางธุรกิจ: ทำโปรโมชั่นจับคู่ Bundle Set เพื่อเพิ่มยอดต่อบิล">
+        </div>
+
+        <!-- Q2 -->
+        <div style="background: #f8fafc; padding: 14px; border-radius: 8px; margin-bottom: 12px; border-left: 3px solid var(--secondary);">
+            <label style="font-weight: 700; font-size: 0.95rem; color: var(--secondary);">คำถามที่ 2: ด้านพฤติกรรมลูกค้า</label>
+            <input type="text" placeholder="คำถาม: ลูกค้าประจำ (สมาชิก) กลับมาซื้อซ้ำเฉลี่ยกี่วันต่อครั้ง?" style="margin: 6px 0;">
+            <input type="text" placeholder="ข้อมูลที่ต้องใช้: ประวัติการซื้อของสมาชิกผ่านเบอร์โทร/LINE OA" style="margin-bottom: 6px;">
+            <input type="text" placeholder="การตัดสินใจทางธุรกิจ: ส่งคูปองกระตุ้นเตือนใน LINE OA ก่อนลูกค้าจะหายไป">
+        </div>
+
+        <!-- Q3 -->
+        <div style="background: #f8fafc; padding: 14px; border-radius: 8px; margin-bottom: 12px; border-left: 3px solid var(--accent);">
+            <label style="font-weight: 700; font-size: 0.95rem; color: var(--accent);">คำถามที่ 3: ด้านการจัดการสต็อกและต้นทุน</label>
+            <input type="text" placeholder="คำถาม: วัตถุดิบตัวไหนเหลือทิ้ง (Waste) สูงสุดในแต่ละสัปดาห์?" style="margin: 6px 0;">
+            <input type="text" placeholder="ข้อมูลที่ต้องใช้: บันทึกสต็อกของเสียรายวัน, ยอดสั่งวัตถุดิบ" style="margin-bottom: 6px;">
+            <input type="text" placeholder="การตัดสินใจทางธุรกิจ: ปรับรอบสั่งซื้อให้กระชับขึ้น หรือสร้างเมนูพิเศษเคลียร์สต็อก">
+        </div>
+
+        <!-- Q4 -->
+        <div style="background: #f8fafc; padding: 14px; border-radius: 8px; margin-bottom: 12px; border-left: 3px solid var(--warning);">
+            <label style="font-weight: 700; font-size: 0.95rem; color: var(--warning);">คำถามที่ 4: ด้านช่องทางการขายและการตลาด</label>
+            <input type="text" placeholder="คำถาม: ช่องทาง Delivery แอปไหนทำยอดขายสุทธิ (หลังหัก GP) คุ้มค่าที่สุด?" style="margin: 6px 0;">
+            <input type="text" placeholder="ข้อมูลที่ต้องใช้: ยอดขายรายแอป, ค่าธรรมเนียม GP แต่ละเจ้า" style="margin-bottom: 6px;">
+            <input type="text" placeholder="การตัดสินใจทางธุรกิจ: ทุ่มงบแคมเปญให้แอปที่ให้ผลตอบแทนดีที่สุด">
+        </div>
+
+        <!-- Q5 -->
+        <div style="background: #f8fafc; padding: 14px; border-radius: 8px; margin-bottom: 12px; border-left: 3px solid var(--success);">
+            <label style="font-weight: 700; font-size: 0.95rem; color: var(--success);">คำถามที่ 5: ด้านการคาดการณ์อนาคต (Data Science Predictive Question)</label>
+            <input type="text" placeholder="คำถาม: ถ้าวันพรุ่งนี้ฝนตกหนัก ยอดขายเครื่องดื่มร้อนและ Delivery จะเพิ่มขึ้นเท่าไร?" style="margin: 6px 0;">
+            <input type="text" placeholder="ข้อมูลที่ต้องใช้: ข้อมูลยอดขายย้อนหลังจับคู่กับประวัติสภาพอากาศ" style="margin-bottom: 6px;">
+            <input type="text" placeholder="การตัดสินใจทางธุรกิจ: วางแผนเตรียมแพ็กเกจจิ้ง Delivery และพนักงานให้พร้อมล่วงหน้า">
+        </div>
+    </div>
+
+    <!-- ตอนที่ 4: ทดลองใช้ AI Chat -->
+    <div class="section-card">
+        <div class="section-title">
+            <span class="step-badge">4</span>
+            <span>ตอนที่ 4: ทดลองใช้ AI Chat เป็นคู่คิดธุรกิจ (10 นาที)</span>
+        </div>
+        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 10px;">
+            คัดลอก Prompt ด้านล่างนี้ไปวางใน <strong>ChatGPT / Gemini / Claude</strong> เพื่อขอความคิดเห็นจาก AI:
+        </p>
+
+        <div class="prompt-box">
+            <button class="copy-btn" onclick="copyPrompt()">📋 คัดลอก Prompt</button>
+            <pre id="prompt-content">"ฉันกำลังเปิดธุรกิจ [ประเภทธุรกิจ] กลุ่มลูกค้าคือ [กลุ่มเป้าหมาย] ฉันตั้งคำถามทางธุรกิจ 5 ข้อนี้:
+1. [ใส่คำถามข้อ 1]
+2. [ใส่คำถามข้อ 2]
+3. [ใส่คำถามข้อ 3]
+4. [ใส่คำถามข้อ 4]
+5. [ใส่คำถามข้อ 5]
+ในฐานะ Data & Business Consultant ช่วยวิเคราะห์ว่า คำถามเหล่านี้ดีพอหรือยัง? ต้องปรับอย่างไรให้วัดผลได้ชัดขึ้น และควรเก็บข้อมูลอะไรเพิ่มบ้าง?"</pre>
+        </div>
+
+        <div class="form-group">
+            <label>ข้อคิดเห็น / คำแนะนำจาก AI ที่กลุ่มประทับใจที่สุด (1-2 ข้อ):</label>
+            <textarea placeholder="สรุปสิ่งที่ AI แนะนำ เช่น AI แนะนำให้เปลี่ยนคำถามข้อ 3 ให้ระบุช่วงเวลาชัดเจนขึ้น และแนะนำให้เก็บข้อมูลสภาพอากาศควบคู่ด้วย"></textarea>
+        </div>
+    </div>
+
+    <!-- Action Toolbar -->
+    <div class="btn-toolbar">
+        <button class="btn btn-secondary" onclick="window.print()">🖨️ พิมพ์ / บันทึก PDF</button>
+        <button class="btn btn-primary" onclick="alert('บันทึกข้อมูลเรียบร้อย! พร้อมนำเสนอหน้าชั้นเรียน')">💾 บันทึกคำตอบ</button>
+    </div>
+</div>
+
+<script>
+    function copyPrompt() {
+        const text = document.getElementById('prompt-content').innerText;
+        navigator.clipboard.writeText(text).then(() => {
+            alert('คัดลอก Prompt สำเร็จ! สามารถนำไปวางใน ChatGPT / Gemini / Claude ได้ทันที');
+        });
+    }
+</script>
+
+</body>
+</html>

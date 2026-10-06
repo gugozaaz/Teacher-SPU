@@ -1,0 +1,2362 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ครั้งที่ 12: บูรณาการ 5 ขั้นตอน (ASK ถึง ACT) และจริยธรรม AI สำหรับเจ้าของธุรกิจ | Fundamentals of Data Science</title>
+    
+    <!-- Reveal.js & Fonts -->
+    <link href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800;900&amp;family=Outfit:wght@400;500;600;700;800&amp;family=Fira+Code:wght@400;500&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
+
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #3730a3;
+            --primary-glow: rgba(79, 70, 229, 0.12);
+            --primary-light: #e0e7ff;
+            --secondary: #0284c7;
+            --secondary-dark: #0369a1;
+            --secondary-light: #e0f2fe;
+            --accent: #e11d48;
+            --accent-warm: #d97706;
+            --accent-light: #fef3c7;
+            --success: #059669;
+            --success-light: #dcfce7;
+            --danger: #ef4444;
+            --danger-light: #fee2e2;
+            --purple: #7c3aed;
+            --purple-light: #f3e8ff;
+            --teal: #0d9488;
+            --dark: #0f172a;
+            --bg-main: #f8fafc;
+            --bg-card: #ffffff;
+            --border-card: #e2e8f0;
+            --card-bg: #ffffff;
+            --bg-alt: #f8fafc;
+            --border: #e2e8f0;
+            --text-main: #0f172a;
+            --text-sub: #334155;
+            --text-muted: #64748b;
+            --gradient-main: linear-gradient(135deg, #4f46e5 0%, #0284c7 100%);
+            --gradient-purple: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
+            --gradient-accent: linear-gradient(135deg, #e11d48 0%, #d97706 100%);
+            --gradient-teal: linear-gradient(135deg, #0d9488 0%, #0284c7 100%);
+            --gradient-warm: linear-gradient(135deg, #d97706 0%, #ea580c 100%);
+            --gradient-green: linear-gradient(135deg, #059669 0%, #0284c7 100%);
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: var(--bg-main);
+            font-size: 24px;
+        }
+
+        .reveal {
+            font-family: 'Noto Sans Thai', 'Outfit', sans-serif;
+            color: var(--text-main);
+            background: var(--bg-main);
+            background-image:
+                radial-gradient(circle at 12% 15%, rgba(79, 70, 229, 0.05) 0%, transparent 45%),
+                radial-gradient(circle at 88% 85%, rgba(2, 132, 199, 0.05) 0%, transparent 45%);
+            font-size: 26px;
+        }
+
+        .reveal .slides {
+            text-align: left;
+        }
+
+        .reveal .slides section {
+            height: 100% !important;
+            box-sizing: border-box !important;
+            padding: 22px 38px 24px 38px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: flex-start !important;
+            overflow: hidden !important;
+            background: transparent;
+        }
+
+        @media print {
+            #aspect-ratio-toast,
+            #test-report-overlay {
+                display: none !important;
+            }
+        }
+
+        .slide-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            gap: 12px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+
+        .reveal h1,
+        .reveal h2,
+        .reveal h3,
+        .reveal h4 {
+            font-family: 'Noto Sans Thai', 'Outfit', sans-serif;
+            font-weight: 800;
+            text-transform: none;
+            letter-spacing: -0.02em;
+            margin: 0;
+            line-height: 1.25;
+            color: var(--text-main);
+        }
+
+        .reveal h1 {
+            font-size: 2.35rem;
+        }
+
+        .reveal h2 {
+            font-size: 1.48rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            line-height: 1.25;
+            letter-spacing: -0.015em;
+        }
+
+        .reveal h3 {
+            font-size: 1.25rem;
+            color: var(--primary);
+        }
+
+        .reveal p {
+            margin: 0;
+            line-height: 1.5;
+            color: var(--text-sub);
+            font-size: 1.02rem;
+        }
+
+        .slide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 2px solid rgba(79, 70, 229, 0.12);
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+            gap: 16px;
+        }
+
+        .slide-header .title-group,
+        .slide-header .slide-title-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .slide-header .subtitle,
+        .slide-header .slide-subtitle {
+            font-size: 1.02rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            margin: 0;
+        }
+
+        .badge-step,
+        .slide-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #eef2ff;
+            color: var(--primary);
+            padding: 6px 14px;
+            border-radius: 9999px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+            border: 1px solid rgba(79, 70, 229, 0.2);
+            box-shadow: var(--shadow-sm);
+            text-transform: none;
+        }
+
+        .badge-step.purple {
+            background: #f5f3ff;
+            color: var(--purple);
+            border-color: rgba(124, 58, 237, 0.2);
+        }
+
+        .badge-step.warm {
+            background: #fffbeb;
+            color: var(--accent-warm);
+            border-color: rgba(217, 119, 6, 0.2);
+        }
+
+        .badge-step.teal {
+            background: #f0fdfa;
+            color: var(--teal);
+            border-color: rgba(13, 148, 136, 0.2);
+        }
+
+        .badge-step.primary {
+            background: #eef2ff;
+            color: var(--primary);
+            border-color: rgba(79, 70, 229, 0.2);
+        }
+
+        .badge-step.accent {
+            background: #fff1f2;
+            color: var(--accent);
+            border-color: rgba(225, 29, 72, 0.2);
+        }
+
+        .badge-step.success {
+            background: #f0fdf4;
+            color: var(--success);
+            border-color: rgba(5, 150, 105, 0.2);
+        }
+
+        .badge-step.danger {
+            background: #fff1f2;
+            color: var(--accent);
+            border-color: rgba(225, 29, 72, 0.2);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .badge-primary {
+            background: #e0e7ff;
+            color: var(--primary-dark);
+        }
+
+        .badge-accent {
+            background: #ffe4e6;
+            color: var(--accent);
+        }
+
+        .badge-warm {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-success {
+            background: #dcfce7;
+            color: var(--success);
+        }
+
+        .badge-purple {
+            background: #f3e8ff;
+            color: var(--purple);
+        }
+
+        .badge-gray {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 12px;
+            padding: 14px 16px;
+            box-shadow: var(--shadow-sm);
+            position: relative;
+        }
+
+        .card-header-sm {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .card-header-sm h4 {
+            font-size: 1.08rem;
+            margin: 0;
+            color: var(--text-main);
+        }
+
+        .card-header-sm i {
+            font-size: 1.15rem;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .callout-box {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 0.92rem;
+            line-height: 1.45;
+        }
+
+        .callout-box.info {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            color: #0369a1;
+        }
+
+        .callout-box.warning {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            color: #92400e;
+        }
+
+        .callout-box.danger {
+            background: #fff1f2;
+            border: 1px solid #fecdd3;
+            color: #9f1239;
+        }
+
+        .callout-box.success {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+        }
+
+        .highlight-box {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 0.92rem;
+            line-height: 1.45;
+            background: #f8fafc;
+            border: 1px solid var(--border-card);
+            border-left: 4px solid var(--primary);
+        }
+
+        .highlight-box.accent {
+            background: #fffbeb;
+            border-color: #fde68a;
+            border-left-color: var(--accent-warm);
+            color: #92400e;
+        }
+
+        .highlight-box.success {
+            background: #f0fdf4;
+            border-color: #bbf7d0;
+            border-left-color: var(--success);
+            color: #166534;
+        }
+
+        .highlight-box.danger {
+            background: #fff1f2;
+            border-color: #fecdd3;
+            border-left-color: var(--accent);
+            color: #9f1239;
+        }
+
+        .highlight-box.primary {
+            background: #f0f9ff;
+            border-color: #bae6fd;
+            border-left-color: var(--primary);
+            color: #0369a1;
+        }
+
+        .code-box,
+        .prompt-box {
+            background: #0f172a;
+            color: #f8fafc;
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.82rem;
+            line-height: 1.45;
+            overflow-x: auto;
+            border: 1px solid #334155;
+            position: relative;
+        }
+
+        .code-box .code-keyword {
+            color: #38bdf8;
+            font-weight: 600;
+        }
+
+        .code-box .code-func {
+            color: #4ade80;
+            font-weight: 600;
+        }
+
+        .code-box .code-str {
+            color: #fcd34d;
+        }
+
+        .code-box .code-comment {
+            color: #94a3b8;
+            font-style: italic;
+        }
+
+        .prompt-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 6px;
+            margin-bottom: 8px;
+            font-size: 0.75rem;
+            color: #94a3b8;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .data-table,
+        .table-custom {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.86rem;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-card);
+        }
+
+        .data-table th,
+        .table-custom th {
+            padding: 8px 12px;
+            text-align: left;
+            background: #f1f5f9;
+            color: var(--text-main);
+            font-weight: 700;
+            border-bottom: 1px solid var(--border-card);
+        }
+
+        .data-table td,
+        .table-custom td {
+            padding: 7px 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-card);
+            color: var(--text-sub);
+        }
+
+        .data-table tr:last-child td,
+        .table-custom tr:last-child td {
+            border-bottom: none;
+        }
+
+        .data-table tr:hover td,
+        .table-custom tr:hover td {
+            background: #f8fafc;
+        }
+
+        .table-custom tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        .step-container {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .step-card {
+            background: white;
+            border: 1px solid var(--border-card);
+            border-radius: 8px;
+            padding: 8px 10px;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .step-card.active {
+            border: 2px solid var(--primary);
+            background: #eef2ff;
+            transform: scale(1.03);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .step-card.integrated {
+            border: 2px solid #8b5cf6;
+            background: #faf5ff;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .step-card .step-num {
+            font-size: 0.72rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .step-card.active .step-num,
+        .step-card.integrated .step-num {
+            color: var(--primary);
+        }
+
+        .step-card .step-title {
+            font-size: 0.92rem;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .step-card .step-desc {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+            line-height: 1.25;
+        }
+
+        .compare-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .tag {
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+
+        .tag.blue { background: #e0f2fe; color: #0284c7; }
+        .tag.purple { background: #f3e8ff; color: #7e22ce; }
+        .tag.orange { background: #ffedd5; color: #c2410c; }
+        .tag.red { background: #fee2e2; color: #b91c1c; }
+        .tag.green { background: #dcfce7; color: #15803d; }
+
+        .stat-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #eef2ff;
+            color: var(--primary);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.82rem;
+        }
+
+        .stat-badge.green { background: #ecfdf5; color: #047857; }
+        .stat-badge.amber { background: #fffbeb; color: #b45309; }
+        .stat-badge.rose { background: #fff1f2; color: #be123c; }
+        .stat-badge.purple { background: #f3e8ff; color: #7e22ce; }
+
+        .instructor-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: white;
+            padding: 8px 20px;
+            border-radius: 9999px;
+            border: 1px solid var(--border-card);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .text-lead {
+            font-size: 1.08rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        #hud-toast {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            background: rgba(15, 23, 42, 0.9);
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            z-index: 99999;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease-in-out;
+        }
+        #hud-toast.show {
+            opacity: 1;
+        }
+
+        /* Test overlay */
+        #test-report-overlay {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            color: #f8fafc;
+            padding: 16px;
+            border-radius: 12px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.8rem;
+            z-index: 100000;
+            width: 320px;
+            max-height: 85vh;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+            display: none;
+        }
+
+        .test-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 3px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .test-pass { color: #34d399; }
+        .test-fail { color: #f87171; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div id="test-report-overlay">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; padding-bottom: 8px; margin-bottom: 8px;">
+            <strong style="color: #38bdf8;">SLIDE AUDIT REPORT</strong>
+            <span id="test-report-summary" style="font-size: 0.75rem;">Running...</span>
+        </div>
+        <div id="test-report-content"></div>
+    </div>
+
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- SLIDE 1: Title Slide -->
+            <section data-background-gradient="radial-gradient(circle at 50% 50%, #e0e7ff 0%, #f8fafc 100%)">
+                <div style="text-align: center; margin: auto 0; padding: 20px 10px;">
+                    <div style="margin-bottom: 14px;">
+                        <span class="badge badge-primary"><i class="fas fa-graduation-cap"></i> ภาคเรียนที่ 1/2569</span>
+                        <span class="badge badge-accent" style="margin-left: 6px;"><i class="fas fa-calendar-alt"></i> ครั้งที่ 12 / 14</span>
+                    </div>
+                    <h1 style="font-size: 2.2em; margin-bottom: 12px; font-weight: 900; line-height: 1.2;">
+                        บูรณาการ 5 ขั้นตอน (ASK ถึง ACT)<br />
+                        <span style="color: var(--primary);">และจริยธรรม AI สำหรับเจ้าของธุรกิจ (AI Ethics &amp; Governance)</span>
+                    </h1>
+                    <p style="font-size: 1.05em; color: var(--secondary); font-weight: 600; margin-bottom: 20px;">
+                        Fundamentals of Data Science (พื้นฐานวิทยาการข้อมูล)
+                    </p>
+                    <div style="display: inline-block; padding: 8px 24px; background: #ffffff; border-radius: 9999px; border: 1px solid var(--border-card); box-shadow: var(--shadow-sm);">
+                        <p style="font-size: 0.85em; margin: 0; color: var(--text-sub);">
+                            <i class="fas fa-user-tie" style="color: var(--secondary); margin-right: 6px;"></i>
+                            <strong>ผู้สอน:</strong> อาจารย์สุรชัย โกยสันติสุข | คณะการสร้างเจ้าของธุรกิจ มหาวิทยาลัยศรีปทุม
+                        </p>
+                    </div>
+                </div>
+                <aside class="notes">
+                    - ยินดีต้อนรับสู่ Session 12 ซึ่งเป็นคาบบูรณาการใหญ่ก่อนเข้าสู่การทำ Final Project ใน Session 13-14
+                    - วันนี้เราจะต่อจิ๊กซอว์ทั้ง 5 ขั้นตอน (ASK ถึง ACT) เข้าด้วยกัน และติดเกราะคุ้มกันความเสี่ยงทางกฎหมายและจริยธรรม
+                </aside>
+            </section>
+
+            <!-- SLIDE 2: Session Recap - Bridge from Modules to Full Pipeline -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-infinity" style="color: var(--primary);"></i> วงจร Data Science: บูรณาการ 5 ขั้นตอนอย่างไร้รอยต่อ</h2>
+                        <span class="subtitle">จากการเรียนรู้ทีละขั้นตอนใน 11 สัปดาห์ สู่การหมุนกงล้อข้อมูล (Data Flywheel) ขับเคลื่อนธุรกิจจริง</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-cubes"></i> End-to-End Pipeline</span>
+                </div>
+                <div class="slide-body">
+                    <div class="step-container">
+                        <div class="step-card integrated">
+                            <div class="step-num">Step 1</div>
+                            <div class="step-title">ASK</div>
+                            <div class="step-desc">ตั้งคำถามธุรกิจ (S1-2)</div>
+                        </div>
+                        <div class="step-card integrated">
+                            <div class="step-num">Step 2</div>
+                            <div class="step-title">COLLECT</div>
+                            <div class="step-desc">Tidy &amp; Forms (S3-4)</div>
+                        </div>
+                        <div class="step-card integrated">
+                            <div class="step-num">Step 3</div>
+                            <div class="step-title">PREPARE</div>
+                            <div class="step-desc">ล้างตารางสะอาด (S5)</div>
+                        </div>
+                        <div class="step-card integrated">
+                            <div class="step-num">Step 4</div>
+                            <div class="step-title">ANALYZE</div>
+                            <div class="step-desc">AI &amp; Models (S6-10)</div>
+                        </div>
+                        <div class="step-card integrated">
+                            <div class="step-num">Step 5</div>
+                            <div class="step-title">ACT</div>
+                            <div class="step-desc">Story &amp; Pitch (S11)</div>
+                        </div>
+                    </div>
+
+                    <div class="compare-container" style="margin-top: 2px;">
+                        <div class="card" style="border-left: 4px solid var(--secondary); padding: 12px 14px;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-history" style="color: var(--secondary);"></i>
+                                <h4 style="color: var(--secondary); font-size: 1.02rem;">11 คาบที่ผ่านมา (Component Mastery)</h4>
+                            </div>
+                            <p style="font-size: 0.88rem; color: var(--text-sub); line-height: 1.45;">
+                                • ฝึกทักษะแยกส่วน: ตั้งสมมติฐาน, จัดระเบียบ Tidy Data, คลีนค่าว่าง, สั่ง Gemini วิเคราะห์, ทำนายยอดขาย, และเล่าเรื่อง Data Storytelling<br />
+                                • เห็นความเชื่อมโยงเป็นทอดๆ แต่ยังไม่ได้รันครบทั้งวงจรในโจทย์เดียว
+                            </p>
+                        </div>
+                        <div class="card" style="border-left: 4px solid var(--primary); padding: 12px 14px; background: #faf5ff;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-shield-alt" style="color: var(--primary);"></i>
+                                <h4 style="color: var(--primary); font-size: 1.02rem;">คาบนี้ (Pipeline Integration &amp; AI Ethics)</h4>
+                            </div>
+                            <p style="font-size: 0.88rem; color: var(--text-sub); line-height: 1.45;">
+                                • ร้อยเรียง <strong>ASK ➔ COLLECT ➔ PREPARE ➔ ANALYZE ➔ ACT</strong> ในโจทย์เดียว<br />
+                                • ติดเกราะจริยธรรม: ป้องกัน <strong>AI Bias, ข้อมูลรั่วไหล (PDPA), และ AI หลอน</strong><br />
+                                • ประกาศกติกาและเกณฑ์ประเมินโปรเจกต์กลุ่ม (40% ของวิชา)
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="highlight-box accent" style="padding: 10px 14px; margin-top: 2px;">
+                        <i class="fas fa-gavel" style="color: #b45309; margin-right: 8px;"></i>
+                        <strong>คำเตือนทางธุรกิจ:</strong> เทคโนโลยีและโมเดล AI ที่เก่งกาจ หากขาด <em>จริยธรรมและการกำกับดูแล (Governance)</em> อาจทำให้ธุรกิจถูกปรับเงินหลายล้านบาท โดนฟ้องร้อง และล้มละลายได้ในชั่วข้ามคืน!
+                    </div>
+                </div>
+                <aside class="notes">
+                    - ทบทวนว่านักศึกษาเรียนครบทั้ง 5 เสาแล้ว วันนี้เราจะผูกทุกเสาเข้าด้วยกัน
+                    - ชี้ให้เห็นว่าถ้าเก่ง Data แต่ไม่รู้กฎหมาย PDPA หรือปล่อยให้ AI มีอคติ ธุรกิจอาจพังได้ทันที
+                </aside>
+            </section>
+
+            <!-- SLIDE 3: SESSION ROADMAP -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-map-marked-alt" style="color: var(--primary);"></i> แผนที่การเรียนรู้ประจำคาบ (Session Roadmap)</h2>
+                        <span class="subtitle">4 เสาหลักของการบูรณาการวงจรข้อมูล การควบคุมจริยธรรม AI และการเตรียมความพร้อม Final Project</span>
+                    </div>
+                    <span class="badge-step primary"><i class="fas fa-compass"></i> Overview</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-4" style="margin-top: 8px;">
+                        <div class="card" style="border-top: 4px solid var(--primary); height: 100%;">
+                            <div style="font-size: 1.5rem; color: var(--primary); margin-bottom: 8px;"><i class="fas fa-sync"></i></div>
+                            <h4 style="font-size: 1.05rem; margin-bottom: 6px;">1. Full Lifecycle</h4>
+                            <p style="font-size: 0.84rem; line-height: 1.4; color: var(--text-sub);">
+                                • การเชื่อม 5 ขั้นตอน ASK ถึง ACT<br />
+                                • The Data Flywheel วงล้อข้อมูล<br />
+                                • Case: FinQuick Lending
+                            </p>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid var(--danger); height: 100%;">
+                            <div style="font-size: 1.5rem; color: var(--danger); margin-bottom: 8px;"><i class="fas fa-user-slash"></i></div>
+                            <h4 style="font-size: 1.05rem; margin-bottom: 6px;">2. Bias &amp; Privacy</h4>
+                            <p style="font-size: 0.84rem; line-height: 1.4; color: var(--text-sub);">
+                                • AI Bias &amp; การเลือกปฏิบัติ<br />
+                                • กฎหมาย PDPA สำหรับ SME<br />
+                                • Data Anonymization Lab
+                            </p>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid var(--accent); height: 100%;">
+                            <div style="font-size: 1.5rem; color: var(--accent); margin-bottom: 8px;"><i class="fas fa-ghost"></i></div>
+                            <h4 style="font-size: 1.05rem; margin-bottom: 6px;">3. Hallucination &amp; XAI</h4>
+                            <p style="font-size: 0.84rem; line-height: 1.4; color: var(--text-sub);">
+                                • Zillow Crash 500M เหรียญ<br />
+                                • การตรวจ Fact-checking<br />
+                                • Transparency &amp; Explainability
+                            </p>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid var(--success); height: 100%;">
+                            <div style="font-size: 1.5rem; color: var(--success); margin-bottom: 8px;"><i class="fas fa-trophy"></i></div>
+                            <h4 style="font-size: 1.05rem; margin-bottom: 6px;">4. Final Project Launch</h4>
+                            <p style="font-size: 0.84rem; line-height: 1.4; color: var(--text-sub);">
+                                • ชิ้นงานส่งมอบ 4 รายการ<br />
+                                • เกณฑ์คะแนน 5 ด้าน (40%)<br />
+                                • แผนงาน Session 13 &amp; 14
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="card" style="background: #f1f5f9; border: 1px dashed #cbd5e1; padding: 12px 16px; margin-top: 6px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span class="tag purple"><i class="fas fa-shield-virus"></i> Workshop Focus</span>
+                                <span style="font-size: 0.92rem; font-weight: 600; color: var(--dark);">กรณีศึกษา: สตาร์ทอัพไมโครไฟแนนซ์ "FinQuick Lending" รันไปป์ไลน์ 5 ขั้นตอน พร้อมแก้โจทย์ AI Bias และปิดช่องโหว่ PDPA</span>
+                            </div>
+                            <span style="font-size: 0.82rem; color: var(--text-muted);">เวลาปฏิบัติการ: 60 นาที</span>
+                        </div>
+                    </div>
+                </div>
+                <aside class="notes">
+                    - อธิบายภาพรวมทั้ง 4 เสาหลัก
+                    - บอกนักศึกษาว่าท้ายคาบนี้จะแจกรายละเอียดและเกณฑ์ประเมินโปรเจกต์กลุ่ม 40%
+                </aside>
+            </section>
+
+            <!-- SLIDE 4: THE BIG PICTURE: พลังที่ยิ่งใหญ่กับความรับผิดชอบ -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-balance-scale-right" style="color: var(--primary);"></i> The Dual Engine: พลังขับเคลื่อนธุรกิจ กับ เกราะคุ้มกันความเสี่ยง</h2>
+                        <span class="subtitle">AI &amp; Data เปรียบเสมือนเครื่องยนต์เจ็ต แต่จริยธรรมและธรรมาภิบาลคือระบบเบรกและพวงมาลัย</span>
+                    </div>
+                    <span class="badge-step primary"><i class="fas fa-cogs"></i> Philosophy</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div class="card" style="border-left: 4px solid var(--primary); background: #f8faff;">
+                            <h4 style="color: var(--primary); margin-bottom: 8px;"><i class="fas fa-rocket"></i> พลังขับเคลื่อนธุรกิจ (The Engine of Growth)</h4>
+                            <ul style="font-size: 0.88rem; color: var(--text-sub); line-height: 1.6; padding-left: 20px;">
+                                <li><strong>Speed:</strong> วิเคราะห์ข้อมูล 10,000 แถวเสร็จในเวลาไม่กี่วินาที</li>
+                                <li><strong>Personalization:</strong> ออกแบบข้อเสนอเฉพาะบุคคลระดับ 1-to-1</li>
+                                <li><strong>Forecasting:</strong> มองเห็นแนวโน้มและจำลองสถานการณ์อนาคต</li>
+                                <li><strong>Automation:</strong> ตัดสินใจอนุมัติงานและลดต้นทุนดำเนินการมหาศาล</li>
+                            </ul>
+                        </div>
+
+                        <div class="card" style="border-left: 4px solid var(--danger); background: #fff5f5;">
+                            <h4 style="color: var(--danger); margin-bottom: 8px;"><i class="fas fa-shield-alt"></i> ความเสี่ยงที่อาจทำลายธุรกิจ (The Catastrophic Risks)</h4>
+                            <ul style="font-size: 0.88rem; color: var(--text-sub); line-height: 1.6; padding-left: 20px;">
+                                <li><strong>AI Bias:</strong> ตัดสินใจเลือกปฏิบัติจนโดนแบนจากสังคมและกฎหมาย</li>
+                                <li><strong>Privacy Breach:</strong> ละเมิด PDPA โดนโทษปรับสูงสุด 5 ล้านบาท และจำคุก</li>
+                                <li><strong>Hallucination:</strong> โมเดล AI คำนวณตัวเลขเพี้ยนจนบริษัทขาดทุนย่อยยับ</li>
+                                <li><strong>Black Box:</strong> อธิบายเหตุผลไม่ได้ว่าทำไมจึงปฏิเสธหรือคิดราคานี้</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="highlight-box accent" style="margin-top: 4px;">
+                        <i class="fas fa-quote-left" style="color: #b45309; margin-right: 6px;"></i>
+                        <strong>ปรัชญาของเจ้าของธุรกิจ:</strong> รถสปอร์ตที่วิ่งได้เร็วที่สุด ไม่ใช่รถที่มีเครื่องยนต์แรงที่สุดเพียงอย่างเดียว... แต่ต้องเป็นรถที่ <strong>"คนขับมั่นใจในระบบเบรก"</strong> จึงจะกล้าเหยียบคันเร่งจนสุดมิดไมล์!
+                    </div>
+                </div>
+                <aside class="notes">
+                    - อุปมาอุปไมยเรื่องรถสปอร์ตกับระบบเบรก
+                    - ย้ำว่าคนที่ไม่รู้เรื่อง Ethics จะกลัวจนไม่กล้าใช้ AI หรือไม่ก็ใช้แบบไม่ระวังจนเกิดเรื่อง
+                </aside>
+            </section>
+
+            <!-- SLIDE 5: END-TO-END PIPELINE: THE DATA FLYWHEEL -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-sync-alt" style="color: var(--secondary);"></i> The Data Flywheel: วงจรกงล้อข้อมูลที่หมุนรอบตัวเองไม่สิ้นสุด</h2>
+                        <span class="subtitle">การทำ Data Science ไม่ใช่เส้นตรงที่ทำครั้งเดียวจบ แต่คือวงจรเรียนรู้ต่อเนื่อง (Continuous Feedback Loop)</span>
+                    </div>
+                    <span class="badge-step" style="background: var(--secondary-light); color: var(--secondary-dark);"><i class="fas fa-recycle"></i> The Lifecycle</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-3">
+                        <div class="card" style="border-top: 4px solid #0284c7;">
+                            <div style="font-size: 0.75rem; font-weight: 700; color: #0284c7; text-transform: uppercase;">ระยะที่ 1: กำหนดทิศทาง</div>
+                            <h4 style="font-size: 1.05rem; margin: 4px 0 6px;">1. ASK &amp; Hypothesis</h4>
+                            <p style="font-size: 0.84rem; color: var(--text-sub); line-height: 1.45;">
+                                เริ่มจากปัญหาธุรกิจจริง ตั้งสมมติฐาน และกำหนดตัวชี้วัดความสำเร็จ (KPI) ไม่ใช่เริ่มจากการโหลดข้อมูลมาเล่น
+                            </p>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid var(--purple);">
+                            <div style="font-size: 0.75rem; font-weight: 700; color: var(--purple); text-transform: uppercase;">ระยะที่ 2: วัตถุดิบคุณภาพ</div>
+                            <h4 style="font-size: 1.05rem; margin: 4px 0 6px;">2. COLLECT &amp; 3. PREPARE</h4>
+                            <p style="font-size: 0.84rem; color: var(--text-sub); line-height: 1.45;">
+                                จัดเก็บแบบ Tidy Data, ทำความสะอาดข้อมูลขยะ (GIGO), และ <strong>Mask ข้อมูลส่วนบุคคลตาม PDPA</strong>
+                            </p>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid var(--success);">
+                            <div style="font-size: 0.75rem; font-weight: 700; color: var(--success); text-transform: uppercase;">ระยะที่ 3: ปัญญาและการลงมือทำ</div>
+                            <h4 style="font-size: 1.05rem; margin: 4px 0 6px;">4. ANALYZE &amp; 5. ACT</h4>
+                            <p style="font-size: 0.84rem; color: var(--text-sub); line-height: 1.45;">
+                                ให้ Gemini วิเคราะห์หา Pattern, ตรวจสอบความสมเหตุสมผล, สื่อสารด้วย Storytelling และนำไปปฏิบัติจริง
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="card" style="border-left: 4px solid var(--primary); background: #faf5ff; padding: 12px 16px; margin-top: 4px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <div>
+                                <h4 style="color: var(--primary); font-size: 0.98rem; margin-bottom: 4px;"><i class="fas fa-undo"></i> วงล้อป้อนกลับ (The Feedback Loop):</h4>
+                                <p style="font-size: 0.85rem; color: var(--text-sub); line-height: 1.4;">
+                                    เมื่อลงมือทำจริงในขั้น ACT ผลลัพธ์ที่ได้จะกลายเป็น <strong>"ข้อมูลใหม่"</strong> วนกลับมาตั้งคำถาม (ASK) ในรอบถัดไป ทำให้ธุรกิจฉลาดขึ้นเรื่อยๆ
+                                </p>
+                            </div>
+                            <span class="stat-badge purple" style="font-size: 0.9rem; padding: 6px 14px;"><i class="fas fa-chart-line"></i> Compounding ROI</span>
+                        </div>
+                    </div>
+                </div>
+                <aside class="notes">
+                    - ชี้ให้เห็นว่า Data Science คือ Flywheel เมื่อหมุนรอบแรกแล้ว รอบต่อๆ ไปจะหมุนเร็วขึ้นและใช้งบน้อยลง
+                </aside>
+            </section>
+
+            <!-- SLIDE 6: CASE STUDY: FINQUICK LENDING -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-hand-holding-usd" style="color: var(--primary);"></i> กรณีศึกษา: สตาร์ทอัพไมโครไฟแนนซ์ "FinQuick Lending"</h2>
+                        <span class="subtitle">เมื่อแอปปล่อยกู้ร้านค้าออนไลน์ ตัดสินใจใช้ AI อนุมัติสินเชื่ออัตโนมัติ 100% จนเกือบเจ๊ง</span>
+                    </div>
+                    <span class="badge-step accent"><i class="fas fa-coins"></i> FinTech Case</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-3">
+                        <div class="card">
+                            <div class="card-header-sm">
+                                <i class="fas fa-store" style="color: var(--primary);"></i>
+                                <h4>บริบทธุรกิจ (The Model)</h4>
+                            </div>
+                            <p style="font-size: 0.85rem; line-height: 1.5; color: var(--text-sub);">
+                                • ฟินเทคสตาร์ทอัพไทย ให้สินเชื่อหมุนเวียน 20,000 - 100,000 บาทแก่พ่อค้าแม่ค้าออนไลน์ที่ไม่มีสลิปเงินเดือน<br />
+                                • ใช้ข้อมูลทางเลือก (Alternative Data): ประวัติยอดขาย Shopee/TikTok, แคปภาพสลิปโอนเงิน, และรีวิวร้านค้า
+                            </p>
+                        </div>
+
+                        <div class="card" style="border-left: 4px solid var(--danger);">
+                            <div class="card-header-sm">
+                                <i class="fas fa-bolt" style="color: var(--danger);"></i>
+                                <h4 style="color: var(--danger);">การตัดสินใจที่ผิดพลาด (The Mistake)</h4>
+                            </div>
+                            <p style="font-size: 0.85rem; line-height: 1.5; color: var(--text-sub);">
+                                • ให้ AI ประเมินเครดิตและอนุมัติทันที 100% เพื่อประหยัดต้นทุนพนักงานสินเชื่อ<br />
+                                • พนักงานเผลอป้อน <strong>"ชื่อ-สกุล, เลขบัตรประชาชน, เบอร์โทร, และพิกัดร้าน"</strong> เข้า Gemini โดยตรง<br />
+                                • โมเดลปฏิเสธร้านค้าในต่างจังหวัดและแม่ค้าผู้หญิงสูงผิดปกติ!
+                            </p>
+                        </div>
+
+                        <div class="card" style="border-left: 4px solid var(--accent); background: #fffbeb;">
+                            <div class="card-header-sm">
+                                <i class="fas fa-exclamation-triangle" style="color: #b45309;"></i>
+                                <h4 style="color: #b45309;">ผลกระทบที่ตามมา (The Crisis)</h4>
+                            </div>
+                            <p style="font-size: 0.85rem; line-height: 1.5; color: var(--text-sub);">
+                                • ถูกลูกค้ารวมตัวร้องเรียนเรื่อง <strong>การเลือกปฏิบัติ (Discrimination Bias)</strong><br />
+                                • สุ่มเสี่ยงถูกหน่วยงานกำกับตรวจสอบเรื่องการละเมิด <strong>PDPA</strong><br />
+                                • ลูกค้าถามว่าทำไมไม่ผ่าน แต่บริษัทตอบไม่ได้เพราะระบบเป็น <strong>Black Box</strong>!
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="highlight-box danger" style="margin-top: 4px;">
+                        <i class="fas fa-fire" style="color: var(--danger); margin-right: 6px;"></i>
+                        <strong>บทเรียนราคาแพง:</strong> FinQuick เกือบถูกปิดกิจการ ไม่ใช่เพราะ AI ไม่ฉลาด แต่เป็นเพราะขาด <strong>"AI Governance &amp; Ethics"</strong> ซึ่งเป็นสิ่งที่เจ้าของธุรกิจยุคนี้ต้องรู้!
+                    </div>
+                </div>
+                <aside class="notes">
+                    - แนะนำเคส FinQuick Lending ให้นักศึกษาเห็นว่าปัญหาไม่ได้อยู่ที่สูตรคณิตศาสตร์ แต่อยู่ที่จริยธรรมและการกำกับดูแล
+                </aside>
+            </section>
+
+            <!-- SLIDE 7: 4 PILLARS OF AI ETHICS & GOVERNANCE -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-shield-virus" style="color: var(--primary);"></i> 4 เสาหลักของจริยธรรม AI และธรรมาภิบาลข้อมูล</h2>
+                        <span class="subtitle">กรอบมาตรฐานสากลสำหรับการประยุกต์ใช้ AI ในองค์กรอย่างยั่งยืนและถูกกฎหมาย</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-landmark"></i> Governance</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-4" style="margin-top: 6px;">
+                        <div class="card" style="border-top: 4px solid #ef4444; height: 100%;">
+                            <div style="font-size: 1.4rem; color: #ef4444; margin-bottom: 6px;"><i class="fas fa-balance-scale"></i></div>
+                            <h4 style="font-size: 1rem; margin-bottom: 4px; color: var(--dark);">1. Bias &amp; Fairness</h4>
+                            <p style="font-size: 0.8rem; color: var(--text-sub); line-height: 1.4;">
+                                ป้องกันอคติและการเลือกปฏิบัติต่อกลุ่มคนตามเพศ อายุ ชาติพันธุ์ หรือถิ่นที่อยู่
+                            </p>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid #f59e0b; height: 100%;">
+                            <div style="font-size: 1.4rem; color: #f59e0b; margin-bottom: 6px;"><i class="fas fa-user-lock"></i></div>
+                            <h4 style="font-size: 1rem; margin-bottom: 4px; color: var(--dark);">2. Privacy &amp; PDPA</h4>
+                            <p style="font-size: 0.8rem; color: var(--text-sub); line-height: 1.4;">
+                                ปกป้องข้อมูลส่วนบุคคล ขอความยินยอม และ Mask ข้อมูลก่อนนำเข้า AI
+                            </p>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid #0284c7; height: 100%;">
+                            <div style="font-size: 1.4rem; color: #0284c7; margin-bottom: 6px;"><i class="fas fa-check-double"></i></div>
+                            <h4 style="font-size: 1rem; margin-bottom: 4px; color: var(--dark);">3. Fact-Checking</h4>
+                            <p style="font-size: 0.8rem; color: var(--text-sub); line-height: 1.4;">
+                                ตรวจสอบการกุเรื่องเท็จ (Hallucination) และมีมนุษย์คอยควบคุมผลลัพธ์
+                            </p>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid #10b981; height: 100%;">
+                            <div style="font-size: 1.4rem; color: #10b981; margin-bottom: 6px;"><i class="fas fa-eye"></i></div>
+                            <h4 style="font-size: 1rem; margin-bottom: 4px; color: var(--dark);">4. Explainability (XAI)</h4>
+                            <p style="font-size: 0.8rem; color: var(--text-sub); line-height: 1.4;">
+                                โปร่งใส สามารถอธิบายเหตุผลของการตัดสินใจให้ลูกค้าและผู้มีส่วนได้เสียทราบได้
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="highlight-box" style="margin-top: 8px; border-left-color: var(--primary);">
+                        <i class="fas fa-info-circle" style="color: var(--primary); margin-right: 6px;"></i>
+                        <strong>ข้อพึงระวัง:</strong> AI ไม่มีศีลธรรม ไม่มีจิตสำนึก และไม่สามารถรับผิดชอบทางกฎหมายได้... <strong>"เจ้าของธุรกิจและผู้บริหารเท่านั้นที่ต้องเป็นผู้รับผิดชอบผลลัพธ์ทั้งหมด!"</strong>
+                    </div>
+                </div>
+                <aside class="notes">
+                    - อธิบาย 4 เสาหลัก: Bias, Privacy, Fact-checking, และ Explainability
+                </aside>
+            </section>
+
+            <!-- SLIDE 8: PILLAR 1: AI BIAS & DISCRIMINATION -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-user-slash" style="color: var(--danger);"></i> เสาหลักที่ 1: AI Bias — เมื่อ AI สืบทอดอคติจากมนุษย์</h2>
+                        <span class="subtitle">AI ไม่ได้มีอคติด้วยตัวเอง แต่อคติเกิดจาก "ชุดข้อมูลในอดีต (Historical Data)" ที่มนุษย์ป้อนให้มันเรียนรู้</span>
+                    </div>
+                    <span class="badge-step danger"><i class="fas fa-exclamation-triangle"></i> Pillar 1</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div class="card">
+                            <h4 style="color: var(--dark); margin-bottom: 8px;"><i class="fas fa-question-circle" style="color: var(--danger);"></i> เกิดอะไรขึ้นกับ FinQuick Lending?</h4>
+                            <p style="font-size: 0.85rem; color: var(--text-sub); line-height: 1.5; margin-bottom: 8px;">
+                                ข้อมูลในอดีต 5 ปีก่อนของบริษัทพบว่า ผู้กู้ส่วนใหญ่ที่เป็นผู้ชายในเขตกรุงเทพฯ มีอัตราการปิดหนี้สูงกว่า... เมื่อนำข้อมูลนี้ไปเทรน AI:
+                            </p>
+                            <div style="display: flex; flex-direction: column; gap: 6px; font-size: 0.82rem;">
+                                <div class="highlight-box danger" style="padding: 6px 10px;">
+                                    <strong>ผลลัพธ์ Bias 1:</strong> แม่ค้าผู้หญิงที่ขายของดีมาก ถูกหักคะแนนเครดิตอัตโนมัติเพียงเพราะเพศสภาพ
+                                </div>
+                                <div class="highlight-box danger" style="padding: 6px 10px;">
+                                    <strong>ผลลัพธ์ Bias 2:</strong> ร้านค้าต่างจังหวัดถูกปฏิเสธ 65% เพราะ AI มองว่าอยู่นอกเขตเศรษฐกิจ
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card" style="border-left: 4px solid var(--success); background: #f0fdf4;">
+                            <h4 style="color: #047857; margin-bottom: 8px;"><i class="fas fa-wrench"></i> วิธีแก้ปัญหา Bias สำหรับผู้ประกอบการ</h4>
+                            <ul style="font-size: 0.84rem; color: var(--text-sub); line-height: 1.55; padding-left: 18px;">
+                                <li><strong>ตัดตัวแปรที่ก่อให้เกิดการเลือกปฏิบัติ (Sensitive Attributes):</strong> นำตัวแปร เพศ, ศาสนา, เชื้อชาติ, หรือรูปถ่าย ออกจากชุดข้อมูลที่ AI ใช้คำนวณ</li>
+                                <li><strong>Data Auditing:</strong> ตรวจสอบสัดส่วนผู้ผ่านเกณฑ์แยกตามกลุ่ม (Disparate Impact Ratio) หากกลุ่มใดผ่านน้อยกว่า 80% ของกลุ่มหลัก ต้องทบทวนเกณฑ์</li>
+                                <li><strong>Diverse Training Data:</strong> เพิ่มข้อมูลตัวอย่างของกลุ่มที่ยังขาดตัวแทน (Underrepresented Groups) ให้สมดุล</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="highlight-box" style="margin-top: 4px; border-left-color: var(--danger);">
+                        <i class="fas fa-gavel" style="color: var(--danger); margin-right: 6px;"></i>
+                        <strong>สูตรจำขึ้นใจ:</strong> <em>"Biased Data In = Biased AI Out"</em> ขยะในอดีตจะกลายเป็นการเลือกปฏิบัติในอนาคต หากเราไม่คัดกรอง!
+                    </div>
+                </div>
+                <aside class="notes">
+                    - อธิบายว่า AI ทำนายจากสถิติในอดีต ถ้าอดีตผู้ชายกู้เยอะกว่า AI ก็จะคิดว่าผู้ชายดีกว่า
+                </aside>
+            </section>
+
+            <!-- SLIDE 9: ROOT CAUSE OF BIAS -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-search-plus" style="color: var(--primary);"></i> เจาะลึกต้นตอของ AI Bias: อคติแทรกซึมเข้ามาทางไหน?</h2>
+                        <span class="subtitle">3 ช่องทางหลักที่ทำให้อคติปนเปื้อนเข้าสู่ระบบข้อมูลและโมเดล AI ของธุรกิจ</span>
+                    </div>
+                    <span class="badge-step primary"><i class="fas fa-dna"></i> Root Cause</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-3">
+                        <div class="card" style="border-top: 4px solid #ef4444;">
+                            <div style="font-size: 1.3rem; color: #ef4444; margin-bottom: 6px;"><i class="fas fa-history"></i></div>
+                            <h4 style="font-size: 1rem; margin-bottom: 4px; color: var(--dark);">1. Historical Bias</h4>
+                            <div style="font-size: 0.8rem; font-weight: 700; color: #b91c1c; margin-bottom: 4px;">อคติจากประวัติศาสตร์</div>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.45;">
+                                สังคมในอดีตมีความไม่เท่าเทียม ข้อมูลที่บันทึกไว้จึงสะท้อนความลำเอียงของมนุษย์ในยุคก่อน
+                            </p>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid #f59e0b;">
+                            <div style="font-size: 1.3rem; color: #f59e0b; margin-bottom: 6px;"><i class="fas fa-filter"></i></div>
+                            <h4 style="font-size: 1rem; margin-bottom: 4px; color: var(--dark);">2. Sampling Bias</h4>
+                            <div style="font-size: 0.8rem; font-weight: 700; color: #b45309; margin-bottom: 4px;">อคติจากการสุ่มตัวอย่าง</div>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.45;">
+                                เก็บข้อมูลเฉพาะคนกลุ่มเดียว เช่น สุ่มสำรวจเฉพาะคนที่ใช้ iPhone หรือเฉพาะคนในกรุงเทพฯ
+                            </p>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid #8b5cf6;">
+                            <div style="font-size: 1.3rem; color: #8b5cf6; margin-bottom: 6px;"><i class="fas fa-tag"></i></div>
+                            <h4 style="font-size: 1rem; margin-bottom: 4px; color: var(--dark);">3. Proxy Bias</h4>
+                            <div style="font-size: 0.8rem; font-weight: 700; color: #6d28d9; margin-bottom: 4px;">อคติตัวแปรแฝง</div>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.45;">
+                                แม้จะตัดตัวแปร "เพศ" หรือ "เชื้อชาติ" ออก แต่มีตัวแปรอื่นที่สะท้อนสิ่งเดียวกัน เช่น "รหัสไปรษณีย์" หรือ "ประเภทสินค้าที่ซื้อ"
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="card" style="background: #f8fafc; padding: 12px 16px; margin-top: 4px; border: 1px dashed var(--border);">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <i class="fas fa-lightbulb" style="font-size: 1.4rem; color: var(--accent);"></i>
+                            <span style="font-size: 0.86rem; color: var(--dark); line-height: 1.45;">
+                                <strong>บทบาทของผู้ประกอบการ:</strong> เราไม่สามารถบอกได้ว่า <em>"ผมไม่ผิด AI เป็นคนคิด"</em> หน้าที่ของเจ้าของธุรกิจคือการตั้งคำถามและตรวจสอบความสมดุลของข้อมูลเสมอ
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <aside class="notes">
+                    - อธิบาย Proxy Bias เช่น รหัสไปรษณีย์บางแห่งเชื่อมโยงกับฐานะหรือเชื้อชาติ
+                </aside>
+            </section>
+
+            <!-- SLIDE 10: REAL-WORLD HORROR STORIES -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-skull-crossbones" style="color: var(--danger);"></i> บทเรียนความล้มเหลวระดับโลก: เมื่อ AI ทำลายชื่อเสียงองค์กร</h2>
+                        <span class="subtitle">กรณีศึกษาจริงของบริษัทยักษ์ใหญ่ที่ต้องสั่งระงับระบบ AI เพราะปัญหา Bias</span>
+                    </div>
+                    <span class="badge-step danger"><i class="fas fa-bomb"></i> Disaster Cases</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div class="card" style="border-top: 4px solid var(--danger);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                <h4 style="color: var(--dark); font-size: 1.05rem;">Amazon AI Recruitment (2018)</h4>
+                                <span class="tag red">Scrapped</span>
+                            </div>
+                            <p style="font-size: 0.84rem; color: var(--text-sub); line-height: 1.5;">
+                                • Amazon สร้าง AI เพื่อคัดกรองเรซูเม่ผู้สมัครงานวิศวกรซอฟต์แวร์โดยอัตโนมัติ<br />
+                                • AI เรียนรู้จากเรซูเม่ย้อนหลัง 10 ปี ซึ่งผู้ได้รับการคัดเลือกในอดีตเป็น <strong>ผู้ชาย 85%</strong><br />
+                                • <strong>ผลลัพธ์:</strong> AI หักคะแนนเรซูเม่ที่มีคำว่า "Women's" เช่น <em>"Captain of Women's Chess Club"</em> โดยอัตโนมัติ จน Amazon ต้อง <strong>สั่งปิดโปรเจกต์ทิ้งทันที!</strong>
+                            </p>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid var(--accent);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                <h4 style="color: var(--dark); font-size: 1.05rem;">Apple Card Credit Limit (2019)</h4>
+                                <span class="tag orange">Investigated</span>
+                            </div>
+                            <p style="font-size: 0.84rem; color: var(--text-sub); line-height: 1.5;">
+                                • David Heinemeier Hansson (ผู้สร้าง Ruby on Rails) พบว่าแอปเปิลการ์ดอนุมัติวงเงินให้เขา <strong>มากกว่าภรรยาถึง 20 เท่า</strong><br />
+                                • ทั้งที่ภรรยาของเขามีคะแนนเครดิตดีกว่า และยื่นทรัพย์สินร่วมกัน<br />
+                                • ตัวแทน Apple และ Goldman Sachs ตอบคำถามไม่ได้เพราะระบบเป็น Black Box จนถูกหน่วยงานการเงินนิวยอร์กสั่งสอบสวน
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="highlight-box danger" style="margin-top: 6px;">
+                        <i class="fas fa-exclamation-circle" style="color: var(--danger); margin-right: 6px;"></i>
+                        <strong>คำเตือน:</strong> ถ้าบริษัทระดับล้านล้านเหรียญยังพลาดเรื่อง AI Bias... ธุรกิจ SME และสตาร์ทอัพยิ่งต้องระวังเป็นสองเท่า!
+                    </div>
+                </div>
+                <aside class="notes">
+                    - ยกตัวอย่างเคส Amazon และ Apple Card ให้นักศึกษาเห็นภาพชัดเจน
+                </aside>
+            </section>
+
+            <!-- SLIDE 11: PILLAR 2: DATA PRIVACY & PDPA -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-user-shield" style="color: #b45309;"></i> เสาหลักที่ 2: Data Privacy &amp; PDPA — กฎหมายที่เจ้าของธุรกิจต้องรู้</h2>
+                        <span class="subtitle">พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 (PDPA) กับการประยุกต์ใช้ AI ในธุรกิจไทย</span>
+                    </div>
+                    <span class="badge-step accent"><i class="fas fa-gavel"></i> Pillar 2</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div class="card">
+                            <h4 style="color: var(--dark); margin-bottom: 8px;"><i class="fas fa-book" style="color: #b45309;"></i> 3 หลักการสำคัญของ PDPA</h4>
+                            <div style="display: flex; flex-direction: column; gap: 8px; font-size: 0.84rem;">
+                                <div class="highlight-box" style="padding: 8px 12px; border-left-color: #b45309; background: #fffbeb;">
+                                    <strong>1. Lawful Basis &amp; Consent:</strong> เก็บและใช้ข้อมูลได้ต่อเมื่อมีฐานทางกฎหมายหรือได้รับความยินยอมชัดเจน
+                                </div>
+                                <div class="highlight-box" style="padding: 8px 12px; border-left-color: #b45309; background: #fffbeb;">
+                                    <strong>2. Purpose Limitation:</strong> ใช้ข้อมูลตรงตามวัตถุประสงค์ที่แจ้งไว้เท่านั้น (ห้ามแอบเอาไปเทรนโมเดลอื่น)
+                                </div>
+                                <div class="highlight-box" style="padding: 8px 12px; border-left-color: #b45309; background: #fffbeb;">
+                                    <strong>3. Data Minimization:</strong> เก็บข้อมูลเท่าที่จำเป็นต่อการใช้งานเท่านั้น (ไม่ขอข้อมูลเกินเบอร์)
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card" style="border-left: 4px solid var(--danger);">
+                            <h4 style="color: var(--danger); margin-bottom: 8px;"><i class="fas fa-exclamation-triangle"></i> บทลงโทษหากฝ่าฝืน PDPA</h4>
+                            <div style="font-size: 0.85rem; color: var(--text-sub); line-height: 1.55;">
+                                • <strong>โทษทางแพ่ง:</strong> ชดใช้ค่าสินไหมทดแทนตามจริง + ค่าสินไหมเชิงลงโทษสูงสุด <strong>2 เท่า</strong> ของค่าเสียหายจริง<br />
+                                • <strong>โทษทางอาญา:</strong> จำคุกสูงสุด <strong>1 ปี</strong> หรือปรับสูงสุด <strong>1,000,000 บาท</strong> หรือทั้งจำทั้งปรับ (กรรมการผู้จัดการต้องรับผิดชอบส่วนตัว)<br />
+                                • <strong>โทษทางปกครอง:</strong> ปรับทางปกครองสูงสุดถึง <strong>5,000,000 บาท</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="background: #f8fafc; padding: 10px 14px; margin-top: 4px; border: 1px solid var(--border);">
+                        <span style="font-weight: 700; color: var(--dark); font-size: 0.88rem;">
+                            <i class="fas fa-lock" style="color: var(--primary); margin-right: 6px;"></i> สิทธิของเจ้าของข้อมูล (Data Subject Rights):
+                        </span>
+                        <span style="font-size: 0.82rem; color: var(--text-sub);">
+                            ลูกค้ามีสิทธิขอเข้าถึง, ขอแก้ไข, ขอให้ลบทำลาย (Right to be Forgotten), และ <strong>คัดค้านการประมวลผลข้อมูลอัตโนมัติ (Right to Object Automated Decision)</strong>
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    - เน้นย้ำโทษทางอาญาและปกครองของ PDPA ว่ากรรมการบริษัทต้องรับผิดชอบ
+                </aside>
+            </section>
+
+            <!-- SLIDE 12: WHAT IS PERSONAL DATA? -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-id-card" style="color: var(--primary);"></i> ข้อมูลส่วนบุคคลคืออะไร? (Personal vs. Sensitive Data)</h2>
+                        <span class="subtitle">การจำแนกประเภทข้อมูลเพื่อการจัดเก็บและประมวลผลอย่างถูกต้องตามกฎหมาย</span>
+                    </div>
+                    <span class="badge-step primary"><i class="fas fa-tags"></i> Classification</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-3">
+                        <div class="card" style="border-top: 4px solid #10b981;">
+                            <h4 style="color: #047857; margin-bottom: 6px;"><i class="fas fa-check-circle"></i> ข้อมูลทั่วไป (Non-PII)</h4>
+                            <div style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 6px;">ไม่ระบุตัวบุคคล / ใช้ได้อย่างเสรี</div>
+                            <ul style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.45; padding-left: 16px;">
+                                <li>ยอดขายรวมรายวัน</li>
+                                <li>ราคาสินค้า, ต้นทุน</li>
+                                <li>รหัสสต็อกสินค้า (SKU)</li>
+                                <li>สถิติยอดคลิกและวิวรวม</li>
+                            </ul>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid #f59e0b;">
+                            <h4 style="color: #b45309; margin-bottom: 6px;"><i class="fas fa-user"></i> ข้อมูลส่วนบุคคล (PII)</h4>
+                            <div style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 6px;">ระบุตัวตนได้ทั้งตรงและอ้อม</div>
+                            <ul style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.45; padding-left: 16px;">
+                                <li>ชื่อ-สกุล, ชื่อเล่น</li>
+                                <li>เบอร์โทรศัพท์, อีเมล</li>
+                                <li>เลขบัตรประชาชน, เลขบัญชี</li>
+                                <li>ที่อยู่จัดส่ง, ทะเบียนรถ</li>
+                            </ul>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid #ef4444; background: #fff5f5;">
+                            <h4 style="color: #b91c1c; margin-bottom: 6px;"><i class="fas fa-shield-virus"></i> ข้อมูลอ่อนไหว (Sensitive PII)</h4>
+                            <div style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 6px;">ห้ามเก็บเด็ดขาดเว้นแต่ยินยอมชัดเจน</div>
+                            <ul style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.45; padding-left: 16px;">
+                                <li>ข้อมูลสุขภาพ, ประวัติแพ้ยา</li>
+                                <li>ศาสนา, ความคิดเห็นการเมือง</li>
+                                <li>ข้อมูลพันธุกรรม, ไบโอเมตริกซ์</li>
+                                <li>ประวัติอาชญากรรม</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="highlight-box success" style="margin-top: 6px;">
+                        <i class="fas fa-lightbulb" style="color: var(--success); margin-right: 6px;"></i>
+                        <strong>กฎทองก่อนส่งข้อมูลเข้า AI:</strong> ส่งได้เฉพาะ <strong>ข้อมูลทั่วไป (Non-PII)</strong> เท่านั้น! หากต้องวิเคราะห์พฤติกรรมลูกค้า ต้องทำ <em>Data Anonymization</em> เพื่อปลดข้อมูล PII ออกก่อนเสมอ
+                    </div>
+                </div>
+                <aside class="notes">
+                    - แยกแยะระหว่าง PII และ Sensitive Data ให้ชัดเจน
+                </aside>
+            </section>
+
+            <!-- SLIDE 13: THE CARDINAL SIN: อย่าโยน PII เข้า AI สาธารณะ -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-ban" style="color: var(--danger);"></i> The Cardinal Sin: ข้อห้ามเด็ดขาดในการส่งข้อมูลเข้า AI สาธารณะ</h2>
+                        <span class="subtitle">ทำไมการก๊อปปี้รายชื่อและเบอร์โทรศัพท์ลูกค้าใส่ในแชตบอต AI ถึงเป็นความผิดร้ายแรง?</span>
+                    </div>
+                    <span class="badge-step danger"><i class="fas fa-skull"></i> Strict Rule</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div class="card" style="border-left: 4px solid var(--danger);">
+                            <h4 style="color: var(--danger); margin-bottom: 8px;"><i class="fas fa-times-circle"></i> สิ่งที่เกิดขึ้นเมื่อคุณใส่ PII ใน AI สาธารณะ</h4>
+                            <ul style="font-size: 0.85rem; color: var(--text-sub); line-height: 1.6; padding-left: 20px;">
+                                <li><strong>ข้อมูลถูกนำไปเทรนโมเดลต่อ:</strong> AI เวอร์ชั่นฟรีอาจนำข้อมูลที่ผู้ใช้พิมพ์ไปเป็นชุดข้อมูลสำหรับฝึกโมเดลถัดไป</li>
+                                <li><strong>ข้อมูลหลุดไปหาคนอื่น:</strong> หากมีใครถาม AI อาจเผลอคายข้อมูลส่วนตัวลูกค้าของคุณออกมา (Data Leakage)</li>
+                                <li><strong>ผิดกฎหมาย PDPA ทันที:</strong> ถือเป็นการเปิดเผยข้อมูลส่วนบุคคลต่อบุคคลภายนอกโดยไม่ได้รับความยินยอม</li>
+                                <li><strong>คดีจริงของ Samsung (2023):</strong> วิศวกรก๊อปปี้ซอร์สโค้ดลับใส่ ChatGPT จนความลับบริษัทรั่วไหล</li>
+                            </ul>
+                        </div>
+
+                        <div class="card" style="border-left: 4px solid var(--success); background: #f0fdf4;">
+                            <h4 style="color: var(--success); margin-bottom: 8px;"><i class="fas fa-check-circle"></i> แนวทางปฏิบัติที่ถูกต้องสำหรับธุรกิจ</h4>
+                            <ul style="font-size: 0.85rem; color: var(--text-sub); line-height: 1.6; padding-left: 20px;">
+                                <li><strong>ใช้อีเมลองค์กร / Enterprise Tier:</strong> ใช้งานผ่าน Google Workspace / Gemini Advanced ที่มีข้อตกลงคุ้มครองข้อมูล (Data Processing Addendum)</li>
+                                <li><strong>ตั้งค่าปิด Chat History &amp; Training:</strong> ปิดสิทธิ์การนำข้อมูลไปฝึกโมเดลในเมนูการตั้งค่า</li>
+                                <li><strong>ทำ Data Masking 100%:</strong> เปลี่ยนชื่อลูกค้าเป็น Customer ID ก่อนอัปโหลดไฟล์เสมอ</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card" style="background: #fff1f2; border: 1px solid #fecdd3; padding: 10px 14px; margin-top: 4px;">
+                        <span style="font-weight: 700; color: #be123c; font-size: 0.88rem;">
+                            <i class="fas fa-radiation" style="margin-right: 6px;"></i> กฎเหล็กของนักศึกษา:
+                        </span>
+                        <span style="font-size: 0.84rem; color: #881337;">
+                            ในรายวิชานี้และชีวิตจริง <strong>ห้ามอัปโหลดตารางที่มีชื่อ-สกุล เบอร์โทร หรือเลขบัตรประชาชนของลูกค้าจริงเข้าสู่ Gemini โดยเด็ดขาด!</strong>
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    - เล่าเคส Samsung ให้เห็นว่าบริษัทยักษ์ใหญ่ก็เคยพลาดจนแบนการใช้ AI ภายนอก
+                </aside>
+            </section>
+
+            <!-- SLIDE 14: DATA ANONYMIZATION LAB -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-user-secret" style="color: var(--primary);"></i> Data Anonymization: 3 เทคนิคปกปิดตัวตนก่อนส่งข้อมูลให้ AI</h2>
+                        <span class="subtitle">วิธีแปลงข้อมูลลูกค้าให้ปลอดภัย 100% ตามมาตรฐาน PDPA โดยที่ AI ยังวิเคราะห์หา Insight ได้เหมือนเดิม</span>
+                    </div>
+                    <span class="badge-step primary"><i class="fas fa-mask"></i> Security Lab</span>
+                </div>
+                <div class="slide-body">
+                    <table class="table-custom" style="font-size: 0.84rem;">
+                        <thead>
+                            <tr>
+                                <th style="width: 25%;">เทคนิค</th>
+                                <th style="width: 35%;">ข้อมูลเดิม (ก่อนทำ)</th>
+                                <th style="width: 40%;">ข้อมูลหลังแปลง (พร้อมส่งเข้า AI)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>1. Masking (ปิดทับตัวอักษร)</strong></td>
+                                <td>นายสมชาย ใจดี<br>โทร: 081-987-6543</td>
+                                <td>นาย ส****** จ****<br>โทร: 081-XXX-6543</td>
+                            </tr>
+                            <tr>
+                                <td><strong>2. Pseudonymization (ใช้นามแฝง/รหัสแทน)</strong></td>
+                                <td>นางสาวพิมลภา (ลูกค้า VIP)<br>เลขบัตร: 1-1002-34567-89-0</td>
+                                <td><strong>CUST-8821</strong><br><em>(เก็บตารางจับคู่ไว้ในเซิร์ฟเวอร์ปลอดภัยภายใน)</em></td>
+                            </tr>
+                            <tr>
+                                <td><strong>3. Generalization (จัดเป็นช่วงกว้างๆ)</strong></td>
+                                <td>อายุ: 23 ปี 4 เดือน<br>ที่อยู่: 123/45 ซอยอารีย์ พญาไท</td>
+                                <td>ช่วงอายุ: <strong>20–25 ปี</strong><br>พื้นที่: <strong>กรุงเทพฯ โซนใน</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="highlight-box success" style="margin-top: 6px;">
+                        <i class="fas fa-magic" style="color: var(--success); margin-right: 6px;"></i>
+                        <strong>Insight ยังอยู่ครบ 100%:</strong> AI ไม่จำเป็นต้องรู้ว่าลูกค้าชื่อ "สมชาย" หรือไม่... AI ต้องการรู้แค่ว่า <strong>"ลูกค้า CUST-8821 มียอดซื้อ 15,000 บาท ความถี่ 4 ครั้ง/เดือน"</strong> เพื่อจัดกลุ่มและแนะนำกลยุทธ์!
+                    </div>
+                </div>
+                <aside class="notes">
+                    - ให้นักศึกษาดูตารางเปรียบเทียบ จะเห็นว่า AI วิเคราะห์ได้เหมือนเดิมโดยไม่ต้องใช้ชื่อจริง
+                </aside>
+            </section>
+
+            <!-- SLIDE 15: PILLAR 3: AI HALLUCINATION & FACT-CHECKING -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-ghost" style="color: var(--accent);"></i> เสาหลักที่ 3: AI Hallucination — เมื่อ AI แต่งเรื่องเก่งกว่ามนุษย์</h2>
+                        <span class="subtitle">เข้าใจธรรมชาติของ Large Language Models (LLMs) และวิธีป้องกันความเสียหายจากการเชื่อตัวเลขปลอม</span>
+                    </div>
+                    <span class="badge-step accent"><i class="fas fa-brain"></i> Pillar 3</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div class="card">
+                            <h4 style="color: var(--dark); margin-bottom: 8px;"><i class="fas fa-microchip" style="color: var(--accent);"></i> ทำไม AI ถึงเกิดอาการ "หลอน" (Hallucination)?</h4>
+                            <p style="font-size: 0.85rem; color: var(--text-sub); line-height: 1.5; margin-bottom: 8px;">
+                                LLMs อย่าง Gemini หรือ ChatGPT ทำงานด้วยการ <strong>"ทายคำถัดไปที่น่าจะเป็นไปได้มากที่สุด (Predict Next Token)"</strong> ไม่ใช่เครื่องคิดเลขคำนวณสูตร!
+                            </p>
+                            <ul style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.5; padding-left: 18px;">
+                                <li>ถ้าข้อมูลในตารางไม่ครบ AI จะ <strong>"แต่งตัวเลขขึ้นมาเองอย่างมั่นใจ"</strong></li>
+                                <li>อ้างอิงชื่อกฎหมาย งานวิจัย หรือสถิติที่ไม่มีอยู่จริงในโลก</li>
+                                <li>ตอบถูก 90% แต่แอบใส่ข้อมูลเท็จ 10% ที่แนบเนียนจนจับยาก</li>
+                            </ul>
+                        </div>
+
+                        <div class="card" style="border-left: 4px solid var(--primary); background: #f8faff;">
+                            <h4 style="color: var(--primary); margin-bottom: 8px;"><i class="fas fa-check-double"></i> 3 ด่านสกัดจับ AI Hallucination (Fact-Checking)</h4>
+                            <div style="display: flex; flex-direction: column; gap: 8px; font-size: 0.82rem;">
+                                <div class="highlight-box" style="padding: 6px 10px; border-left-color: var(--primary);">
+                                    <strong>1. Cross-Verify กับ Spreadsheet:</strong> ตรวจสอบผลรวม ยอดเฉลี่ย และสัดส่วน % กับสูตร SUM / AVERAGE ใน Google Sheets เสมอ
+                                </div>
+                                <div class="highlight-box" style="padding: 6px 10px; border-left-color: var(--secondary);">
+                                    <strong>2. Ask for Source &amp; Row Numbers:</strong> สั่งให้ AI ระบุเลขแถว (Row) หรือคอลัมน์ที่ใช้อ้างอิงตัวเลขนั้น
+                                </div>
+                                <div class="highlight-box" style="padding: 6px 10px; border-left-color: var(--success);">
+                                    <strong>3. Human-in-the-Loop (HITL):</strong> มนุษย์ต้องเป็นผู้ตัดสินใจและตรวจสอบขั้นสุดท้ายก่อนนำตัวเลขไปใช้จริงเสมอ
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="highlight-box accent" style="margin-top: 4px;">
+                        <i class="fas fa-quote-left" style="color: #b45309; margin-right: 6px;"></i>
+                        <strong>คำเตือนในการประชุม:</strong> หากผู้บริหารจับได้ว่าตัวเลขในสไลด์ของคุณเป็น <em>"ตัวเลขที่ AI มโนขึ้นมาเอง"</em> ความน่าเชื่อถือของคุณจะเหลือศูนย์ทันที!
+                    </div>
+                </div>
+                <aside class="notes">
+                    - ย้ำว่า LLM ไม่ใช่ฐานข้อมูล มันคือเครื่องจักรทายคำถัดไป ต้อง Fact-check เสมอ
+                </aside>
+            </section>
+
+            <!-- SLIDE 16: REAL-WORLD HORROR STORY 2: ZILLOW CRASH -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-house-damage" style="color: var(--danger);"></i> หายนะ 500 ล้านเหรียญ: บทเรียนจาก Zillow iBuying Algorithm Crash</h2>
+                        <span class="subtitle">เมื่อบริษัทอสังหาริมทรัพย์ยักษ์ใหญ่เชื่ออัลกอริทึม AI จนซื้อบ้านแพงเกินจริงจนเจ๊งยับเยิน</span>
+                    </div>
+                    <span class="badge-step danger"><i class="fas fa-fire-alt"></i> Epic Fail</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div class="card" style="border-left: 4px solid var(--danger);">
+                            <h4 style="color: var(--danger); margin-bottom: 8px;"><i class="fas fa-chart-line-down"></i> เกิดอะไรขึ้นกับ Zillow Offers (2021)?</h4>
+                            <ul style="font-size: 0.85rem; color: var(--text-sub); line-height: 1.55; padding-left: 18px;">
+                                <li><strong>โมเดล Zestimate:</strong> ใช้ Machine Learning ประเมินราคาบ้านอัตโนมัติ และยื่นข้อเสนอซื้อบ้านเงินสดทันที (iBuying)</li>
+                                <li><strong>ความผิดพลาดของอัลกอริทึม:</strong> โมเดลคาดการณ์ว่าราคาบ้านจะพุ่งขึ้นเรื่อยๆ จึงเคาะซื้อบ้านราคาสูงเกินจริงหลายพันหลัง</li>
+                                <li><strong>จุดตัดความเป็นจริง:</strong> ตลาดชะลอตัว ค่าซ่อมแซมบ้านพุ่งสูงกว่าที่ AI ประเมินไว้</li>
+                                <li><strong>ผลลัพธ์:</strong> ขาดทุนยับเยินกว่า <strong>500 ล้านดอลลาร์สหรัฐ (18,000 ล้านบาท)</strong> ปลดพนักงาน 25% และปิดแผนกทิ้งถาวร!</li>
+                            </ul>
+                        </div>
+
+                        <div class="card" style="border-left: 4px solid var(--primary); background: #f0fdf4;">
+                            <h4 style="color: #047857; margin-bottom: 8px;"><i class="fas fa-graduation-cap"></i> 3 บทเรียนทองคำสำหรับผู้ประกอบการ</h4>
+                            <div style="display: flex; flex-direction: column; gap: 8px; font-size: 0.84rem; color: var(--text-sub);">
+                                <div>
+                                    <strong>1. Don't Blindly Trust AI:</strong> อัลกอริทึมมองไม่เห็นความจริงหน้างาน (เช่น บ้านมีปลวก, หลังคารั่ว, หรือกลิ่นเหม็นข้างบ้าน)
+                                </div>
+                                <div>
+                                    <strong>2. AI Proposes, Humans Decide:</strong> AI มีหน้าที่ "เสนอแนะแนวทาง" แต่มนุษย์ที่มีประสบการณ์ต้องเป็น "ผู้เคาะอนุมัติ"
+                                </div>
+                                <div>
+                                    <strong>3. Stress Test with Extreme Scenarios:</strong> จำลอง What-If สถานการณ์เลวร้ายสุด (Worst Case) เสมอก่อนทุ่มเงินจริง
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="highlight-box danger" style="margin-top: 4px;">
+                        <i class="fas fa-exclamation-triangle" style="color: var(--danger); margin-right: 6px;"></i>
+                        <strong>หัวใจสำคัญ:</strong> อัลกอริทึมไม่มีความรู้สึกเจ็บปวดเมื่อขาดทุน... แต่เจ้าของกิจการและพนักงานคือคนที่ต้องแบกรับผลลัพธ์ทั้งหมด!
+                    </div>
+                </div>
+                <aside class="notes">
+                    - เล่าเคส Zillow อธิบายว่าทำไม AI ถึงมองไม่เห็นสภาพบ้านจริง
+                </aside>
+            </section>
+
+            <!-- SLIDE 17: PILLAR 4: TRANSPARENCY & EXPLAINABILITY (XAI) -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-search" style="color: var(--success);"></i> เสาหลักที่ 4: Explainability (XAI) — สิทธิที่จะรู้เหตุผลของลูกค้า</h2>
+                        <span class="subtitle">หมดยุคอัลกอริทึมกล่องดำ (Black Box) สู่ Explainable AI ที่ต้องตอบได้ว่า "ทำไม?"</span>
+                    </div>
+                    <span class="badge-step success"><i class="fas fa-lightbulb"></i> Pillar 4</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div class="card" style="border-left: 4px solid var(--danger);">
+                            <h4 style="color: var(--danger); margin-bottom: 6px;"><i class="fas fa-cube"></i> Black Box AI (กล่องดำอันตราย)</h4>
+                            <p style="font-size: 0.84rem; color: var(--text-sub); line-height: 1.5; margin-bottom: 8px;">
+                                ป้อนข้อมูลเข้าไป ➔ AI คำนวณแบบซับซ้อน ➔ ผลลัพธ์บอก <em>"ปฏิเสธสินเชื่อ"</em> แต่เมื่อลูกค้าหรือพนักงานถามว่าทำไมถึงไม่ผ่าน? ทุกคนตอบว่า: <strong>"ไม่รู้เหมือนกัน ระบบ AI บอกมาแบบนี้"</strong>
+                            </p>
+                            <div class="highlight-box danger" style="font-size: 0.8rem; padding: 6px 10px;">
+                                ❌ ทำลายความเชื่อมั่น ผิดจรรยาบรรณ และเสี่ยงถูกฟ้องร้องตามกฎหมายคุ้มครองผู้บริโภค
+                            </div>
+                        </div>
+
+                        <div class="card" style="border-left: 4px solid var(--success); background: #f0fdf4;">
+                            <h4 style="color: var(--success); margin-bottom: 6px;"><i class="fas fa-door-open"></i> Explainable AI (กล่องกระจกใส)</h4>
+                            <p style="font-size: 0.84rem; color: var(--text-sub); line-height: 1.5; margin-bottom: 8px;">
+                                โมเดลที่สามารถอธิบายปัจจัยสำคัญที่ใช้ตัดสินใจ (Feature Importance) ได้ชัดเจน เช่น <em>"ที่ยังไม่ผ่านการอนุมัติเพราะ: 1) ยอดขายผันผวนเกิน 40% ใน 3 เดือนล่าสุด และ 2) สัดส่วนหนี้เดิมเกิน 60%"</em>
+                            </p>
+                            <div class="highlight-box success" style="font-size: 0.8rem; padding: 6px 10px;">
+                                ✅ โปร่งใส ลูกค้ารู้แนวทางปรับปรุงตัว และองค์กรตรวจสอบอคติได้ตลอดเวลา
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="background: #faf5ff; border: 1px solid #e9d5ff; padding: 10px 14px; margin-top: 4px;">
+                        <span style="font-weight: 700; color: var(--purple); font-size: 0.88rem;">
+                            <i class="fas fa-hand-holding-heart" style="margin-right: 6px;"></i> Right to Explanation (สิทธิที่จะได้รับคำชี้แจง):
+                        </span>
+                        <span style="font-size: 0.84rem; color: var(--text-sub);">
+                            ในยุโรป (GDPR) และมาตรฐานสากล หากธุรกิจใช้ AI ตัดสินใจเรื่องที่มีผลกระทบอย่างมีนัยสำคัญต่อชีวิตคน (เช่น สินเชื่อ ประกัน หรือรับเข้าทำงาน) <strong>ผู้บริโภคมีสิทธิเรียกร้องให้มนุษย์เข้ามาตรวจสอบซ้ำ (Human Review) เสมอ!</strong>
+                        </span>
+                    </div>
+                </div>
+                <aside class="notes">
+                    - อธิบายความต่างระหว่าง Black Box กับ White Box / XAI
+                </aside>
+            </section>
+
+            <!-- SLIDE 18: AI GOVERNANCE CHECKLIST -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-clipboard-check" style="color: var(--primary);"></i> AI Governance Checklist: 5 ข้อตรวจเช็กก่อนปล่อยระบบสู่ตลาด</h2>
+                        <span class="subtitle">แบบประเมินความปลอดภัยและจริยธรรมที่เจ้าของธุรกิจต้องตอบให้ผ่านทุกข้อ</span>
+                    </div>
+                    <span class="badge-step primary"><i class="fas fa-tasks"></i> Audit Checklist</span>
+                </div>
+                <div class="slide-body">
+                    <table class="table-custom" style="font-size: 0.83rem;">
+                        <thead>
+                            <tr>
+                                <th style="width: 10%;">ข้อ</th>
+                                <th style="width: 25%;">มิติการประเมิน</th>
+                                <th style="width: 50%;">คำถามตรวจสอบสำหรับเจ้าของธุรกิจ</th>
+                                <th style="width: 15%;">สถานะ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>1</strong></td>
+                                <td><strong>Data Privacy &amp; Masking</strong></td>
+                                <td>ได้ลบชื่อ-สกุล เลขบัตร ปชช. และเบอร์โทร ออกจากชุดข้อมูลก่อนส่งเข้า AI แล้วหรือไม่?</td>
+                                <td><span class="tag green">Must Pass</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>2</strong></td>
+                                <td><strong>Bias &amp; Fairness Audit</strong></td>
+                                <td>ผลการตัดสินใจของ AI มีการเลือกปฏิบัติต่อเพศ อายุ หรือถิ่นที่อยู่ อย่างไม่เป็นธรรมหรือไม่?</td>
+                                <td><span class="tag green">Must Pass</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>3</strong></td>
+                                <td><strong>Fact &amp; Math Verification</strong></td>
+                                <td>ตัวเลขสรุปและเปอร์เซ็นต์ได้รับการคำนวณตรวจสอบซ้ำกับสูตร Spreadsheet แล้วหรือไม่?</td>
+                                <td><span class="tag green">Must Pass</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>4</strong></td>
+                                <td><strong>Explainability</strong></td>
+                                <td>หากลูกค้าหรือผู้ตรวจสอบถามเหตุผล เราสามารถอธิบายที่มาของการตัดสินใจได้หรือไม่?</td>
+                                <td><span class="tag green">Must Pass</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>5</strong></td>
+                                <td><strong>Human-in-the-Loop</strong></td>
+                                <td>มีพนักงานหรือผู้เชี่ยวชาญเป็นผู้ตัดสินใจขั้นสุดท้ายในเคสสำคัญหรือไม่?</td>
+                                <td><span class="tag green">Must Pass</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="highlight-box success" style="margin-top: 4px;">
+                        <i class="fas fa-shield-alt" style="color: var(--success); margin-right: 6px;"></i>
+                        หากผ่านครบทั้ง 5 ข้อ ธุรกิจของคุณจะสามารถเติบโตได้อย่างรวดเร็วด้วย AI โดยปราศจากความเสี่ยงทางกฎหมายและชื่อเสียง!
+                    </div>
+                </div>
+                <aside class="notes">
+                    - ให้นักศึกษาใช้ตาราง 5 ข้อนี้ตรวจงานใน Workshop
+                </aside>
+            </section>
+
+            <!-- SLIDE 19: INTEGRATING THE 5 STEPS (ASK TO ACT) -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-project-diagram" style="color: var(--primary);"></i> ปฏิบัติการบูรณาการ 5 ขั้นตอน (ASK ถึง ACT) กับ FinQuick</h2>
+                        <span class="subtitle">การจำลองกระบวนการวิเคราะห์ข้อมูลตั้งแต่ศูนย์จนถึงการนำเสนออย่างมืออาชีพ</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-sitemap"></i> Simulation</span>
+                </div>
+                <div class="slide-body">
+                    <div class="card" style="padding: 14px 18px; background: #faf5ff; border: 1px solid #e9d5ff;">
+                        <h4 style="color: var(--purple); font-size: 1.05rem; margin-bottom: 8px;">
+                            <i class="fas fa-map-signs"></i> แผนที่การเดินทางของข้อมูลใน FinQuick Lending:
+                        </h4>
+                        <div style="display: flex; justify-content: space-between; align-items: center; text-align: center; gap: 8px; margin-top: 10px;">
+                            <div style="flex: 1; background: white; padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
+                                <div style="font-weight: 800; color: var(--primary); font-size: 0.85rem;">1. ASK</div>
+                                <div style="font-size: 0.75rem; color: var(--text-sub); margin-top: 4px;">ใครคือร้านค้าเสี่ยงต่ำที่ควรได้รับสินเชื่อ?</div>
+                            </div>
+                            <i class="fas fa-arrow-right" style="color: var(--text-muted);"></i>
+                            <div style="flex: 1; background: white; padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
+                                <div style="font-weight: 800; color: #0284c7; font-size: 0.85rem;">2. COLLECT</div>
+                                <div style="font-size: 0.75rem; color: var(--text-sub); margin-top: 4px;">ยอดขาย Shopee/TikTok &amp; สลิปโอน</div>
+                            </div>
+                            <i class="fas fa-arrow-right" style="color: var(--text-muted);"></i>
+                            <div style="flex: 1; background: white; padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
+                                <div style="font-weight: 800; color: #f59e0b; font-size: 0.85rem;">3. PREPARE</div>
+                                <div style="font-size: 0.75rem; color: var(--text-sub); margin-top: 4px;">Clean ค่าว่าง &amp; <strong>Mask PII</strong></div>
+                            </div>
+                            <i class="fas fa-arrow-right" style="color: var(--text-muted);"></i>
+                            <div style="flex: 1; background: white; padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
+                                <div style="font-weight: 800; color: #6d28d9; font-size: 0.85rem;">4. ANALYZE</div>
+                                <div style="font-size: 0.75rem; color: var(--text-sub); margin-top: 4px;">Gemini Scoring &amp; Audit Bias</div>
+                            </div>
+                            <i class="fas fa-arrow-right" style="color: var(--text-muted);"></i>
+                            <div style="flex: 1; background: white; padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
+                                <div style="font-weight: 800; color: #10b981; font-size: 0.85rem;">5. ACT</div>
+                                <div style="font-size: 0.75rem; color: var(--text-sub); margin-top: 4px;">พิทช์อนุมัติงบ &amp; แจ้งผลโปร่งใส</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid-2" style="margin-top: 4px;">
+                        <div class="card" style="padding: 10px 14px;">
+                            <span style="font-weight: 700; color: var(--dark); font-size: 0.88rem;">จุดเชื่อมโยงสำคัญ (The Critical Link):</span>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); margin-top: 4px;">
+                                สังเกตว่าในขั้น PREPARE เราเพิ่มการ <strong>Mask ข้อมูล PII</strong> เข้ามาเป็นด่านบังคับก่อนส่งให้ AI ในขั้น ANALYZE เพื่อให้ระบบถูกต้องตามกฎหมาย 100%
+                            </p>
+                        </div>
+                        <div class="card" style="padding: 10px 14px;">
+                            <span style="font-weight: 700; color: var(--dark); font-size: 0.88rem;">การส่งไม้ต่อสู่ ACT:</span>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); margin-top: 4px;">
+                                ข้อมูลผลวิเคราะห์ความเสี่ยงจาก AI จะถูกแปลงเป็น <strong>สไลด์ 1 หน้า BLUF</strong> เพื่อเสนอคณะกรรมการบริหารพิจารณาวงเงินสินเชื่อรวม
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <aside class="notes">
+                    - อธิบายแผนผัง 5 ขั้นตอนที่ผูกจริยธรรมเข้าไปตรงกลาง
+                </aside>
+            </section>
+
+            <!-- SLIDE 20: PIPELINE STEP 1-2: ASK & COLLECT -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-question-circle" style="color: #0284c7;"></i> ขั้นที่ 1 &amp; 2: ASK &amp; COLLECT ใน FinQuick Lending</h2>
+                        <span class="subtitle">การตั้งคำถามธุรกิจที่คมชัด และการเก็บรวบรวมข้อมูลอย่างถูกต้องตามหลัก PDPA</span>
+                    </div>
+                    <span class="badge-step" style="background: #e0f2fe; color: #0284c7;"><i class="fas fa-play"></i> Step 1-2</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div class="card">
+                            <h4 style="color: var(--primary); margin-bottom: 6px;"><i class="fas fa-bullseye"></i> Step 1: ASK (ตั้งคำถามธุรกิจ &amp; สมมติฐาน)</h4>
+                            <div style="font-size: 0.84rem; color: var(--text-sub); line-height: 1.5;">
+                                • <strong>คำถามหลัก:</strong> ร้านค้าออนไลน์ลักษณะใดที่มีความสามารถในการชำระหนี้ตรงเวลา (NPL &lt; 2%) แม้ไม่มีสเตตเมนต์ธนาคาร?<br />
+                                • <strong>สมมติฐาน 1:</strong> ร้านที่มียอดขายต่อเนื่องเกิน 6 เดือน และมีรีวิวเชิงบวก &gt; 95% จะมีความเสี่ยงต่ำ<br />
+                                • <strong>สมมติฐาน 2:</strong> อัตราการซื้อซ้ำ (Repeat Order) สะท้อนความมั่นคงของรายได้ดีกว่ายอดขายรวมเดือนเดียว
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <h4 style="color: #0284c7; margin-bottom: 6px;"><i class="fas fa-database"></i> Step 2: COLLECT (เก็บข้อมูลแบบมี PDPA Consent)</h4>
+                            <div style="font-size: 0.84rem; color: var(--text-sub); line-height: 1.5;">
+                                • <strong>แหล่งข้อมูล:</strong> ฟอร์มสมัครสินเชื่อออนไลน์ เชื่อมต่อ API ร้านค้า Shopee/TikTok<br />
+                                • <strong>PDPA Consent Checkbox:</strong> ทำกล่องติ๊กแยกต่างหาก (ห้ามติ๊กให้อัตโนมัติ) เพื่อขอความยินยอมในการประมวลผลข้อมูลเครดิต<br />
+                                • <strong>Data Minimization:</strong> ไม่เก็บข้อมูลที่ไม่เกี่ยวข้อง เช่น ศาสนา หรือสถานะการสมรส
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="highlight-box" style="margin-top: 6px; border-left-color: #0284c7;">
+                        <i class="fas fa-check-circle" style="color: #0284c7; margin-right: 6px;"></i>
+                        <strong>เชื่อมโยง Session 2 &amp; 4:</strong> ใช้หลักการ Hypothesis Thinking (S2) และ Tidy Data Structure (S4) ในการออกแบบตารางรับข้อมูลตั้งแต่ต้นทาง
+                    </div>
+                </div>
+                <aside class="notes">
+                    - ทบทวนการตั้งคำถามและ Consent Checkbox ตาม PDPA
+                </aside>
+            </section>
+
+            <!-- SLIDE 21: PIPELINE STEP 3: PREPARE & MASKING -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-broom" style="color: #f59e0b;"></i> ขั้นที่ 3: PREPARE — คลีนตารางและ Masking ข้อมูลส่วนบุคคล</h2>
+                        <span class="subtitle">การล้างข้อมูลสกปรกควบคู่ไปกับการปลดข้อมูล PII ให้กลายเป็น Anonymous Dataset</span>
+                    </div>
+                    <span class="badge-step accent"><i class="fas fa-filter"></i> Step 3</span>
+                </div>
+                <div class="slide-body">
+                    <table class="table-custom" style="font-size: 0.82rem;">
+                        <thead>
+                            <tr>
+                                <th>รหัสเดิม (Raw PII)</th>
+                                <th>ชื่อร้าน / เจ้าของ</th>
+                                <th>ยอดขาย/เดือน</th>
+                                <th>รีวิวบวก</th>
+                                <th>การเตรียมข้อมูล (Cleaning &amp; Masking)</th>
+                                <th>ข้อมูลหลัง Clean (ส่งเข้า AI)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>ID: 1-1004-987...</td>
+                                <td>ร้านแซ่บอีหลี (น.ส. ศิริพร)</td>
+                                <td>85,000 ฿</td>
+                                <td>98%</td>
+                                <td>แปลงชื่อเป็นรหัส / ลบเลขบัตร</td>
+                                <td><strong>SHOP-01</strong> | 85,000 | 98%</td>
+                            </tr>
+                            <tr>
+                                <td>ID: 3-5002-111...</td>
+                                <td>Gadget Hub (นาย ธนากร)</td>
+                                <td>140,000 ฿</td>
+                                <td>92%</td>
+                                <td>แปลงชื่อเป็นรหัส / ลบเลขบัตร</td>
+                                <td><strong>SHOP-02</strong> | 140,000 | 92%</td>
+                            </tr>
+                            <tr>
+                                <td>ID: 1-8099-234...</td>
+                                <td>เสื้อผ้าแฟชั่น (นาง อารี)</td>
+                                <td>NULL (ค่าว่าง)</td>
+                                <td>80%</td>
+                                <td>แก้ Missing Value ด้วย Data Cleaning</td>
+                                <td><strong>SHOP-03</strong> | ตรวจสอบบิลจริง</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="grid-2" style="margin-top: 6px;">
+                        <div class="card" style="padding: 8px 12px; background: #fffbeb;">
+                            <span style="font-size: 0.82rem; font-weight: 700; color: #b45309;">1. Data Cleaning (Session 5):</span>
+                            <span style="font-size: 0.8rem; color: var(--text-sub);"> ใช้ TRIM ตัดช่องว่าง, Find &amp; Replace แก้สะกดผิด, และจัดการค่าว่าง</span>
+                        </div>
+                        <div class="card" style="padding: 8px 12px; background: #ecfdf5;">
+                            <span style="font-size: 0.82rem; font-weight: 700; color: #047857;">2. Data Masking (Session 12):</span>
+                            <span style="font-size: 0.8rem; color: var(--text-sub);"> ปลดชื่อและเลขบัตรออก เหลือเพียง SHOP-ID ข้อมูลปลอดภัย 100% ตาม PDPA</span>
+                        </div>
+                    </div>
+                </div>
+                <aside class="notes">
+                    - แสดงให้เห็นการผสาน Data Cleaning (S5) กับ Data Masking (S12)
+                </aside>
+            </section>
+
+            <!-- SLIDE 22: PIPELINE STEP 4: ANALYZE & BIAS AUDIT -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-brain" style="color: var(--purple);"></i> ขั้นที่ 4: ANALYZE — สั่ง Gemini วิเคราะห์พร้อม Audit Bias</h2>
+                        <span class="subtitle">การจัดระดับความเสี่ยงเครดิตด้วย AI พร้อมสั่งตรวจสอบความสมเหตุสมผลและความเป็นธรรม</span>
+                    </div>
+                    <span class="badge-step purple"><i class="fas fa-robot"></i> Step 4</span>
+                </div>
+                <div class="slide-body">
+                    <div class="prompt-box" style="margin-bottom: 6px; font-size: 0.8rem;">
+                        <div class="prompt-header">Integrated Analysis &amp; Ethical Audit Prompt</div>
+                        คุณคือ Chief Risk Officer และผู้เชี่ยวชาญด้าน AI Ethics<br />
+                        บริบท: ฉันมีชุดข้อมูลร้านค้าออนไลน์ที่ผ่านการ Masking แล้วดังนี้ [แนบตาราง SHOP-01 ถึง SHOP-10]<br />
+                        ภารกิจ:<br />
+                        1. วิเคราะห์และจัดระดับความเสี่ยงเครดิต (Low / Medium / High Risk) โดยดูจากยอดขาย ความสม่ำเสมอ และรีวิว<br />
+                        2. <strong>Ethical &amp; Bias Audit:</strong> ตรวจสอบว่าโมเดลมีการให้น้ำหนักที่เอนเอียงต่อประเภทร้านค้าหรือพื้นที่โดยไม่เป็นธรรมหรือไม่<br />
+                        3. ให้เหตุผลประกอบการตัดสินใจสำหรับแต่ละร้านอย่างโปร่งใส (Explainability)
+                    </div>
+
+                    <div class="grid-3" style="margin-top: 4px;">
+                        <div class="card" style="padding: 8px 12px; border-left: 4px solid var(--success);">
+                            <div style="font-size: 0.75rem; font-weight: 700; color: var(--success);">Low Risk (อนุมัติทันที)</div>
+                            <div style="font-size: 0.82rem; color: var(--text-sub);">ยอดขาย &gt; 50k สม่ำเสมอ 6 เดือน, รีวิว &gt; 95%</div>
+                        </div>
+                        <div class="card" style="padding: 8px 12px; border-left: 4px solid var(--accent);">
+                            <div style="font-size: 0.75rem; font-weight: 700; color: #b45309;">Medium Risk (ขอข้อมูลเพิ่ม)</div>
+                            <div style="font-size: 0.82rem; color: var(--text-sub);">ยอดขายผันผวนบางเดือน ให้วงเงินเริ่มต้น 20,000 บ.</div>
+                        </div>
+                        <div class="card" style="padding: 8px 12px; border-left: 4px solid var(--danger);">
+                            <div style="font-size: 0.75rem; font-weight: 700; color: var(--danger);">High Risk (ชะลอการอนุมัติ)</div>
+                            <div style="font-size: 0.82rem; color: var(--text-sub);">เปิดร้านไม่ถึง 2 เดือน หรือมีอัตราคืนสินค้า &gt; 25%</div>
+                        </div>
+                    </div>
+                </div>
+                <aside class="notes">
+                    - ชี้ให้เห็นว่า Prompt บังคับให้ AI ทำ Bias Audit และให้เหตุผล Explainability เสมอ
+                </aside>
+            </section>
+
+            <!-- SLIDE 23: PIPELINE STEP 5: ACT & TRANSPARENT COMMUNICATION -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-bullhorn" style="color: var(--success);"></i> ขั้นที่ 5: ACT — สื่อสารอย่างโปร่งใสและพิทช์อนุมัติวงเงิน</h2>
+                        <span class="subtitle">การนำผลลัพธ์ไปใช้งานจริง ทั้งการนำเสนอผู้บริหาร และการแจ้งผลอย่างมีจรรยาบรรณต่อลูกค้า</span>
+                    </div>
+                    <span class="badge-step success"><i class="fas fa-check-circle"></i> Step 5</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2">
+                        <div class="card" style="border-left: 4px solid var(--primary);">
+                            <h4 style="color: var(--primary); margin-bottom: 6px;"><i class="fas fa-user-tie"></i> นำเสนอผู้บริหาร (Internal Pitch - BLUF)</h4>
+                            <div style="font-size: 0.84rem; color: var(--text-sub); line-height: 1.5;">
+                                • <strong>BLUF:</strong> "จากการวิเคราะห์ 150 ร้านค้า เราคัดกรองร้านความเสี่ยงต่ำได้ 45 ร้าน ขออนุมัติวงเงินปล่อยกู้รวม 2.5 ล้านบาท"<br />
+                                • <strong>Expected ROI:</strong> คาดการณ์รายได้ดอกเบี้ยและค่าธรรมเนียม 320,000 บาทใน 90 วัน (NPL ต่ำกว่า 1.5%)<br />
+                                • <strong>Governance Report:</strong> ผ่านการตรวจ Bias และ PDPA ครบ 100%
+                            </div>
+                        </div>
+
+                        <div class="card" style="border-left: 4px solid var(--success); background: #f0fdf4;">
+                            <h4 style="color: #047857; margin-bottom: 6px;"><i class="fas fa-comment-alt"></i> สื่อสารกับลูกค้า (Customer Transparency)</h4>
+                            <div style="font-size: 0.84rem; color: var(--text-sub); line-height: 1.5;">
+                                • <strong>แจ้งผลอย่างโปร่งใส:</strong> ส่งข้อความผ่านแอปอธิบายเหตุผลชัดเจน<br />
+                                • <strong>กรณีไม่ผ่าน:</strong> ให้คำแนะนำสร้างสรรค์ เช่น <em>"หากรักษายอดขายต่อเนื่องอีก 60 วัน และลดอัตราการคืนสินค้า ท่านสามารถยื่นขอใหม่ได้ทันที"</em><br />
+                                • <strong>Human Appeal:</strong> มีปุ่มให้ลูกค้าขอยื่นอุทธรณ์เพื่อให้เจ้าหน้าที่ตรวจสอบซ้ำ
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="highlight-box success" style="margin-top: 6px;">
+                        <i class="fas fa-award" style="color: #047857; margin-right: 6px;"></i>
+                        <strong>นี่คือภาพสมบูรณ์ของ Data Science:</strong> ตั้งแต่คำถามแรก (ASK) จนถึงเงินเข้ากระเป๋าและการส่งมอบคุณค่าอย่างถูกต้องตามจริยธรรม (ACT)!
+                    </div>
+                </div>
+                <aside class="notes">
+                    - แสดงให้เห็นทั้งมุมมองพิทช์ภายใน และการสื่อสารภายนอกกับลูกค้า
+                </aside>
+            </section>
+
+            <!-- SLIDE 24: FINAL PROJECT LAUNCHPAD -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-rocket" style="color: var(--primary);"></i> Final Project Launchpad: เวทีประลองฝีมือนักธุรกิจตัวจริง</h2>
+                        <span class="subtitle">การประยุกต์ใช้วงจร Data Science 5 ขั้นตอนกับโจทย์ธุรกิจจริง (สัดส่วนคะแนน 40% ของวิชา)</span>
+                    </div>
+                    <span class="badge-step primary"><i class="fas fa-flag-checkered"></i> 40% Final</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-3">
+                        <div class="card" style="border-top: 4px solid var(--primary);">
+                            <h4 style="color: var(--primary); margin-bottom: 6px;"><i class="fas fa-users"></i> ขนาดกลุ่ม &amp; หัวข้อ</h4>
+                            <p style="font-size: 0.84rem; color: var(--text-sub); line-height: 1.45;">
+                                • กลุ่มละ <strong>4–5 คน</strong><br />
+                                • เลือกธุรกิจจริงที่สมาชิกในกลุ่มกำลังพัฒนา หรือธุรกิจ SME / Startup ที่สนใจจริงในประเทศไทย
+                            </p>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid var(--secondary);">
+                            <h4 style="color: var(--secondary-dark); margin-bottom: 6px;"><i class="fas fa-database"></i> แหล่งที่มาของข้อมูล</h4>
+                            <p style="font-size: 0.84rem; color: var(--text-sub); line-height: 1.45;">
+                                • ข้อมูลที่เก็บรวบรวมเองผ่าน Google Forms (Primary Data)<br />
+                                • ข้อมูลเปิดภาครัฐ / Open Data หรือชุดข้อมูลจำลองที่อาจารย์ให้ความเห็นชอบ
+                            </p>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid var(--success);">
+                            <h4 style="color: var(--success); margin-bottom: 6px;"><i class="fas fa-microphone"></i> การนำเสนอผลงาน</h4>
+                            <p style="font-size: 0.84rem; color: var(--text-sub); line-height: 1.45;">
+                                • พิทช์หน้าชั้นเรียนใน <strong>Session 14</strong> กลุ่มละ <strong>15 นาที</strong> (พิทช์ 10 นาที + ถามตอบ Q&amp;A 5 นาที)<br />
+                                • จำลองการนำเสนอต่อคณะกรรมการนักลงทุน
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="card" style="background: #faf5ff; border: 1px solid #e9d5ff; padding: 10px 14px; margin-top: 4px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <span style="font-weight: 700; color: var(--purple); font-size: 0.9rem;">
+                                <i class="fas fa-calendar-check" style="margin-right: 6px;"></i> นัดหมายสำคัญ:
+                            </span>
+                            <span style="font-size: 0.84rem; color: var(--text-sub);">
+                                <strong>Session 13 (สัปดาห์หน้า):</strong> เป็น Workshop เต็มเวลา 150 นาที อาจารย์จะ Coaching แบบรายกลุ่มและซ้อม Dry Run!
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <aside class="notes">
+                    - ประกาศโจทย์โปรเจกต์กลุ่มอย่างเป็นทางการ ชี้แจงสัดส่วนคะแนน 40%
+                </aside>
+            </section>
+
+            <!-- SLIDE 25: THE 4 DELIVERABLES -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-box-open" style="color: var(--primary);"></i> ชิ้นงานส่งมอบ 4 รายการ (The 4 Deliverables)</h2>
+                        <span class="subtitle">ทุกกลุ่มต้องจัดทำและส่งมอบผลงาน 4 ชิ้นนี้ในระบบ e-Learning ก่อนขึ้นนำเสนอ</span>
+                    </div>
+                    <span class="badge-step primary"><i class="fas fa-clipboard-list"></i> Deliverables</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-4" style="margin-top: 6px;">
+                        <div class="card" style="border-top: 4px solid #0284c7; height: 100%;">
+                            <div style="font-size: 1.3rem; color: #0284c7; margin-bottom: 6px;"><i class="fas fa-file-excel"></i></div>
+                            <h4 style="font-size: 0.98rem; margin-bottom: 4px;">1. Google Sheets</h4>
+                            <p style="font-size: 0.8rem; color: var(--text-sub); line-height: 1.4;">
+                                ตารางข้อมูลที่ผ่านการ Clean เรียบร้อย (PREPARE) มีการผูกสูตรคำนวณ Pivot Table หรือ Dashboard
+                            </p>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid var(--purple); height: 100%;">
+                            <div style="font-size: 1.3rem; color: var(--purple); margin-bottom: 6px;"><i class="fas fa-robot"></i></div>
+                            <h4 style="font-size: 0.98rem; margin-bottom: 4px;">2. Prompt Log</h4>
+                            <p style="font-size: 0.8rem; color: var(--text-sub); line-height: 1.4;">
+                                ลิงก์ Share Chat หรือเอกสารบันทึกคำสั่ง Master Prompt ที่ใช้สั่งงาน Gemini วิเคราะห์ (ANALYZE)
+                            </p>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid #f59e0b; height: 100%;">
+                            <div style="font-size: 1.3rem; color: #f59e0b; margin-bottom: 6px;"><i class="fas fa-file-powerpoint"></i></div>
+                            <h4 style="font-size: 0.98rem; margin-bottom: 4px;">3. Master Deck</h4>
+                            <p style="font-size: 0.8rem; color: var(--text-sub); line-height: 1.4;">
+                                สไลด์ Google Slides ความยาว <strong>5–7 หน้า</strong> ตามโครงสร้าง Context ➔ Insight ➔ Action (ACT)
+                            </p>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid var(--success); height: 100%;">
+                            <div style="font-size: 1.3rem; color: var(--success); margin-bottom: 6px;"><i class="fas fa-microphone-alt"></i></div>
+                            <h4 style="font-size: 0.98rem; margin-bottom: 4px;">4. Live Pitch</h4>
+                            <p style="font-size: 0.8rem; color: var(--text-sub); line-height: 1.4;">
+                                การนำเสนอสดหน้าชั้นเรียน 15 นาที พร้อมตอบข้อซักถามจากอาจารย์และเพื่อนร่วมชั้น
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="highlight-box success" style="margin-top: 8px;">
+                        <i class="fas fa-check" style="color: var(--success); margin-right: 6px;"></i>
+                        <strong>ส่งงานแบบออนไลน์:</strong> ให้รวบรวมลิงก์ทั้งหมดไว้ในเอกสาร Google Doc หรือส่งผ่านแบบฟอร์มส่งงานในคาบเรียน Session 14
+                    </div>
+                </div>
+                <aside class="notes">
+                    - ชี้แจงชิ้นงานส่งมอบ 4 อย่างให้ชัดเจน
+                </aside>
+            </section>
+
+            <!-- SLIDE 26: THE 5-DIMENSION RUBRIC -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-balance-scale" style="color: var(--primary);"></i> เกณฑ์การประเมินโปรเจกต์กลุ่ม (Assessment Rubric: 100%)</h2>
+                        <span class="subtitle">สัดส่วนคะแนนสะท้อนความสามารถในวงจร Data Science ครบทั้ง 5 ขั้นตอน</span>
+                    </div>
+                    <span class="badge-step primary"><i class="fas fa-star"></i> Scoring Rubric</span>
+                </div>
+                <div class="slide-body">
+                    <table class="table-custom" style="font-size: 0.83rem;">
+                        <thead>
+                            <tr>
+                                <th style="width: 25%;">มิติการประเมิน</th>
+                                <th style="width: 15%;">สัดส่วนคะแนน</th>
+                                <th style="width: 60%;">เกณฑ์ความคาดหวังระดับดีเยี่ยม (Excellence)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>1. ASK (โจทย์ธุรกิจ)</strong></td>
+                                <td><strong>20%</strong></td>
+                                <td>คำถามธุรกิจชัดเจน ตรงจุด Pain Point มีสมมติฐานที่ทดสอบได้ด้วยข้อมูล</td>
+                            </tr>
+                            <tr>
+                                <td><strong>2. COLLECT &amp; PREPARE</strong></td>
+                                <td><strong>15%</strong></td>
+                                <td>โครงสร้างข้อมูลถูกต้อง (Tidy Data) ผ่านการคลีนสะอาด และคำนึงถึง PDPA/Masking</td>
+                            </tr>
+                            <tr>
+                                <td><strong>3. ANALYZE (การใช้ AI)</strong></td>
+                                <td><strong>25%</strong></td>
+                                <td>ใช้ Gemini วิเคราะห์เจาะลึก ค้นพบ Insight แฝง ผ่านการตรวจ Fact &amp; Bias Audit</td>
+                            </tr>
+                            <tr>
+                                <td><strong>4. ACT (Data Storytelling)</strong></td>
+                                <td><strong>25%</strong></td>
+                                <td>โครงสร้าง C-I-A ชัดเจน 1 สไลด์ 1 ข้อความ มี Action Plan จับต้องได้พร้อม ROI</td>
+                            </tr>
+                            <tr>
+                                <td><strong>5. Pitching &amp; Q&amp;A</strong></td>
+                                <td><strong>15%</strong></td>
+                                <td>นำเสนอมั่นใจ ตรงเวลา 15 นาที สื่อสารแบบนักธุรกิจ และตอบคำถามได้ตรงประเด็น</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="highlight-box accent" style="margin-top: 4px;">
+                        <i class="fas fa-award" style="color: #b45309; margin-right: 6px;"></i>
+                        <strong>คะแนนรวม 100%</strong> จะถูกแปลงเป็นสัดส่วนคะแนนเก็บ 40% ของผลการเรียนตลอดภาคการศึกษา
+                    </div>
+                </div>
+                <aside class="notes">
+                    - อธิบาย Rubric 5 ด้าน เน้นย้ำว่า ANALYZE และ ACT มีน้ำหนักสูงสุดด้านละ 25%
+                </aside>
+            </section>
+
+            <!-- SLIDE 27: TIMELINE TO GLORY -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-calendar-alt" style="color: var(--primary);"></i> Timeline to Glory: แผนการทำงาน 3 สัปดาห์สุดท้าย</h2>
+                        <span class="subtitle">เส้นทางสู่ความสำเร็จในการส่งมอบผลงาน Final Project</span>
+                    </div>
+                    <span class="badge-step primary"><i class="fas fa-clock"></i> Schedule</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-3" style="margin-top: 8px;">
+                        <div class="card" style="border-top: 4px solid var(--primary); background: #faf5ff;">
+                            <div style="font-size: 0.8rem; font-weight: 800; color: var(--primary); text-transform: uppercase;">Session 12 (สัปดาห์นี้)</div>
+                            <h4 style="font-size: 1.05rem; margin: 4px 0 6px;">Launchpad &amp; Idea</h4>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.45;">
+                                • จับกลุ่ม 4-5 คน กำหนดหัวข้อธุรกิจ<br />
+                                • ตั้งคำถามธุรกิจ (ASK) และจัดเตรียมข้อมูลเบื้องต้น<br />
+                                • ฝึก Mini-Pipeline ใน Workshop
+                            </p>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid var(--accent); background: #fffbeb;">
+                            <div style="font-size: 0.8rem; font-weight: 800; color: #b45309; text-transform: uppercase;">Session 13 (สัปดาห์หน้า)</div>
+                            <h4 style="font-size: 1.05rem; margin: 4px 0 6px;">Coaching &amp; Dry Run</h4>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.45;">
+                                • Workshop เต็มคาบ 150 นาที<br />
+                                • อาจารย์ตรวจความพร้อมรายกลุ่ม (1-on-1)<br />
+                                • ซ้อมพิทช์แห้ง (Dry Run) และปรับปรุงสไลด์
+                            </p>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid var(--success); background: #f0fdf4;">
+                            <div style="font-size: 0.8rem; font-weight: 800; color: #047857; text-transform: uppercase;">Session 14 (สัปดาห์สุดท้าย)</div>
+                            <h4 style="font-size: 1.05rem; margin: 4px 0 6px;">The Final Pitch Arena</h4>
+                            <p style="font-size: 0.82rem; color: var(--text-sub); line-height: 1.45;">
+                                • นำเสนอผลงานหน้าชั้นเรียน (15 นาที/กลุ่ม)<br />
+                                • Peer Feedback ประเมินระหว่างกลุ่ม<br />
+                                • สรุปประมวลผลการเรียนและทิศทางต่อยอด
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="highlight-box success" style="margin-top: 8px;">
+                        <i class="fas fa-heart" style="color: var(--success); margin-right: 6px;"></i>
+                        <strong>อาจารย์อยู่เคียงข้างทุกกลุ่ม:</strong> ในสัปดาห์หน้าสามารถปรึกษาอาจารย์ได้แบบไม่จำกัดเพื่อช่วยเกลา Insight และซ้อมบทพูดให้คมที่สุด!
+                    </div>
+                </div>
+                <aside class="notes">
+                    - อธิบาย Roadmap สัปดาห์ 12, 13, 14
+                </aside>
+            </section>
+
+            <!-- SLIDE 28: SESSION SUMMARY -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-bookmark" style="color: var(--primary);"></i> สรุปบทเรียน: 5 กฎเหล็กของนักธุรกิจยุค Data &amp; AI</h2>
+                        <span class="subtitle">ทบทวนหลักคิดสำคัญเพื่อการเป็นผู้ประกอบการที่ฉลาดใช้ข้อมูลและมีธรรมาภิบาล</span>
+                    </div>
+                    <span class="badge-step primary"><i class="fas fa-check"></i> Key Takeaways</span>
+                </div>
+                <div class="slide-body">
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <div class="card" style="padding: 10px 14px; border-left: 4px solid var(--primary); display: flex; align-items: center; gap: 12px;">
+                            <div style="font-size: 1.2rem; font-weight: 800; color: var(--primary);">1</div>
+                            <div style="font-size: 0.88rem; color: var(--dark);">
+                                <strong>บูรณาการ 5 ขั้นตอน:</strong> จาก ASK ถึง ACT คือวงจร Flywheel ที่ต้องหมุนอย่างต่อเนื่อง ขาดขั้นใดขั้นหนึ่งธุรกิจจะไม่เกิดผลลัพธ์
+                            </div>
+                        </div>
+
+                        <div class="card" style="padding: 10px 14px; border-left: 4px solid var(--danger); display: flex; align-items: center; gap: 12px;">
+                            <div style="font-size: 1.2rem; font-weight: 800; color: var(--danger);">2</div>
+                            <div style="font-size: 0.88rem; color: var(--dark);">
+                                <strong>รู้ทัน AI Bias:</strong> ข้อมูลในอดีตมีอคติ หมั่นตรวจเช็กความเป็นธรรมและตัดตัวแปรเลือกปฏิบัติออก
+                            </div>
+                        </div>
+
+                        <div class="card" style="padding: 10px 14px; border-left: 4px solid var(--accent); display: flex; align-items: center; gap: 12px;">
+                            <div style="font-size: 1.2rem; font-weight: 800; color: #b45309;">3</div>
+                            <div style="font-size: 0.88rem; color: var(--dark);">
+                                <strong>เคารพ PDPA เคร่งครัด:</strong> ห้ามโยนข้อมูลส่วนบุคคลลูกค้าเข้า AI สาธารณะ และต้องทำ Data Masking เสมอ
+                            </div>
+                        </div>
+
+                        <div class="card" style="padding: 10px 14px; border-left: 4px solid #0284c7; display: flex; align-items: center; gap: 12px;">
+                            <div style="font-size: 1.2rem; font-weight: 800; color: #0284c7;">4</div>
+                            <div style="font-size: 0.88rem; color: var(--dark);">
+                                <strong>อย่าเชื่อ AI ตาบอด:</strong> ตรวจสอบ Fact &amp; Math กับ Spreadsheet เสมอเพื่อป้องกันหายนะแบบ Zillow
+                            </div>
+                        </div>
+
+                        <div class="card" style="padding: 10px 14px; border-left: 4px solid var(--success); display: flex; align-items: center; gap: 12px;">
+                            <div style="font-size: 1.2rem; font-weight: 800; color: #047857;">5</div>
+                            <div style="font-size: 0.88rem; color: var(--dark);">
+                                <strong>Explainability &amp; Human Control:</strong> ธุรกิจต้องโปร่งใส อธิบายเหตุผลได้ และมนุษย์ต้องเป็นผู้รับผิดชอบการตัดสินใจ
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <aside class="notes">
+                    - สรุป 5 กฎเหล็ก ชี้ให้เห็นว่าทั้งหมดนี้คือหัวใจของวิชานี้
+                </aside>
+            </section>
+
+            <!-- SLIDE 29: QUIZIZZ ARENA -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-gamepad" style="color: var(--accent);"></i> Quizizz Arena: ประลองความรู้ Pipeline &amp; AI Ethics</h2>
+                        <span class="subtitle">ทดสอบความเข้าใจ 10 ข้อ 3 ตัวเลือก (A, B, C) — สแกน QR Code เข้าประลองได้เลย!</span>
+                    </div>
+                    <span class="badge-step accent"><i class="fas fa-trophy"></i> Quiz Time</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-2" style="margin-top: 4px;">
+                        <div class="card" style="text-align: center; padding: 20px;">
+                            <i class="fas fa-qrcode" style="font-size: 4rem; color: var(--primary); margin-bottom: 12px;"></i>
+                            <h3 style="font-size: 1.3rem; margin-bottom: 6px;">เข้าเล่นผ่าน Quizizz</h3>
+                            <p style="font-size: 0.95rem; color: var(--text-sub); margin-bottom: 12px;">
+                                สแกน QR Code หรือเข้าเว็บไซต์ <strong>joinmyquiz.com</strong>
+                            </p>
+                            <div style="background: #f1f5f9; padding: 8px 16px; border-radius: 8px; display: inline-block; font-family: 'Fira Code', monospace; font-size: 1.2rem; font-weight: 700; color: var(--primary);">
+                                GAME PIN: [รอรหัสจากอาจารย์]
+                            </div>
+                        </div>
+
+                        <div class="card" style="padding: 18px;">
+                            <h4 style="color: var(--dark); font-size: 1.05rem; margin-bottom: 10px;"><i class="fas fa-bullseye" style="color: var(--accent);"></i> ประเด็นสำคัญในแบบทดสอบ:</h4>
+                            <ul style="font-size: 0.88rem; color: var(--text-sub); line-height: 1.6; padding-left: 20px;">
+                                <li>การเชื่อมโยงวงจร Data Science ครบทั้ง 5 ขั้นตอน</li>
+                                <li>สาเหตุและวิธีรับมือปัญหา AI Bias ในการทำธุรกิจ</li>
+                                <li>การปฏิบัติตามกฎหมาย PDPA และการทำ Data Masking</li>
+                                <li>บทเรียนความล้มเหลวจาก Zillow และ Amazon AI</li>
+                                <li>หลักการ Explainability (XAI) และ Human-in-the-Loop</li>
+                            </ul>
+                            <div class="highlight-box accent" style="margin-top: 10px; font-size: 0.82rem;">
+                                <strong>เวลา:</strong> 60 วินาทีต่อข้อ วิเคราะห์จากเคสจริง!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <aside class="notes">
+                    - เปิดระบบ Quizizz และเริ่มเล่นเกมทดสอบความเข้าใจ
+                </aside>
+            </section>
+
+            <!-- SLIDE 30: WORKSHOP BRIEF -->
+            <section>
+                <div class="slide-header">
+                    <div class="title-group">
+                        <h2><i class="fas fa-laptop-code" style="color: var(--success);"></i> Workshop Brief: "FinQuick AI Audit &amp; Mini-Pipeline"</h2>
+                        <span class="subtitle">สวมบทบาททีมกอบกู้สตาร์ทอัพ รันวงจร 5 ขั้นตอนพร้อมปลดชนวนความเสี่ยง AI Bias และ PDPA</span>
+                    </div>
+                    <span class="badge-step success"><i class="fas fa-flask"></i> Hands-on Lab</span>
+                </div>
+                <div class="slide-body">
+                    <div class="grid-4" style="margin-top: 4px;">
+                        <div class="card" style="border-top: 4px solid var(--primary); height: 100%;">
+                            <div style="font-size: 1.2rem; font-weight: 800; color: var(--primary); margin-bottom: 4px;">Mission 1</div>
+                            <h4 style="font-size: 0.95rem; margin-bottom: 4px;">ASK &amp; PDPA</h4>
+                            <p style="font-size: 0.78rem; color: var(--text-sub); line-height: 1.4;">
+                                ตั้งคำถามเครดิต ออกแบบ Consent Checkbox และคัดกรองข้อมูล
+                            </p>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid var(--secondary); height: 100%;">
+                            <div style="font-size: 1.2rem; font-weight: 800; color: var(--secondary); margin-bottom: 4px;">Mission 2</div>
+                            <h4 style="font-size: 0.95rem; margin-bottom: 4px;">Clean &amp; Mask</h4>
+                            <p style="font-size: 0.78rem; color: var(--text-sub); line-height: 1.4;">
+                                ล้างตารางและทำ Masking แปลง PII ให้เป็น SHOP-ID
+                            </p>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid var(--purple); height: 100%;">
+                            <div style="font-size: 1.2rem; font-weight: 800; color: var(--purple); margin-bottom: 4px;">Mission 3</div>
+                            <h4 style="font-size: 0.95rem; margin-bottom: 4px;">AI Bias Audit</h4>
+                            <p style="font-size: 0.78rem; color: var(--text-sub); line-height: 1.4;">
+                                สั่ง Gemini จัดเกรดเครดิตพร้อมออดิตหาความเอนเอียง
+                            </p>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid var(--success); height: 100%;">
+                            <div style="font-size: 1.2rem; font-weight: 800; color: var(--success); margin-bottom: 4px;">Mission 4</div>
+                            <h4 style="font-size: 0.95rem; margin-bottom: 4px;">1-Page BLUF</h4>
+                            <p style="font-size: 0.78rem; color: var(--text-sub); line-height: 1.4;">
+                                สรุปพิทช์อนุมัติวงเงิน และร่างข้อความแจ้งผลโปร่งใส
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="card" style="background: #faf5ff; border: 1px solid #e9d5ff; padding: 10px 14px; margin-top: 6px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <span class="tag purple"><i class="fas fa-download"></i> ชิ้นงานส่งท้ายคาบ</span>
+                                <span style="font-size: 0.88rem; font-weight: 600; color: var(--dark); margin-left: 8px;">
+                                    ตาราง Masking ใน Sheets + บันทึก Audit ในใบงาน HTML
+                                </span>
+                            </div>
+                            <div style="font-size: 0.82rem; font-weight: 700; color: var(--primary);">
+                                เวลาปฏิบัติการ: 60 นาที (คะแนนเต็ม 20)
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="highlight-box success" style="margin-top: 4px; text-align: center; font-size: 0.88rem;">
+                        <i class="fas fa-play" style="margin-right: 6px;"></i>
+                        <strong>เปิดไฟล์ใบงาน:</strong> <code>session-12-workshop-worksheet.html</code> และเริ่มปฏิบัติการได้เลยครับ!
+                    </div>
+                </div>
+                <aside class="notes">
+                    - ชี้แจงภารกิจ Workshop และเปิดโอกาสให้นักศึกษาลงมือปฏิบัติการกลุ่ม
+                </aside>
+            </section>
+
+        </div>
+    </div>
+
+    <!-- Reveal.js Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/notes/notes.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/highlight/highlight.js"></script>
+    <script>
+        const deck = new Reveal({
+            width: 1280,
+            height: 800,
+            margin: 0.04,
+            minScale: 0.1,
+            maxScale: 3.0,
+            controls: false,
+            progress: true,
+            center: false,
+            hash: true,
+            transition: 'slide',
+            transitionSpeed: 'default',
+            mouseWheel: true,
+            plugins: [RevealNotes, RevealHighlight]
+        });
+
+        deck.initialize().then(() => {
+            window.deck = deck;
+            window.Reveal = deck;
+
+            // Automated slide height audit (identical to Session 10)
+            window.runSlideHeightAudit = function () {
+                const targetH = deck.getConfig().height || 800;
+                const sections = document.querySelectorAll('.reveal .slides > section');
+                let passed = 0;
+                let failed = 0;
+                const results = [];
+
+                sections.forEach((sec, idx) => {
+                    const scrollH = sec.scrollHeight;
+                    const isPass = scrollH <= targetH + 4;
+                    if (isPass) passed++; else failed++;
+                    results.push({
+                        slide: idx + 1,
+                        scrollH,
+                        targetH,
+                        pass: isPass
+                    });
+                });
+
+                const summary = { total: sections.length, passed, failed, rate: Math.round((passed / sections.length) * 100) };
+
+                const sumDiv = document.getElementById('test-report-summary');
+                const content = document.getElementById('test-report-content');
+                if (sumDiv && content) {
+                    sumDiv.innerHTML = `Pass: <span style="color: #4ade80;">${passed}</span> / Fail: <span style="color: #f43f5e;">${failed}</span> (${summary.rate}%)`;
+                    let html = '';
+                    results.forEach(r => {
+                        html += `<div style="display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px solid #1e293b; color: ${r.pass ? '#cbd5e1' : '#f87171'};">
+                            <span>Slide ${r.slide}</span>
+                            <span>${r.scrollH}px / ${r.targetH}px [${r.pass ? 'PASS' : 'FAIL'}]</span>
+                        </div>`;
+                    });
+                    content.innerHTML = html;
+                }
+
+                return summary;
+            };
+
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('test') === 'true') {
+                const overlay = document.getElementById('test-report-overlay');
+                if (overlay) overlay.style.display = 'block';
+                setTimeout(() => {
+                    window.runSlideHeightAudit();
+                }, 800);
+            }
+
+            window.addEventListener('keydown', (e) => {
+                if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) return;
+
+                // Key 'A' or 'a': Toggle Aspect Ratio (16:10 <-> 16:9)
+                if (e.key === 'a' || e.key === 'A') {
+                    toggleAspectRatio();
+                }
+
+                // Key 'T' or 't': Toggle Slide Audit Test Overlay
+                if (e.key === 't' || e.key === 'T') {
+                    const overlay = document.getElementById('test-report-overlay');
+                    if (overlay) {
+                        overlay.style.display = overlay.style.display === 'block' ? 'none' : 'block';
+                        if (overlay.style.display === 'block') {
+                            window.runSlideHeightAudit();
+                        }
+                    }
+                }
+            });
+        });
+
+        // Show Temporary Aspect Ratio Toast Notification
+        function showRatioToast(msg) {
+            let toast = document.getElementById('aspect-ratio-toast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'aspect-ratio-toast';
+                toast.style.cssText = `
+                    position: fixed;
+                    bottom: 24px;
+                    right: 24px;
+                    background: rgba(15, 23, 42, 0.90);
+                    backdrop-filter: blur(8px);
+                    color: #ffffff;
+                    padding: 8px 18px;
+                    border-radius: 9999px;
+                    font-family: 'Outfit', 'Noto Sans Thai', sans-serif;
+                    font-size: 0.85rem;
+                    font-weight: 600;
+                    letter-spacing: 0.02em;
+                    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+                    border: 1px solid rgba(255, 255, 255, 0.15);
+                    z-index: 99999;
+                    pointer-events: none;
+                    transition: opacity 0.3s ease, transform 0.3s ease;
+                    transform: translateY(0);
+                    opacity: 0;
+                `;
+                document.body.appendChild(toast);
+            }
+            toast.innerHTML = `<i class="fa-solid fa-display" style="margin-right: 8px; color: #818cf8;"></i> ${msg}`;
+            toast.style.opacity = '1';
+            toast.style.transform = 'translateY(0)';
+            clearTimeout(window._ratioToastTimer);
+            window._ratioToastTimer = setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(6px)';
+            }, 1500);
+        }
+
+        // Toggle Aspect Ratio (Key 'A')
+        function toggleAspectRatio() {
+            if (deck.getConfig().height === 800) {
+                deck.configure({ width: 1280, height: 720 });
+                showRatioToast('สลับอัตราส่วนหน้าจอ: 16:9 (1280 × 720)');
+            } else {
+                deck.configure({ width: 1280, height: 800 });
+                showRatioToast('สลับอัตราส่วนหน้าจอ: 16:10 (1280 × 800)');
+            }
+        }
+        window.toggleAspectRatio = toggleAspectRatio;
+    </script>
+</body>
+</html>

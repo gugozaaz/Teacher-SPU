@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ใบงาน Workshop ครั้งที่ 13 — "Final Project Coaching & Dry Run Clinic"</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #3730a3;
+            --primary-light: #eef2ff;
+            --secondary: #0284c7;
+            --secondary-light: #e0f2fe;
+            --purple: #7c3aed;
+            --purple-light: #f3e8ff;
+            --accent: #e11d48;
+            --accent-warm: #d97706;
+            --success: #059669;
+            --success-light: #ecfdf5;
+            --teal: #0d9488;
+            --teal-light: #f0fdfa;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text-main: #0f172a;
+            --text-sub: #334155;
+            --text-muted: #64748b;
+            --border: #cbd5e1;
+            --border-focus: #4f46e5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Noto Sans Thai', 'Outfit', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 30px 20px;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            background: var(--surface);
+            padding: 40px 45px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.08), 0 8px 10px -6px rgba(0,0,0,0.04);
+            border: 1px solid var(--border);
+        }
+
+        header {
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 24px;
+            margin-bottom: 28px;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .badges {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .badge-indigo { background: var(--primary-light); color: var(--primary-dark); }
+        .badge-amber { background: #fef3c7; color: #92400e; }
+        .badge-emerald { background: var(--success-light); color: var(--success); }
+        .badge-purple { background: var(--purple-light); color: var(--purple); }
+
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--text-main);
+            line-height: 1.3;
+            margin-bottom: 6px;
+        }
+
+        .subtitle {
+            font-size: 0.95rem;
+            color: var(--text-sub);
+        }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            background: var(--bg);
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin-top: 18px;
+            font-size: 0.85rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .meta-item strong {
+            color: var(--text-main);
+        }
+
+        /* Section Styling */
+        section {
+            margin-bottom: 35px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .section-title i {
+            color: var(--primary);
+        }
+
+        .section-desc {
+            font-size: 0.9rem;
+            color: var(--text-sub);
+            margin-bottom: 16px;
+        }
+
+        /* Input Controls */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-sub);
+            margin-bottom: 6px;
+        }
+
+        input[type="text"], input[type="number"], textarea, select {
+            width: 100%;
+            padding: 10px 14px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            color: var(--text-main);
+            background: #ffffff;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        input[type="text"]:focus, input[type="number"]:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+            line-height: 1.5;
+        }
+
+        .char-counter {
+            text-align: right;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* Cards & Grids */
+        .card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .card-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 14px;
+        }
+
+        /* Tables */
+        table.worksheet-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            margin-top: 8px;
+            margin-bottom: 16px;
+        }
+
+        table.worksheet-table th {
+            background: #f1f5f9;
+            color: var(--text-main);
+            font-weight: 700;
+            padding: 10px 12px;
+            text-align: left;
+            border: 1px solid var(--border);
+        }
+
+        table.worksheet-table td {
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            vertical-align: top;
+        }
+
+        /* Callout Boxes */
+        .callout {
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            margin: 12px 0;
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+
+        .callout-amber {
+            background: #fffbeb;
+            border-left: 4px solid var(--accent-warm);
+            color: #92400e;
+        }
+
+        .callout-emerald {
+            background: var(--success-light);
+            border-left: 4px solid var(--success);
+            color: #065f46;
+        }
+
+        .callout-indigo {
+            background: var(--primary-light);
+            border-left: 4px solid var(--primary);
+            color: var(--primary-dark);
+        }
+
+        .callout-rose {
+            background: #fff1f2;
+            border-left: 4px solid var(--accent);
+            color: #9f1239;
+        }
+
+        /* Action Buttons */
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 24px;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: var(--text-sub);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        /* Toast */
+        #toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #0f172a;
+            color: #ffffff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        #toast.show {
+            opacity: 1;
+        }
+
+        @media print {
+            body {
+                background: #ffffff;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+                border: none;
+                padding: 0;
+                max-width: 100%;
+            }
+            .btn-group, #toast {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="toast">บันทึกข้อมูลเรียบร้อยแล้ว</div>
+
+    <div class="container">
+        <header>
+            <div class="header-top">
+                <div class="badges">
+                    <span class="badge badge-indigo"><i class="fas fa-graduation-cap"></i> ภาคเรียนที่ 1/2569</span>
+                    <span class="badge badge-amber"><i class="fas fa-calendar-day"></i> ครั้งที่ 13 / 14</span>
+                    <span class="badge badge-emerald"><i class="fas fa-stethoscope"></i> Coaching & Dry Run Clinic</span>
+                    <span class="badge badge-purple"><i class="fas fa-award"></i> 20 คะแนน</span>
+                </div>
+            </div>
+            <h1>ใบงาน Workshop: "Final Project Coaching & Dry Run Clinic"</h1>
+            <p class="subtitle">คลินิกตรวจสุขภาพโปรเจกต์ 5 ขั้นตอน ปิด 4 กับดักมรณะ ซ้อมใหญ่ 15 นาที และแลกเปลี่ยน Peer Feedback</p>
+            
+            <div class="meta-grid">
+                <div class="meta-item"><strong>รายวิชา:</strong> Fundamentals of Data Science</div>
+                <div class="meta-item"><strong>เวลาปฏิบัติการ:</strong> 65–75 นาที</div>
+                <div class="meta-item"><strong>รูปแบบ:</strong> กลุ่มละ 4–5 คน (Final Project จริง)</div>
+                <div class="meta-item"><strong>ผู้สอน:</strong> อ.สุรชัย โกยสันติสุข (คณะการสร้างเจ้าของธุรกิจ)</div>
+            </div>
+        </header>
+
+        <!-- TEAM INFO & STAGE ROLES -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-users-viewfinder"></i> ข้อมูลกลุ่มและบทบาทสมาชิกบนเวที (Stage Roles)</h2>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="group-no">ชื่อกลุ่ม / กลุ่มที่:</label>
+                    <input type="text" id="group-no" placeholder="เช่น กลุ่มที่ 3 (GreenFresh Team)">
+                </div>
+                <div class="form-group">
+                    <label for="biz-name">ชื่อธุรกิจ / หัวข้อโปรเจกต์:</label>
+                    <input type="text" id="biz-name" placeholder="เช่น สตาร์ทอัพผักออร์แกนิกแบบสมาชิกรายเดือน GreenFresh">
+                </div>
+            </div>
+
+            <div class="card" style="background: var(--bg);">
+                <div class="card-title" style="margin-bottom: 12px; font-size: 0.95rem;">
+                    <i class="fas fa-id-badge" style="color: var(--primary);"></i> รายชื่อสมาชิกและ 4 บทบาทหลักบนเวทีพิทช์ (แบ่งให้ครบทุกคน):
+                </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>1. The Opener (สไลด์ 1–2 เล่า Context & Pain Point):</label>
+                        <input type="text" id="role-opener" placeholder="ชื่อ-สกุล และ รหัสนักศึกษา">
+                    </div>
+                    <div class="form-group">
+                        <label>2. Data Master (สไลด์ 2–3 เล่า Sheets, Clean & PII Masking):</label>
+                        <input type="text" id="role-data" placeholder="ชื่อ-สกุล และ รหัสนักศึกษา">
+                    </div>
+                    <div class="form-group">
+                        <label>3. AI & Insights (สไลด์ 3–4 เล่า Gemini & Insight แฝง):</label>
+                        <input type="text" id="role-ai" placeholder="ชื่อ-สกุล และ รหัสนักศึกษา">
+                    </div>
+                    <div class="form-group">
+                        <label>4. The Closer (สไลด์ 5–6 เสนอ Action Plan, ROI & ปิดการขาย):</label>
+                        <input type="text" id="role-closer" placeholder="ชื่อ-สกุล และ รหัสนักศึกษา">
+                    </div>
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label>5. Timekeeper & Q&A Lead (คุมเวลา 10 นาทีเป๊ะ & ประสานช่วงถามตอบ):</label>
+                    <input type="text" id="role-timekeeper" placeholder="ชื่อ-สกุล และ รหัสนักศึกษา (หรือสมาชิกร่วมดูแล)">
+                </div>
+            </div>
+        </section>
+
+        <!-- MISSION 1: 5-STATION PIPELINE DIAGNOSTIC -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-stethoscope"></i> ภารกิจที่ 1: การตรวจสุขภาพโปรเจกต์ 5 สถานี (5 คะแนน)</h2>
+            <p class="section-desc">ให้ทีมสำรวจความพร้อมของโปรเจกต์ตนเอง ตรวจจับ 4 กับดักมรณะ และบันทึกสิ่งที่ต้องแก้ไขลงในแต่ละสถานี:</p>
+
+            <table class="worksheet-table">
+                <thead>
+                    <tr>
+                        <th style="width: 25%;">สถานีตรวจเช็ก</th>
+                        <th style="width: 35%;">เกณฑ์มาตรฐานความพร้อม</th>
+                        <th style="width: 15%;">สถานะ</th>
+                        <th style="width: 25%;">สิ่งที่ต้องปรับปรุงแก้ไข</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>สถานี 1: ASK</strong></td>
+                        <td>• คำถามธุรกิจเจาะจง ไม่กว้างเกินไป<br>• มี KPI ชัดเจน เช่น Churn %, Basket Size<br>• สมมติฐาน IF-THEN-BECAUSE</td>
+                        <td>
+                            <select id="status-ask">
+                                <option value="pass">✅ พร้อมแล้ว</option>
+                                <option value="fix" selected>⚠️ ต้องแก้ไข</option>
+                            </select>
+                        </td>
+                        <td><textarea id="log-ask" placeholder="บันทึกจุดที่ต้องเกลาคำถาม..."></textarea></td>
+                    </tr>
+                    <tr>
+                        <td><strong>สถานี 2: PREPARE</strong></td>
+                        <td>• เป็น Tidy Data 100% (Row 1 เป็น Header)<br>• ไม่มีแถวว่าง/สูตร Error<br>• มีชีตสรุปหรือ Pivot Table ตรวจสอบ</td>
+                        <td>
+                            <select id="status-prep">
+                                <option value="pass">✅ พร้อมแล้ว</option>
+                                <option value="fix" selected>⚠️ ต้องแก้ไข</option>
+                            </select>
+                        </td>
+                        <td><textarea id="log-prep" placeholder="บันทึกการคลีนตาราง..."></textarea></td>
+                    </tr>
+                    <tr>
+                        <td><strong>สถานี 3: PRIVACY (PDPA)</strong></td>
+                        <td>• ลบชื่อ นามสกุล เบอร์โทรลูกค้าจริงออกหมด<br>• ทำ Masking แปลงเป็นรหัส เช่น SUB-001<br>• ไม่ส่ง PII เข้า AI เด็ดขาด</td>
+                        <td>
+                            <select id="status-pdpa">
+                                <option value="pass">✅ พร้อมแล้ว</option>
+                                <option value="fix" selected>⚠️ ต้องแก้ไข</option>
+                            </select>
+                        </td>
+                        <td><textarea id="log-pdpa" placeholder="บันทึกการ Mask ข้อมูล..."></textarea></td>
+                    </tr>
+                    <tr>
+                        <td><strong>สถานี 4: ANALYZE</strong></td>
+                        <td>• Master Prompt ครบ 5 ส่วน<br>• ถามเจาะลึก Multi-turn 3-5 รอบ<br>• ตรวจเลข AI กับสูตร SUM ใน Sheets</td>
+                        <td>
+                            <select id="status-ai">
+                                <option value="pass">✅ พร้อมแล้ว</option>
+                                <option value="fix" selected>⚠️ ต้องแก้ไข</option>
+                            </select>
+                        </td>
+                        <td><textarea id="log-ai" placeholder="บันทึกการ Fact-Check ตัวเลข..."></textarea></td>
+                    </tr>
+                    <tr>
+                        <td><strong>สถานี 5: ACT (STORY)</strong></td>
+                        <td>• สไลด์ 5–7 หน้า โครงสร้าง C-I-A ชัดเจน<br>• หัวสไลด์เป็น Action Title<br>• มี Action Plan และตัวเลข ROI ชัดเจน</td>
+                        <td>
+                            <select id="status-act">
+                                <option value="pass">✅ พร้อมแล้ว</option>
+                                <option value="fix" selected>⚠️ ต้องแก้ไข</option>
+                            </select>
+                        </td>
+                        <td><textarea id="log-act" placeholder="บันทึกการปรับปรุงสไลด์..."></textarea></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- MISSION 2: SLIDE C-I-A & ROI POLISH -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-layer-group"></i> ภารกิจที่ 2: การขัดเกลาสไลด์ C-I-A และการคำนวณ Business ROI (5 คะแนน)</h2>
+            
+            <div class="card">
+                <div class="card-title"><i class="fas fa-file-powerpoint" style="color: var(--primary);"></i> 2.1 โครงสร้าง Master Deck 5–7 หน้า (กรอก Action Title ของแต่ละหน้า)</div>
+                <div class="grid-2" style="margin-top: 10px;">
+                    <div class="form-group">
+                        <label>Slide 1 (Context: โมเดลธุรกิจ & เป้าหมาย):</label>
+                        <input type="text" id="deck-s1" placeholder="เช่น GreenFresh: แพลตฟอร์มสมาชิกผักสดออร์แกนิกรายเดือน">
+                    </div>
+                    <div class="form-group">
+                        <label>Slide 2 (Context Pain: ปัญหาหลัก & ตัวเลขวิกฤต):</label>
+                        <input type="text" id="deck-s2" placeholder="เช่น สมาชิก Regular ยกเลิกในเดือนที่ 3 สูงถึง 28% ฉุดกำไรธุรกิจ">
+                    </div>
+                    <div class="form-group">
+                        <label>Slide 3 (Insight 1: สิ่งที่ค้นพบจากดาต้า & กราฟสนับสนุน):</label>
+                        <input type="text" id="deck-s3" placeholder="เช่น ผักใบสลัดเน่าเสียง่ายใน 4 วัน คือต้นเหตุที่ลูกค้ากินไม่ทันและทิ้ง">
+                    </div>
+                    <div class="form-group">
+                        <label>Slide 4 (Insight 2: พฤติกรรมลูกค้าเชิงลึกจาก AI):</label>
+                        <input type="text" id="deck-s4" placeholder="เช่น ลูกค้า 65% ต้องการความยืดหยุ่นในการสลับชนิดผักและเมนูทำอาหาร">
+                    </div>
+                    <div class="form-group">
+                        <label>Slide 5 (Action Plan: โซลูชันเชิงกลยุทธ์):</label>
+                        <input type="text" id="deck-s5" placeholder="เช่น เปิดตัว Smart Swap สลับผักก่อนส่ง และ Recipe Kit เมนูพร้อมปรุง">
+                    </div>
+                    <div class="form-group">
+                        <label>Slide 6 (ROI & Next Step: ผลตอบแทนทางการเงิน & ไทม์ไลน์):</label>
+                        <input type="text" id="deck-s6" placeholder="เช่น ลด Churn สู่ 12% รักษาลูกค้า 192 ราย สร้างกำไรสุทธิ 1.84 ล้านบาท">
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title"><i class="fas fa-coins" style="color: var(--accent-warm);"></i> 2.2 การคำนวณความคุ้มค่าทางธุรกิจ (Business ROI Justification)</div>
+                <div class="form-group" style="margin-top: 10px;">
+                    <label>สมมติฐานและการคำนวณตัวเลข (Financial Assumptions):</label>
+                    <textarea id="roi-calc" rows="3" placeholder="อธิบายที่มาของตัวเลข เช่น จำนวนลูกค้าที่ดึงกลับมาได้ x ยอดซื้อเฉลี่ย x อายุสัญญา - ต้นทุนการทำระบบ..."></textarea>
+                </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>ต้นทุนการดำเนินการ (Execution Cost):</label>
+                        <input type="text" id="roi-cost" placeholder="เช่น 450,000 บาท">
+                    </div>
+                    <div class="form-group">
+                        <label>ผลกระทบสุทธิต่อกำไรหรือรายได้ (Net Impact / Expected ROI):</label>
+                        <input type="text" id="roi-net" placeholder="เช่น กำไรส่วนเพิ่ม 1,840,000 บาท / ปี">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MISSION 3: DRY RUN ARENA & PEER FEEDBACK -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-microphone-lines"></i> ภารกิจที่ 3: ปฏิบัติการซ้อมใหญ่ DRY RUN & PEER FEEDBACK (5 คะแนน)</h2>
+            <p class="section-desc">จับคู่ซ้อมข้ามกลุ่ม สลับบทบาทเป็นผู้นำเสนอและกรรมการ จับเวลาจริง 10+5 นาที และบันทึกข้อเสนอแนะ:</p>
+
+            <div class="card card-emerald">
+                <div class="grid-3">
+                    <div class="form-group">
+                        <label>กลุ่มเรา (กลุ่มผู้นำเสนอ):</label>
+                        <input type="text" id="dry-my-group" placeholder="เช่น กลุ่มที่ 3">
+                    </div>
+                    <div class="form-group">
+                        <label>กลุ่มคู่ซ้อม (กลุ่มที่เป็นกรรมการ):</label>
+                        <input type="text" id="dry-peer-group" placeholder="เช่น กลุ่มที่ 7">
+                    </div>
+                    <div class="form-group">
+                        <label>เวลานำเสนอจริงที่ใช้ (นาที:วินาที):</label>
+                        <input type="text" id="dry-time-spent" placeholder="เช่น 09:45 นาที (ห้ามเกิน 10:00)">
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title" style="margin-bottom: 12px;"><i class="fas fa-comments" style="color: var(--secondary);"></i> ตารางบันทึกฟีดแบ็กจากกลุ่มคู่ซ้อม (Peer Feedback Protocol)</div>
+                <div class="form-group">
+                    <label style="color: #166534;"><i class="fas fa-thumbs-up"></i> 1. I Like... (สิ่งที่เพื่อนประทับใจมากที่สุดในสไลด์และบทพูด):</label>
+                    <textarea id="feedback-like" rows="2" placeholder="เช่น ชอบสไลด์ที่ 3 กราฟเข้าใจง่ายมาก และคนพูดเปิดตัวได้น่าตื่นเต้น..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label style="color: #92400e;"><i class="fas fa-wand-magic-sparkles"></i> 2. I Wish... (จุดที่เพื่อนอยากเห็นเพิ่ม หรือสิ่งที่ยังติดขัด/ตัวเลขไม่ชัด):</label>
+                    <textarea id="feedback-wish" rows="2" placeholder="เช่น อยากให้ซ้อมส่งต่อไมค์ให้เร็วขึ้น และอธิบายที่มาของเลข ROI ให้ชัดกว่านี้..."></textarea>
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label style="color: #1e40af;"><i class="fas fa-lightbulb"></i> 3. What If... (ไอเดียต่อยอดหรือคำถามท้าทายช่วง Q&A ที่เพื่อนถาม):</label>
+                    <textarea id="feedback-whatif" rows="2" placeholder="เช่น ถ้าผักขาดตลาดในฤดูฝน จะมีแผนสำรองแก้ปัญหาส่งของช้าอย่างไร..."></textarea>
+                </div>
+            </div>
+        </section>
+
+        <!-- MISSION 4: EXIT TICKET & READINESS -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-clipboard-check"></i> ภารกิจที่ 4: EXIT TICKET — ตรวจสอบความพร้อม 4 ชิ้นงานส่งมอบ (5 คะแนน)</h2>
+            <div class="callout callout-indigo">
+                <i class="fas fa-info-circle" style="font-size: 1.1rem;"></i>
+                <div>
+                    ทุกกลุ่มต้องตรวจสอบความพร้อมของชิ้นงานทั้ง 4 รายการ และวางลิงก์ส่งงาน e-Learning ให้อาจารย์ตรวจสอบก่อนจบคาบเรียน
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>1. Google Sheets (ข้อมูล Tidy & Masking PII แล้ว):</label>
+                        <input type="text" id="url-sheets" placeholder="วางลิงก์ Google Sheets (แชร์สิทธิ์ Viewer/Editor)">
+                    </div>
+                    <div class="form-group">
+                        <label>ความพร้อม Sheets (%):</label>
+                        <input type="number" id="pct-sheets" min="0" max="100" placeholder="เช่น 95%">
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>2. Gemini Prompt Log (ลิงก์ Share Chat หรือ Google Docs):</label>
+                        <input type="text" id="url-prompts" placeholder="วางลิงก์ Prompt Log บันทึกการวิเคราะห์และ Fact-Check">
+                    </div>
+                    <div class="form-group">
+                        <label>ความพร้อม Prompt Log (%):</label>
+                        <input type="number" id="pct-prompts" min="0" max="100" placeholder="เช่น 90%">
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>3. Master Presentation Deck (ลิงก์ Google Slides 5–7 หน้า):</label>
+                        <input type="text" id="url-slides" placeholder="วางลิงก์ Google Slides ที่พร้อมขึ้นฉายสัปดาห์หน้า">
+                    </div>
+                    <div class="form-group">
+                        <label>ความพร้อม Slides (%):</label>
+                        <input type="number" id="pct-slides" min="0" max="100" placeholder="เช่น 90%">
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label>4. สรุปสิ่งที่ต้องปรับปรุงให้เสร็จก่อนวันจันทร์ 18.00 น. (Action Items before Pitch):</label>
+                    <textarea id="action-items" rows="2" placeholder="1. ปรับแก้สไลด์หน้า 4 ตามฟีดแบ็กเพื่อน&#10;2. ซ้อมพูดคนละ 2 รอบเพื่อคุมเวลาไม่ให้เกิน 10 นาที..."></textarea>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button type="button" class="btn btn-secondary" onclick="window.print()"><i class="fas fa-print"></i> พิมพ์ / บันทึก PDF</button>
+                <button type="button" class="btn btn-primary" onclick="saveToLocalStorage()"><i class="fas fa-save"></i> บันทึกข้อมูลใบงาน</button>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        const inputIds = [
+            'group-no', 'biz-name', 'role-opener', 'role-data', 'role-ai', 'role-closer', 'role-timekeeper',
+            'status-ask', 'log-ask', 'status-prep', 'log-prep', 'status-pdpa', 'log-pdpa',
+            'status-ai', 'log-ai', 'status-act', 'log-act',
+            'deck-s1', 'deck-s2', 'deck-s3', 'deck-s4', 'deck-s5', 'deck-s6',
+            'roi-calc', 'roi-cost', 'roi-net',
+            'dry-my-group', 'dry-peer-group', 'dry-time-spent',
+            'feedback-like', 'feedback-wish', 'feedback-whatif',
+            'url-sheets', 'pct-sheets', 'url-prompts', 'pct-prompts', 'url-slides', 'pct-slides',
+            'action-items'
+        ];
+
+        function saveToLocalStorage() {
+            const data = {};
+            inputIds.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) data[id] = el.value;
+            });
+            localStorage.setItem('fds_session_13_worksheet', JSON.stringify(data));
+            showToast("บันทึกข้อมูลเรียบร้อยแล้ว (Auto-saved)!");
+        }
+
+        function loadFromLocalStorage() {
+            const raw = localStorage.getItem('fds_session_13_worksheet');
+            if (raw) {
+                try {
+                    const data = JSON.parse(raw);
+                    inputIds.forEach(id => {
+                        const el = document.getElementById(id);
+                        if (el && data[id] !== undefined) {
+                            el.value = data[id];
+                        }
+                    });
+                } catch (e) {
+                    console.error("Error loading saved data", e);
+                }
+            }
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadFromLocalStorage();
+            inputIds.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.addEventListener('input', () => {
+                        // Autosave on change after 800ms debounce
+                        clearTimeout(window._autosaveTimer);
+                        window._autosaveTimer = setTimeout(saveToLocalStorage, 800);
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

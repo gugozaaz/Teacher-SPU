@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ใบงาน Workshop ครั้งที่ 12 — "FinQuick AI Audit & End-to-End Pipeline"</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #3730a3;
+            --primary-light: #eef2ff;
+            --secondary: #0284c7;
+            --secondary-light: #e0f2fe;
+            --purple: #7c3aed;
+            --purple-light: #f3e8ff;
+            --accent: #e11d48;
+            --accent-warm: #d97706;
+            --success: #059669;
+            --success-light: #ecfdf5;
+            --teal: #0d9488;
+            --teal-light: #f0fdfa;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text-main: #0f172a;
+            --text-sub: #334155;
+            --text-muted: #64748b;
+            --border: #cbd5e1;
+            --border-focus: #4f46e5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Noto Sans Thai', 'Outfit', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 30px 20px;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            background: var(--surface);
+            padding: 40px 45px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.08), 0 8px 10px -6px rgba(0,0,0,0.04);
+            border: 1px solid var(--border);
+        }
+
+        header {
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header-title h1 {
+            font-size: 1.55rem;
+            color: var(--primary-dark);
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-title p {
+            font-size: 0.92rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .badge-info {
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 8px 16px;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-align: right;
+            border: 1px solid #c7d2fe;
+        }
+
+        .section-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 22px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        .section-card h2 {
+            font-size: 1.25rem;
+            color: var(--text-main);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 8px;
+        }
+
+        .section-card h3 {
+            font-size: 1.05rem;
+            color: var(--primary);
+            margin: 14px 0 8px;
+        }
+
+        .scenario-box {
+            background: #fffbeb;
+            border-left: 4px solid var(--accent-warm);
+            padding: 14px 18px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 16px;
+            font-size: 0.88rem;
+            color: #92400e;
+            line-height: 1.55;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 14px;
+            margin-bottom: 14px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .form-group label {
+            font-size: 0.84rem;
+            font-weight: 700;
+            color: var(--text-sub);
+        }
+
+        input[type="text"], textarea {
+            font-family: inherit;
+            font-size: 0.88rem;
+            padding: 9px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-main);
+            background: #f8fafc;
+            transition: all 0.2s;
+            width: 100%;
+        }
+
+        input[type="text"]:focus, textarea:focus {
+            outline: none;
+            border-color: var(--border-focus);
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 75px;
+        }
+
+        .worksheet-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.84rem;
+            margin-top: 8px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .worksheet-table th {
+            background: #f1f5f9;
+            color: var(--text-main);
+            padding: 8px 10px;
+            font-weight: 700;
+            text-align: left;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .worksheet-table td {
+            padding: 8px 10px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-sub);
+        }
+
+        .worksheet-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .worksheet-table tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        .worksheet-table input[type="text"] {
+            padding: 5px 8px;
+            font-size: 0.82rem;
+            background: white;
+        }
+
+        .prompt-preview {
+            background: #0f172a;
+            color: #f8fafc;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.8rem;
+            line-height: 1.45;
+            margin: 8px 0;
+            overflow-x: auto;
+        }
+
+        .btn-action-group {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 25px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.92rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        .btn-primary:hover { background: var(--primary-dark); }
+
+        .btn-secondary {
+            background: var(--surface);
+            color: var(--text-sub);
+            border: 1px solid var(--border);
+        }
+        .btn-secondary:hover { background: #f1f5f9; }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; border: none; padding: 0; max-width: 100%; }
+            .btn-action-group { display: none; }
+            input[type="text"], textarea { border-bottom: 1px solid #94a3b8; border-top: none; border-left: none; border-right: none; background: transparent; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="header-title">
+            <h1><i class="fas fa-balance-scale" style="color: var(--primary);"></i> ใบงาน Workshop: FinQuick AI Audit &amp; Mini-Pipeline</h1>
+            <p>รายวิชา Fundamentals of Data Science | ครั้งที่ 12 (บูรณาการ 5 ขั้นตอน ASK ถึง ACT และจริยธรรม AI)</p>
+        </div>
+        <div class="badge-info">
+            <i class="fas fa-clock"></i> เวลาปฏิบัติ: 60–65 นาที<br>
+            <i class="fas fa-award"></i> คะแนนเต็ม: 20 คะแนน
+        </div>
+    </header>
+
+    <!-- GROUP INFO -->
+    <div class="section-card">
+        <h2><i class="fas fa-users" style="color: var(--secondary);"></i> ข้อมูลกลุ่มโปรเจกต์ (Final Project Team)</h2>
+        <div class="form-row">
+            <div class="form-group" style="grid-column: span 2;">
+                <label>ชื่อกลุ่ม / กลุ่มที่:</label>
+                <input type="text" id="group_name" placeholder="เช่น Ethics AI Guardians (กลุ่มที่ 4)">
+            </div>
+            <div class="form-group" style="grid-column: span 2;">
+                <label>ชื่อธุรกิจประจำคาบ (หรือ FinQuick Lending):</label>
+                <input type="text" id="business_name" value="FinQuick Lending (แพลตฟอร์มสินเชื่อไมโครไฟแนนซ์ร้านค้าออนไลน์)">
+            </div>
+        </div>
+
+        <h3 style="font-size: 0.95rem; margin-top: 8px;">สมาชิกและบทบาทหน้าที่:</h3>
+        <div class="form-row">
+            <div class="form-group">
+                <label>1. Governance Lead (คุม PDPA &amp; ภาพรวม):</label>
+                <input type="text" placeholder="ชื่อ-สกุล (รหัสนักศึกษา)">
+            </div>
+            <div class="form-group">
+                <label>2. Data Privacy Officer (ล้างตาราง &amp; Masking):</label>
+                <input type="text" placeholder="ชื่อ-สกุล (รหัสนักศึกษา)">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>3. Ethical AI Auditor (สั่ง AI &amp; Audit Bias):</label>
+                <input type="text" placeholder="ชื่อ-สกุล (รหัสนักศึกษา)">
+            </div>
+            <div class="form-group">
+                <label>4. Strategic Pitcher (สรุป BLUF &amp; Final Project):</label>
+                <input type="text" placeholder="ชื่อ-สกุล (รหัสนักศึกษา)">
+            </div>
+        </div>
+    </div>
+
+    <!-- SCENARIO BRIEF -->
+    <div class="scenario-box">
+        <strong><i class="fas fa-exclamation-triangle"></i> สถานการณ์จำลอง:</strong> แพลตฟอร์ม <strong>FinQuick Lending</strong> เผชิญวิกฤตพนักงานเผลอส่งไฟล์ลูกค้าที่มีชื่อ-สกุล เลขบัตร ปชช. และเบอร์โทร เข้า AI สาธารณะ (เสี่ยงละเมิด PDPA โทษปรับ 5 ล้าน) และอัลกอริทึมเดิมมี <strong>AI Bias</strong> ปฏิเสธแม่ค้าผู้หญิงและร้านต่างจังหวัดโดยไม่มีเหตุผล ภารกิจของทีมคุณคือ: ออกแบบ Consent Box, ล้างข้อมูลและทำ Masking แปลงเป็น SHOP-ID ใน Sheets, สั่ง Gemini ประเมินความเสี่ยงใหม่พร้อมตรวจสอบ Bias และสรุปข้อเสนอวงเงิน 1-Page BLUF!
+    </div>
+
+    <!-- MISSION 1: ASK & PDPA CONSENT -->
+    <div class="section-card">
+        <h2><i class="fas fa-shield-alt" style="color: #0284c7;"></i> Mission 1: ASK &amp; PDPA Compliance (10 นาที)</h2>
+        <div class="form-group" style="margin-bottom: 10px;">
+            <label>1.1 คำถามธุรกิจและสมมติฐาน (ASK Framework):</label>
+            <textarea placeholder="เช่น 'คำถาม: ร้านค้าออนไลน์ลักษณะใดที่มีความเสี่ยงต่ำและปิดหนี้ได้ตรงเวลาแม้ไม่มีสเตตเมนต์? สมมติฐาน: ร้านที่มียอดขายต่อเนื่องเกิน 6 ด. และมีรีวิวบวก > 95% จะมีความเสี่ยงต่ำ...'"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>1.2 ออกแบบข้อความกล่องขอความยินยอมตาม PDPA (Consent Checkbox):</label>
+            <input type="text" placeholder="[  ] ข้าพเจ้ายินยอมให้ FinQuick ประมวลผลข้อมูลประวัติร้านค้าเพื่อวัตถุประสงค์ในการประเมินวงเงินสินเชื่อตามนโยบายความเป็นส่วนตัว">
+        </div>
+    </div>
+
+    <!-- MISSION 2: CLEANING & MASKING LAB -->
+    <div class="section-card">
+        <h2><i class="fas fa-mask" style="color: var(--accent-warm);"></i> Mission 2: Data Cleaning &amp; Masking Lab ใน Sheets (15 นาที)</h2>
+        <p style="font-size: 0.86rem; color: var(--text-sub); margin-bottom: 8px;">
+            ล้างค่าว่าง และทำ Masking แปลงข้อมูลส่วนบุคคล (PII) ให้เป็นรหัส Anonymous ก่อนส่งเข้า AI
+        </p>
+
+        <table class="worksheet-table">
+            <thead>
+                <tr>
+                    <th style="width: 14%;">รหัสเดิม</th>
+                    <th style="width: 25%;">ชื่อ-สกุลเดิม (PII)</th>
+                    <th style="width: 20%;">รหัสหลัง Masking</th>
+                    <th style="width: 20%;">ยอดขาย/ด.</th>
+                    <th>สถานะความปลอดภัย</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>APP-01</td>
+                    <td>น.ส. ศิริพร แซ่ตั้ง (1-1004-xxx)</td>
+                    <td><input type="text" value="SHOP-01"></td>
+                    <td>85,000 ฿</td>
+                    <td><span style="color: var(--success); font-weight: 700;">Safe (Masked)</span></td>
+                </tr>
+                <tr>
+                    <td>APP-02</td>
+                    <td>นาย ธนากร สุขสวัสดิ์ (3-5002-xxx)</td>
+                    <td><input type="text" value="SHOP-02"></td>
+                    <td>140,000 ฿</td>
+                    <td><span style="color: var(--success); font-weight: 700;">Safe (Masked)</span></td>
+                </tr>
+                <tr>
+                    <td>APP-03</td>
+                    <td>นาง สมศรี รักชาติ (1-8099-xxx)</td>
+                    <td><input type="text" value="SHOP-03"></td>
+                    <td>42,000 ฿</td>
+                    <td><span style="color: var(--success); font-weight: 700;">Safe (Masked)</span></td>
+                </tr>
+                <tr>
+                    <td>APP-04</td>
+                    <td>นาย อานนท์ วงศ์ษา (2-3001-xxx)</td>
+                    <td><input type="text" value="SHOP-04"></td>
+                    <td>28,000 ฿</td>
+                    <td><span style="color: var(--success); font-weight: 700;">Safe (Masked)</span></td>
+                </tr>
+                <tr>
+                    <td>APP-05</td>
+                    <td>น.ส. กัญญารัตน์ ดีเลิศ (1-4005-xxx)</td>
+                    <td><input type="text" value="SHOP-05"></td>
+                    <td>65,000 ฿</td>
+                    <td><span style="color: var(--success); font-weight: 700;">Safe (Masked)</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- MISSION 3: GEMINI SCORING & BIAS AUDIT -->
+    <div class="section-card">
+        <h2><i class="fas fa-brain" style="color: var(--purple);"></i> Mission 3: สั่ง Gemini ประเมินเครดิต &amp; ทำ Ethical Bias Audit (15 นาที)</h2>
+        
+        <div class="prompt-preview">
+            [Prompt ต้นแบบ]: คุณคือ Chief Risk Officer ช่วยประเมินความเสี่ยงเครดิต (Low/Med/High) ของร้านค้า SHOP-01 ถึง SHOP-10 โดยดูจากยอดขาย ความสม่ำเสมอ และรีวิว พร้อมทั้งทำ Ethical &amp; Bias Audit และอธิบายเหตุผล Explainability...
+        </div>
+
+        <table class="worksheet-table">
+            <thead>
+                <tr>
+                    <th style="width: 14%;">รหัสร้าน</th>
+                    <th style="width: 22%;">ผลประเมินความเสี่ยง</th>
+                    <th style="width: 20%;">วงเงินที่แนะนำ</th>
+                    <th>เหตุผลสนับสนุนอย่างโปร่งใส (XAI)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>SHOP-01</strong></td>
+                    <td><input type="text" value="Low Risk (เสี่ยงต่ำ)"></td>
+                    <td><input type="text" value="80,000 บาท"></td>
+                    <td><input type="text" value="ยอดขายสม่ำเสมอดีมาก รีวิว 98% คืนสินค้าเพียง 2.1%"></td>
+                </tr>
+                <tr>
+                    <td><strong>SHOP-02</strong></td>
+                    <td><input type="text" value="Low Risk (เสี่ยงต่ำ)"></td>
+                    <td><input type="text" value="100,000 บาท"></td>
+                    <td><input type="text" value="ยอดขายสูง 140,000 สม่ำเสมอ ความเสี่ยงผิดนัดต่ำมาก"></td>
+                </tr>
+                <tr>
+                    <td><strong>SHOP-03</strong></td>
+                    <td><input type="text" placeholder="เช่น Medium Risk"></td>
+                    <td><input type="text" placeholder="เช่น 30,000 บาท"></td>
+                    <td><input type="text" placeholder="ยอดขาย 42k ผันผวนเล็กน้อย แต่วิจัยรีวิวดี 96%"></td>
+                </tr>
+                <tr>
+                    <td><strong>SHOP-04</strong></td>
+                    <td><input type="text" placeholder="เช่น High Risk"></td>
+                    <td><input type="text" placeholder="0 บาท (ชะลอ)"></td>
+                    <td><input type="text" placeholder="ยอดผันผวนสูง คืนสินค้า 14.5% เสี่ยงขาดทุน"></td>
+                </tr>
+                <tr>
+                    <td><strong>SHOP-05</strong></td>
+                    <td><input type="text" placeholder="เช่น Low Risk"></td>
+                    <td><input type="text" placeholder="เช่น 60,000 บาท"></td>
+                    <td><input type="text" placeholder="ยอดสม่ำเสมอ รีวิวสูงสุด 99% คืนสินค้า 0.5%"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="form-group" style="margin-top: 10px;">
+            <label>ข้อสรุปจากการทำ Ethical Bias Audit (AI ตรวจพบอคติต่อกลุ่มใดหรือไม่?):</label>
+            <input type="text" placeholder="โมเดลไม่พบอคติต่อเพศหรือพื้นที่ เนื่องจากใช้เฉพาะตัวเลขยอดขาย รีวิว และอัตราคืนสินค้าในการพิจารณา">
+        </div>
+    </div>
+
+    <!-- MISSION 4: 1-PAGE BLUF & FINAL PROJECT KICKOFF -->
+    <div class="section-card">
+        <h2><i class="fas fa-trophy" style="color: var(--success);"></i> Mission 4: 1-Page BLUF Pitch &amp; Final Project Kickoff (20 นาที)</h2>
+        
+        <div class="form-group" style="margin-bottom: 12px;">
+            <label>4.1 สรุปข้อเสนอวงเงินสินเชื่อ 1-Page BLUF ต่อคณะกรรมการบริหาร:</label>
+            <textarea placeholder="เช่น 'ข้อเสนออนุมัติสินเชื่อ: จากการประเมิน 10 ร้านค้า มีร้านความเสี่ยงต่ำ 6 ร้าน และปานกลาง 2 ร้าน ขออนุมัติวงเงินปล่อยกู้รวม 450,000 บาท คาดการณ์รายได้ดอกเบี้ย 54,000 บาทใน 90 วัน ข้อมูลผ่านการ Masking 100% ตาม PDPA...'"></textarea>
+        </div>
+
+        <h3 style="font-size: 0.95rem; margin-top: 12px; color: var(--primary);">4.2 ระดมสมองกำหนดหัวข้อ Final Project (สัดส่วนคะแนน 40%):</h3>
+        <div class="form-row">
+            <div class="form-group">
+                <label>ชื่อธุรกิจจริงที่กลุ่มเลือกทำ:</label>
+                <input type="text" placeholder="เช่น ร้านกาแฟ Specialty, แบรนด์เสื้อผ้า, หรือธุรกิจของสมาชิก">
+            </div>
+            <div class="form-group">
+                <label>แหล่งข้อมูลที่วางแผนจะใช้:</label>
+                <input type="text" placeholder="เช่น สร้าง Google Forms สำรวจลูกค้า 50 คน / Open Data">
+            </div>
+        </div>
+        <div class="form-group">
+            <label>คำถามธุรกิจหลัก (ASK Framework):</label>
+            <input type="text" placeholder="เช่น 'ลูกค้ากลุ่มใดคือผู้สร้างกำไรหลัก และเราควรออกโปรโมชันแบบใดเพื่อดันยอดขาย +30%?'">
+        </div>
+    </div>
+
+    <!-- BUTTONS -->
+    <div class="btn-action-group">
+        <button class="btn btn-secondary" onclick="window.print()"><i class="fas fa-print"></i> พิมพ์ / บันทึก PDF</button>
+        <button class="btn btn-primary" onclick="alert('บันทึกข้อมูลใบงาน Session 12 เรียบร้อยแล้ว!')"><i class="fas fa-save"></i> บันทึกข้อมูล</button>
+    </div>
+</div>
+
+<script>
+    // LocalStorage Autosave for Session 12
+    document.querySelectorAll('input, textarea').forEach(el => {
+        const key = 'ws12_' + (el.id || el.placeholder || Math.random());
+        if (localStorage.getItem(key)) el.value = localStorage.getItem(key);
+        el.addEventListener('input', () => localStorage.setItem(key, el.value));
+    });
+</script>
+
+</body>
+</html>
