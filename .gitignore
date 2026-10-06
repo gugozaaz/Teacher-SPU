@@ -26,3 +26,7 @@ env/
 
 # Antigravity & Scratch temporary files
 scratch/__pycache__/
+
+# Folders excluded per user request
+session/
+ไฟล์เก่า/
