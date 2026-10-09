@@ -41,8 +41,18 @@
 
 ---
 
+### 💾 กฎการสำรองไฟล์สไลด์ก่อนแก้ไข (Presentation Pre-Edit Backup Rule)
+⛔ **กฎเหล็กก่อนเริ่มแก้ไขสไลด์ (Mandatory Pre-Edit Backup):**
+ทุกครั้งที่มีการแก้ไข ดัดแปลง หรือปรับปรุงเนื้อหาในไฟล์ **`session-XX-presentation.html`** (รวมถึงไฟล์สไลด์ย่อย เช่น `session-XXa-presentation.html`) **ต้องทำการสร้างไฟล์ Backup ของไฟล์เดิมไว้ก่อนเสมอ** ก่อนที่จะลงมือแก้ไขไฟล์ต้นฉบับ:
+- **รูปแบบการตั้งชื่อไฟล์:** `session-XX-presentation-Backup-YYYYMMDD-HHMM.html` (โดย `YYYYMMDD-HHMM` คือ ปี ค.ศ. เดือน วัน - ชั่วโมง นาที ณ เวลาที่ทำการแก้ไข เช่น `session-08-presentation-Backup-20261009-1745.html`)
+- **ตำแหน่งจัดเก็บ:** บันทึกไว้ในโฟลเดอร์เดียวกันกับไฟล์สไลด์นั้น ๆ (`session/session-XX/`)
+- **ข้อห้ามเด็ดขาด:** ห้ามเริ่มเขียนหรือแก้ไขทับไฟล์ต้นฉบับโดยเด็ดขาดจนกว่าจะสร้างไฟล์ Backup สำเร็จเรียบร้อยแล้ว
+
+---
+
 ### 🔄 กฎการซิงค์เนื้อหาระหว่างเอกสาร (Content Synchronization Rule)
 เมื่อมีการแก้ไขหรือปรับปรุงเนื้อหาในสไลด์การสอน **`session-XX-presentation.html`** ให้ทำการตรวจสอบและ**อัปเดตเอกสารอื่นที่เกี่ยวข้องในคาบเรียนนั้นให้สอดคล้องกับเนื้อหาใหม่อยู่เสมอ** ตามลำดับขั้นตอน (Strict Pipeline):
+-1. **Pre-Edit Slide Backup:** ตรวจสอบและสร้างไฟล์ Backup ของ `session-XX-presentation.html` ในรูปแบบ `session-XX-presentation-Backup-YYYYMMDD-HHMM.html` ก่อนเริ่มแก้ไขไฟล์จริงทุกครั้ง
 0. **`session-XX-presentation.html` (Slide Comment & Numbering Maintenance):**
    - หลังปรับปรุง เพิ่ม ลบ หรือสลับสไลด์เสร็จสิ้น **ต้องทำการ re-check และอัปเดต HTML Comment กำกับหัวสไลด์ทุกหน้า (`<!-- SLIDE X: [SLIDE_NAME] -->`) ให้ถูกต้องเสมอ**
    - **จัดเรียงลำดับหมายเลขสไลด์ (Slide Numbering):** ตรวจสอบว่าหมายเลขสไลด์เรียงลำดับต่อเนื่องถูกต้องตั้งแต่ `SLIDE 1` จนถึงหน้าสุดท้าย (ไม่มีเลขข้าม ซ้ำ หรือเรียงผิด)
@@ -61,6 +71,8 @@
    - **4.2 `session-XX-quiz.xlsx` (แปลงไฟล์เป็นขั้นตอนปิดท้าย):**
      - **หลังจากบันทึกไฟล์ `.md` สำเร็จแล้วเท่านั้น** จึงรันคำสั่งสคริปต์แปลงไฟล์เป็น `.xlsx`
      - ⛔ **Hard Guardrail (ข้อห้ามเด็ดขาด):** **ห้ามรันสคริปต์แปลง `.xlsx` โดยที่ไม่มีการเรียกใช้ Tool แก้ไขและบันทึกไฟล์ `.md` ในรอบนั้นเด็ดขาด** (การรันสคริปต์ทับไฟล์เดิมโดยไม่อัปเดต `.md` จะถือว่าการซิงค์เนื้อหาล้มเหลว)
+5. **Automated GitHub Commit & Push (ขั้นตอนปิดท้ายงานทุกครั้ง):**
+   - ดำเนินการ Stage, Commit และ Push ขึ้น GitHub เสมอหลังการซิงค์เอกสารและการแก้ไขในรอบนั้นเสร็จสิ้นตามกฎข้อ 🚀 ด้านล่าง
 
 ---
 
@@ -133,3 +145,36 @@ powershell -ExecutionPolicy Bypass -File ".\.agents\skills\document-processor\sc
 * `Time in seconds` = `60`
 * `Image Link` = ว่าง
 * `Answer explanation` = คำอธิบายเฉลย
+
+---
+
+### 🚀 กฎการ Commit และ Push ขึ้น GitHub อัตโนมัติ (Automated GitHub Commit & Push Rule)
+
+⛔ **กฎเหล็กบังคับหลังการแก้ไขไฟล์ทุกครั้ง (Mandatory Post-Edit Action):**
+ทุกครั้งที่ AI Assistant ดำเนินการสร้าง แก้ไข ปรับปรุง หรือลบไฟล์ใดๆ ในโปรเจกต์นี้ผ่าน Antigravity IDE (ไม่ว่าจะเป็นสไลด์, แผนการสอน, ใบงาน, ควิซ, สคริปต์, โค้ด หรือเอกสารข้อกำหนด) เมื่อการทำงานในแต่ละรอบหรือแต่ละคำขอเสร็จสิ้นเรียบร้อยแล้ว **ต้องทำการ Commit และ Push ขึ้น GitHub เสมอ** โดยปฏิบัติตามขั้นตอนต่อไปนี้อย่างเคร่งครัด:
+
+#### ขั้นตอนการทำงาน (Git Execution Pipeline):
+1. **ตรวจสอบสถานะไฟล์ที่มีการเปลี่ยนแปลง (Check Status):**
+   ```powershell
+   git status
+   ```
+2. **Stage ไฟล์ทั้งหมดที่มีการเปลี่ยนแปลง (Stage Changes):**
+   ```powershell
+   git add -A
+   ```
+3. **Commit พร้อมระบุข้อความที่สื่อความหมายชัดเจน (Descriptive Commit Message):**
+   ```powershell
+   git commit -m "<type>(<scope>): <message>"
+   ```
+   - ยึดหลัก Conventional Commits เช่น:
+     - `feat`: สร้างสไลด์ใหม่, เพิ่มเนื้อหา/กิจกรรมคาบใหม่
+     - `fix`: แก้ไขเนื้อหา, จัดหน้าสไลด์, แก้ไขลิงก์หรือบั๊ก
+     - `docs`: อัปเดตแผนการสอน, ใบงาน, หรือข้อกำหนดใน AGENTS.md
+     - `chore`: อัปเดต config, สคริปต์, หรือเครื่องมือช่วยเหลือ
+   - ตัวอย่าง: `git commit -m "docs: add presentation backup and git auto-commit rules to AGENTS.md"` หรือ `git commit -m "fix(session-08): refine correlation slide layout"`
+4. **Push ขึ้น GitHub Remote ทันที (Push to Remote):**
+   ```powershell
+   git push origin main
+   ```
+5. **รายงานผลให้ผู้ใช้ทราบ (Report to User):**
+   - ทุกครั้งที่เสร็จสิ้นภารกิจ ต้องระบุผลการ Commit (เช่น Commit Message หรือ Short Hash) และสถานะการ Push ขึ้น GitHub ในคำตอบปิดท้ายเสมอ
