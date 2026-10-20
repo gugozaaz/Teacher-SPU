@@ -17,9 +17,12 @@ Skill นี้กำหนด **ขั้นตอนบังคับ (Mandat
 
 Skill นี้ **ต้อง activate ทุกครั้ง** เมื่อได้รับคำสั่งให้:
 - สร้างเอกสาร session ใหม่ (session-XX ที่ยังไม่เคยมี)
-- สร้าง presentation, teaching guide, workshop, หรือ quiz ของ session ใหม่
+- วางแผนเนื้อหาสำหรับ presentation หรือ quiz ของ session ใหม่
 
-> **ห้ามข้ามขั้นตอนใน Skill นี้เด็ดขาด** — ต้องทำครบทุก Step ก่อนเริ่มเขียนเนื้อหา
+> ⚠️ **กฎสำคัญ:** 
+> - **เมื่อมีการอัปเดตเนื้อหาการสอน:** ไม่ต้องสร้างหรืออัปเดตไฟล์ `session-XX-teaching-guide.md`, `session-XX-workshop-worksheet.md`, `session-XX-workshop-worksheet.html`, และ `session-XX-presentation.pdf`
+> - **การสร้าง PDF:** ไฟล์ `session-XX-presentation.pdf` จะสร้างได้ **เมื่อผู้ใช้สั่งให้สร้างเท่านั้น (Explicit Command Only)** ห้ามสร้างอัตโนมัติ
+> - **ห้ามข้ามขั้นตอนใน Skill นี้เด็ดขาด** — ต้องทำครบทุก Step ก่อนเริ่มเขียนเนื้อหา
 
 ---
 
@@ -123,9 +126,9 @@ Skill นี้ **ต้อง activate ทุกครั้ง** เมื่�
 | เอกสาร | วิธีใช้ Content Brief |
 |:---|:---|
 | `session-XX-presentation.html` | **บังคับโครงสร้าง 3 สไลด์เปิดเรื่อง:**<br>• **Slide 1 (Title):** ดีไซน์สไตล์เดียวกับ Session 3 (พื้นหลัง radial-gradient, ป้าย badge 2 ป้าย, หัวข้อใหญ่ 2 บรรทัด, ชื่อวิชาสี secondary, ป้ายผู้สอนทรง Pill)<br>• **Slide 2 (Recap & Connection):** เชื่อมโยงวงจร Data Science 5 ขั้นตอน (ASK → COLLECT → PREPARE → ANALYZE → ACT) เสมอ ก่อนเข้าสู่เนื้อหาบทเรียน (แถบ `step-container` แสดง 5 ขั้นตอนพร้อม Highlight ขั้นประจำคาบ, การ์ดเปรียบเทียบคาบที่แล้ว vs คาบนี้, และกล่องเน้นย้ำ GIGO)<br>• **Slide 3 (Session Roadmap):** แผนที่การเรียนรู้สรุปหัวข้อสำคัญประจำคาบ ก่อนเข้าสู่เนื้อหาหลักใน Slide 4 |
-| `session-XX-teaching-guide.md` | ระบุ Knowledge Bridge และ Recap items ในส่วนวัตถุประสงค์และ Timeline (ตรงกับ Slide Mapping 1–3) |
-| `session-XX-workshop-worksheet.md/.html` | โจทย์ Workshop ต้องเชื่อมกับทักษะ/ความรู้จาก session ก่อนหน้า |
-| `session-XX-quiz.md` | ข้อสอบอาจมี 1-2 ข้อที่ทดสอบการเชื่อมโยงความรู้ข้ามคาบ |
+| `session-XX-quiz.md` | ข้อสอบอาจมี 1-2 ข้อที่ทดสอบการเชื่อมโยงความรู้ข้ามคาบ และต้องครอบคลุมเนื้อหาใหม่ตาม Quiz Synchronization Rule (พร้อมแปลงเป็น `session-XX-quiz.xlsx`) |
+| `session-XX-teaching-guide.md` *(สร้างเฉพาะเมื่อมีคำสั่ง)* | ระบุ Knowledge Bridge และ Recap items ในส่วนวัตถุประสงค์และ Timeline (ตรงกับ Slide Mapping 1–3)<br>⚠️ *ไม่ต้องสร้างหรืออัปเดตเมื่อมีการอัปเดตเนื้อหาการสอน* |
+| `session-XX-workshop-worksheet.md/.html` *(สร้างเฉพาะเมื่อมีคำสั่ง)* | โจทย์ Workshop ต้องเชื่อมกับทักษะ/ความรู้จาก session ก่อนหน้า<br>⚠️ *ไม่ต้องสร้างหรืออัปเดตเมื่อมีการอัปเดตเนื้อหาการสอน* |
 
 ---
 
