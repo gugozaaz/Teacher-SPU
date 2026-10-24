@@ -1,18 +1,14 @@
-# Implementation Plan: Session 12 Courseware Upgrade
+# Session 12 Courseware Upgrade Plan (34 Slides & Thai Alternative Credit CSV Dataset)
 
-**Status:** Completed  
-**Session:** Session 12 (`session/session-12/session-12-presentation.html`)  
-**Topic:** End-to-End Data Science Pipeline Integration & AI Governance & Ethics (FinQuick Lending Case Study)  
+## Overview
+Upgraded Session 12 presentation to an expanded 34-slide deck matching the benchmark of Session 10 (`session-10-presentation.html`), with dedicated Thai CSV dataset `session-12-finvibe-alternative-credit-thai.csv`.
 
----
-
-## Completed Tasks
-- [x] **Pre-edit Backup:** Created `session/session-12/session-12-presentation-Backup-20261024-1904.html`.
-- [x] **Content Refactoring:** Upgraded slides to 28 slides following the 4-step progressive flow:
-  `[ทฤษฎี] ➔ [สูตรคำนวณ/ตรรกะแบบง่าย] ➔ [ข้อมูลจริง FinQuick 10 ร้านค้า] ➔ [Prompt AI คำนวณแทน]`.
-- [x] **Financial & Ethical Formulas:** Integrated DSR %, Credit Limit, 100-pt Alternative Credit Risk Scoring, Bias Parity Check, and Data Masking spreadsheet formulas.
-- [x] **Governance & Practical Tools:** Added Transparent Decision Letters (XAI), 1-Page Executive BLUF, 5-Point AI Governance Checklist, and complete Final Project Launchpad (4 deliverables, rubric, timeline, brainstorming prompt).
-- [x] **Layout Verification:** Executed Playwright automated headless tests at 1280x800 and 1280x720 (100% PASS, 0 overflow).
-- [x] **Learner Reviewer Subagent:** Evaluated and awarded `APPROVED: Ready for non-tech students` (10/10 across all 6 dimensions).
-- [x] **Quiz Synchronization:** Updated `session-12-quiz.md` (10 questions, choices A/B/C, detailed explanations) and compiled `session-12-quiz.xlsx` via `quiz_to_xlsx.ps1`.
-- [x] **Version Control:** Committed and pushed to remote GitHub repository.
+## Key Deliverables
+1. **Thai CSV Dataset:** `session-12-finvibe-alternative-credit-thai.csv` (16 borrowers, 12 business & governance columns, UTF-8 BOM).
+2. **Expanded Presentation (34 Slides):**
+   - Step-by-step PII Masking with spreadsheet formulas (Slide 11).
+   - Step-by-step DSR and Four-Fifths Parity Audit (Slide 16: Male 62.5% / Female 75.0% = 83.3% Disparate Impact Ratio >= 80%).
+   - Dedicated slides for PDPA & AI Ethics Entrepreneur Checklist (Slide 31), Quizizz Arena (Slide 32), The Fair Lending Lab (Slide 33), and Capstone Team Registration & Next Steps (Slide 34).
+3. **Layout Test:** Playwright layout audit passed 100% (34/34 slides on both 1280x800 and 1280x720).
+4. **Learner Reviewer Verdict:** APPROVED: Ready for non-tech students (10/10).
+5. **Quiz Synchronization:** `session-12-quiz.md` updated with 10 questions referencing Thai CSV and 34 slides, and compiled to `session-12-quiz.xlsx`.
