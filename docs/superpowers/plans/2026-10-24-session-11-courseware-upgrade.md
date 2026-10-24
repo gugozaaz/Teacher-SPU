@@ -1,18 +1,17 @@
-# Implementation Plan: Session 11 Courseware Upgrade
+# Session 11 Courseware Upgrade Plan (36 Slides & Thai CSV Dataset)
 
-**Status:** Completed  
-**Session:** Session 11 (`session/session-11/session-11-presentation.html`)  
-**Topic:** Step 5 'ACT' (Part 1) — Data Storytelling & Executive Pitching (AuraSkin Lab Case Study)  
+## Overview
+Upgraded Session 11 presentation to an expanded 36-slide deck strictly matching the visual benchmark of Session 10 (`session-10-presentation.html`), with dedicated Thai CSV dataset `session-11-auraskin-lab-marketing-thai.csv`.
 
----
-
-## Completed Tasks
-- [x] **Pre-edit Backup:** Created `session/session-11/session-11-presentation-Backup-20261024-1846.html`.
-- [x] **Content Refactoring:** Upgraded slides to 28 slides following the 4-step progressive flow:
-  `[ทฤษฎี] ➔ [สูตรคำนวณ/ตรรกะแบบง่าย] ➔ [ข้อมูลจริง AuraSkin Lab] ➔ [Prompt AI คำนวณแทน]`.
-- [x] **Financial & Marketing Formulas:** Integrated ROAS, Break-even ROAS ($1/\text{Gross Margin}$), CAC, Repeat Purchase Rate, Profit Contribution %, and What-If Simulation arithmetic.
-- [x] **Visual Design:** Added Action Titles, Before/After slide transformation, 7-Slide Deck template, and Signal-to-Noise visual guidance.
-- [x] **Layout Verification:** Executed Playwright automated headless tests at 1280x800 and 1280x720 (100% PASS, 0 overflow).
-- [x] **Learner Reviewer Subagent:** Evaluated and awarded `APPROVED: Ready for non-tech students` (10/10).
-- [x] **Quiz Synchronization:** Updated `session-11-quiz.md` (10 questions, choices A/B/C, detailed explanations) and compiled `session-11-quiz.xlsx` via `quiz_to_xlsx.ps1`.
-- [x] **Version Control:** Committed and pushed to remote GitHub repository.
+## Key Deliverables
+1. **Thai CSV Dataset:** `session-11-auraskin-lab-marketing-thai.csv` (15 marketing campaigns, 12 business columns, UTF-8 BOM).
+2. **Expanded Presentation (36 Slides):**
+   - Step-by-step ROAS arithmetic (Slide 9: CMP-001 TikTok 4.95x vs CMP-014 GDN 0.47x).
+   - Step-by-step CAC arithmetic (Slide 11: CMP-002 Shopee 156 ฿ vs CMP-013 FB Traffic 1,200 ฿).
+   - Step-by-step 90-Day Budget Shift logic (Slide 17: Reallocating 100K to gain +319,837 ฿/month net gross profit).
+   - Before vs After Real Makeover (Slide 23).
+   - Dedicated 7-Slide Deck showcase across 2 full slides (Slide 29 & 30).
+   - Dedicated slides for Summary (Slide 34), Quizizz Arena (Slide 35), and Workshop Brief (Slide 36).
+3. **Layout Test:** Playwright layout audit passed 100% (36/36 slides on both 1280x800 and 1280x720).
+4. **Learner Reviewer Verdict:** APPROVED: Ready for non-tech students (10/10).
+5. **Quiz Synchronization:** `session-11-quiz.md` updated with 10 questions referencing Thai CSV and 36 slides, and compiled to `session-11-quiz.xlsx`.
