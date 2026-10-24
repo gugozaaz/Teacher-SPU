@@ -1,26 +1,26 @@
-# Implementation Plan: Session 13 Courseware Upgrade
+# Implementation Plan: Session 13 Courseware Upgrade (Unlimited Expansion & Thai CSV)
 
 ## 1. Goal
-Upgrade Session 13 presentation, quiz, and related resources according to the 4-step progressive framework, ensuring zero jargon barrier for non-tech entrepreneurship students, 100% layout pass rate, autonomous subagent certification, and automated quiz synchronization.
+Upgrade Session 13 presentation, dataset, and quiz according to the 4-step progressive framework, expanding to 34 slides with breathing room for non-tech entrepreneurship students, providing a dedicated Thai CSV dataset, 100% layout pass rate, autonomous subagent certification (10/10), and automated quiz synchronization.
 
 ## 2. Tasks & Progress
 - [x] **Task 1: Pre-Edit Slide Backup**
-  - Created `session/session-13/session-13-presentation-Backup-20261024-1915.html`
-- [x] **Task 2: Slide Architecture & Modular Generation**
-  - Modular scripts created in `scratch/`: `s13_prepare.py`, `s13_part1.py` (Slides 1-6), `s13_part2.py` (Slides 7-11), `s13_part3.py` (Slides 12-16), `s13_part4.py` (Slides 17-28), and `s13_assemble.py`.
-  - Assembled `session/session-13/session-13-presentation.html` with 28 slides and formula styling.
-- [x] **Task 3: Slide Header Comment Audit**
-  - Verified 28 continuous semantic comments from `<!-- SLIDE 1: TITLE SLIDE -->` to `<!-- SLIDE 28: BEST DATA VENTURE AWARD & FINAL SENDOFF -->`.
+  - Created `session/session-13/session-13-presentation-Backup-20261024-2110.html`
+- [x] **Task 2: Thai CSV Dataset Generation**
+  - Generated `session/session-13/session-13-greenfresh-subscription-churn-thai.csv` (16 customer rows, 10 columns in UTF-8 with BOM for Excel compatibility) covering subscription churn reasons, Smart Swap pilot, LTV, and NPS.
+- [x] **Task 3: Slide Architecture & Unlimited Expansion (34 Slides)**
+  - Expanded deck from 28 to 34 slides matching Session 10 design system, CSS variables, fonts, aspect ratio toggle (Key A), and test runner (Key T).
+  - Continuous comments `<!-- SLIDE 1: TITLE SLIDE -->` through `<!-- SLIDE 34: COMMENCEMENT & COURSE LEGACY -->`.
+  - Step-by-step arithmetic: 1,200 accounts, 28% to 12% churn (-192 churn/mo), $1,036,800 gross profit recovered, Net profit +518,400 ฿ (ROI 100%).
 - [x] **Task 4: Automated Playwright Layout Testing**
   - Executed `s13_layout_test.py`:
-    - 16:10 (`1280x800`): 28/28 slides PASS (100.0%)
-    - 16:9 (`1280x720`): 28/28 slides PASS (100.0%)
+    - 16:10 (`1280x800`): 34/34 slides PASS (100.0%)
+    - 16:9 (`1280x720`): 34/34 slides PASS (100.0%)
 - [x] **Task 5: Autonomous Learner Reviewer Subagent**
-  - Subagent `e3a17255-3de1-4f20-95c0-a1f9eb95d840` evaluated 5 criteria: 10.0 / 10.0.
-  - Official certification: `APPROVED: Ready for non-tech students`.
+  - Subagent `5613de48-bfe2-4e5d-ba99-3620f7f7a757` evaluated 5 criteria: 10.0 / 10.0.
+  - Official certification: `VERDICT: APPROVED: Ready for non-tech students`.
 - [x] **Task 6: Quiz Synchronization Pipeline**
-  - Updated `session/session-13/session-13-quiz.md` with 10 questions reflecting new formulas (Churn Rate, Lifespan, Payoff, ROI) and exact slide header references.
+  - Updated `session/session-13/session-13-quiz.md` with 10 questions reflecting the 34 slides and Thai CSV dataset.
   - Compiled `session/session-13/session-13-quiz.xlsx` via `quiz_to_xlsx.ps1`.
 - [x] **Task 7: Documentation & Git Commit / Push**
-  - Documented Design Spec and Implementation Plan in `docs/superpowers/`.
   - Stage, commit, and push to remote `origin main`.
