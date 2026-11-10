@@ -150,26 +150,8 @@ async def convert_html_to_landscape_pdf(html_path: str, pdf_path: str, format_si
                 html.reveal-print .reveal .slides section,
                 html.print-pdf .reveal .slides section,
                 body.reveal-viewport .reveal .slides .pdf-page section {
-                    display: flex !important;
-                    flex-direction: column !important;
-                    justify-content: flex-start !important;
                     padding: ${intendedPadding} !important;
                     box-sizing: border-box !important;
-                    height: 100% !important;
-                    max-height: 100% !important;
-                }
-                html.reveal-print .reveal .slides section .slide-body,
-                html.print-pdf .reveal .slides section .slide-body {
-                    flex: 1 !important;
-                    display: flex !important;
-                    flex-direction: column !important;
-                    justify-content: space-between !important;
-                    overflow: hidden !important;
-                }
-                *, *::before, *::after {
-                    animation-duration: 0.001s !important;
-                    animation-iteration-count: 1 !important;
-                    transition-duration: 0.001s !important;
                 }
                 .controls, .reveal .controls, .reveal .progress, .reveal .slide-number,
                 #aspect-ratio-toast, #test-report-overlay, .deck-footer, #aspect-toggle {
